@@ -1,0 +1,29 @@
+# TEST DOUBLE only
+id: lpr_sksube
+name: "LPR2 examinations (test double)"
+family: lpr2_somatic
+coverage: {from: 1999, to: 2019}
+join_keys: [recnum]
+columns:
+  - id: recnum
+    name: recnum
+    type: character
+    role: join_key
+  - id: c_opr
+    name: c_opr
+    type: character
+    role: code
+    code_system: sks
+  - id: d_odto
+    name: d_odto
+    type: date
+    role: date
+  - id: c_oprart
+    name: c_oprart
+    type: character
+    role: code
+  - id: year
+    name: year
+    type: integer
+    role: date
+    origin: tooling

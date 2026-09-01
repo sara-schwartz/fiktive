@@ -1,0 +1,7 @@
+# TEST DOUBLE
+id: diagtype
+values_complete: false
+lookup:
+  A: {da: null, en: "Action diagnosis"}
+  B: {da: null, en: "Secondary diagnosis"}
+  G: {da: null, en: "Underlying condition"}

@@ -1,0 +1,7 @@
+# TEST DOUBLE only
+id: lpr2_somatic
+name: "LPR2 somatic (test double)"
+coverage:
+  from: 1977
+  to: 2019-03
+deprecated: true
