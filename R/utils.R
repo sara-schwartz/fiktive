@@ -19,10 +19,23 @@ with_rng_seed <- function(seed, expr) {
 }
 
 as_date1 <- function(x) {
-  if (inherits(x, "Date")) {
+  if (inherits(x, "Date") && !inherits(x, "POSIXt")) {
     return(x)
   }
+  if (inherits(x, "POSIXt")) {
+    return(as.Date(x, tz = "UTC"))
+  }
   as.Date(x)
+}
+
+as_datetime1 <- function(x) {
+  if (inherits(x, "POSIXt")) {
+    return(as.POSIXct(x, tz = "UTC"))
+  }
+  if (inherits(x, "Date")) {
+    return(as.POSIXct(paste(format(x, "%Y-%m-%d"), "00:00:00"), tz = "UTC"))
+  }
+  as.POSIXct(x, tz = "UTC")
 }
 
 normalize_ym <- function(ym) {
@@ -75,6 +88,7 @@ in_ym_coverage <- function(dates, coverage) {
   if (is.null(coverage)) {
     return(rep(TRUE, length(dates)))
   }
+  dates <- as.Date(dates)
   from <- if (!is.null(coverage$from)) ym_start(coverage$from) else as.Date("0001-01-01")
   to <- if (!is.null(coverage$to)) ym_end(coverage$to) else as.Date("9999-12-31")
   dates >= from & dates <= to
@@ -99,6 +113,7 @@ na_of_type <- function(type, n) {
     integer = rep(NA_integer_, n),
     numeric = rep(NA_real_, n),
     date = as.Date(rep(NA_real_, n), origin = "1970-01-01"),
+    datetime = as.POSIXct(rep(NA_real_, n), origin = "1970-01-01", tz = "UTC"),
     character = rep(NA_character_, n),
     rep(NA, n)
   )
@@ -110,6 +125,7 @@ coerce_schema_type <- function(x, type) {
     integer = as.integer(x),
     numeric = as.numeric(x),
     date = as_date1(x),
+    datetime = as_datetime1(x),
     character = as.character(x),
     as.character(x)
   )

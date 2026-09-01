@@ -15,10 +15,14 @@ generate_register(register, population, schema, from, to, seed = NULL, scenario 
 }
 \value{
 A tibble whose columns are a subset of the schema column names for \code{register}.
-Zero rows is a valid event table.
+Zero rows is a valid event or child table.
 }
 \description{
 \code{scenario = NULL} is independence. Snapshot grains: \code{bef} (quarterly),
 \code{udda} and \code{akm} (annual). Event-from-person: \code{dod}, \code{lmdb},
-\code{vnds}. Never mix \code{vnds} with \code{vnds_hist}/\code{vnds_ind}/\code{vnds_ud}.
+\code{vnds}. Expand-from-parent: LPR2 (\code{lpr_adm} then \code{lpr_diag} /
+\code{lpr_sksopr} / \code{lpr_sksube}) and LPR3 (\code{lpr_a_kontakt} then
+\code{lpr_a_diagnose} / \code{lpr_a_procregistrering}) off the same contact
+table. Psych LPR (\code{t_psyk_*}) is not this step. Never mix \code{vnds}
+with \code{vnds_hist}/\code{vnds_ind}/\code{vnds_ud}.
 }
