@@ -1,0 +1,94 @@
+# TEST DOUBLE only — not the live registers-guide schema.
+id: bef
+name: "Befolkningen (test double)"
+family: null
+update_cadence: quarterly
+coverage:
+  from: 1985-12
+  to: 2026-06
+join_keys: [pnr]
+columns:
+  - id: pnr
+    name: pnr
+    type: character
+    role: join_key
+  - id: koen
+    name: koen
+    type: integer
+    role: code
+    code_system: koen
+  - id: foed_dag
+    name: foed_dag
+    type: date
+    role: date
+  - id: familie_id
+    name: familie_id
+    type: character
+    role: join_key
+  - id: reg
+    name: reg
+    type: character
+    role: code
+    code_system: reg
+  - id: civst
+    name: civst
+    type: character
+    role: code
+    code_system: civst
+  - id: kom
+    name: kom
+    type: character
+    role: code
+    code_system: kom
+  - id: year
+    name: year
+    type: integer
+    role: date
+    origin: tooling
+  - id: mor_id
+    name: mor_id
+    type: character
+    role: identifier
+  - id: far_id
+    name: far_id
+    type: character
+    role: identifier
+  - id: fdato
+    name: fdato
+    type: date
+    role: date
+  - id: alder
+    name: alder
+    type: integer
+    role: value
+  - id: antboernf
+    name: antboernf
+    type: integer
+    role: value
+  - id: familie_type
+    name: familie_type
+    type: character
+    role: code
+  - id: opr_land
+    name: opr_land
+    type: character
+    role: code
+  - id: van_vtil
+    name: van_vtil
+    type: date
+    role: date
+    coverage: {from: 1985-12, to: 2003-12}
+  - id: foerste_indvandring
+    name: foerste_indvandring
+    type: date
+    role: date
+    coverage: {from: 2004-12, to: 2026-06}
+  - id: referencetid
+    name: referencetid
+    type: date
+    role: date
+  - id: fkirk
+    name: fkirk
+    type: character
+    role: code
+    coverage: {from: 2004-12, to: 2026-06}
