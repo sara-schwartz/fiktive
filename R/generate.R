@@ -152,3 +152,175 @@ emit_schema_table <- function(spec, rows, schema) {
   }
   tibble::as_tibble(out)
 }
+
+validate_population <- function(population) {
+  pop <- tibble::as_tibble(population)
+  needed <- c("pnr", "foed_dag", "koen")
+  missing <- setdiff(needed, names(pop))
+  if (length(missing)) {
+    stop(
+      "population must have columns: ",
+      paste(needed, collapse = ", "),
+      call. = FALSE
+    )
+  }
+  pop$pnr <- as.character(pop$pnr)
+  pop$foed_dag <- as_date1(pop$foed_dag)
+  pop$koen <- as.integer(pop$koen)
+  pop
+}
+
+empty_from_spec <- function(spec) {
+  cols <- spec$columns %||% list()
+  out <- list()
+  for (col in cols) {
+    name <- as.character(col$name %||% col$id)
+    type <- col$type
+    if (is.null(type) && is.null(col$code_system)) {
+      schema_gap(
+        sprintf("column '%s' has neither type nor code_system", name),
+        "a `type` and/or `code_system` on the column"
+      )
+    }
+    type <- type %||% "character"
+    out[[name]] <- na_of_type(type, 0L)
+  }
+  tibble::as_tibble(out)
+}
+
+snapshot_dates <- function(from, to, coverage = NULL, cadence = "quarterly") {
+  if (!is.null(coverage)) {
+    if (!is.null(coverage$from)) {
+      from <- max(from, ym_start(coverage$from))
+    }
+    if (!is.null(coverage$to)) {
+      to <- min(to, ym_end(coverage$to))
+    }
+  }
+  if (to < from) {
+    return(as.Date(character()))
+  }
+  years <- seq.int(lubridate::year(from), lubridate::year(to))
+  dates <- do.call(c, lapply(years, function(y) {
+    if (identical(cadence, "annual")) {
+      as.Date(sprintf("%d-12-31", y))
+    } else if (y < 2008L) {
+      as.Date(sprintf("%d-12-31", y))
+    } else {
+      as.Date(c(
+        sprintf("%d-03-31", y),
+        sprintf("%d-06-30", y),
+        sprintf("%d-09-30", y),
+        sprintf("%d-12-31", y)
+      ))
+    }
+  }))
+  sort(unique(dates[dates >= from & dates <= to]))
+}
+
+fill_schema_column <- function(col, rows, schema) {
+  n <- nrow(rows)
+  id <- as.character(col$id %||% col$name)
+  type <- col$type
+  cs <- col$code_system
+  if (is.null(type) && is.null(cs)) {
+    schema_gap(
+      sprintf("column '%s' has neither type nor code_system", id),
+      "a `type` and/or `code_system` on the column"
+    )
+  }
+  type <- type %||% "character"
+  values <- derived_column(id, rows)
+  if (is.null(values)) {
+    values <- draw_independent_column(col, n, schema)
+  }
+  values <- coerce_schema_type(values, type)
+  if (!is.null(col$coverage) && n > 0L) {
+    when <- if ("event_date" %in% names(rows)) rows$event_date else rows$referencetid
+    inside <- in_ym_coverage(when, col$coverage)
+    values[!inside] <- na_of_type(type, 1L)[[1]]
+  }
+  values
+}
+
+derived_column <- function(id, rows) {
+  when <- if ("event_date" %in% names(rows)) rows$event_date else rows$referencetid
+  atc <- if ("atc" %in% names(rows)) as.character(rows$atc) else NULL
+  switch(
+    id,
+    pnr = rows$pnr,
+    koen = rows$koen,
+    foed_dag = rows$foed_dag,
+    referencetid = rows$referencetid,
+    year = as.integer(lubridate::year(when)),
+    alder = age_years(rows$foed_dag, rows$referencetid),
+    alder_ult_ink = age_years(rows$foed_dag, rows$referencetid),
+    alder_haend = age_years(rows$foed_dag, when),
+    aldr = age_years(rows$foed_dag, when),
+    fdato = rows$foed_dag,
+    doddato = when,
+    eksd = when,
+    haend_dato = when,
+    atc1 = if (is.null(atc)) NULL else substr(atc, 1L, 1L),
+    atc2 = if (is.null(atc)) NULL else substr(atc, 1L, 3L),
+    atc3 = if (is.null(atc)) NULL else substr(atc, 1L, 4L),
+    atc4 = if (is.null(atc)) NULL else substr(atc, 1L, 5L),
+    NULL
+  )
+}
+
+draw_independent_column <- function(col, n, schema) {
+  type <- col$type %||% "character"
+  role <- col$role
+  cs_id <- col$code_system
+  name <- as.character(col$name %||% col$id)
+  if (n == 0L) {
+    return(na_of_type(type, 0L))
+  }
+  if (!is.null(cs_id)) {
+    cs <- schema$code_systems[[as.character(cs_id)]]
+    if (is.null(cs)) {
+      schema_gap(
+        sprintf("code system '%s' for column '%s'", cs_id, name),
+        "a matching file in code-systems/"
+      )
+    }
+    keys <- lookup_keys(cs)
+    if (!is.null(keys) && length(keys)) {
+      if (identical(as.character(cs_id), "civst")) {
+        keys <- setdiff(keys, "D")
+      }
+      drawn <- sample(keys, n, replace = TRUE)
+      return(coerce_schema_type(drawn, type))
+    }
+    return(typed_noise(type, n, role = role, name = name, code_system = cs_id, cs = cs))
+  }
+  typed_noise(type, n, role = role, name = name)
+}
+
+typed_noise <- function(type, n, role = NULL, name = NULL, code_system = NULL, cs = NULL) {
+  if (identical(type, "integer")) {
+    return(sample.int(11L, n, replace = TRUE) - 1L)
+  }
+  if (identical(type, "numeric")) {
+    return(stats::runif(n, 0.5, 20))
+  }
+  if (identical(type, "date")) {
+    return(as.Date("1990-01-01") + sample.int(10000L, n, replace = TRUE) - 1L)
+  }
+  if (identical(as.character(code_system), "atc") || identical(name, "atc")) {
+    return(sprintf(
+      "%s%02d%s%s%02d",
+      sample(LETTERS, n, replace = TRUE),
+      sample.int(100L, n, replace = TRUE) - 1L,
+      sample(LETTERS, n, replace = TRUE),
+      sample(LETTERS, n, replace = TRUE),
+      sample.int(100L, n, replace = TRUE) - 1L
+    ))
+  }
+  if (identical(role, "identifier") || (identical(role, "join_key") && !identical(name, "pnr"))) {
+    prefix <- if (identical(role, "join_key")) "H" else "I"
+    return(sprintf("%s%07d", prefix, sample.int(10000000L, n, replace = TRUE) - 1L))
+  }
+  sprintf("%03d", sample.int(1000L, n, replace = TRUE) - 1L)
+}
