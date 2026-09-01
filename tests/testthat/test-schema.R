@@ -29,11 +29,11 @@ test_that("unknown register id is a SCHEMA GAP", {
   )
 })
 
-test_that("event-grain register is not implemented yet", {
+test_that("expand-from-parent register is not implemented yet", {
   schema <- fixture_schema()
   pop <- tiny_pop(schema)
   err <- tryCatch(
-    generate_register("dod", pop, schema, "2008-01-01", "2008-12-31", seed = 1),
+    generate_register("vnds_ind", pop, schema, "2008-01-01", "2008-12-31", seed = 1),
     error = function(e) e
   )
   expect_s3_class(err, "error")
