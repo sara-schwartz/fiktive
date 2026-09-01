@@ -1,9 +1,10 @@
 #' Generate a fictitious register table
 #'
 #' `scenario = NULL` is independence: structurally valid noise that joins.
-#' Snapshot grains implemented: `bef` (quarterly person x referencetid),
-#' `udda` and `akm` (annual person x year). Other schema registers error as
-#' not implemented; unknown ids are a SCHEMA GAP.
+#' Snapshot grains: `bef` (quarterly), `udda` and `akm` (annual).
+#' Event-from-person: `dod`, `lmdb`, `vnds` (empty tables are valid).
+#' Never mix `vnds` with `vnds_hist` / `vnds_ind` / `vnds_ud`.
+#' Other schema registers error as not implemented; unknown ids are a SCHEMA GAP.
 #'
 #' @param register Lowercase register id (fastreg name), e.g. `"bef"`.
 #' @param population Persons table from [generate_background_population()].
@@ -14,7 +15,7 @@
 #' @param scenario Must be `NULL` (independence).
 #'
 #' @return A tibble whose columns are a subset of the schema column names
-#'   for `register`.
+#'   for `register`. Zero rows is a valid event table.
 #' @export
 generate_register <- function(register, population, schema, from, to,
                               seed = NULL, scenario = NULL) {
@@ -37,6 +38,9 @@ generate_register <- function(register, population, schema, from, to,
   }
   if (register %in% c("udda", "akm")) {
     return(generate_snapshot(population, schema, spec, from, to, seed, cadence = "annual"))
+  }
+  if (register %in% c("dod", "lmdb", "vnds")) {
+    return(generate_events(population, schema, spec, from, to, seed))
   }
   stop(
     sprintf(
@@ -65,26 +69,88 @@ generate_snapshot <- function(population, schema, spec, from, to, seed, cadence)
     )
     rows <- dplyr::left_join(grid, pop, by = "pnr")
     rows <- rows[rows$referencetid >= rows$foed_dag, , drop = FALSE]
-    cols <- spec$columns %||% list()
-    if (!length(cols)) {
-      schema_gap(
-        paste(spec$id %||% "register", "columns"),
-        "a `columns` list on the register"
-      )
+    emit_schema_table(spec, rows, schema)
+  })
+}
+
+generate_events <- function(population, schema, spec, from, to, seed) {
+  pop <- validate_population(population)
+  from <- as_date1(from)
+  to <- as_date1(to)
+  if (is.na(from) || is.na(to) || to < from) {
+    stop("`from` must be a Date on or before `to`.", call. = FALSE)
+  }
+  if (!is.null(spec$coverage)) {
+    if (!is.null(spec$coverage$from)) {
+      from <- max(from, ym_start(spec$coverage$from))
     }
-    out <- list()
-    for (col in cols) {
-      name <- as.character(col$name %||% col$id)
-      if (!nzchar(name)) {
+    if (!is.null(spec$coverage$to)) {
+      to <- min(to, ym_end(spec$coverage$to))
+    }
+  }
+  with_rng_seed(seed, {
+    if (!nrow(pop) || to < from) {
+      return(empty_from_spec(spec))
+    }
+    n_people <- nrow(pop)
+    n_ev <- event_counts(spec$id, n_people)
+    lo <- pmax(pop$foed_dag, from)
+    hi <- rep(to, n_people)
+    pieces <- vector("list", n_people)
+    for (i in seq_len(n_people)) {
+      k <- n_ev[[i]]
+      if (k < 1L || lo[[i]] > hi[[i]]) {
         next
       }
-      values <- fill_schema_column(col, rows, schema)
-      if (!is.null(values)) {
-        out[[name]] <- values
-      }
+      span <- as.integer(hi[[i]] - lo[[i]])
+      event_date <- lo[[i]] + sample.int(span + 1L, k, replace = TRUE) - 1L
+      pieces[[i]] <- tibble::tibble(
+        pnr = pop$pnr[[i]],
+        foed_dag = pop$foed_dag[[i]],
+        koen = pop$koen[[i]],
+        event_date = as.Date(event_date)
+      )
     }
-    tibble::as_tibble(out)
+    rows <- dplyr::bind_rows(pieces)
+    if (!nrow(rows)) {
+      return(empty_from_spec(spec))
+    }
+    rows$referencetid <- rows$event_date
+    emit_schema_table(spec, rows, schema)
   })
+}
+
+event_counts <- function(register_id, n) {
+  if (identical(register_id, "dod")) {
+    return(stats::rbinom(n, 1L, 0.3))
+  }
+  if (identical(register_id, "lmdb")) {
+    return(stats::rpois(n, 1.5))
+  }
+  stats::rpois(n, 0.4)
+}
+
+emit_schema_table <- function(spec, rows, schema) {
+  cols <- spec$columns %||% list()
+  if (!length(cols)) {
+    schema_gap(
+      paste(spec$id %||% "register", "columns"),
+      "a `columns` list on the register"
+    )
+  }
+  out <- list()
+  for (col in cols) {
+    name <- as.character(col$name %||% col$id)
+    if (!nzchar(name)) {
+      next
+    }
+    values <- fill_schema_column(col, rows, schema)
+    if (!is.null(values)) {
+      out[[name]] <- values
+      rows[[name]] <- values
+    }
+  }
+  tibble::as_tibble(out)
 }
 
 validate_population <- function(population) {
@@ -164,29 +230,41 @@ fill_schema_column <- function(col, rows, schema) {
     )
   }
   type <- type %||% "character"
-  values <- derived_snapshot_column(id, rows)
+  values <- derived_column(id, rows)
   if (is.null(values)) {
     values <- draw_independent_column(col, n, schema)
   }
   values <- coerce_schema_type(values, type)
   if (!is.null(col$coverage) && n > 0L) {
-    inside <- in_ym_coverage(rows$referencetid, col$coverage)
+    when <- if ("event_date" %in% names(rows)) rows$event_date else rows$referencetid
+    inside <- in_ym_coverage(when, col$coverage)
     values[!inside] <- na_of_type(type, 1L)[[1]]
   }
   values
 }
 
-derived_snapshot_column <- function(id, rows) {
+derived_column <- function(id, rows) {
+  when <- if ("event_date" %in% names(rows)) rows$event_date else rows$referencetid
+  atc <- if ("atc" %in% names(rows)) as.character(rows$atc) else NULL
   switch(
     id,
     pnr = rows$pnr,
     koen = rows$koen,
     foed_dag = rows$foed_dag,
     referencetid = rows$referencetid,
-    year = as.integer(lubridate::year(rows$referencetid)),
+    year = as.integer(lubridate::year(when)),
     alder = age_years(rows$foed_dag, rows$referencetid),
     alder_ult_ink = age_years(rows$foed_dag, rows$referencetid),
+    alder_haend = age_years(rows$foed_dag, when),
+    aldr = age_years(rows$foed_dag, when),
     fdato = rows$foed_dag,
+    doddato = when,
+    eksd = when,
+    haend_dato = when,
+    atc1 = if (is.null(atc)) NULL else substr(atc, 1L, 1L),
+    atc2 = if (is.null(atc)) NULL else substr(atc, 1L, 3L),
+    atc3 = if (is.null(atc)) NULL else substr(atc, 1L, 4L),
+    atc4 = if (is.null(atc)) NULL else substr(atc, 1L, 5L),
     NULL
   )
 }
@@ -215,18 +293,30 @@ draw_independent_column <- function(col, n, schema) {
       drawn <- sample(keys, n, replace = TRUE)
       return(coerce_schema_type(drawn, type))
     }
-    # enumerated: false / lookup null: typed noise, no invented list
-    return(typed_noise(type, n, role = role, name = name))
+    return(typed_noise(type, n, role = role, name = name, code_system = cs_id, cs = cs))
   }
   typed_noise(type, n, role = role, name = name)
 }
 
-typed_noise <- function(type, n, role = NULL, name = NULL) {
+typed_noise <- function(type, n, role = NULL, name = NULL, code_system = NULL, cs = NULL) {
   if (identical(type, "integer")) {
     return(sample.int(11L, n, replace = TRUE) - 1L)
   }
+  if (identical(type, "numeric")) {
+    return(stats::runif(n, 0.5, 20))
+  }
   if (identical(type, "date")) {
     return(as.Date("1990-01-01") + sample.int(10000L, n, replace = TRUE) - 1L)
+  }
+  if (identical(as.character(code_system), "atc") || identical(name, "atc")) {
+    return(sprintf(
+      "%s%02d%s%s%02d",
+      sample(LETTERS, n, replace = TRUE),
+      sample.int(100L, n, replace = TRUE) - 1L,
+      sample(LETTERS, n, replace = TRUE),
+      sample(LETTERS, n, replace = TRUE),
+      sample.int(100L, n, replace = TRUE) - 1L
+    ))
   }
   if (identical(role, "identifier") || (identical(role, "join_key") && !identical(name, "pnr"))) {
     prefix <- if (identical(role, "join_key")) "H" else "I"
