@@ -73,9 +73,19 @@ Internal stable persons: `pnr`, `foed_dag`, `koen`. Same pnr ⇒ same birth/sex.
 
 ---
 
+## Choosing registers
+
+Do **not** dump all schema registers. The user names what they want. Skip an id and it is not created.
+
+- Current API: `generate_register(id, ...)` one table. Same `population` + window so tables join.
+- Do **not** add `generate_registers()` until the write-out/docs step (Ole, 2026-09-01).
+- Before calling the package usable: README and user instructions must make this opt-in choice obvious (examples with a few registers, not a 24-table dump). LPR diagnoses/procedures require the parent contact table that was generated.
+
+---
+
 ## Scenario and truth API
 
-- `generate_registers(..., scenario = NULL)` = independence.
+- `generate_register(..., scenario = NULL)` = independence. A later `generate_registers(registers = c(...), scenario = NULL)` is the same, still opt-in, not “all registers”.
 - `fiktive_scenario`: `id`, `version`, empty `associations` / `confounders` / `biases`, `backend = "core"`. Column refs = schema ids (`bef.koen`). Coefficients never in YAML.
 - `fiktive_truth` **always** returned, even under independence. A bias claim is invalid unless it names: estimand, naive_estimator, adjusted_estimator, expected_naive, expected_adjusted. Independence: expected association 0 within MC error.
 - Confounding/bias scenarios only if the naive estimator is named.
@@ -90,7 +100,7 @@ Internal stable persons: `pnr`, `foed_dag`, `koen`. Same pnr ⇒ same birth/sex.
 4. Expand-from-parent: LPR2 then LPR3; psych LPR as its own pair
 5. FAIK (household-year; grain still unknown — do not guess)
 6. Custom registers — structure only
-7. Write-out — CSV always; parquet + hive `year=` via arrow; stamp schema commit + seed
+7. Write-out — CSV always; parquet + hive `year=` via arrow; stamp schema commit + seed. **Also:** README and user instructions so choosing a few registers is obvious.
 8. Scenario + truth — independence first; then one known association; then confounding/bias only with named estimators
 
 Do not wait for per-step sign-off unless Ole’s input is blocking.
