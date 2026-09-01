@@ -1,0 +1,5 @@
+# TEST DOUBLE — not enumerated; no municipality list.
+id: kom
+enumerated: false
+values_complete: false
+lookup: null

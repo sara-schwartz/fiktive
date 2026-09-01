@@ -1,0 +1,7 @@
+# TEST DOUBLE
+id: koen
+enumerated: true
+values_complete: true
+lookup:
+  1: {da: "Mand", en: "Male"}
+  2: {da: "Kvinde", en: "Female"}
