@@ -30,9 +30,19 @@ test_that("empty dod table is valid", {
   expect_true(all(c("pnr", "doddato") %in% names(empty)))
 })
 
-test_that("lmdb events join pnr, atc is typed noise not a list, year from eksd", {
+test_that("lmdb events join pnr, year from eksd, atc from WHOCC not sprintf", {
   schema <- fixture_schema()
   pop <- tiny_pop(schema, n = 40L, seed = 3)
+  reset_whocc_atc_catalogue()
+  old <- options(
+    fiktive.whocc_atc = c("C09AA05", "A10BA02", "N02BE01", "C07AB02", "J01CA04"),
+    fiktive.whocc_atc_version = "test-double",
+    fiktive.whocc_atc_disable = FALSE
+  )
+  on.exit({
+    options(old)
+    reset_whocc_atc_catalogue()
+  }, add = TRUE)
   lmdb <- generate_register("lmdb", pop, schema, from, to, seed = 41)
   schema_names <- vapply(schema$registers$lmdb$columns, function(col) col$name, character(1))
   expect_true(all(names(lmdb) %in% schema_names))
@@ -42,6 +52,7 @@ test_that("lmdb events join pnr, atc is typed noise not a list, year from eksd",
     expect_equal(lmdb$year, as.integer(format(lmdb$eksd, "%Y")))
     expect_type(lmdb$atc, "character")
     expect_true(all(nchar(lmdb$atc) == 7L))
+    expect_true(all(lmdb$atc %in% c("C09AA05", "A10BA02", "N02BE01", "C07AB02", "J01CA04")))
     expect_equal(lmdb$atc1, substr(lmdb$atc, 1L, 1L))
     expect_type(lmdb$apk, "double")
   }
