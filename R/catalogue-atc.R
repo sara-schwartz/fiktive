@@ -1,0 +1,79 @@
+#' Load official WHO ATC codes from WHOCC Oslo
+#'
+#' Denmark's LMDB uses the WHO Anatomical Therapeutic Chemical classification
+#' published by the WHO Collaborating Centre for Drug Statistics Methodology
+#' (WHOCC) in Oslo: \\url{https://atcddd.fhi.no/atc_ddd_index/}.
+#'
+#' The complete structured index (Excel or XML) is **not** an unauthenticated
+#' public dump. WHOCC documents that it is downloaded from a **registered user
+#' account** at \\url{https://orders.atcddd.fhi.no/}. This function does not scrape
+#' the searchable website into the package, does not vendor the index in git,
+#' and does not use `decoder::atc` (Swedish MPA).
+#'
+#' Point `path`, option `fiktive.whocc_atc`, or env var `FIKTIVE_WHOCC_ATC` at
+#' a downloaded Excel, XML, or text dump. Parsed 7-character codes are cached
+#' under [tools::R_user_dir()] (`"fiktive"`, `"cache"`), not `inst/extdata`.
+#' Generated LMDB tables stamp `atc_catalogue` and `atc_catalogue_version`.
+#'
+#' @param path Path to a WHOCC Excel (`.xlsx`), XML, CSV, TSV, or text dump.
+#'   Default: `fiktive.whocc_atc` option, then `FIKTIVE_WHOCC_ATC`, then the
+#'   user cache. A character vector of 7-character codes is accepted in tests.
+#' @param cache_dir Runtime cache directory. Default:
+#'   `file.path(tools::R_user_dir("fiktive", "cache"), "whocc-atc")`.
+#' @param required If `TRUE` (default), missing catalogue is a SCHEMA GAP with
+#'   an install/account message. If `FALSE`, return `NULL`.
+#'
+#' @return A list with `codes` (unique 7-character WHO ATC codes), `version`,
+#'   `source`, and `path`. `NULL` when `required = FALSE` and nothing is found.
+#' @export
+load_whocc_atc_catalogue <- function(path = NULL, cache_dir = NULL, required = TRUE) {
+  if (isTRUE(getOption("fiktive.whocc_atc_disable"))) {
+    return(whocc_atc_missing(required))
+  }
+
+  cache_dir <- cache_dir %||% getOption("fiktive.whocc_atc_cache") %||%
+    file.path(tools::R_user_dir("fiktive", "cache"), "whocc-atc")
+
+  mem <- .fiktive_whocc_atc$catalogue
+  if (!is.null(mem) && is.null(path)) {
+    return(mem)
+  }
+
+  resolved <- resolve_whocc_atc_source(path = path, cache_dir = cache_dir)
+  if (is.null(resolved)) {
+    return(whocc_atc_missing(required))
+  }
+
+  catalogue <- parse_whocc_atc_source(resolved, cache_dir = cache_dir)
+  if (is.null(catalogue) || !length(catalogue$codes)) {
+    return(whocc_atc_missing(required))
+  }
+
+  .fiktive_whocc_atc$catalogue <- catalogue
+  catalogue
+}
+
+.fiktive_whocc_atc <- new.env(parent = emptyenv())
+
+.ATC_LEVEL5 <- "^[A-Z][0-9]{2}[A-Z]{2}[0-9]{2}$"
+
+whocc_atc_missing <- function(required) {
+  .fiktive_whocc_atc$catalogue <- NULL
+  if (!isTRUE(required)) {
+    return(NULL)
+  }
+  schema_gap(
+    paste(
+      "WHOCC Oslo ATC catalogue (official WHO ATC/DDD Index).",
+      "A registered WHOCC account is required to download the complete",
+      "Excel/XML index from https://orders.atcddd.fhi.no/.",
+      "See https://atcddd.fhi.no/atc_ddd_index/.",
+      "There is no unauthenticated public dump of the complete index."
+    ),
+    paste(
+      "FIKTIVE_WHOCC_ATC (or option fiktive.whocc_atc) pointing at that dump,",
+      "or the same file in tools::R_user_dir(\"fiktive\", \"cache\")/whocc-atc.",
+      "Do not use decoder::atc (Swedish MPA). Never sprintf ATC fallback."
+    )
+  )
+}
