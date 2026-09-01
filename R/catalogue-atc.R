@@ -77,3 +77,76 @@ whocc_atc_missing <- function(required) {
     )
   )
 }
+
+resolve_whocc_atc_source <- function(path = NULL, cache_dir = NULL) {
+  if (!is.null(path)) {
+    return(as_whocc_source(path))
+  }
+
+  opt <- getOption("fiktive.whocc_atc")
+  src <- as_whocc_source(opt)
+  if (!is.null(src)) {
+    return(src)
+  }
+
+  env <- Sys.getenv("FIKTIVE_WHOCC_ATC", unset = "")
+  src <- as_whocc_source(env)
+  if (!is.null(src)) {
+    return(src)
+  }
+
+  url <- Sys.getenv("FIKTIVE_WHOCC_ATC_URL", unset = "")
+  if (nzchar(url)) {
+    fetched <- fetch_whocc_atc_url(url, cache_dir = cache_dir)
+    if (!is.null(fetched)) {
+      return(fetched)
+    }
+  }
+
+  find_whocc_atc_cache(cache_dir)
+}
+
+as_whocc_source <- function(x) {
+  if (is.null(x)) {
+    return(NULL)
+  }
+  if (is.list(x) && !is.null(x$codes)) {
+    codes <- extract_atc_level5(x$codes)
+    if (!length(codes)) {
+      return(NULL)
+    }
+    return(list(
+      type = "memory",
+      codes = codes,
+      version = as.character(x$version %||% "in-memory"),
+      path = NA_character_
+    ))
+  }
+  if (is.character(x) && length(x) > 1L) {
+    codes <- extract_atc_level5(x)
+    if (!length(codes)) {
+      return(NULL)
+    }
+    return(list(
+      type = "memory",
+      codes = codes,
+      version = as.character(getOption("fiktive.whocc_atc_version") %||% "in-memory"),
+      path = NA_character_
+    ))
+  }
+  if (is.character(x) && length(x) == 1L && nzchar(x)) {
+    if (file.exists(x)) {
+      return(list(type = "file", path = normalizePath(x, winslash = "/", mustWork = TRUE)))
+    }
+    codes <- extract_atc_level5(x)
+    if (length(codes) == 1L) {
+      return(list(
+        type = "memory",
+        codes = codes,
+        version = as.character(getOption("fiktive.whocc_atc_version") %||% "in-memory"),
+        path = NA_character_
+      ))
+    }
+  }
+  NULL
+}
