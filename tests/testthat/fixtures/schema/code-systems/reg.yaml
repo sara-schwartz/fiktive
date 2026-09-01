@@ -1,0 +1,11 @@
+# TEST DOUBLE
+id: reg
+enumerated: true
+values_complete: true
+lookup:
+  0:  {da: "Uoplyst", en: "Unknown"}
+  81: {da: "Nordjylland", en: "Nordjylland"}
+  82: {da: "Midtjylland", en: "Midtjylland"}
+  83: {da: "Syddanmark", en: "Syddanmark"}
+  84: {da: "Hovedstaden", en: "Hovedstaden"}
+  85: {da: "Sjaelland", en: "Sjaelland"}

@@ -1,0 +1,14 @@
+# TEST DOUBLE
+id: civst
+enumerated: true
+values_complete: true
+lookup:
+  U: {da: "Ugift", en: "Never married"}
+  G: {da: "Gift", en: "Married"}
+  F: {da: "Skilt", en: "Divorced"}
+  E: {da: "Enke", en: "Widowed"}
+  P: {da: "Partnerskab", en: "Registered partnership"}
+  O: {da: "Ophaevet", en: "Dissolved partnership"}
+  L: {da: "Laengstlevende", en: "Surviving partner"}
+  D: {da: "Dod", en: "Deceased"}
+  9: {da: "Uoplyst", en: "Unknown"}

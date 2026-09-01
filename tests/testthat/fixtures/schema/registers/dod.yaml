@@ -1,0 +1,8 @@
+# TEST DOUBLE only — stub so STEP 1 can error "not implemented".
+id: dod
+name: "Deaths (test double)"
+columns:
+  - id: pnr
+    name: pnr
+    type: character
+    role: join_key

@@ -1,0 +1,23 @@
+Package: fiktive
+Title: Fictitious Danish Register Data
+Version: 0.0.0.9000
+Authors@R: person("Ole", "Schwartz", email = "saras@clin.au.dk", role = c("aut", "cre"))
+Description: Generate structurally valid fictitious Danish register data, for writing and checking analysis code outside Statistics Denmark. Generated datasets are licensed CC-BY-4.0.
+License: MIT + file LICENSE
+Encoding: UTF-8
+Roxygen: list(markdown = TRUE)
+Imports:
+    dplyr,
+    tibble,
+    purrr,
+    lubridate,
+    rlang,
+    yaml
+Suggests:
+    testthat (>= 3.0.0),
+    arrow,
+    simstudy,
+    simDAG,
+    fabricatr,
+    simsurv
+Config/testthat/edition: 3
