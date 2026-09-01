@@ -1,0 +1,31 @@
+# TEST DOUBLE only
+id: udda
+name: "Uddannelser (test double)"
+update_cadence: annual
+coverage:
+  from: 1980-12
+  to: 2025-09
+join_keys: [pnr]
+columns:
+  - id: pnr
+    name: pnr
+    type: character
+    role: join_key
+  - id: hfaudd
+    name: hfaudd
+    type: character
+    role: code
+    code_system: hfaudd
+  - id: udd
+    name: udd
+    type: character
+    role: code
+  - id: hf_vfra
+    name: hf_vfra
+    type: date
+    role: date
+  - id: year
+    name: year
+    type: integer
+    role: date
+    origin: tooling

@@ -29,7 +29,7 @@ test_that("unknown register id is a SCHEMA GAP", {
   )
 })
 
-test_that("schema register other than bef is not implemented in STEP 1", {
+test_that("event-grain register is not implemented yet", {
   schema <- fixture_schema()
   pop <- tiny_pop(schema)
   err <- tryCatch(
@@ -37,6 +37,19 @@ test_that("schema register other than bef is not implemented in STEP 1", {
     error = function(e) e
   )
   expect_s3_class(err, "error")
-  expect_match(err$message, "not implemented in STEP 1")
+  expect_match(err$message, "not implemented yet")
   expect_false(grepl("^SCHEMA GAP:", err$message))
+})
+
+test_that("untyped column with no code_system is a SCHEMA GAP", {
+  schema <- fixture_schema()
+  pop <- tiny_pop(schema)
+  schema$registers$udda$columns <- c(
+    schema$registers$udda$columns,
+    list(list(id = "mystery", name = "mystery"))
+  )
+  expect_error(
+    generate_register("udda", pop, schema, "2008-01-01", "2008-12-31", seed = 1),
+    "^SCHEMA GAP:"
+  )
 })

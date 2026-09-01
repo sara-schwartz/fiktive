@@ -1,8 +1,9 @@
 #' Generate a fictitious register table
 #'
 #' `scenario = NULL` is independence: structurally valid noise that joins.
-#' STEP 1 implements `bef` only. Other schema registers error as not
-#' implemented; unknown ids are a SCHEMA GAP.
+#' Snapshot grains implemented: `bef` (quarterly person x referencetid),
+#' `udda` and `akm` (annual person x year). Other schema registers error as
+#' not implemented; unknown ids are a SCHEMA GAP.
 #'
 #' @param register Lowercase register id (fastreg name), e.g. `"bef"`.
 #' @param population Persons table from [generate_background_population()].
@@ -10,7 +11,7 @@
 #' @param from Start of the requested window (Date or coercible).
 #' @param to End of the requested window (Date or coercible).
 #' @param seed Optional RNG seed. Restored on exit.
-#' @param scenario Must be `NULL` in STEP 1 (independence).
+#' @param scenario Must be `NULL` (independence).
 #'
 #' @return A tibble whose columns are a subset of the schema column names
 #'   for `register`.
@@ -18,7 +19,7 @@
 generate_register <- function(register, population, schema, from, to,
                               seed = NULL, scenario = NULL) {
   if (!is.null(scenario)) {
-    stop("STEP 1 only supports scenario = NULL (independence).", call. = FALSE)
+    stop("Only scenario = NULL (independence) is supported.", call. = FALSE)
   }
   if (is.null(schema) || is.null(schema$registers)) {
     stop("`schema` from load_registers_schema() is required.", call. = FALSE)
@@ -31,29 +32,32 @@ generate_register <- function(register, population, schema, from, to,
       "a register id that exists in registers/*.yaml"
     )
   }
-  if (!identical(register, "bef")) {
-    stop(
-      sprintf(
-        "Register '%s' is in the schema but is not implemented in STEP 1 (only 'bef' is).",
-        register
-      ),
-      call. = FALSE
-    )
+  if (identical(register, "bef")) {
+    return(generate_snapshot(population, schema, spec, from, to, seed, cadence = "quarterly"))
   }
-  generate_bef(population, schema, spec, from, to, seed)
+  if (register %in% c("udda", "akm")) {
+    return(generate_snapshot(population, schema, spec, from, to, seed, cadence = "annual"))
+  }
+  stop(
+    sprintf(
+      "Register '%s' is in the schema but is not implemented yet.",
+      register
+    ),
+    call. = FALSE
+  )
 }
 
-generate_bef <- function(population, schema, spec, from, to, seed) {
+generate_snapshot <- function(population, schema, spec, from, to, seed, cadence) {
   pop <- validate_population(population)
   from <- as_date1(from)
   to <- as_date1(to)
   if (is.na(from) || is.na(to) || to < from) {
     stop("`from` must be a Date on or before `to`.", call. = FALSE)
   }
-  dates <- bef_reference_dates(from, to, spec$coverage)
+  dates <- snapshot_dates(from, to, spec$coverage, cadence)
   with_rng_seed(seed, {
     if (!length(dates) || !nrow(pop)) {
-      return(empty_bef(spec, schema))
+      return(empty_from_spec(spec))
     }
     grid <- tibble::tibble(
       pnr = rep(pop$pnr, each = length(dates)),
@@ -64,8 +68,8 @@ generate_bef <- function(population, schema, spec, from, to, seed) {
     cols <- spec$columns %||% list()
     if (!length(cols)) {
       schema_gap(
-        "bef columns",
-        "a `columns` list on register `bef`"
+        paste(spec$id %||% "register", "columns"),
+        "a `columns` list on the register"
       )
     }
     out <- list()
@@ -100,24 +104,25 @@ validate_population <- function(population) {
   pop
 }
 
-empty_bef <- function(spec, schema) {
+empty_from_spec <- function(spec) {
   cols <- spec$columns %||% list()
   out <- list()
-  dummy <- tibble::tibble(
-    pnr = character(),
-    foed_dag = as.Date(character()),
-    koen = integer(),
-    referencetid = as.Date(character())
-  )
   for (col in cols) {
     name <- as.character(col$name %||% col$id)
-    type <- col$type %||% "character"
+    type <- col$type
+    if (is.null(type) && is.null(col$code_system)) {
+      schema_gap(
+        sprintf("column '%s' has neither type nor code_system", name),
+        "a `type` and/or `code_system` on the column"
+      )
+    }
+    type <- type %||% "character"
     out[[name]] <- na_of_type(type, 0L)
   }
   tibble::as_tibble(out)
 }
 
-bef_reference_dates <- function(from, to, coverage = NULL) {
+snapshot_dates <- function(from, to, coverage = NULL, cadence = "quarterly") {
   if (!is.null(coverage)) {
     if (!is.null(coverage$from)) {
       from <- max(from, ym_start(coverage$from))
@@ -131,7 +136,9 @@ bef_reference_dates <- function(from, to, coverage = NULL) {
   }
   years <- seq.int(lubridate::year(from), lubridate::year(to))
   dates <- do.call(c, lapply(years, function(y) {
-    if (y < 2008L) {
+    if (identical(cadence, "annual")) {
+      as.Date(sprintf("%d-12-31", y))
+    } else if (y < 2008L) {
       as.Date(sprintf("%d-12-31", y))
     } else {
       as.Date(c(
@@ -151,11 +158,13 @@ fill_schema_column <- function(col, rows, schema) {
   type <- col$type
   cs <- col$code_system
   if (is.null(type) && is.null(cs)) {
-    # SCHEMA GAP: no type and no code system — skip rather than guess.
-    return(NULL)
+    schema_gap(
+      sprintf("column '%s' has neither type nor code_system", id),
+      "a `type` and/or `code_system` on the column"
+    )
   }
   type <- type %||% "character"
-  values <- derived_bef_column(id, rows)
+  values <- derived_snapshot_column(id, rows)
   if (is.null(values)) {
     values <- draw_independent_column(col, n, schema)
   }
@@ -167,7 +176,7 @@ fill_schema_column <- function(col, rows, schema) {
   values
 }
 
-derived_bef_column <- function(id, rows) {
+derived_snapshot_column <- function(id, rows) {
   switch(
     id,
     pnr = rows$pnr,
@@ -176,6 +185,7 @@ derived_bef_column <- function(id, rows) {
     referencetid = rows$referencetid,
     year = as.integer(lubridate::year(rows$referencetid)),
     alder = age_years(rows$foed_dag, rows$referencetid),
+    alder_ult_ink = age_years(rows$foed_dag, rows$referencetid),
     fdato = rows$foed_dag,
     NULL
   )
@@ -200,13 +210,12 @@ draw_independent_column <- function(col, n, schema) {
     keys <- lookup_keys(cs)
     if (!is.null(keys) && length(keys)) {
       if (identical(as.character(cs_id), "civst")) {
-        # Residents are living; death is not a marital status among them.
         keys <- setdiff(keys, "D")
       }
       drawn <- sample(keys, n, replace = TRUE)
       return(coerce_schema_type(drawn, type))
     }
-    # enumerated: false / lookup null, e.g. kom: typed noise, no invented list
+    # enumerated: false / lookup null: typed noise, no invented list
     return(typed_noise(type, n, role = role, name = name))
   }
   typed_noise(type, n, role = role, name = name)
@@ -223,7 +232,5 @@ typed_noise <- function(type, n, role = NULL, name = NULL) {
     prefix <- if (identical(role, "join_key")) "H" else "I"
     return(sprintf("%s%07d", prefix, sample.int(10000000L, n, replace = TRUE) - 1L))
   }
-  # Character codes without a lookup (kom, opr_land, familie_type, ...):
-  # typed noise only. Do not invent a country list or municipality set.
   sprintf("%03d", sample.int(1000L, n, replace = TRUE) - 1L)
 }
