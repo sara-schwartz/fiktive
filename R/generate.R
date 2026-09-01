@@ -6,9 +6,13 @@
 #' Expand-from-parent: LPR2 (`lpr_adm` then `lpr_diag` / `lpr_sksopr` /
 #' `lpr_sksube`) and LPR3 (`lpr_a_kontakt` then `lpr_a_diagnose` /
 #' `lpr_a_procregistrering`). Diagnoses/procedures are generated off the
-#' **same** contact table that was written. Psych LPR (`t_psyk_*`) is not
-#' this step. Never mix `vnds` with `vnds_hist` / `vnds_ind` / `vnds_ud`.
-#' Other schema registers error as not implemented; unknown ids are a SCHEMA GAP.
+#' **same** contact table that was written. LPR procedure codes sample
+#' `sksr::SKS_labels` at runtime (surgical `lpr_sksopr` uses Prefix `opr` /
+#' K-codes). ICD-10 diagnosis columns SCHEMA GAP until a published ICD-10
+#' catalogue is chosen (not SKS, not ATC, not decoder). Psych LPR
+#' (`t_psyk_*`) is not this step. Never mix `vnds` with `vnds_hist` /
+#' `vnds_ind` / `vnds_ud`. Other schema registers error as not implemented;
+#' unknown ids are a SCHEMA GAP.
 #'
 #' @param register Lowercase register id (fastreg name), e.g. `"bef"`.
 #' @param population Persons table from [generate_background_population()].
@@ -353,19 +357,31 @@ emit_schema_table <- function(spec, rows, schema) {
       "a `columns` list on the register"
     )
   }
+  register_id <- as.character(spec$id %||% spec$name %||% "")
+  used_sks <- FALSE
   out <- list()
   for (col in cols) {
     name <- as.character(col$name %||% col$id)
     if (!nzchar(name)) {
       next
     }
-    values <- fill_schema_column(col, rows, schema)
+    values <- fill_schema_column(col, rows, schema, register_id = register_id)
     if (!is.null(values)) {
       out[[name]] <- values
       rows[[name]] <- values
     }
+    cs_id <- as.character(col$code_system %||% "")
+    if (cs_id %in% c("sks", "kont_type") && nrow(rows) > 0L) {
+      used_sks <- TRUE
+    }
   }
-  tibble::as_tibble(out)
+  tbl <- tibble::as_tibble(out)
+  if (used_sks) {
+    meta <- sks_catalogue_stamp()
+    attr(tbl, "catalogue") <- meta$catalogue
+    attr(tbl, "catalogue_version") <- meta$version
+  }
+  tbl
 }
 
 validate_population <- function(population) {
@@ -433,7 +449,7 @@ snapshot_dates <- function(from, to, coverage = NULL, cadence = "quarterly") {
   sort(unique(dates[dates >= from & dates <= to]))
 }
 
-fill_schema_column <- function(col, rows, schema) {
+fill_schema_column <- function(col, rows, schema, register_id = NULL) {
   n <- nrow(rows)
   id <- as.character(col$id %||% col$name)
   type <- col$type
@@ -447,7 +463,7 @@ fill_schema_column <- function(col, rows, schema) {
   type <- type %||% "character"
   values <- derived_column(id, rows)
   if (is.null(values)) {
-    values <- draw_independent_column(col, n, schema)
+    values <- draw_independent_column(col, n, schema, register_id = register_id)
   }
   values <- coerce_schema_type(values, type)
   if (!is.null(col$coverage) && n > 0L) {
@@ -502,7 +518,7 @@ derived_column <- function(id, rows) {
   )
 }
 
-draw_independent_column <- function(col, n, schema) {
+draw_independent_column <- function(col, n, schema, register_id = NULL) {
   type <- col$type %||% "character"
   role <- col$role
   cs_id <- col$code_system
@@ -526,9 +542,136 @@ draw_independent_column <- function(col, n, schema) {
       drawn <- sample(keys, n, replace = TRUE)
       return(coerce_schema_type(drawn, type))
     }
+    cs_id_chr <- as.character(cs_id)
+    if (identical(cs_id_chr, "icd10")) {
+      return(draw_icd10_pending(name, n, type, register_id))
+    }
+    if (cs_id_chr %in% c("sks", "kont_type")) {
+      kind <- sks_kind_for(cs_id_chr, register_id, name)
+      drawn <- sample_sks_codes(n, kind, cs)
+      return(coerce_schema_type(drawn, type))
+    }
     return(typed_noise(type, n, role = role, name = name, code_system = cs_id, cs = cs))
   }
   typed_noise(type, n, role = role, name = name)
+}
+
+
+.sks_state <- new.env(parent = emptyenv())
+
+sksr_is_installed <- function() {
+  requireNamespace("sksr", quietly = TRUE)
+}
+
+sks_catalogue_stamp <- function() {
+  list(
+    catalogue = .sks_state$catalogue %||% "sksr::SKS_labels",
+    version = .sks_state$version %||% NA_character_
+  )
+}
+
+load_sks_labels <- function() {
+  if (!sksr_is_installed()) {
+    stop(
+      "Package 'sksr' is required to sample published SKS codes. ",
+      "Install it with install.packages(\"sksr\").",
+      call. = FALSE
+    )
+  }
+  if (!is.null(.sks_state$labels)) {
+    return(.sks_state$labels)
+  }
+  labels <- sksr::SKS_labels
+  if (is.null(labels) || !nrow(labels) || !("Kode" %in% names(labels))) {
+    schema_gap(
+      "sksr::SKS_labels",
+      "a SKS_labels table with a Kode column"
+    )
+  }
+  labels$Kode <- as.character(labels$Kode)
+  if ("Prefix" %in% names(labels)) {
+    labels$Prefix <- as.character(labels$Prefix)
+  }
+  keep <- !is.na(labels$Kode) & nzchar(labels$Kode)
+  .sks_state$labels <- labels[keep, , drop = FALSE]
+  .sks_state$catalogue <- "sksr::SKS_labels"
+  .sks_state$version <- as.character(utils::packageVersion("sksr"))
+  .sks_state$labels
+}
+
+draw_icd10_pending <- function(name, n, type, register_id) {
+  if (as.character(register_id %||% "") %in% c("lpr_diag", "lpr_a_diagnose")) {
+    schema_gap(
+      sprintf(
+        "ICD-10 catalogue for column '%s' (published source not selected)",
+        name
+      ),
+      "a published ICD-10 source once the catalogue is chosen"
+    )
+  }
+  na_of_type(type %||% "character", n)
+}
+
+sks_kind_for <- function(cs_id, register_id, name) {
+  if (identical(as.character(cs_id), "kont_type")) {
+    return("adm")
+  }
+  register_id <- as.character(register_id %||% "")
+  if (identical(register_id, "lpr_sksopr")) {
+    return("opr")
+  }
+  if (identical(register_id, "lpr_sksube")) {
+    return("pro_und")
+  }
+  if (identical(register_id, "lpr_a_procregistrering")) {
+    return("proc")
+  }
+  schema_gap(
+    sprintf("SKS kind for column '%s' on '%s'", name, register_id %||% "register"),
+    "a documented procedure grain (lpr_sksopr / lpr_sksube / lpr_a_procregistrering)"
+  )
+}
+
+filter_published_sks <- function(labels, kind, cs) {
+  kode <- as.character(labels$Kode)
+  if ("Prefix" %in% names(labels)) {
+    pref <- as.character(labels$Prefix)
+    pick <- switch(
+      kind,
+      opr = pref == "opr",
+      pro_und = pref %in% c("pro", "und"),
+      proc = pref %in% c("opr", "pro", "und"),
+      adm = pref == "adm",
+      rep(TRUE, length(kode))
+    )
+    kode <- kode[pick]
+  } else {
+    if (identical(kind, "opr")) {
+      kode <- kode[startsWith(kode, "K")]
+    } else if (identical(kind, "adm")) {
+      kode <- kode[nchar(kode) == 6L]
+    }
+  }
+  kode <- kode[grepl("^[A-Za-z][A-Za-z0-9]{3,}$", kode)]
+  if (identical(kind, "adm")) {
+    kode <- kode[nchar(kode) == 6L]
+  }
+  if (identical(kind, "opr")) {
+    kode <- kode[startsWith(kode, "K") | startsWith(kode, "k")]
+  }
+  unique(kode)
+}
+
+sample_sks_codes <- function(n, kind, cs) {
+  labels <- load_sks_labels()
+  codes <- filter_published_sks(labels, kind, cs)
+  if (!length(codes)) {
+    schema_gap(
+      sprintf("published SKS codes in sksr::SKS_labels for kind '%s'", kind),
+      "SKS_labels rows already classified for this grain"
+    )
+  }
+  sample(codes, n, replace = TRUE)
 }
 
 typed_noise <- function(type, n, role = NULL, name = NULL, code_system = NULL, cs = NULL) {
@@ -549,6 +692,7 @@ typed_noise <- function(type, n, role = NULL, name = NULL, code_system = NULL, c
   }
   if (identical(as.character(code_system), "atc") || identical(name, "atc")) {
     # Pattern from code-systems/atc.yaml structure, not a WHO/DST list.
+    # ATC catalogues belong in the LMDB step, not LPR.
     return(sprintf(
       "%s%02d%s%s%02d",
       sample(LETTERS, n, replace = TRUE),
@@ -558,39 +702,11 @@ typed_noise <- function(type, n, role = NULL, name = NULL, code_system = NULL, c
       sample.int(100L, n, replace = TRUE) - 1L
     ))
   }
-  if (identical(as.character(code_system), "icd10")) {
-    # Danish edition: D + letter + 2 digits, optional extra digits. Not a catalog.
-    extra <- ifelse(
-      stats::runif(n) < 0.4,
-      as.character(sample.int(10L, n, replace = TRUE) - 1L),
-      ""
+  if (as.character(code_system %||% "") %in% c("icd10", "sks", "kont_type")) {
+    stop(
+      "Internal error: clinical nomenclature must not fall through to typed noise.",
+      call. = FALSE
     )
-    return(sprintf(
-      "D%s%02d%s",
-      sample(LETTERS, n, replace = TRUE),
-      sample.int(100L, n, replace = TRUE) - 1L,
-      extra
-    ))
-  }
-  if (identical(as.character(code_system), "sks")) {
-    # letter + 3 or more alphanumeric, hierarchical from the left. Not a catalog.
-    alnum <- c(LETTERS, as.character(0:9))
-    rest <- vapply(
-      seq_len(n),
-      function(i) paste(sample(alnum, 5L, replace = TRUE), collapse = ""),
-      character(1)
-    )
-    return(paste0(sample(LETTERS, n, replace = TRUE), rest))
-  }
-  if (identical(as.character(code_system), "kont_type")) {
-    # SKS administrative code, six characters. Not a catalog.
-    alnum <- c(LETTERS, as.character(0:9))
-    rest <- vapply(
-      seq_len(n),
-      function(i) paste(sample(alnum, 5L, replace = TRUE), collapse = ""),
-      character(1)
-    )
-    return(paste0(sample(LETTERS, n, replace = TRUE), rest))
   }
   if (identical(role, "identifier") || (identical(role, "join_key") && !identical(name, "pnr"))) {
     prefix <- if (identical(role, "join_key")) "H" else "I"
