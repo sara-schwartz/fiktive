@@ -1,0 +1,27 @@
+# TEST DOUBLE only
+id: lpr_a_procregistrering
+name: "LPR3 procedures (test double)"
+family: lpr3
+join_keys: [dw_ek_kontakt]
+columns:
+  - id: dw_ek_kontakt
+    name: dw_ek_kontakt
+    type: character
+    role: join_key
+  - id: proc_kode
+    name: proc_kode
+    type: character
+    role: code
+    code_system: sks
+  - id: proc_starttidspunkt
+    name: proc_starttidspunkt
+    type: datetime
+    role: date
+  - id: proc_sluttidspunkt
+    name: proc_sluttidspunkt
+    type: datetime
+    role: date
+  - id: proc_indb_tidspunkt
+    name: proc_indb_tidspunkt
+    type: datetime
+    role: date

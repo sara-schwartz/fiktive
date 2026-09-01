@@ -1,0 +1,11 @@
+# TEST DOUBLE
+id: pattype
+enumerated: true
+values_complete: false
+lookup:
+  "0": {da: "Heldoegns indlaeggelse", en: "Inpatient, full day"}
+  "1": {da: "Deldoegns indlaeggelse", en: "Inpatient, part day"}
+  "2": {da: "Ambulant", en: "Outpatient"}
+  "3": {da: "Skadestue", en: "Emergency room"}
+  "4": {da: "Dagpatient", en: "Day patient"}
+  "5": {da: "Natpatient", en: "Night patient"}

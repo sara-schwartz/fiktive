@@ -1,0 +1,28 @@
+# TEST DOUBLE only
+id: lpr_a_diagnose
+name: "LPR3 diagnoses (test double)"
+family: lpr3
+coverage:
+  from: 2019
+  to: 2025
+join_keys: [dw_ek_kontakt]
+columns:
+  - id: dw_ek_kontakt
+    name: dw_ek_kontakt
+    type: character
+    role: join_key
+  - id: diag_kode
+    name: diag_kode
+    type: character
+    role: code
+    code_system: icd10
+  - id: diag_kode_type
+    name: diag_kode_type
+    type: character
+    role: code
+    code_system: diagtype
+  - id: diag_parent_kode
+    name: diag_parent_kode
+    type: character
+    role: code
+    code_system: icd10

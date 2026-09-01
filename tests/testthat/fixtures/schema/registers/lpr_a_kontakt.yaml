@@ -1,0 +1,53 @@
+# TEST DOUBLE only
+id: lpr_a_kontakt
+name: "LPR3 contacts (test double)"
+family: lpr3
+coverage:
+  from: 2017
+  to: 2025
+join_keys: [dw_ek_kontakt]
+columns:
+  - id: dw_ek_kontakt
+    name: dw_ek_kontakt
+    type: character
+    role: join_key
+  - id: pnr
+    name: pnr
+    type: character
+    role: identifier
+  - id: kont_starttidspunkt
+    name: kont_starttidspunkt
+    type: datetime
+    role: date
+  - id: kont_sluttidspunkt
+    name: kont_sluttidspunkt
+    type: datetime
+    role: date
+  - id: kont_type
+    name: kont_type
+    type: character
+    role: code
+    code_system: kont_type
+  - id: adiag
+    name: adiag
+    type: character
+    role: code
+    code_system: icd10
+  - id: borger_koen
+    name: borger_koen
+    type: integer
+    role: code
+    code_system: koen
+  - id: borger_foedselsdato
+    name: borger_foedselsdato
+    type: date
+    role: date
+  - id: borger_alder_aar_ind
+    name: borger_alder_aar_ind
+    type: integer
+    role: value
+  - id: year
+    name: year
+    type: integer
+    role: date
+    origin: tooling

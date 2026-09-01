@@ -1,0 +1,36 @@
+# TEST DOUBLE only
+id: lpr_diag
+name: "LPR2 diagnoses (test double)"
+family: lpr2_somatic
+join_keys: [recnum]
+columns:
+  - id: recnum
+    name: recnum
+    type: character
+    role: join_key
+  - id: c_diag
+    name: c_diag
+    type: character
+    role: code
+    code_system: icd10
+  - id: c_diagtype
+    name: c_diagtype
+    type: character
+    role: code
+    code_system: diagtype
+  - id: c_tildiag
+    name: c_tildiag
+    type: character
+    role: code
+    code_system: icd10
+    coverage: {from: 1995, to: 2019}
+  - id: c_diagmod
+    name: c_diagmod
+    type: character
+    role: code
+    coverage: {from: 1977, to: 1994}
+  - id: year
+    name: year
+    type: integer
+    role: date
+    origin: tooling
