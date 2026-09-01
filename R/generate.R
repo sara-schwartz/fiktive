@@ -6,6 +6,11 @@
 #' Never mix `vnds` with `vnds_hist` / `vnds_ind` / `vnds_ud`.
 #' Other schema registers error as not implemented; unknown ids are a SCHEMA GAP.
 #'
+#' LMDB `atc` is sampled from official WHO ATC codes published by WHOCC Oslo
+#' (https://atcddd.fhi.no/atc_ddd_index/), cached at runtime. It is not
+#' `decoder::atc` and not sprintf noise. Missing catalogue is a SCHEMA GAP.
+#' `atc1`-`atc4` are prefixes of the sampled 7-character code.
+#'
 #' @param register Lowercase register id (fastreg name), e.g. `"bef"`.
 #' @param population Persons table from [generate_background_population()].
 #' @param schema Schema from [load_registers_schema()].
@@ -15,7 +20,8 @@
 #' @param scenario Must be `NULL` (independence).
 #'
 #' @return A tibble whose columns are a subset of the schema column names
-#'   for `register`. Zero rows is a valid event table.
+#'   for `register`. Zero rows is a valid event table. Non-empty LMDB tables
+#'   stamp `atc_catalogue` and `atc_catalogue_version`.
 #' @export
 generate_register <- function(register, population, schema, from, to,
                               seed = NULL, scenario = NULL) {
@@ -150,7 +156,11 @@ emit_schema_table <- function(spec, rows, schema) {
       rows[[name]] <- values
     }
   }
-  tibble::as_tibble(out)
+  tbl <- tibble::as_tibble(out)
+  if (identical(as.character(spec$id %||% ""), "lmdb")) {
+    tbl <- stamp_whocc_atc(tbl)
+  }
+  tbl
 }
 
 validate_population <- function(population) {
@@ -261,12 +271,22 @@ derived_column <- function(id, rows) {
     doddato = when,
     eksd = when,
     haend_dato = when,
-    atc1 = if (is.null(atc)) NULL else substr(atc, 1L, 1L),
-    atc2 = if (is.null(atc)) NULL else substr(atc, 1L, 3L),
-    atc3 = if (is.null(atc)) NULL else substr(atc, 1L, 4L),
-    atc4 = if (is.null(atc)) NULL else substr(atc, 1L, 5L),
+    atc1 = atc_prefix(atc, 1L),
+    atc2 = atc_prefix(atc, 3L),
+    atc3 = atc_prefix(atc, 4L),
+    atc4 = atc_prefix(atc, 5L),
     NULL
   )
+}
+
+atc_prefix <- function(atc, nchar) {
+  if (is.null(atc)) {
+    schema_gap(
+      "LMDB atc1-atc4 without a sampled atc",
+      "generate `atc` from the WHOCC Oslo catalogue before deriving atc1-atc4"
+    )
+  }
+  substr(atc, 1L, nchar)
 }
 
 draw_independent_column <- function(col, n, schema) {
@@ -276,6 +296,9 @@ draw_independent_column <- function(col, n, schema) {
   name <- as.character(col$name %||% col$id)
   if (n == 0L) {
     return(na_of_type(type, 0L))
+  }
+  if (identical(name, "atc") || identical(as.character(col$id %||% ""), "atc")) {
+    return(sample_whocc_atc(n))
   }
   if (!is.null(cs_id)) {
     cs <- schema$code_systems[[as.character(cs_id)]]
@@ -299,6 +322,12 @@ draw_independent_column <- function(col, n, schema) {
 }
 
 typed_noise <- function(type, n, role = NULL, name = NULL, code_system = NULL, cs = NULL) {
+  if (identical(as.character(code_system), "atc") || identical(name, "atc")) {
+    schema_gap(
+      "ATC codes without the WHOCC Oslo catalogue",
+      "load_whocc_atc_catalogue() / FIKTIVE_WHOCC_ATC; never sprintf ATC"
+    )
+  }
   if (identical(type, "integer")) {
     return(sample.int(11L, n, replace = TRUE) - 1L)
   }
@@ -307,16 +336,6 @@ typed_noise <- function(type, n, role = NULL, name = NULL, code_system = NULL, c
   }
   if (identical(type, "date")) {
     return(as.Date("1990-01-01") + sample.int(10000L, n, replace = TRUE) - 1L)
-  }
-  if (identical(as.character(code_system), "atc") || identical(name, "atc")) {
-    return(sprintf(
-      "%s%02d%s%s%02d",
-      sample(LETTERS, n, replace = TRUE),
-      sample.int(100L, n, replace = TRUE) - 1L,
-      sample(LETTERS, n, replace = TRUE),
-      sample(LETTERS, n, replace = TRUE),
-      sample.int(100L, n, replace = TRUE) - 1L
-    ))
   }
   if (identical(role, "identifier") || (identical(role, "join_key") && !identical(name, "pnr"))) {
     prefix <- if (identical(role, "join_key")) "H" else "I"
