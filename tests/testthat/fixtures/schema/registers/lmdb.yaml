@@ -26,6 +26,21 @@ columns:
     type: character
     role: code
     code_system: atc
+  - id: atc2
+    name: atc2
+    type: character
+    role: code
+    code_system: atc
+  - id: atc3
+    name: atc3
+    type: character
+    role: code
+    code_system: atc
+  - id: atc4
+    name: atc4
+    type: character
+    role: code
+    code_system: atc
   - id: apk
     name: apk
     type: numeric
