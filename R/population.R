@@ -7,8 +7,7 @@
 #'
 #' @param n Number of people.
 #' @param seed Optional RNG seed. Restored on exit.
-#' @param schema Optional schema from [load_registers_schema()]. Used to
-#'   sample `koen` from the `koen` code system when present.
+#' @param schema Schema from [load_registers_schema()]. Required: `koen` is sampled from `code-systems/koen.yaml`. `NULL` is a SCHEMA GAP.
 #' @param ... Unused; reserved.
 #'
 #' @return A tibble with `pnr`, `foed_dag`, and `koen`.
@@ -40,9 +39,11 @@ generate_background_population <- function(n, seed = NULL, schema = NULL, ...) {
 }
 
 koen_lookup_keys <- function(schema) {
-  default <- c(1L, 2L)
-  if (is.null(schema)) {
-    return(default)
+  if (is.null(schema) || is.null(schema$code_systems)) {
+    schema_gap(
+      "schema for `koen`",
+      "a schema from load_registers_schema() with code-systems/koen.yaml"
+    )
   }
   cs <- schema$code_systems[["koen"]]
   if (is.null(cs)) {
@@ -55,7 +56,7 @@ koen_lookup_keys <- function(schema) {
   if (is.null(keys) || !length(keys)) {
     schema_gap(
       "code system `koen` lookup",
-      "lookup keys for sex (1 = male, 2 = female)"
+      "lookup keys in code-systems/koen.yaml"
     )
   }
   as.integer(keys)
