@@ -16,3 +16,19 @@ test_that("same seed yields identical persons", {
   b <- generate_background_population(12, seed = 11, schema = schema)
   expect_equal(a, b)
 })
+
+test_that("schema = NULL is a SCHEMA GAP, not silent 1/2", {
+  expect_error(
+    generate_background_population(5, seed = 1, schema = NULL),
+    "^SCHEMA GAP:"
+  )
+})
+
+test_that("missing koen code system is a SCHEMA GAP", {
+  schema <- fixture_schema()
+  schema$code_systems[["koen"]] <- NULL
+  expect_error(
+    generate_background_population(5, seed = 1, schema = schema),
+    "^SCHEMA GAP:"
+  )
+})
