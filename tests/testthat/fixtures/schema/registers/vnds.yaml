@@ -1,0 +1,27 @@
+# TEST DOUBLE only
+id: vnds
+name: "VNDS (test double)"
+update_cadence: annual
+reference_timing: event
+coverage:
+  from: 1973
+  to: 2024
+join_keys: [pnr]
+columns:
+  - id: pnr
+    name: pnr
+    type: character
+    role: join_key
+  - id: indud_kode
+    name: indud_kode
+    type: character
+    role: code
+    code_system: indud_kode
+  - id: haend_dato
+    name: haend_dato
+    type: date
+    role: date
+  - id: indud_land
+    name: indud_land
+    type: character
+    role: code

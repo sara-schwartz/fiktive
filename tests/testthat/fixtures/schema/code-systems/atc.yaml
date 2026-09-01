@@ -1,0 +1,7 @@
+# TEST DOUBLE — large nomenclature, not enumerated.
+id: atc
+enumerated: false
+values_complete: false
+lookup: null
+structure:
+  pattern: "letter, 2 digits, letter, letter, 2 digits"
