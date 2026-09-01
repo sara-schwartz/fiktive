@@ -25,11 +25,35 @@ as_date1 <- function(x) {
   as.Date(x)
 }
 
+normalize_ym <- function(ym) {
+  if (is.null(ym)) {
+    return(NULL)
+  }
+  if (inherits(ym, "Date")) {
+    return(format(ym, "%Y-%m-%d"))
+  }
+  if (is.numeric(ym) && !inherits(ym, "Date")) {
+    return(sprintf("%04d", as.integer(ym)))
+  }
+  as.character(ym)
+}
+
 ym_start <- function(ym) {
-  as.Date(paste0(ym, "-01"))
+  ym <- normalize_ym(ym)
+  if (grepl("^[0-9]{4}$", ym)) {
+    return(as.Date(paste0(ym, "-01-01")))
+  }
+  if (grepl("^[0-9]{4}-[0-9]{2}$", ym)) {
+    return(as.Date(paste0(ym, "-01")))
+  }
+  as.Date(ym)
 }
 
 ym_end <- function(ym) {
+  ym <- normalize_ym(ym)
+  if (grepl("^[0-9]{4}$", ym)) {
+    return(as.Date(paste0(ym, "-12-31")))
+  }
   start <- ym_start(ym)
   lubridate::ceiling_date(start, unit = "month") - lubridate::days(1)
 }
