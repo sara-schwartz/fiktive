@@ -43,6 +43,12 @@ ym_start <- function(ym) {
   if (grepl("^[0-9]{4}$", ym)) {
     return(as.Date(paste0(ym, "-01-01")))
   }
+  if (grepl("^[0-9]{4}-Q[1-4]$", ym)) {
+    y <- substr(ym, 1L, 4L)
+    q <- as.integer(substr(ym, 6L, 6L))
+    month <- (q - 1L) * 3L + 1L
+    return(as.Date(sprintf("%s-%02d-01", y, month)))
+  }
   if (grepl("^[0-9]{4}-[0-9]{2}$", ym)) {
     return(as.Date(paste0(ym, "-01")))
   }
@@ -53,6 +59,13 @@ ym_end <- function(ym) {
   ym <- normalize_ym(ym)
   if (grepl("^[0-9]{4}$", ym)) {
     return(as.Date(paste0(ym, "-12-31")))
+  }
+  if (grepl("^[0-9]{4}-Q[1-4]$", ym)) {
+    y <- substr(ym, 1L, 4L)
+    q <- as.integer(substr(ym, 6L, 6L))
+    month <- q * 3L
+    start <- as.Date(sprintf("%s-%02d-01", y, month))
+    return(lubridate::ceiling_date(start, unit = "month") - lubridate::days(1))
   }
   start <- ym_start(ym)
   lubridate::ceiling_date(start, unit = "month") - lubridate::days(1)
@@ -84,6 +97,7 @@ na_of_type <- function(type, n) {
   switch(
     type %||% "character",
     integer = rep(NA_integer_, n),
+    numeric = rep(NA_real_, n),
     date = as.Date(rep(NA_real_, n), origin = "1970-01-01"),
     character = rep(NA_character_, n),
     rep(NA, n)
@@ -94,6 +108,7 @@ coerce_schema_type <- function(x, type) {
   switch(
     type %||% "character",
     integer = as.integer(x),
+    numeric = as.numeric(x),
     date = as_date1(x),
     character = as.character(x),
     as.character(x)

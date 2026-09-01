@@ -1,8 +1,22 @@
-# TEST DOUBLE only — stub so STEP 1 can error "not implemented".
+# TEST DOUBLE only
 id: dod
 name: "Deaths (test double)"
+update_cadence: annual
+reference_timing: event
+coverage:
+  from: 1970
+  to: 2025
+join_keys: [pnr]
 columns:
   - id: pnr
     name: pnr
     type: character
     role: join_key
+  - id: doddato
+    name: doddato
+    type: date
+    role: date
+  - id: alder_haend
+    name: alder_haend
+    type: integer
+    role: value

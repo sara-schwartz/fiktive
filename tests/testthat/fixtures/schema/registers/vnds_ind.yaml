@@ -1,0 +1,8 @@
+# TEST DOUBLE only — successor, not generated with vnds
+id: vnds_ind
+name: "VNDS_IND (test double)"
+columns:
+  - id: pnr
+    name: pnr
+    type: character
+    role: join_key

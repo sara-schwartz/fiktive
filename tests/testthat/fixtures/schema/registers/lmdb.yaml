@@ -1,0 +1,41 @@
+# TEST DOUBLE only
+id: lmdb
+name: "LMDB (test double)"
+update_cadence: annual
+reference_timing: event
+coverage:
+  from: 1995-12
+  to: 2025-12
+join_keys: [pnr]
+columns:
+  - id: pnr
+    name: pnr
+    type: character
+    role: join_key
+  - id: eksd
+    name: eksd
+    type: date
+    role: date
+  - id: atc
+    name: atc
+    type: character
+    role: code
+    code_system: atc
+  - id: atc1
+    name: atc1
+    type: character
+    role: code
+    code_system: atc
+  - id: apk
+    name: apk
+    type: numeric
+    role: value
+  - id: aldr
+    name: aldr
+    type: integer
+    role: value
+  - id: year
+    name: year
+    type: integer
+    role: date
+    origin: tooling
