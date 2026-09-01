@@ -1,0 +1,40 @@
+# TEST DOUBLE only
+id: akm
+name: "AKM (test double)"
+update_cadence: annual
+coverage:
+  from: 1976
+  to: 2024
+join_keys: [pnr]
+columns:
+  - id: pnr
+    name: pnr
+    type: character
+    role: join_key
+  - id: socio13
+    name: socio13
+    type: integer
+    role: code
+    code_system: socio13
+    coverage: {from: 1991, to: 2024}
+  - id: socio_gl
+    name: socio_gl
+    type: integer
+    role: code
+    code_system: socio13
+    coverage: {from: 1976, to: 1990}
+  - id: beskst13
+    name: beskst13
+    type: integer
+    role: code
+    coverage: {from: 1991, to: 2024}
+  - id: alder_ult_ink
+    name: alder_ult_ink
+    type: integer
+    role: value
+    coverage: {from: 1991, to: 2024}
+  - id: year
+    name: year
+    type: integer
+    role: date
+    origin: tooling

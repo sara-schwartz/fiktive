@@ -11,11 +11,12 @@ generate_register(register, population, schema, from, to, seed = NULL, scenario 
 \item{from}{Start of the requested window.}
 \item{to}{End of the requested window.}
 \item{seed}{Optional RNG seed. Restored on exit.}
-\item{scenario}{Must be \code{NULL} in STEP 1 (independence).}
+\item{scenario}{Must be \code{NULL} (independence).}
 }
 \value{
 A tibble whose columns are a subset of the schema column names for \code{register}.
 }
 \description{
-\code{scenario = NULL} is independence. STEP 1 implements \code{bef} only.
+\code{scenario = NULL} is independence. Snapshot grains: \code{bef} (quarterly),
+\code{udda} and \code{akm} (annual person x year).
 }
