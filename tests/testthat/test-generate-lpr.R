@@ -16,7 +16,6 @@ test_that("lpr_diag recnum is a subset of lpr_adm recnum at the same seed", {
   expect_true(all(names(diag) %in% schema_names(schema, "lpr_diag")))
   expect_true(nrow(adm) > 0L)
   expect_true(all(diag$recnum %in% adm$recnum))
-  expect_true(all(diag$recnum %in% adm$recnum))
   expect_equal(anyDuplicated(adm$recnum), 0L)
   adm2 <- generate_register("lpr_adm", pop, schema, lpr2_from, lpr2_to, seed = 1)
   expect_equal(adm, adm2)
