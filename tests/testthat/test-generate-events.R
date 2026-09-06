@@ -30,7 +30,8 @@ test_that("empty dod table is valid", {
   expect_true(all(c("pnr", "doddato") %in% names(empty)))
 })
 
-test_that("lmdb events join pnr, atc is typed noise not a list, year from eksd", {
+test_that("lmdb events join pnr, ATC WHO-form, cpr_kom/cpr_reg character+kom/reg", {
+  skip_if_not_installed("codeCollection")
   schema <- fixture_schema()
   pop <- tiny_pop(schema, n = 40L, seed = 3)
   lmdb <- generate_register("lmdb", pop, schema, from, to, seed = 41)
@@ -44,6 +45,10 @@ test_that("lmdb events join pnr, atc is typed noise not a list, year from eksd",
     expect_true(all(nchar(lmdb$atc) == 7L))
     expect_equal(lmdb$atc1, substr(lmdb$atc, 1L, 1L))
     expect_type(lmdb$apk, "double")
+    expect_type(lmdb$cpr_kom, "character")
+    expect_type(lmdb$cpr_reg, "character")
+    expect_true(all(lmdb$cpr_kom %in% names(schema$code_systems$kom$lookup)))
+    expect_true(all(lmdb$cpr_reg %in% names(schema$code_systems$reg$lookup)))
   }
 })
 
