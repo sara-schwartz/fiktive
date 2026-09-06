@@ -1,0 +1,18 @@
+# TEST DOUBLE only — grain known; generator not implemented this pass.
+id: faik
+name: "FAIK (test double)"
+one_row_per: household_year
+coverage:
+  from: 1987
+  to: 2024
+join_keys: [familie_id]
+columns:
+  - id: familie_id
+    name: familie_id
+    type: character
+    role: join_key
+  - id: year
+    name: year
+    type: integer
+    role: date
+    origin: tooling

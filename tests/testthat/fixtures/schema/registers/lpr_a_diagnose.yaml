@@ -2,6 +2,7 @@
 id: lpr_a_diagnose
 name: "LPR3 diagnoses (test double)"
 family: lpr3
+one_row_per: expand_from_parent
 coverage:
   from: 2019
   to: 2025
@@ -15,7 +16,7 @@ columns:
     name: diag_kode
     type: character
     role: code
-    code_system: icd10
+    code_system: icd10_sks
   - id: diag_kode_type
     name: diag_kode_type
     type: character
@@ -25,4 +26,4 @@ columns:
     name: diag_parent_kode
     type: character
     role: code
-    code_system: icd10
+    code_system: icd10_sks

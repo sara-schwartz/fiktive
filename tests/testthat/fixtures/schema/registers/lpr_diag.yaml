@@ -2,6 +2,7 @@
 id: lpr_diag
 name: "LPR2 diagnoses (test double)"
 family: lpr2_somatic
+one_row_per: expand_from_parent
 join_keys: [recnum]
 columns:
   - id: recnum
@@ -12,7 +13,8 @@ columns:
     name: c_diag
     type: character
     role: code
-    code_system: icd10
+    code_system: icd10_sks
+    previous_code_system: {id: icd8, until: 1993}
   - id: c_diagtype
     name: c_diagtype
     type: character
@@ -22,7 +24,8 @@ columns:
     name: c_tildiag
     type: character
     role: code
-    code_system: icd10
+    code_system: icd10_sks
+    previous_code_system: {id: icd8, until: 1993}
     coverage: {from: 1995, to: 2019}
   - id: c_diagmod
     name: c_diagmod

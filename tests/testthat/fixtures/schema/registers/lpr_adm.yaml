@@ -2,6 +2,7 @@
 id: lpr_adm
 name: "LPR2 contacts (test double)"
 family: lpr2_somatic
+one_row_per: event_from_person
 reference_timing: event
 join_keys: [recnum]
 columns:
@@ -38,7 +39,7 @@ columns:
     name: c_adiag
     type: character
     role: code
-    code_system: icd10
+    code_system: icd10_sks
   - id: v_alder
     name: v_alder
     type: integer
