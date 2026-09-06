@@ -1,4 +1,4 @@
-# fiktive — locked plan (2026-09-01, catch-up 2026-09-06, catalogue lock 2026-09-06)
+# fiktive — locked plan (2026-09-01, catch-up 2026-09-06, catalogue lock 2026-09-06, ICD split 2026-09-06)
 
 Canonical project plan. Locked with Ole Schwartz. Agents follow this; do not invent a second product.
 
@@ -45,7 +45,7 @@ Default generation is **structural noise that joins** (`scenario = NULL` = indep
 - A new register of a **known grain** follows the schema. A **new grain** is a gap — do not invent it.
 - Prefer register/family `one_row_per` and code-system `values_from` from live YAML when present.
 - Schema is structure only. No scenario coefficients / DGP equations in YAML. Optional `value_domain` ranges and small `sample_values` stubs (guide aids) are not a substitute for published clinical catalogues.
-- Format authority when sources disagree: **registers-guide**. LPR diagnosis codes are the Danish D-prefixed form (`DE119`), not bare WHO (`E119`).
+- Format authority when sources disagree: **registers-guide**. Branch on `code_system` id — do not assume every diagnosis column is D-prefixed SKS.
 - **Column coverage:** if a column has no `coverage`, inherit the register (or family) coverage. Do not treat a missing stamp as “column absent forever.”
 
 ### Registers in YAML (as of 2026-09-06)
@@ -54,20 +54,22 @@ Present (including recent adds): BEF, UDDA, AKM, DOD*, LMDB, VNDS*, LPR2/LPR3 so
 
 Still missing from YAML (not invented here): IND (person income), DREAM, BFL. Thin lookups: LMDB/AKM class columns without enumerations.
 
-Empty-on-purpose clinical/geo code systems (`enumerated: false`, `values_from` set): `icd10`, `atc`, `sks`, `hfaudd`, `kom`, `kont_type`. fiktive **reads** `values_from` (`package` / `csv` / `none`) and samples the pointed catalogue — it does not invent lists and does not ignore the field. No parallel `values_from.reason` enum (`kind` already branches).
+Empty-on-purpose clinical/geo code systems (`enumerated: false`, `values_from` set): `icd10`, `icd10_sks`, `icd8`, `atc`, `sks`, `hfaudd`, `kom`, `kont_type`, …. fiktive **reads** `values_from` (`package` / `csv` / `none`) and samples the pointed catalogue — it does not invent lists and does not ignore the field. No parallel `values_from.reason` enum (`kind` already branches).
 
-`kom`: prefer a 2007+ set separate from pre-2007 (or validity-dated codes). A flat undated 278-code mix that emits abolished municipalities in 2020 is wrong.
+`kom`: schema CSV may set `mixes_eras: true` (pre- and post-2007 in one file). Do not emit abolished municipalities into recent years; prefer validity-aware sampling or a later `kom` / `kom_pre2007` split when Ole lands it.
 
 ---
 
-## Clinical catalogues (locked 2026-09-06)
+## Clinical catalogues (locked 2026-09-06, ICD split same day)
 
 | Domain | Sampler | Not |
 |---|---|---|
-| LPR diagnoses (`code_system: icd10`) | `sksr::SKS_labels` with `Prefix == "dia"` (already `DE119`) | WHO ICD-10 bare/`E119`, WHO→DIY `D` prefix as SoT, `decoder`, D+random |
+| LPR / psych diagnoses (`code_system: icd10_sks`) | `sksr::SKS_labels` with `Prefix == "dia"` (already `DE119`) | Plain WHO `E119`, mapping all `icd10` → D-prefix, `decoder`, D+random |
+| Cancer / cause-of-death diagnoses (`code_system: icd10`) | Plain WHO via `codeCollection::ICD10Koodit` (honour `values_from`) | sksr dia / D-prefix |
+| Historical ICD-8 (`code_system: icd8` / `previous_code_system` until 1993) | Honour schema when present; else SCHEMA GAP | Inventing ICD-8 lists |
 | LPR surgery/procedures (`code_system: sks`) | `sksr` with `Prefix == "opr"` (surgery); other prefixes for examinations | ICD diagnosis codes; wrong examples (KJDB00 ≠ appendectomy; KJEA00 is) |
-| Contact type (`kont_type`) | `sksr` with `Prefix == "adm"` (e.g. ALCA00) | “PDF only” / invent |
-| LMDB ATC | WHO ATC form (`C09AA05`); runtime `codeCollection::ATCKoodit` (or equivalent WHOCC-aligned source) | `decoder::atc`, sprintf noise, `sksr` ATC branch (`MC09…`) |
+| Contact type (`kont_type`) | Honour schema (SKS adm and/or MiniPAS pattype digits by era) | Invent |
+| LMDB ATC | WHO ATC form (`C09AA05`); runtime `codeCollection::ATCKoodit` (or WHOCC-aligned) | `decoder::atc`, sprintf noise, `sksr` ATC (`MC09…`) |
 | NPU / lab | LabTerm when generating `lab_dm_forsker` | Homemade lists |
 
 Stamp catalogue + version on outputs. Schema `sample_values` stubs (if any) are not the source of truth. Honour live `values_from` when it matches these locks.
@@ -81,7 +83,7 @@ A few generators, not one function per register:
 1. **Status snapshot** — person × reference date (BEF; then UDDA, AKM) — schema `person_reference_date`
 2. **Event-from-person** — DOD, LMDB, VNDS, … (empty event tables are valid)
 3. **Expand-from-parent** — LPR diagnoses/procedures off the **same** contact table that was written; psych LPR (`t_psyk_*`) is its own pair (`lpr2_psychiatric`)
-4. **FAIK** — fourth grain, **`one_row_per: unknown`** until confirmed: household-year on `familie_id`, not a person snapshot. Do not fake a person-level grain.
+4. **FAIK** — schema `one_row_per: household_year` (household-year on `familie_id`, not a person snapshot). Implement when reached in the build sequence; do not fake a person-level grain.
 
 `year` is fastreg hive **tooling**, not a DST variable.
 
@@ -122,8 +124,8 @@ Do **not** dump all schema registers. The user names what they want. Skip an id 
 1. Skeleton + schema-driven BEF — done (main)
 2. Snapshot grain: UDDA, AKM — done (main)
 3. Event-from-person: DOD, LMDB, VNDS — done (main); `ym_start`/`ym_end` quarter digit fixed
-4. Expand-from-parent: LPR2 then LPR3; psych LPR as its own pair — in flight (`sksr` dia diagnoses, sksr procedures, WHO-form ATC)
-5. FAIK (household-year; grain still unknown — do not guess)
+4. Expand-from-parent: LPR2 then LPR3; psych LPR as its own pair — done (main); harden for `icd10` vs `icd10_sks` split
+5. FAIK (household-year — grain now known in schema)
 6. New schema registers of known grain: cancer, mfr, `lab_dm_forsker`, … then custom structure-only
 7. Write-out — CSV always; parquet + hive `year=` via arrow; stamp schema commit + seed. **Also:** README and user instructions so choosing a few registers is obvious.
 8. Scenario + truth — independence first; then one known association; then confounding/bias only with named estimators
@@ -156,7 +158,7 @@ DST publishes **no** synthetic microdata. Closest Danish “just invent fictitio
 
 **Imports:** yaml, arrow, withr, uuid, dplyr/tibble/purrr/lubridate/rlang, truncnorm.
 
-**Suggests:** simstudy, simDAG, fabricatr, simsurv, **sksr** (diagnoses Prefix `dia`, procedures Prefix `opr`, adm), **codeCollection** (ATC `ATCKoodit`) as needed. Do **not** use `decoder` for Danish ICD-10 or as the ATC source of truth.
+**Suggests:** simstudy, simDAG, fabricatr, simsurv, **sksr** (`icd10_sks` Prefix `dia`, procedures Prefix `opr`, adm), **codeCollection** (ATC `ATCKoodit`, WHO `ICD10Koodit`) as needed. Do **not** use `decoder` for Danish ICD-10 or as the ATC source of truth.
 
 **Do not use:** synthpop, simPop, FakeDataR, fakeregs/osdc generators as engine, wakefield, DeclareDesign/simpr, duckdb in the generator, dawaR at runtime, WebR as a design driver.
 
@@ -181,8 +183,8 @@ DST publishes **no** synthetic microdata. Closest Danish “just invent fictitio
 - Uses fakeregs’ yearly random pool
 - Calls output extracts
 - Invents SCHEMA GAPs / DST code lists (including hardcoded `koen` 1/2 when schema is absent)
-- Silent format-noise for clinical nomenclatures (ICD-10 / ATC / SKS) instead of published catalogues or SCHEMA GAP
-- Emits bare WHO ICD (`E119`) into LPR diagnosis columns, or SKS surgery codes into diagnosis columns, or ICD diagnosis codes into SKS surgery columns, or `sksr` ATC (`MC09…`) into ATC columns
+- Silent format-noise for clinical nomenclatures (ICD / ATC / SKS) instead of published catalogues or SCHEMA GAP
+- Maps plain `icd10` through sksr dia / D-prefix, or emits bare WHO into `icd10_sks` LPR columns, or puts SKS surgery codes in diagnosis columns / ICD in surgery columns, or `sksr` ATC (`MC09…`) into ATC columns
 - Vendors schema YAML as the source of truth
 - Puts scenario coefficients in the YAML schema
 - Uses synthpop or real microdata
