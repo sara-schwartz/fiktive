@@ -2,96 +2,75 @@
 
 **Date:** 2026-09-06 (Europe/Berlin)  
 **Guide (read-only):** [steno-aarhus/registers-guide](https://github.com/steno-aarhus/registers-guide)  
-**Baseline (evaluation pin):** `8a014cf80d2682699141150f58a2330040177422` (2026-09-01)  
-**Last schema-touching commit:** `6fba68bded00af92fa8488929e59baad18765b5c` (2026-09-04) — *confirmed*  
-**Repo `main` HEAD when read:** `926b939a2645af60c50ad8a2ffcfed581c40fb62` (2026-09-05) — content/guide commits only after schema HEAD; `schema/` unchanged since `6fba68bd`  
-**Fiktive assessed against:** `main` @ `ff58859318f5cc40d2725689849043a3d87eef8c` and open PR [#9](https://github.com/sara-schwartz/fiktive/pull/9) `feat/step-4-lpr2-lpr3` @ `f65e77c26917759cb52cf61c1edd828eacb1aee2`  
-**Constraint:** notes only under `notes/` on fiktive. Guide untouched.
+**Baseline:** `8a014cf80d2682699141150f58a2330040177422` (2026-09-01)  
+**Tip (rebase pin):** `34230a4aaeb37a5919876777e576f7032b5cdc95` (2026-09-06)  
+**Last schema-contract commit under that tip:** `b1135b1b5da84e65bfcf4081baa664e8216e72e3` (`one_row_per`, `values_from`, `lpr2_psychiatric`)  
+**Fiktive assessed against:** `main` @ `ff588593` and PR [#9](https://github.com/sara-schwartz/fiktive/pull/9) @ `f65e77c`  
+**Constraint:** notes only under `notes/` on fiktive. Guide untouched. Package owns PR #9 catalogue wire.
+
+---
+
+## Catalogue locks (correct — do not blur)
+
+| Domain | fiktive samples | Not |
+|---|---|---|
+| ICD-10 (LPR diagnoses) | **WHO ICD-10 2019**, then Danish **`D` prefix** (`E11` → `DE11`) | `decoder`, `sksr`, D+random, unprefixed WHO in LPR |
+| ATC (LMDB) | **WHOCC Oslo** (`atcddd.fhi.no`) only | `decoder::atc`, sprintf pattern noise |
+| SKS procedures | `sksr::SKS_labels` (`K` / Prefix `opr` for surgery) | ICD-10, invented SKS |
+| NPU (lab) | LabTerm when generating `lab_dm_forsker` | Homemade lists |
+
+Soft conflict: schema `icd10` / `atc` `values_from.candidates` may list `decoder` / `codeCollection` with `verified: false`. That is advisory only — **locked catalogues above win**.
+
+---
 
 ## Compact impact table
 
 | area | change | fiktive needs update? | notes |
 |---|---|---|---|
-| Loader SHA pin | Live loader still resolves guide `HEAD`; PLAN says pin by SHA. Evaluation baseline was `8a014cf8`. Schema contract now lands at `6fba68bd` (repo HEAD `926b939` is content-only after that). | **Yes** | Add/keep explicit pin (option or documented default) at **`6fba68bd`**, not `8a014cf8`. Stamping `schema_commit` remains required. |
-| Register inventory | 24 → **27** YAML files (`+cancer`, `+mfr`, `+lab_dm_forsker`). **835** columns total. | **Yes (dispatch)** | Unknown ids already SCHEMA GAP; known-but-unimplemented must stay `"not implemented yet"` until a grain exists. |
-| `cancer` | New SDS register; tumour-level (`k_tumornr`); 35 cols; ICD-10/kom/reg; per-column coverage (2004 stage split). | **Yes — SCHEMA GAP (grain)** | Not person-event or expand-from-parent. Do **not** invent tumour grain. Catalogue: real ICD-10 external (Ole lock). |
-| `mfr` | New DST birth register; one row per birth; key `cpr_barn`; 91 cols; mother+child on one row. | **Yes — SCHEMA GAP (grain)** | Birth/child key is a new grain. Not on main or PR #9. |
-| `lab_dm_forsker` | New SDS lab table; keys `patient_cpr`, `samplingdate`, `analysiscode`, `value`, `unit`; coverage **2008–2025**. | **Yes — SCHEMA GAP (grain + NPU)** | Column names are `patient_cpr` / `samplingdate` / `analysiscode` (not `pnr`/`samplingdato`/`npu`). Narrower SDS table uses `cprnummer` — do not confuse. Analysis codes → external NPU catalogue; do **not** dump NPU into guide YAML. |
-| Expanded columns (existing) | Large expansions post-`b7e3f443` + repairs in `de15fb21`: e.g. `akm` 10→47, `lmdb` 15→65, `lpr_adm` 19→52, `t_psyk_adm` 14→38, death-cause registers grow, `sssy`/`sysi` grow. Several LPR3 YAMLs unchanged in count. | **Partial** | Generator already walks `spec$columns`, so new non-key cols become typed noise / lookup draws automatically once schema is loaded. Grain dispatch and clinical catalogues still gate real usefulness. Fixtures on main/PR #9 are thin vs live. |
-| `koen` + code `9` | Lookup `1`,`2`,`9` from DST KOEN_V1_1980 (`032514c6`). | **Yes** | Live load will sample `9`. Fixture `koen.yaml` and `test-population.R` still assert `{1,2}` only — update fixtures/tests; do not hardcode. |
-| `socio13` | Now enumerated complete lookup (31 codes) from DST (`032514c6`). | **Yes** | Main AKM test double has `lookup: null` → typed noise. Live schema will sample real codes via `lookup_keys`. Refresh fixture; keep Ole lock (no giant lists invented in fiktive). |
-| `herkomst` | New code system `1/2/3/9` (`032514c6`); used on BEF. | **Yes** | Was missing entirely. Fixture needed if tests cover BEF `herkomst`; otherwise live load just starts sampling. |
-| `kom` | Source URL fixed **NUTS → amt-kom** (`032514c6`). Still `lookup: null` (linked-out). | **No (runtime)** | Docs/provenance only. Generator already treats empty lookup as noise / non-enumerated. |
-| `pattype` | **6→4** codes (`0–3`); codes `4`/`5` removed; Kodeark source (`70813289`). | **Yes — esp. PR #9** | PR #9 fixture still has `0–5`; test expects `c_pattype %in% as.character(0:5)`. Must become `0:3` and track validity eras / `c_indm` for post-2013 ER. |
-| `diagtype` | **3→6** codes (`A,B,C,G,H,M`); period caveats on G/M/C (`70813289`). | **Yes — esp. PR #9** | PR #9 fixture still A/B/G only. Update fixture; sampling from live lookup is otherwise fine. |
-| `indm` / `oprart` / `sex_lpr` | New Kodeark systems; wired on `lpr_adm` (`c_indm`, `c_sex`) and procedure `c_oprart`. | **Yes — PR #9** | Will auto-draw from lookups when live schema loads. Fixtures missing; `c_sex` must **not** be conflated with BEF `koen` (coding flip 2005: `1/2` → `M/K`). |
-| `borger_koen` | No published value set (`9ac9d006` / `6fba68bd`). Live: `type: character`, **no** `code_system`. | **Yes — SCHEMA GAP — PR #9 wrong** | PR #9 derives integer `borger_koen` from pop `koen` and fixture attaches `code_system: koen`. Guide forbids assuming BEF/`koen`/`sex_lpr` coding. Prefer SCHEMA GAP or opaque character noise; study sex from BEF `koen`. |
-| Cause-of-death + ATC chains | `de15fb21` attaches `icd10` / `atc` on death-cause and ATC-related columns; label/period repairs (54 labels, 200 periods). | **Yes (catalogue path)** | When those registers are generated: real ICD-10 / ATC from **external** catalogues (Ole lock). Do not enlarge guide YAML. Main `dod` remains tiny (no causes); death-cause registers still unimplemented. |
-| Provenance | `server_verified` and `guide_prose` removed; allowed `source_type` includes `unverified` (`0b744309`). | **Yes (policy)** | Fiktive must **not** rely on `server_verified`. No current R references found; keep it that way. Treat `unverified` as non-authoritative for generation decisions. |
-| `sysi` / `sssy` | Reader notes: DST vs SDS naming systems differ (`707cfcdd`). | **No (now)** | Still unimplemented. When built, use DST column names from YAML, not esundhed aliases. |
-| Psych coverage | `t_psyk_*` coverage from order list (`707cfcdd`); column growth. | **No (now)** | PR #9 correctly leaves `t_psyk_*` as not-implemented (not SCHEMA GAP). |
-| Laboratory prose vs YAML | Guide pages (`43fa24d`) align names with `lab_dm_forsker` YAML. | **Docs only** | Confirms YAML column names above. |
-| Ole lock (catalogues) | Real ATC / ICD-10 / SKS / NPU from external catalogues; no large lookups added to guide YAML. | **Keep** | Schema correctly leaves ATC/ICD/SKS/NPU/`kom` linked-out or non-enumerated. Fiktive must fetch catalogues at runtime (as PR #9 aims for `sksr`), never vendor giant lists into guide or package YAML. |
+| Tip / pin | Tip `34230a4` (not `6fba68b`). Schema contract at `b1135b1`. | **Yes** | Docs/pins → `34230a4` (or stamp live HEAD). Do not freeze to `8a014cf8` / `6fba68bd`. |
+| `one_row_per` | Required grain field. Vocab: `person` \| `person_reference_date` \| `event_from_person` \| `expand_from_parent` \| `household_year` \| `unknown`. | **Yes** | Prefer reading YAML `one_row_per` over inventing grains. Examples: `bef`=`person_reference_date`, `lmdb`/`lpr_adm`/`cancer`/`lab_dm_forsker`=`event_from_person`, `lpr_diag`=`expand_from_parent`, `faik` still `unknown` (`household_year` unused). |
+| `values_from` | Required when `enumerated: false`. Kinds: `csv` \| `package` \| `none`. | **Yes (loader/policy)** | Empty clinical systems stay empty on purpose. |
+| `kom` | Still not inline-enumerated. `values_from.kind: csv` → DST amt-kom URL (level 2). | **Yes (runtime)** | Load CSV via schema URL; do not invent 98 codes in fiktive YAML. |
+| Families | +`lpr2_psychiatric` for `t_psyk_*`. | **Yes (map)** | Closes earlier no-family gap; psych still its own pair / not STEP 4. |
+| Register inventory | 24 → **27** (+`cancer`, `mfr`, `lab_dm_forsker`). | **Yes (dispatch)** | Not-implemented until grain exists. |
+| `cancer` | SDS; tumour-level; join `k_cprnr`; `one_row_per: event_from_person`. | **Yes — not implemented** | ICD via WHO→D lock when generated. |
+| `mfr` | Birth; key `cpr_barn`; mother+child on one row. | **Yes — SCHEMA GAP (grain nuance)** | YAML may say event; child key is not plain person-event. Do not invent. |
+| `lab_dm_forsker` | SDS; `patient_cpr` / `samplingdate` / `analysiscode`. | **Yes — not implemented** | NPU external (LabTerm). Not `pnr`/`npu`. |
+| `koen` +`9` | Lookup 1/2/**9**. | **Yes** | Fixtures/tests still {1,2}. |
+| `socio13` / `herkomst` | Enumerated DST lookups; herkomst on BEF. | **Yes** | Refresh fixtures. |
+| `pattype` | **4** codes `0–3` (not 0–5). | **Yes — Package / PR #9** | |
+| `diagtype` | **6** codes A,B,C,G,H,M. | **Yes — Package / PR #9** | |
+| `borger_koen` | No published value set. | **Yes — SCHEMA GAP** | Do **not** invent; do **not** map from pop `koen`. |
+| Provenance | `server_verified` removed → `unverified`. | **Yes (policy)** | Must not rely on `server_verified`. |
+| IND / DREAM / BFL | Still absent from YAML. | **No invent** | Still missing. |
 
-## Material guide commits verified (schema path after baseline)
+---
+
+## Material schema commits after baseline
 
 | SHA | Summary |
 |---|---|
-| `b7e3f443` | Every DST-documented column for 24 registers + **cancer**, **mfr**, **lab_dm_forsker** |
-| `70813289` | `pattype`/`diagtype` from Kodeark; **+indm/oprart/sex_lpr** |
-| `707cfcdd` | Cancer per-column coverage; psych coverage; sysi/sssy naming note |
-| `9ac9d006` | `borger_koen` undocumented |
-| `6fba68bd` | `borger_koen` value set not published (settled) — **schema HEAD** |
-| `de15fb21` | 54 labels + 200 periods repaired; ICD/ATC on cause-of-death & ATC chains |
-| `032514c6` | socio13/herkomst from DST; kom NUTS→amt-kom; koen +`9` |
-| `0b744309` | drop `server_verified` / `guide_prose` → `unverified` |
-| `43fa24d` | Laboratory column naming/coverage in guide prose (not schema YAML) |
-| `aa900057` / `72abe4dd` / `70f52e9` / `677e8f64` | Tooling/README/loader wording; no register-contract surprises for fiktive |
+| `b7e3f443` | Full columns for 24 + cancer/mfr/lab_dm_forsker |
+| `70813289` | pattype/diagtype Kodeark; +indm/oprart/sex_lpr |
+| `707cfcdd` | Cancer coverage; psych coverage; sysi/sssy notes |
+| `9ac9d006` / `6fba68bd` | borger_koen undocumented / settled |
+| `de15fb21` | Label/period repairs; ICD/ATC chains |
+| `032514c6` | socio13/herkomst; kom amt-kom; koen +9 |
+| `0b744309` | drop server_verified / guide_prose |
+| `b1135b1b` | **`one_row_per`**, **`values_from`**, **`lpr2_psychiatric`** |
+| `55b63e8c` / `34230a4` | Regenerated tables; tip content pass |
 
-## Column-count delta (baseline → schema HEAD)
+---
 
-| register | baseline | head | Δ |
-|---|---:|---:|---:|
-| akm | 10 | 47 | +37 |
-| bef | 40 | 41 | +1 |
-| cancer | — | 35 | +35 |
-| dod | 5 | 5 | 0 |
-| dodsaars | 18 | 35 | +17 |
-| dodsaarsager | 10 | 39 | +29 |
-| dodsaasg | 9 | 41 | +32 |
-| faik | 87 | 87 | 0 |
-| lab_dm_forsker | — | 14 | +14 |
-| lmdb | 15 | 65 | +50 |
-| lpr_a_diagnose | 12 | 12 | 0 |
-| lpr_a_kontakt | 54 | 54 | 0 |
-| lpr_a_procregistrering | 20 | 20 | 0 |
-| lpr_adm | 19 | 52 | +33 |
-| lpr_diag | 6 | 8 | +2 |
-| lpr_sksopr | 7 | 12 | +5 |
-| lpr_sksube | 7 | 12 | +5 |
-| mfr | — | 91 | +91 |
-| sssy | 16 | 25 | +9 |
-| sysi | 16 | 22 | +6 |
-| t_psyk_adm | 14 | 38 | +24 |
-| t_psyk_diag | 4 | 6 | +2 |
-| udda | 18 | 18 | 0 |
-| vnds / hist / ind / ud | 6/6/22/22 | same | 0 |
+## Recommended follow-ups (fiktive only)
 
-## Fiktive surface area (current)
+1. Re-pin docs/default stamp to tip **`34230a4`** (or live HEAD); never `8a014cf8` / `6fba68bd` as “current”.  
+2. Prefer `one_row_per` + `values_from` from live YAML when generating.  
+3. Package owns PR #9 WHO ICD-10→D + WHOCC ATC + sksr SKS wire — Schema does not push that branch.  
+4. Leave cancer/mfr/lab_dm_forsker not-implemented until Package/Methods design grains + catalogues.  
+5. Fixtures: koen+9, socio13, herkomst, pattype 0–3, diagtype 6; borger_koen SCHEMA GAP.  
+6. Never vendor mega ICD/ATC/SKS/NPU lists into guide YAML.
 
-**main implements:** snapshot `bef` / `udda` / `akm`; event-from-person `dod` / `lmdb` / `vnds`.  
-**PR #9 adds:** expand-from-parent LPR2 (`lpr_adm` → diag/sksopr/sksube) and LPR3 (`lpr_a_kontakt` → diagnose/procregistrering); SKS via `sksr`; ICD-10 still SCHEMA GAP.
+## Out of scope
 
-**Not implemented (and now in schema):** `cancer`, `mfr`, `lab_dm_forsker`, `faik`, `sssy`/`sysi`, psych LPR, VNDS successors, death-cause registers, etc.
-
-## Recommended follow-ups (fiktive only; priority)
-
-1. **Pin schema** default/docs to `6fba68bd` (reproducible runs); keep live-HEAD as opt-in if desired.  
-2. **PR #9 fixups** before merge against live schema: `pattype` 0–3; `diagtype` A/B/C/G/H/M; stop mapping `borger_koen`←`koen`; add `indm`/`oprart`/`sex_lpr` fixtures; align `borger_koen` type to character / SCHEMA GAP.  
-3. **Population/fixtures:** `koen` include `9`; `socio13`/`herkomst` lookups when testing against live-shaped doubles.  
-4. **New registers:** leave `cancer` / `mfr` / `lab_dm_forsker` as not-implemented **or** explicit SCHEMA GAP until tumour / birth / lab-result grains + NPU/ICD catalogues are designed.  
-5. **Never** reintroduce dependence on `server_verified`; never vendor ATC/ICD/SKS/NPU mega-lists into guide YAML.
-
-## Out of scope this note
-
-No code changes on `feat/step-4-lpr2-lpr3` or `feat/step-1`. No writes to registers-guide.
+No writes to registers-guide. No catalogue commits on `feat/step-4-lpr2-lpr3` from Schema.
