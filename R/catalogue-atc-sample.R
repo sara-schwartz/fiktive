@@ -10,6 +10,9 @@ atc_level5 <- function(codes) {
 }
 
 load_atckoodit_codes <- function() {
+  if (isTRUE(getOption("fiktive.atckoodit_disable"))) {
+    return(NULL)
+  }
   if (!requireNamespace("codeCollection", quietly = TRUE)) {
     return(NULL)
   }
