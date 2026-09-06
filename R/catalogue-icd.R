@@ -4,7 +4,7 @@
 .fiktive_icd_stamp <- new.env(parent = emptyenv())
 
 icd10_who_form <- function(codes) {
-  codes <- gsub("[.\\s]+", "", as.character(codes))
+  codes <- gsub("[[:space:].]+", "", as.character(codes))
   codes <- toupper(codes)
   # Plain WHO: letter + digits (E119). Reject Danish SKS D+letter (DE119).
   codes <- codes[grepl("^[A-Z][0-9]{2}[0-9A-Z]*$", codes)]
