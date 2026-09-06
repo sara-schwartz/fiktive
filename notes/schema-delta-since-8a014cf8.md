@@ -5,7 +5,7 @@
 **Baseline:** `8a014cf80d2682699141150f58a2330040177422` (2026-09-01)  
 **Tip (rebase pin):** `34230a4aaeb37a5919876777e576f7032b5cdc95` (2026-09-06)  
 **Last schema-contract commit under that tip:** `b1135b1b5da84e65bfcf4081baa664e8216e72e3` (`one_row_per`, `values_from`, `lpr2_psychiatric`)  
-**Fiktive assessed against:** `main` @ `ff588593` and PR [#9](https://github.com/sara-schwartz/fiktive/pull/9) @ `f65e77c`  
+**Fiktive assessed against:** `main` @ `6064b26` (PLAN catch-up #10) and PR [#9](https://github.com/sara-schwartz/fiktive/pull/9) @ `8e84b8c` (ym fix on branch; WHO ICD / WHOCC ATC still in flight)  
 **Constraint:** notes only under `notes/` on fiktive. Guide untouched. Package owns PR #9 catalogue wire.
 
 ---
