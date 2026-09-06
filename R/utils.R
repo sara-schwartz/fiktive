@@ -58,7 +58,7 @@ ym_start <- function(ym) {
   }
   if (grepl("^[0-9]{4}-Q[1-4]$", ym)) {
     y <- substr(ym, 1L, 4L)
-    q <- as.integer(substr(ym, 6L, 6L))
+    q <- as.integer(substr(ym, 7L, 7L))
     month <- (q - 1L) * 3L + 1L
     return(as.Date(sprintf("%s-%02d-01", y, month)))
   }
@@ -75,7 +75,7 @@ ym_end <- function(ym) {
   }
   if (grepl("^[0-9]{4}-Q[1-4]$", ym)) {
     y <- substr(ym, 1L, 4L)
-    q <- as.integer(substr(ym, 6L, 6L))
+    q <- as.integer(substr(ym, 7L, 7L))
     month <- q * 3L
     start <- as.Date(sprintf("%s-%02d-01", y, month))
     return(lubridate::ceiling_date(start, unit = "month") - lubridate::days(1))
