@@ -42,3 +42,32 @@ test_that("PLAN clinical catalogue lock still distinguishes icd10 vs icd10_sks",
   expect_match(plan, "ICD10Koodit")
   expect_match(plan, "Prefix == \"dia\"|Prefix `dia`|Prefix dia")
 })
+
+test_that("values_from.kind=package is cross-checked against PLAN locks", {
+  schema <- fixture_schema()
+  expect_identical(schema$code_systems$icd10$values_from$dataset, "ICD10Koodit")
+  expect_identical(schema$code_systems$atc$values_from$dataset, "ATCKoodit")
+  expect_identical(schema$code_systems$icd10_sks$values_from$filter$value, "dia")
+
+  # Mismatch: wrong dataset under package kind → SCHEMA GAP (no silent override).
+  schema$code_systems$atc$values_from$dataset <- "WrongDataset"
+  pop <- tiny_pop(schema, n = 40L, seed = 3)
+  err <- tryCatch(
+    generate_register("lmdb", pop, schema, as.Date("2015-01-01"), as.Date("2016-12-31"), seed = 3),
+    error = function(e) e
+  )
+  expect_s3_class(err, "error")
+  expect_match(err$message, "^SCHEMA GAP:")
+  expect_match(err$message, "PLAN lock|ATCKoodit|does not match", ignore.case = TRUE)
+})
+
+test_that("hfaudd fixture matches kind:none (no invented lookup catalogue)", {
+  schema <- fixture_schema()
+  cs <- schema$code_systems$hfaudd
+  expect_identical(as.character(cs$values_from$kind), "none")
+  expect_true(is.null(lookup_keys(cs)) || !length(lookup_keys(cs)))
+  pop <- tiny_pop(schema, n = 10L, seed = 7)
+  udda <- generate_register("udda", pop, schema, as.Date("2008-01-01"), as.Date("2009-12-31"), seed = 7)
+  expect_type(udda$hfaudd, "character")
+  expect_true(nrow(udda) > 0L)
+})
