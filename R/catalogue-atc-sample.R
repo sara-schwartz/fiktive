@@ -3,64 +3,55 @@
 .fiktive_atc_stamp <- new.env(parent = emptyenv())
 
 atc_level5 <- function(codes) {
-  codes <- toupper(as.character(unlist(codes, use.names = FALSE)))
-  codes <- gsub("[^A-Z0-9]", "", codes)
-  codes <- codes[!is.na(codes) & nzchar(codes)]
-  unique(codes[grepl("^[A-Z][0-9]{2}[A-Z]{2}[0-9]{2}$", codes)])
+  codes <- gsub("\\s+", "", as.character(codes))
+  codes <- toupper(codes)
+  # WHO ATC level 5: letter + 2 digits + 2 letters + 2 digits (e.g. C09AA05)
+  codes[grepl("^[A-Z][0-9]{2}[A-Z]{2}[0-9]{2}$", codes)]
 }
 
 load_atckoodit_codes <- function() {
-  if (isTRUE(getOption("fiktive.atckoodit_disable"))) {
-    return(character())
-  }
   if (!requireNamespace("codeCollection", quietly = TRUE)) {
-    return(character())
+    return(NULL)
   }
   d <- tryCatch(codeCollection::ATCKoodit, error = function(e) NULL)
   if (is.null(d) || !nrow(d)) {
-    return(character())
+    return(NULL)
   }
-  col <- if ("Koodi" %in% names(d)) d$Koodi else d[[1]]
-  atc_level5(col)
+  col <- if ("ATC" %in% names(d)) "ATC" else if ("atc" %in% names(d)) "atc" else names(d)[[1]]
+  atc_level5(d[[col]])
 }
 
 sample_atc_codes <- function(n) {
-  n <- as.integer(n)
-  if (length(n) != 1L || is.na(n) || n < 0L) {
-    stop("`n` must be a non-negative integer.", call. = FALSE)
-  }
-  if (n == 0L) {
-    return(character())
-  }
+  n <- as.integer(n)[[1]]
   codes <- load_atckoodit_codes()
-  source <- "codeCollection::ATCKoodit"
-  version <- if (requireNamespace("codeCollection", quietly = TRUE)) {
-    as.character(utils::packageVersion("codeCollection"))
-  } else {
-    NA_character_
-  }
   if (!length(codes)) {
-    cat <- load_whocc_atc_catalogue(required = TRUE)
-    codes <- cat$codes
-    source <- cat$source
-    version <- cat$version
+    # Fallback: WHOCC dump via existing loader if available
+    if (exists("load_whocc_atc_catalogue", mode = "function", inherits = TRUE)) {
+      cat_tbl <- tryCatch(load_whocc_atc_catalogue(), error = function(e) NULL)
+      if (!is.null(cat_tbl) && nrow(cat_tbl)) {
+        codes <- atc_level5(cat_tbl$code %||% cat_tbl$atc %||% cat_tbl[[1]])
+        .fiktive_atc_stamp$catalogue <- "WHOCC"
+        .fiktive_atc_stamp$version <- attr(cat_tbl, "version") %||% NA_character_
+      }
+    }
+  } else {
+    .fiktive_atc_stamp$catalogue <- "codeCollection::ATCKoodit"
+    .fiktive_atc_stamp$version <- as.character(utils::packageVersion("codeCollection"))
   }
   if (!length(codes)) {
     schema_gap(
-      "WHO-form ATC catalogue unloadable",
+      "ATC codes without a WHO-form catalogue",
       "codeCollection::ATCKoodit or FIKTIVE_WHOCC_ATC; never sprintf; never decoder::atc"
     )
   }
-  .fiktive_atc_stamp$source <- source
-  .fiktive_atc_stamp$version <- version
   sample(codes, n, replace = TRUE)
 }
 
 stamp_atc_catalogue <- function(tbl) {
-  if (!"atc" %in% names(tbl) || !nrow(tbl)) {
+  if (is.null(tbl) || !nrow(tbl)) {
     return(tbl)
   }
-  attr(tbl, "atc_catalogue") <- .fiktive_atc_stamp$source %||% "WHO ATC"
-  attr(tbl, "atc_catalogue_version") <- .fiktive_atc_stamp$version %||% NA_character_
+  attr(tbl, "catalogue") <- .fiktive_atc_stamp$catalogue %||% NA_character_
+  attr(tbl, "catalogue_version") <- .fiktive_atc_stamp$version %||% NA_character_
   tbl
 }
