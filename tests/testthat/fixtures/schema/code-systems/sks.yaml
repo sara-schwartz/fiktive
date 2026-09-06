@@ -1,0 +1,7 @@
+# TEST DOUBLE — large nomenclature, not enumerated.
+id: sks
+enumerated: false
+values_complete: false
+lookup: null
+structure:
+  pattern: "letter + 3 or more alphanumeric characters, hierarchical from the left"

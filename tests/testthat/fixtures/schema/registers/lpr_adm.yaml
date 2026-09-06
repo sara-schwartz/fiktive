@@ -1,0 +1,50 @@
+# TEST DOUBLE only
+id: lpr_adm
+name: "LPR2 contacts (test double)"
+family: lpr2_somatic
+reference_timing: event
+join_keys: [recnum]
+columns:
+  - id: recnum
+    name: recnum
+    type: character
+    role: join_key
+  - id: pnr
+    name: pnr
+    type: character
+    role: identifier
+  - id: d_inddto
+    name: d_inddto
+    type: date
+    role: date
+  - id: d_uddto
+    name: d_uddto
+    type: date
+    role: date
+  - id: c_pattype
+    name: c_pattype
+    type: character
+    role: code
+    code_system: pattype
+  - id: c_spec
+    name: c_spec
+    type: character
+    role: code
+  - id: c_sgh
+    name: c_sgh
+    type: character
+    role: code
+  - id: c_adiag
+    name: c_adiag
+    type: character
+    role: code
+    code_system: icd10
+  - id: v_alder
+    name: v_alder
+    type: integer
+    role: value
+  - id: year
+    name: year
+    type: integer
+    role: date
+    origin: tooling

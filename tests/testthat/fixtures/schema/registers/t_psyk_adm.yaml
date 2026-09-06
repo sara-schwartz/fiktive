@@ -1,0 +1,12 @@
+# TEST DOUBLE only — psych LPR is not this step
+id: t_psyk_adm
+name: "Psych LPR adm (test double)"
+columns:
+  - id: recnum
+    name: recnum
+    type: character
+    role: join_key
+  - id: pnr
+    name: pnr
+    type: character
+    role: identifier

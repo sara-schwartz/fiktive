@@ -1,0 +1,8 @@
+# TEST DOUBLE only — psych LPR is not this step
+id: t_psyk_diag
+name: "Psych LPR diag (test double)"
+columns:
+  - id: recnum
+    name: recnum
+    type: character
+    role: join_key

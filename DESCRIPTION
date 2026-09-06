@@ -19,5 +19,8 @@ Suggests:
     simstudy,
     simDAG,
     fabricatr,
-    simsurv
+    simsurv,
+    sksr,
+    readxl,
+    codeCollection
 Config/testthat/edition: 3

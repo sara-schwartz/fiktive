@@ -1,0 +1,7 @@
+# TEST DOUBLE — large nomenclature, not enumerated.
+id: icd10
+enumerated: false
+values_complete: false
+lookup: null
+structure:
+  pattern: "D + letter + 2 digits, optionally followed by more digits"

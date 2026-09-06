@@ -1,0 +1,7 @@
+# TEST DOUBLE — not enumerated.
+id: kont_type
+enumerated: false
+values_complete: false
+lookup: null
+structure:
+  pattern: "SKS administrative code, six characters"
