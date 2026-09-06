@@ -1,6 +1,6 @@
 # fiktive — locked plan (2026-09-01, catch-up 2026-09-06, catalogue lock 2026-09-06, ICD split 2026-09-06)
 
-Canonical project plan. Locked with Ole Schwartz. Agents follow this; do not invent a second product.
+Canonical project plan. Locked product decisions. Agents follow this; do not invent a second product.
 
 Repo: https://github.com/sara-schwartz/fiktive (private). **Only write target.** `steno-aarhus/registers-guide`, fakeregs, osdc, fastreg, and everything else are **read-only**.
 
@@ -56,7 +56,7 @@ Still missing from YAML (not invented here): IND (person income), DREAM, BFL. Th
 
 Empty-on-purpose clinical/geo code systems (`enumerated: false`, `values_from` set): `icd10`, `icd10_sks`, `icd8`, `atc`, `sks`, `hfaudd`, `kom`, `kont_type`, …. fiktive **reads** `values_from` (`package` / `csv` / `none`) and samples the pointed catalogue — it does not invent lists and does not ignore the field. No parallel `values_from.reason` enum (`kind` already branches).
 
-`kom`: schema CSV may set `mixes_eras: true` (pre- and post-2007 in one file). Do not emit abolished municipalities into recent years; prefer validity-aware sampling or a later `kom` / `kom_pre2007` split when Ole lands it.
+`kom`: schema CSV may set `mixes_eras: true` (pre- and post-2007 in one file). Do not emit abolished municipalities into recent years; prefer validity-aware sampling or a later `kom` / `kom_pre2007` split when the guide lands it.
 
 ---
 
@@ -105,7 +105,7 @@ Internal stable persons: `pnr`, `foed_dag`, `koen`. Same pnr ⇒ same birth/sex.
 Do **not** dump all schema registers. The user names what they want. Skip an id and it is not created.
 
 - Current API: `generate_register(id, ...)` one table. Same `population` + window so tables join.
-- Do **not** add `generate_registers()` until the write-out/docs step (Ole, 2026-09-01).
+- Do **not** add `generate_registers()` until the write-out/docs step (locked 2026-09-01).
 - Before calling the package usable: README and user instructions must make this opt-in choice obvious. LPR diagnoses/procedures require the parent contact table that was generated.
 
 ---
@@ -130,7 +130,7 @@ Do **not** dump all schema registers. The user names what they want. Skip an id 
 7. Write-out — CSV always; parquet + hive `year=` via arrow; stamp schema commit + seed. **Also:** README and user instructions so choosing a few registers is obvious.
 8. Scenario + truth — independence first; then one known association; then confounding/bias only with named estimators
 
-Do not wait for per-step sign-off unless Ole’s input is blocking.
+Do not wait for per-step sign-off unless a product decision is blocking.
 
 ---
 
@@ -168,7 +168,7 @@ DST publishes **no** synthetic microdata. Closest Danish “just invent fictitio
 
 | Role | Owns |
 |---|---|
-| Chief of Staff | Sequence, plan, pull Ole in only at blocking decisions |
+| Chief of Staff | Sequence, plan, pull the project lead in only at blocking decisions |
 | Package | R package on this repo |
 | Schema | Live YAML contract, grain map, SCHEMA GAPs. Notes about the guide live **here**, never as writes to registers-guide |
 | Methods | Population model, scenarios, truth |

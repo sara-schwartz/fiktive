@@ -1,6 +1,6 @@
-# Guide advice: empty code systems (for Ole)
+# Guide advice: empty code systems (product decisions)
 
-**Not a registers-guide PR.** Schema notes live in fiktive. Ole decides any further guide YAML change.
+**Not a registers-guide PR.** Schema notes live in fiktive. Further guide YAML changes are a product decision.
 
 Schema tip context: `steno-aarhus/registers-guide` @ `34230a4` (post-`8a014cf8`; includes cancer / mfr / lab_dm_forsker, `one_row_per`, `values_from`, `lpr2_psychiatric`).
 
