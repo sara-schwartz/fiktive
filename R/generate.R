@@ -6,8 +6,9 @@
 #' Expand-from-parent: LPR2 (`lpr_adm` then `lpr_diag` / `lpr_sksopr` /
 #' `lpr_sksube`) and LPR3 (`lpr_a_kontakt` then `lpr_a_diagnose` /
 #' `lpr_a_procregistrering`). Diagnoses/procedures are generated off the
-#' **same** contact table that was written. Branch on `code_system` id:
-#' `icd10_sks` → `sksr::SKS_labels` Prefix `dia` (D-prefixed, e.g. DE119);
+#' **same** contact table that was written. Household-year: `faik` (one row
+#' per `familie_id` × year; `pnr` blank when present). Branch on `code_system`
+#' id: `icd10_sks` → `sksr::SKS_labels` Prefix `dia` (D-prefixed, e.g. DE119);
 #' plain `icd10` → WHO via `codeCollection::ICD10Koodit` (E119, never sksr);
 #' `icd8` / `previous_code_system` until 1993 → honour or SCHEMA GAP.
 #' Procedures sample `sksr` Prefix `opr` / related. LMDB `atc` samples WHO-form
@@ -78,10 +79,7 @@ dispatch_generate_register <- function(register, spec, population, schema, from,
     )
   }
   if (identical(grain, "household_year")) {
-    stop(
-      sprintf("Register '%s' is in the schema but is not implemented yet.", register),
-      call. = FALSE
-    )
+    return(generate_household_year(population, schema, spec, from, to, seed))
   }
 
   # Prefer one_row_per when present; else fall back to register-id lists (thin fixtures).
@@ -204,6 +202,44 @@ generate_events <- function(population, schema, spec, from, to, seed) {
       return(empty_from_spec(spec))
     }
     rows$referencetid <- rows$event_date
+    emit_schema_table(spec, rows, schema)
+  })
+}
+
+generate_household_year <- function(population, schema, spec, from, to, seed) {
+  # Household × year on familie_id (not person-level). Structural noise only;
+  # no family-graph truth. pnr is not a FAIK key — blank/NA when present.
+  pop <- validate_population(population)
+  from <- as_date1(from)
+  to <- as_date1(to)
+  if (is.na(from) || is.na(to) || to < from) {
+    stop("`from` must be a Date on or before `to`.", call. = FALSE)
+  }
+  win <- clip_requested_window(from, to, effective_coverage(spec, schema))
+  from <- win$from
+  to <- win$to
+  with_rng_seed(seed, {
+    if (!nrow(pop) || to < from) {
+      return(empty_from_spec(spec))
+    }
+    y0 <- lubridate::year(from)
+    y1 <- lubridate::year(to)
+    years <- seq.int(y0, y1)
+    dates <- as.Date(sprintf("%d-12-31", years))
+    dates <- dates[dates >= from & dates <= to]
+    if (!length(dates)) {
+      return(empty_from_spec(spec))
+    }
+    n_hh <- nrow(pop)
+    # Undocumented familie_id format — structural join_key noise (H#######).
+    familie_ids <- sprintf("H%07d", sample.int(10000000L, n_hh, replace = FALSE) - 1L)
+    n_y <- length(dates)
+    rows <- tibble::tibble(
+      familie_id = rep(familie_ids, each = n_y),
+      referencetid = rep(dates, times = n_hh),
+      # Not a real FAIK key (often empty in deliveries); do not invent person grain.
+      pnr = rep(NA_character_, n_hh * n_y)
+    )
     emit_schema_table(spec, rows, schema)
   })
 }

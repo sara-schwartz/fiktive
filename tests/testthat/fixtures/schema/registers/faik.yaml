@@ -1,12 +1,18 @@
-# TEST DOUBLE only — grain known; generator not implemented this pass.
+# TEST DOUBLE only — household_year grain; structural noise (no family-graph truth).
+# Column types mirrored from live registers-guide faik.yaml (no invented code lists).
 id: faik
 name: "FAIK (test double)"
 one_row_per: household_year
+update_cadence: annual
 coverage:
   from: 1987
   to: 2024
 join_keys: [familie_id]
 columns:
+  - id: pnr
+    name: pnr
+    type: character
+    role: join_key
   - id: familie_id
     name: familie_id
     type: character
@@ -16,3 +22,35 @@ columns:
     type: integer
     role: date
     origin: tooling
+  - id: famaekvivadisp_13
+    name: famaekvivadisp_13
+    type: numeric
+    role: value
+  - id: famtype
+    name: famtype
+    type: numeric
+    role: code
+  - id: famboligform
+    name: famboligform
+    type: numeric
+    role: code
+  - id: famboligtype
+    name: famboligtype
+    type: numeric
+    role: code
+  - id: famsociogrup
+    name: famsociogrup
+    type: numeric
+    role: code
+  - id: famsociogrup_13
+    name: famsociogrup_13
+    type: numeric
+    role: code
+  - id: version
+    name: version
+    type: numeric
+    role: code
+  - id: famhoejstudda
+    name: famhoejstudda
+    type: character
+    role: code

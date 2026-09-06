@@ -113,16 +113,13 @@ test_that("t_psyk_adm is not implemented (not a SCHEMA GAP)", {
   expect_false(grepl("^SCHEMA GAP:", err2$message))
 })
 
-test_that("faik household_year is recognized but not implemented", {
+test_that("faik household_year dispatches (implemented in test-generate-faik.R)", {
   schema <- fixture_schema()
-  pop <- tiny_pop(schema)
-  err <- tryCatch(
-    generate_register("faik", pop, schema, lpr2_from, lpr2_to, seed = 1),
-    error = function(e) e
-  )
-  expect_s3_class(err, "error")
-  expect_match(err$message, "not implemented yet")
-  expect_false(grepl("^SCHEMA GAP:", err$message))
+  expect_identical(as.character(schema$registers$faik$one_row_per), "household_year")
+  pop <- tiny_pop(schema, n = 8L, seed = 1)
+  faik <- generate_register("faik", pop, schema, lpr2_from, lpr2_to, seed = 1)
+  expect_true(nrow(faik) > 0L)
+  expect_equal(anyDuplicated(faik[, c("familie_id", "year")]), 0L)
 })
 
 test_that("novel one_row_per is SCHEMA GAP", {
