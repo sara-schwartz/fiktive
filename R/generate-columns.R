@@ -185,6 +185,7 @@ derived_column <- function(id, rows, schema = NULL) {
   switch(
     id,
     pnr = rows$pnr,
+    familie_id = if ("familie_id" %in% names(rows)) rows$familie_id else NULL,
     koen = rows$koen,
     foed_dag = rows$foed_dag,
     referencetid = rows$referencetid,
