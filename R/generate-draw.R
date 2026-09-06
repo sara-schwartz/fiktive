@@ -8,6 +8,11 @@ draw_independent_column <- function(col, n, schema, register_id = NULL, when = N
     return(na_of_type(type, 0L))
   }
   if (identical(name, "atc") || identical(as.character(col$id %||% ""), "atc")) {
+    # Cross-check values_from.kind=package against PLAN ATC lock before sampling.
+    cs_atc <- schema$code_systems[["atc"]]
+    if (!is.null(cs_atc)) {
+      honour_values_from_or_gap(cs_atc, "atc", name)
+    }
     return(sample_atc_codes(n))
   }
   # Unpublished value set: character code with no code_system (e.g. borger_koen).
@@ -78,7 +83,13 @@ draw_from_code_system <- function(cs_id, col, n, schema, register_id, type, role
   }
   honour_values_from_or_gap(cs, cs_id, name)
 
-  keys <- lookup_keys(cs)
+  # kind:none must not use invented fixture lookups as SoT (hfaudd soft-warn).
+  vf_kind <- as.character((cs$values_from$kind) %||% "")
+  keys <- if (identical(vf_kind, "none")) {
+    NULL
+  } else {
+    lookup_keys(cs)
+  }
   if (!is.null(keys) && length(keys)) {
     if (identical(cs_id, "civst")) {
       keys <- setdiff(keys, "D")
@@ -110,6 +121,73 @@ draw_from_code_system <- function(cs_id, col, n, schema, register_id, type, role
   typed_noise(type, n, role = role, name = name, code_system = cs_id, cs = cs)
 }
 
+# PLAN-locked package catalogues (do not invent). Soft-warn fix: cross-check
+# values_from.kind=package against these before the hardcoded draw path runs.
+.LOCKED_PACKAGE_CATALOGUES <- list(
+  icd10 = list(
+    packages = c("codeCollection"),
+    dataset = "ICD10Koodit"
+  ),
+  icd10_sks = list(
+    packages = c("sksr"),
+    dataset = "SKS_labels",
+    filter = list(column = "Prefix", value = "dia")
+  ),
+  atc = list(
+    packages = c("codeCollection"),
+    dataset = "ATCKoodit"
+  ),
+  sks = list(
+    packages = c("sksr"),
+    dataset = "SKS_labels"
+  )
+)
+
+values_from_candidate_names <- function(candidates) {
+  if (is.null(candidates)) {
+    return(character())
+  }
+  if (is.character(candidates)) {
+    return(as.character(candidates))
+  }
+  vapply(as.list(candidates), function(x) {
+    if (is.null(x)) {
+      return(NA_character_)
+    }
+    if (is.character(x) || is.numeric(x)) {
+      return(as.character(x)[[1]])
+    }
+    if (is.list(x)) {
+      return(as.character(x$name %||% x$package %||% x$id %||% "")[[1]])
+    }
+    as.character(x)[[1]]
+  }, character(1))
+}
+
+package_values_from_matches_lock <- function(vf, lock) {
+  cands <- values_from_candidate_names(vf$candidates)
+  cands <- cands[!is.na(cands) & nzchar(cands)]
+  if (!any(lock$packages %in% cands)) {
+    return(FALSE)
+  }
+  dataset <- as.character(vf$dataset %||% "")
+  if (!identical(dataset, lock$dataset)) {
+    return(FALSE)
+  }
+  if (!is.null(lock$filter)) {
+    filt <- vf$filter
+    if (is.null(filt)) {
+      return(FALSE)
+    }
+    col <- as.character(filt$column %||% "")
+    val <- as.character(filt$value %||% "")
+    if (!identical(col, lock$filter$column) || !identical(val, lock$filter$value)) {
+      return(FALSE)
+    }
+  }
+  TRUE
+}
+
 honour_values_from_or_gap <- function(cs, cs_id, name) {
   vf <- cs$values_from
   if (is.null(vf)) {
@@ -117,15 +195,39 @@ honour_values_from_or_gap <- function(cs, cs_id, name) {
   }
   kind <- as.character(vf$kind %||% "")
   if (identical(kind, "none")) {
-    # Allow enumerated/lookup override; otherwise gap (e.g. icd8).
-    keys <- lookup_keys(cs)
-    if (!is.null(keys) && length(keys)) {
-      return(invisible(NULL))
+    # No published machine-readable catalogue (live hfaudd / icd8). Draw path
+    # SCHEMA GAPs clinical gaps (icd8) or uses typed_noise for non-clinical
+    # structural ids (hfaudd). Never treat a fixture lookup as SoT under kind:none.
+    return(invisible(NULL))
+  }
+  if (identical(kind, "package")) {
+    lock <- .LOCKED_PACKAGE_CATALOGUES[[cs_id]]
+    if (is.null(lock)) {
+      schema_gap(
+        sprintf(
+          "code system '%s' for column '%s' has values_from.kind = package with no PLAN-locked catalogue",
+          cs_id,
+          name
+        ),
+        "a locked package catalogue in PLAN (ICD10Koodit / sksr dia / ATCKoodit / sksr); do not invent one"
+      )
     }
-    schema_gap(
-      sprintf("code system '%s' for column '%s' has values_from.kind = none", cs_id, name),
-      "a published catalogue or lookup; do not invent a code list"
-    )
+    if (!package_values_from_matches_lock(vf, lock)) {
+      schema_gap(
+        sprintf(
+          "code system '%s' values_from package/dataset does not match PLAN lock (%s::%s)",
+          cs_id,
+          lock$packages[[1]],
+          lock$dataset
+        ),
+        sprintf(
+          "values_from candidates including %s and dataset %s (locked catalogues win over unverified decoder)",
+          lock$packages[[1]],
+          lock$dataset
+        )
+      )
+    }
+    return(invisible(NULL))
   }
   if (identical(kind, "csv") && isTRUE(vf$mixes_eras)) {
     keys <- lookup_keys(cs)
