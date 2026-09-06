@@ -1,5 +1,9 @@
-# TEST DOUBLE — large nomenclature, not enumerated.
+# TEST DOUBLE — values_from none; fixture supplies a tiny lookup so UDDA runs.
 id: hfaudd
 enumerated: false
 values_complete: false
-lookup: null
+values_from:
+  kind: none
+lookup:
+  "1000": {da: "Folkeskole", en: "Primary school"}
+  "4030": {da: "Bachelor", en: "Bachelor"}

@@ -1,7 +1,12 @@
-# TEST DOUBLE — large nomenclature, not enumerated.
+# TEST DOUBLE — plain WHO ICD-10 (no Danish D-prefix).
 id: icd10
 enumerated: false
 values_complete: false
+values_from:
+  kind: package
+  candidates: [codeCollection]
+  dataset: ICD10Koodit
 lookup: null
 structure:
-  pattern: "D + letter + 2 digits, optionally followed by more digits"
+  pattern: "letter + 2 digits, optionally followed by more digits"
+  example: "E119"
