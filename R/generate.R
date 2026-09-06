@@ -8,11 +8,12 @@
 #' `lpr_a_procregistrering`). Diagnoses/procedures are generated off the
 #' **same** contact table that was written. LPR procedure codes sample
 #' `sksr::SKS_labels` at runtime (surgical `lpr_sksopr` uses Prefix `opr` /
-#' K-codes). ICD-10 diagnosis columns SCHEMA GAP until a published ICD-10
-#' catalogue is chosen (not SKS, not ATC, not decoder). Psych LPR
-#' (`t_psyk_*`) is not this step. Never mix `vnds` with `vnds_hist` /
-#' `vnds_ind` / `vnds_ud`. Other schema registers error as not implemented;
-#' unknown ids are a SCHEMA GAP.
+#' K-codes; diagnoses use Prefix `dia`, already Danish e.g. DE119 — not WHO
+#' ICD-10 2019 + D-prefix, not decoder). LMDB `atc` samples WHO-form codes
+#' from `codeCollection::ATCKoodit` (or WHOCC dump); never sprintf; never
+#' decoder::atc. Psych LPR (`t_psyk_*`) is not this step. Never mix `vnds`
+#' with `vnds_hist` / `vnds_ind` / `vnds_ud`. Other schema registers error as
+#' not implemented; unknown ids are a SCHEMA GAP.
 #'
 #' @param register Lowercase register id (fastreg name), e.g. `"bef"`.
 #' @param population Persons table from [generate_background_population()].
@@ -359,6 +360,7 @@ emit_schema_table <- function(spec, rows, schema) {
   }
   register_id <- as.character(spec$id %||% spec$name %||% "")
   used_sks <- FALSE
+  used_atc <- FALSE
   out <- list()
   for (col in cols) {
     name <- as.character(col$name %||% col$id)
@@ -371,8 +373,11 @@ emit_schema_table <- function(spec, rows, schema) {
       rows[[name]] <- values
     }
     cs_id <- as.character(col$code_system %||% "")
-    if (cs_id %in% c("sks", "kont_type") && nrow(rows) > 0L) {
+    if (cs_id %in% c("sks", "kont_type", "icd10") && nrow(rows) > 0L) {
       used_sks <- TRUE
+    }
+    if ((identical(cs_id, "atc") || identical(name, "atc")) && nrow(rows) > 0L) {
+      used_atc <- TRUE
     }
   }
   tbl <- tibble::as_tibble(out)
@@ -380,6 +385,9 @@ emit_schema_table <- function(spec, rows, schema) {
     meta <- sks_catalogue_stamp()
     attr(tbl, "catalogue") <- meta$catalogue
     attr(tbl, "catalogue_version") <- meta$version
+  }
+  if (used_atc) {
+    tbl <- stamp_atc_catalogue(tbl)
   }
   tbl
 }
@@ -526,6 +534,9 @@ draw_independent_column <- function(col, n, schema, register_id = NULL) {
   if (n == 0L) {
     return(na_of_type(type, 0L))
   }
+  if (identical(name, "atc") || identical(as.character(col$id %||% ""), "atc")) {
+    return(sample_atc_codes(n))
+  }
   if (!is.null(cs_id)) {
     cs <- schema$code_systems[[as.character(cs_id)]]
     if (is.null(cs)) {
@@ -544,7 +555,7 @@ draw_independent_column <- function(col, n, schema, register_id = NULL) {
     }
     cs_id_chr <- as.character(cs_id)
     if (identical(cs_id_chr, "icd10")) {
-      return(draw_icd10_pending(name, n, type, register_id))
+      return(draw_sks_dia_codes(name, n, type, register_id))
     }
     if (cs_id_chr %in% c("sks", "kont_type")) {
       kind <- sks_kind_for(cs_id_chr, register_id, name)
@@ -599,17 +610,13 @@ load_sks_labels <- function() {
   .sks_state$labels
 }
 
-draw_icd10_pending <- function(name, n, type, register_id) {
-  if (as.character(register_id %||% "") %in% c("lpr_diag", "lpr_a_diagnose")) {
-    schema_gap(
-      sprintf(
-        "ICD-10 catalogue for column '%s' (published source not selected)",
-        name
-      ),
-      "a published ICD-10 source once the catalogue is chosen"
-    )
+draw_sks_dia_codes <- function(name, n, type, register_id) {
+  register_id <- as.character(register_id %||% "")
+  # Contact-level action-diagnosis fields stay NA; child diagnosis tables sample.
+  if (!register_id %in% c("lpr_diag", "lpr_a_diagnose")) {
+    return(na_of_type(type %||% "character", n))
   }
-  na_of_type(type %||% "character", n)
+  coerce_schema_type(sample_sks_codes(n, "dia", cs = NULL), type %||% "character")
 }
 
 sks_kind_for <- function(cs_id, register_id, name) {
@@ -642,6 +649,7 @@ filter_published_sks <- function(labels, kind, cs) {
       pro_und = pref %in% c("pro", "und"),
       proc = pref %in% c("opr", "pro", "und"),
       adm = pref == "adm",
+      dia = pref == "dia",
       rep(TRUE, length(kode))
     )
     kode <- kode[pick]
@@ -658,6 +666,11 @@ filter_published_sks <- function(labels, kind, cs) {
   }
   if (identical(kind, "opr")) {
     kode <- kode[startsWith(kode, "K") | startsWith(kode, "k")]
+  }
+  if (identical(kind, "dia")) {
+    # Danish LPR diagnoses already carry D-prefix in SKS (e.g. DE119).
+    kode <- kode[startsWith(kode, "D") | startsWith(kode, "d")]
+    kode <- kode[nchar(kode) >= 4L]
   }
   unique(kode)
 }
@@ -691,16 +704,10 @@ typed_noise <- function(type, n, role = NULL, name = NULL, code_system = NULL, c
     )
   }
   if (identical(as.character(code_system), "atc") || identical(name, "atc")) {
-    # Pattern from code-systems/atc.yaml structure, not a WHO/DST list.
-    # ATC catalogues belong in the LMDB step, not LPR.
-    return(sprintf(
-      "%s%02d%s%s%02d",
-      sample(LETTERS, n, replace = TRUE),
-      sample.int(100L, n, replace = TRUE) - 1L,
-      sample(LETTERS, n, replace = TRUE),
-      sample(LETTERS, n, replace = TRUE),
-      sample.int(100L, n, replace = TRUE) - 1L
-    ))
+    schema_gap(
+      "ATC codes without a WHO-form catalogue",
+      "codeCollection::ATCKoodit or FIKTIVE_WHOCC_ATC; never sprintf; never decoder::atc"
+    )
   }
   if (as.character(code_system %||% "") %in% c("icd10", "sks", "kont_type")) {
     stop(
