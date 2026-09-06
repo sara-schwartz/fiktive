@@ -1,6 +1,7 @@
 # TEST DOUBLE only
 id: akm
 name: "AKM (test double)"
+one_row_per: person_reference_date
 update_cadence: annual
 coverage:
   from: 1976

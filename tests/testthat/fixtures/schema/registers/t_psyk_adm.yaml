@@ -1,6 +1,7 @@
 # TEST DOUBLE only — psych LPR is not this step
 id: t_psyk_adm
 name: "Psych LPR adm (test double)"
+one_row_per: event_from_person
 columns:
   - id: recnum
     name: recnum

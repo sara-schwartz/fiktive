@@ -1,6 +1,7 @@
 # TEST DOUBLE only
 id: lpr_sksopr
 name: "LPR2 surgical procedures (test double)"
+one_row_per: expand_from_parent
 family: lpr2_somatic
 coverage: {from: 1996, to: 2019}
 join_keys: [recnum]
