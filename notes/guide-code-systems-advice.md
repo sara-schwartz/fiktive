@@ -1,39 +1,50 @@
 # Guide advice: empty code systems (for Ole)
 
-**Not a registers-guide PR.** Schema notes live in fiktive. Ole decides any guide YAML change.
+**Not a registers-guide PR.** Schema notes live in fiktive. Ole decides any further guide YAML change.
 
-Schema HEAD context: live `steno-aarhus/registers-guide` (post-`8a014cf8`; includes cancer / mfr / lab_dm_forsker).
+Schema tip context: `steno-aarhus/registers-guide` @ `34230a4` (post-`8a014cf8`; includes cancer / mfr / lab_dm_forsker, `one_row_per`, `values_from`, `lpr2_psychiatric`).
 
 ---
 
 ## Empty-on-purpose catalogues
 
-These six stay empty in the guide YAML on purpose (do **not** paste WHO / WHOCC / sksr into YAML):
+These stay empty in the guide YAML on purpose (do **not** paste WHO / WHOCC / sksr into YAML):
 
 | id | Why empty |
 |---|---|
 | `icd10` | Full WHO ICD-10 is huge; fiktive samples WHO ICD-10 2019 then applies Danish `D` prefix for LPR |
-| `atc` | Full WHOCC ATC/DDD is huge; fiktive samples WHOCC Oslo (`atcddd.fhi.no`) |
+| `atc` | Full WHOCC ATC/DDD is huge; fiktive samples WHOCC Oslo (`atcddd.fhi.no`) — **not** `decoder::atc` |
 | `sks` | Full SKS is huge; fiktive samples `sksr::SKS_labels` |
 | `hfaudd` | Large education classification; link out |
-| `kom` | **Exception below** — prefer enum from DST amt-kom CSV |
+| `kom` | Linked out to DST amt-kom CSV (see below) |
 | `kont_type` | SKS admin codes; sample via sksr / published SKS, not a stub list as SoT |
 
 Keep `enumerated: false` and `lookup: null` (or absent) for the clinical ones.
 
-### Machine-readable reason (proposed guide fields)
+### Machine-readable shape (already in guide tip)
 
-fiktive (and the guide renderer) should be able to read **why** a code system is empty without prose archaeology. Proposed optional fields on `code-systems/*.yaml`:
+Tip `34230a4` already exposes this on the empty systems — **use it; do not invent a parallel `external_source` field**:
 
 ```yaml
 enumerated: false
+values_complete: false
+labels_complete: false
+values_from:
+  kind: package   # or csv | none
+  candidates: [...]   # packages; verified: false until checked
+  # or for kom:
+  # kind: csv
+  # url: "https://www.dst.dk/...amt-kom..."
+  # code_column / label_column / level: 2
 lookup: null
-external_source:
-  kind: who_icd10 | whocc_atc | sksr | dst_csv | other
-  url: "https://..."          # canonical published catalogue
-  note: "fiktive samples full catalogue at runtime; YAML is not SoT"
-why_empty: "catalogue too large to vendor; see external_source"
 ```
+
+fiktive should honour `values_from`:
+- `kind: package` → use only **product-locked** or `verified: true` catalogues (WHO ICD-10 + D, WHOCC ATC, sksr). Ignore unverified `decoder` candidates.
+- `kind: csv` → load that CSV (`kom`).
+- `kind: none` → SCHEMA GAP or documented noise exception.
+
+Optional prose `why_empty` / `reader_note` is fine; it is not a second machine API.
 
 SCHEMA GAP remains for **undocumented structure**, not for “we refused to copy WHO into YAML.”
 
@@ -41,7 +52,7 @@ SCHEMA GAP remains for **undocumented structure**, not for “we refused to copy
 
 ## `kom` exception
 
-Enumerate the **98** post-2007 municipalities from DST’s published amt-kom / KOMMUNE classification CSV (not NUTS, not a handwritten subset). Put the full lookup in `kom.yaml` when Ole fills it. Until then fiktive may load the same CSV itself if the schema still has `enumerated: false`.
+Guide already points `values_from` at DST’s amt-kom CSV (level 2 municipalities; includes pre/post-2007 codes). fiktive should load that CSV at runtime while `lookup` stays empty. Do **not** hand-write a 98-code stub as SoT.
 
 ---
 
@@ -68,7 +79,7 @@ value_domain:
   # to: 2026-12-31
 ```
 
-Structure only — no prevalences, no DGP.
+Structure only — no prevalences, no DGP. `plausible: true` ≠ DST source.
 
 ---
 
