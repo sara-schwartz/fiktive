@@ -1,6 +1,7 @@
 # TEST DOUBLE only
 id: lpr_sksube
 name: "LPR2 examinations (test double)"
+one_row_per: expand_from_parent
 family: lpr2_somatic
 coverage: {from: 1999, to: 2019}
 join_keys: [recnum]

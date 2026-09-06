@@ -1,6 +1,7 @@
 # TEST DOUBLE only
 id: dod
 name: "Deaths (test double)"
+one_row_per: event_from_person
 update_cadence: annual
 reference_timing: event
 coverage:

@@ -1,0 +1,9 @@
+# TEST DOUBLE — retired ICD-8; no machine-readable catalogue.
+id: icd8
+enumerated: false
+values_complete: false
+values_from:
+  kind: none
+lookup: null
+structure:
+  pattern: "3 digits, optionally followed by 2 more"

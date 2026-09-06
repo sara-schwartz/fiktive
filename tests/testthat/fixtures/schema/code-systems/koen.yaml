@@ -1,7 +1,8 @@
-# TEST DOUBLE
+# TEST DOUBLE — includes published 9 (not stated).
 id: koen
 enumerated: true
 values_complete: true
 lookup:
   1: {da: "Mand", en: "Male"}
   2: {da: "Kvinde", en: "Female"}
+  9: {da: "Uoplyst", en: "Not stated"}

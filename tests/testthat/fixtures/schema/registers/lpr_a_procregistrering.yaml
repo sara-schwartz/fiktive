@@ -1,6 +1,7 @@
 # TEST DOUBLE only
 id: lpr_a_procregistrering
 name: "LPR3 procedures (test double)"
+one_row_per: expand_from_parent
 family: lpr3
 join_keys: [dw_ek_kontakt]
 columns:

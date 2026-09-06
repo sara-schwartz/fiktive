@@ -1,6 +1,7 @@
 # TEST DOUBLE only — not the live registers-guide schema.
 id: bef
 name: "Befolkningen (test double)"
+one_row_per: person_reference_date
 family: null
 update_cadence: quarterly
 coverage:

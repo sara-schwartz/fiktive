@@ -1,7 +1,11 @@
-# TEST DOUBLE
+# TEST DOUBLE — six codes (A B G H M C).
 id: diagtype
-values_complete: false
+enumerated: true
+values_complete: true
 lookup:
   A: {da: null, en: "Action diagnosis"}
   B: {da: null, en: "Secondary diagnosis"}
   G: {da: null, en: "Underlying condition"}
+  H: {da: null, en: "Referral diagnosis"}
+  M: {da: null, en: "Provisional diagnosis"}
+  C: {da: null, en: "Complication"}

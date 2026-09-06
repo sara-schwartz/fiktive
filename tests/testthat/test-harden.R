@@ -1,0 +1,44 @@
+test_that("koen fixture includes published 9", {
+  schema <- fixture_schema()
+  keys <- names(schema$code_systems$koen$lookup)
+  expect_true(all(c("1", "2", "9") %in% keys | all(c(1, 2, 9) %in% as.integer(keys))))
+  # population may sample 9
+  pop <- generate_background_population(200L, seed = 99, schema = schema)
+  expect_true(all(pop$koen %in% c(1L, 2L, 9L)))
+})
+
+test_that("kom mixes_eras without lookup SCHEMA GAPs", {
+  schema <- fixture_schema()
+  schema$code_systems$kom$lookup <- NULL
+  pop <- tiny_pop(schema, n = 10L, seed = 1)
+  err <- tryCatch(
+    generate_register("bef", pop, schema, as.Date("2020-01-01"), as.Date("2020-12-31"), seed = 1),
+    error = function(e) e
+  )
+  expect_match(err$message, "^SCHEMA GAP:")
+  expect_match(err$message, "mixes eras|kom", ignore.case = TRUE)
+})
+
+test_that("single-year column coverage is softened against multi-year register", {
+  schema <- fixture_schema()
+  # Inject a bogus 2025-only stamp on foed_dag while register spans decades.
+  cols <- schema$registers$bef$columns
+  for (i in seq_along(cols)) {
+    if (identical(as.character(cols[[i]]$id), "familie_type")) {
+      cols[[i]]$coverage <- list(from = 2025, to = 2025)
+    }
+  }
+  schema$registers$bef$columns <- cols
+  pop <- tiny_pop(schema, n = 12L, seed = 5)
+  bef <- generate_register("bef", pop, schema, as.Date("2008-01-01"), as.Date("2009-12-31"), seed = 5)
+  expect_true(nrow(bef) > 0L)
+  # Softened: values still filled in 2008-2009 (not NA-masked by 2025 stamp).
+  expect_false(all(is.na(bef$familie_type)))
+})
+
+test_that("PLAN clinical catalogue lock still distinguishes icd10 vs icd10_sks", {
+  plan <- paste(readLines(testthat::test_path("..", "..", "notes", "PLAN.md"), warn = FALSE), collapse = "\n")
+  expect_match(plan, "icd10_sks")
+  expect_match(plan, "ICD10Koodit")
+  expect_match(plan, "Prefix == \"dia\"|Prefix `dia`|Prefix dia")
+})

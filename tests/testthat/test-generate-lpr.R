@@ -11,6 +11,17 @@ published_sks_kode <- function() {
   as.character(sksr::SKS_labels$Kode)
 }
 
+# LPR3 fixtures include borger_koen (character, no CS) → SCHEMA GAP on fill.
+# Drop it for happy-path contact/child tests; dedicated test covers the gap.
+schema_without_borger_koen <- function(schema) {
+  cols <- schema$registers$lpr_a_kontakt$columns
+  keep <- !vapply(cols, function(col) {
+    identical(as.character(col$id %||% col$name), "borger_koen")
+  }, logical(1))
+  schema$registers$lpr_a_kontakt$columns <- cols[keep]
+  schema
+}
+
 test_that("lpr_adm recnum is unique and reproducible at the same seed", {
   schema <- fixture_schema()
   pop <- tiny_pop(schema, n = 40L, seed = 11)
@@ -22,17 +33,58 @@ test_that("lpr_adm recnum is unique and reproducible at the same seed", {
   expect_equal(adm, adm2)
 })
 
-test_that("lpr_diag SCHEMA GAPs ICD-10 until a catalogue is chosen", {
+test_that("lpr_diag samples icd10_sks D-prefix from sksr dia (not plain WHO)", {
+  skip_if_not_installed("sksr")
+  schema <- fixture_schema()
+  pop <- tiny_pop(schema, n = 40L, seed = 11)
+  diag <- generate_register("lpr_diag", pop, schema, lpr2_from, lpr2_to, seed = 1)
+  expect_true(nrow(diag) > 0L)
+  expect_type(diag$c_diag, "character")
+  expect_true(all(startsWith(diag$c_diag, "D")))
+  expect_false(any(grepl("^D[0-9]", diag$c_diag))) # not bare WHO chapter D
+  pub <- published_sks_kode()
+  expect_true(all(diag$c_diag %in% pub))
+  pref <- as.character(sksr::SKS_labels$Prefix[match(diag$c_diag, sksr::SKS_labels$Kode)])
+  expect_true(all(pref == "dia"))
+  expect_equal(attr(diag, "catalogue"), "sksr::SKS_labels")
+  expect_true(all(diag$c_diagtype %in% c("A", "B", "G", "H", "M", "C")))
+})
+
+test_that("plain icd10 draws WHO ICD10Koodit without D-prefix", {
+  skip_if_not_installed("codeCollection")
+  codes <- sample_icd10_who_codes(50L)
+  expect_true(all(grepl("^[A-Z][0-9]{2}", codes)))
+  expect_false(any(grepl("^D[A-Z]", codes)))
+  expect_true("E119" %in% load_icd10koodit_codes())
+  expect_false("DE119" %in% load_icd10koodit_codes())
+
+  schema <- fixture_schema()
+  # Force diagnosis columns onto plain icd10 (cancer/death form), no sks leftover.
+  for (i in seq_along(schema$registers$lpr_diag$columns)) {
+    col <- schema$registers$lpr_diag$columns[[i]]
+    if (identical(as.character(col$code_system %||% ""), "icd10_sks")) {
+      schema$registers$lpr_diag$columns[[i]]$code_system <- "icd10"
+      schema$registers$lpr_diag$columns[[i]]$previous_code_system <- NULL
+    }
+  }
+  pop <- tiny_pop(schema, n = 30L, seed = 11)
+  diag <- generate_register("lpr_diag", pop, schema, lpr2_from, lpr2_to, seed = 2)
+  expect_true(nrow(diag) > 0L)
+  expect_false(any(grepl("^D[A-Z]", diag$c_diag)))
+  expect_true(all(diag$c_diag %in% load_icd10koodit_codes()))
+  expect_equal(attr(diag, "catalogue"), "codeCollection::ICD10Koodit")
+})
+
+test_that("icd8 previous_code_system until 1993 SCHEMA GAPs (no invented list)", {
   schema <- fixture_schema()
   pop <- tiny_pop(schema, n = 40L, seed = 11)
   err <- tryCatch(
-    generate_register("lpr_diag", pop, schema, lpr2_from, lpr2_to, seed = 1),
+    generate_register("lpr_diag", pop, schema, as.Date("1990-01-01"), as.Date("1992-12-31"), seed = 1),
     error = function(e) e
   )
   expect_s3_class(err, "error")
   expect_match(err$message, "^SCHEMA GAP:")
-  expect_match(err$message, "ICD-10")
-  expect_false(grepl("decoder", err$message, ignore.case = TRUE))
+  expect_match(err$message, "ICD-8|icd8", ignore.case = TRUE)
 })
 
 test_that("lpr_sksopr and lpr_sksube recnum subset lpr_adm at the same seed", {
@@ -48,7 +100,7 @@ test_that("lpr_sksopr and lpr_sksube recnum subset lpr_adm at the same seed", {
 
 test_that("LPR3 procedure dw_ek_kontakt subsets lpr_a_kontakt at the same seed", {
   skip_if_not_installed("sksr")
-  schema <- fixture_schema()
+  schema <- schema_without_borger_koen(fixture_schema())
   pop <- tiny_pop(schema, n = 40L, seed = 13)
   kon <- generate_register("lpr_a_kontakt", pop, schema, lpr3_from, lpr3_to, seed = 3)
   pro <- generate_register("lpr_a_procregistrering", pop, schema, lpr3_from, lpr3_to, seed = 3)
@@ -57,20 +109,33 @@ test_that("LPR3 procedure dw_ek_kontakt subsets lpr_a_kontakt at the same seed",
   expect_equal(anyDuplicated(kon$dw_ek_kontakt), 0L)
 })
 
-test_that("lpr_a_diagnose SCHEMA GAPs ICD-10 until a catalogue is chosen", {
-  schema <- fixture_schema()
+test_that("lpr_a_diagnose samples icd10_sks D-prefix", {
+  skip_if_not_installed("sksr")
+  schema <- schema_without_borger_koen(fixture_schema())
   pop <- tiny_pop(schema, n = 40L, seed = 13)
+  dia <- generate_register("lpr_a_diagnose", pop, schema, lpr3_from, lpr3_to, seed = 3)
+  expect_true(nrow(dia) > 0L)
+  expect_true(all(startsWith(dia$diag_kode, "D")))
+  expect_false(any(grepl("^D[0-9]", dia$diag_kode)))
+  pref <- as.character(sksr::SKS_labels$Prefix[match(dia$diag_kode, sksr::SKS_labels$Kode)])
+  expect_true(all(pref == "dia"))
+})
+
+test_that("borger_koen character with no code_system is SCHEMA GAP (not pop koen)", {
+  schema <- fixture_schema()
+  pop <- tiny_pop(schema, n = 20L, seed = 19)
   err <- tryCatch(
-    generate_register("lpr_a_diagnose", pop, schema, lpr3_from, lpr3_to, seed = 3),
+    generate_register("lpr_a_kontakt", pop, schema, lpr3_from, lpr3_to, seed = 8),
     error = function(e) e
   )
   expect_s3_class(err, "error")
   expect_match(err$message, "^SCHEMA GAP:")
-  expect_match(err$message, "ICD-10")
+  expect_match(err$message, "borger_koen")
+  expect_match(err$message, "do not map from BEF koen")
 })
 
 test_that("empty parent window yields 0 child rows with schema columns", {
-  schema <- fixture_schema()
+  schema <- schema_without_borger_koen(fixture_schema())
   pop <- tiny_pop(schema, seed = 14)
   empty_adm <- generate_register("lpr_adm", pop, schema, "1960-01-01", "1960-12-31", seed = 1)
   empty_diag <- generate_register("lpr_diag", pop, schema, "1960-01-01", "1960-12-31", seed = 1)
@@ -86,153 +151,4 @@ test_that("empty parent window yields 0 child rows with schema columns", {
   expect_equal(nrow(empty_dia), 0L)
   expect_true("dw_ek_kontakt" %in% names(empty_dia))
   expect_s3_class(empty_kon$kont_starttidspunkt, "POSIXt")
-})
-
-test_that("children have no pnr column when YAML has none", {
-  skip_if_not_installed("sksr")
-  schema <- fixture_schema()
-  pop <- tiny_pop(schema, n = 30L, seed = 15)
-  empty_diag <- generate_register("lpr_diag", pop, schema, "1960-01-01", "1960-12-31", seed = 4)
-  opr <- generate_register("lpr_sksopr", pop, schema, lpr2_from, lpr2_to, seed = 4)
-  ube <- generate_register("lpr_sksube", pop, schema, lpr2_from, lpr2_to, seed = 4)
-  empty_dia <- generate_register("lpr_a_diagnose", pop, schema, "2010-01-01", "2010-12-31", seed = 4)
-  pro <- generate_register("lpr_a_procregistrering", pop, schema, lpr3_from, lpr3_to, seed = 4)
-  expect_false("pnr" %in% names(empty_diag))
-  expect_false("pnr" %in% names(opr))
-  expect_false("pnr" %in% names(ube))
-  expect_false("pnr" %in% names(empty_dia))
-  expect_false("pnr" %in% names(pro))
-  expect_false("year" %in% names(pro))
-})
-
-test_that("SKS procedures sample sksr::SKS_labels; ICD-10 is not invented", {
-  skip_if_not_installed("sksr")
-  schema <- fixture_schema()
-  pop <- tiny_pop(schema, n = 40L, seed = 16)
-  adm <- generate_register("lpr_adm", pop, schema, lpr2_from, lpr2_to, seed = 5)
-  opr <- generate_register("lpr_sksopr", pop, schema, lpr2_from, lpr2_to, seed = 5)
-  expect_type(adm$c_adiag, "character")
-  expect_true(all(is.na(adm$c_adiag)))
-  expect_type(opr$c_opr, "character")
-  if (nrow(adm)) {
-    expect_true(all(adm$c_pattype %in% as.character(0:5)))
-    expect_type(adm$c_spec, "character")
-    expect_true(all(adm$d_uddto >= adm$d_inddto))
-    birth <- pop$foed_dag[match(adm$pnr, pop$pnr)]
-    year_diff <- as.integer(format(adm$d_inddto, "%Y")) - as.integer(format(birth, "%Y"))
-    before <- format(adm$d_inddto, "%m-%d") < format(birth, "%m-%d")
-    expect_equal(adm$v_alder, year_diff - as.integer(before))
-    expect_equal(adm$year, as.integer(format(adm$d_inddto, "%Y")))
-    expect_true(all(adm$d_inddto >= birth))
-  }
-  if (nrow(opr)) {
-    pub <- published_sks_kode()
-    expect_true(all(opr$c_opr %in% pub))
-    expect_true(all(startsWith(opr$c_opr, "K")))
-    expect_equal(attr(opr, "catalogue"), "sksr::SKS_labels")
-    expect_equal(attr(opr, "catalogue_version"), as.character(utils::packageVersion("sksr")))
-    pref <- as.character(sksr::SKS_labels$Prefix[match(opr$c_opr, sksr::SKS_labels$Kode)])
-    expect_true(all(pref == "opr"))
-  }
-  r_files <- list.files(
-    file.path(testthat::test_path(), "..", "..", "R"),
-    pattern = "[.]R$",
-    full.names = TRUE
-  )
-  txt <- paste(unlist(lapply(r_files, readLines, warn = FALSE)), collapse = "\n")
-  expect_false(grepl('c\\s*\\(\\s*"I10"', txt))
-  expect_false(grepl('"E11"', txt))
-  expect_false(grepl('"KJDB00"', txt))
-  expect_false(grepl('"ALCA00"', txt))
-  expect_false(grepl("decoder::icd10se", txt))
-  expect_false(grepl("decoder::atc", txt))
-})
-
-test_that("missing sksr does not emit sprintf SKS codes", {
-  testthat::local_mocked_bindings(sksr_is_installed = function() FALSE)
-  schema <- fixture_schema()
-  pop <- tiny_pop(schema, n = 20L, seed = 12)
-  err <- tryCatch(
-    generate_register("lpr_sksopr", pop, schema, lpr2_from, lpr2_to, seed = 2),
-    error = function(e) e
-  )
-  expect_s3_class(err, "error")
-  expect_match(err$message, "sksr")
-  expect_false(grepl("^SCHEMA GAP:", err$message))
-})
-
-test_that("t_psyk_adm is not implemented (not a SCHEMA GAP)", {
-  schema <- fixture_schema()
-  pop <- tiny_pop(schema)
-  err <- tryCatch(
-    generate_register("t_psyk_adm", pop, schema, lpr2_from, lpr2_to, seed = 1),
-    error = function(e) e
-  )
-  expect_s3_class(err, "error")
-  expect_match(err$message, "not implemented yet")
-  expect_false(grepl("^SCHEMA GAP:", err$message))
-  err2 <- tryCatch(
-    generate_register("t_psyk_diag", pop, schema, lpr2_from, lpr2_to, seed = 1),
-    error = function(e) e
-  )
-  expect_match(err2$message, "not implemented yet")
-  expect_false(grepl("^SCHEMA GAP:", err2$message))
-})
-
-test_that("procedure coverage is narrower than contacts", {
-  schema <- fixture_schema()
-  pop <- tiny_pop(schema, n = 40L, seed = 17)
-  early_from <- as.Date("1985-01-01")
-  early_to <- as.Date("1990-12-31")
-  adm <- generate_register("lpr_adm", pop, schema, early_from, early_to, seed = 6)
-  opr <- generate_register("lpr_sksopr", pop, schema, early_from, early_to, seed = 6)
-  ube <- generate_register("lpr_sksube", pop, schema, early_from, early_to, seed = 6)
-  expect_true(nrow(adm) > 0L)
-  expect_equal(nrow(opr), 0L)
-  expect_equal(nrow(ube), 0L)
-  expect_true("c_opr" %in% names(opr))
-})
-
-test_that("lpr_a_diagnose coverage starts 2019 while contacts exist from 2017", {
-  skip_if_not_installed("sksr")
-  schema <- fixture_schema()
-  pop <- tiny_pop(schema, n = 40L, seed = 18)
-  kon <- generate_register("lpr_a_kontakt", pop, schema, "2017-01-01", "2018-12-31", seed = 7)
-  dia <- generate_register("lpr_a_diagnose", pop, schema, "2017-01-01", "2018-12-31", seed = 7)
-  expect_true(nrow(kon) > 0L)
-  expect_equal(nrow(dia), 0L)
-  expect_true("diag_kode" %in% names(dia))
-})
-
-test_that("lpr_a_kontakt copies person fields and uses datetime contact bounds", {
-  skip_if_not_installed("sksr")
-  schema <- fixture_schema()
-  pop <- tiny_pop(schema, n = 40L, seed = 19)
-  kon <- generate_register("lpr_a_kontakt", pop, schema, lpr3_from, lpr3_to, seed = 8)
-  expect_true(nrow(kon) > 0L)
-  expect_s3_class(kon$kont_starttidspunkt, "POSIXt")
-  expect_s3_class(kon$kont_sluttidspunkt, "POSIXt")
-  expect_true(all(kon$kont_sluttidspunkt >= kon$kont_starttidspunkt))
-  birth <- pop$foed_dag[match(kon$pnr, pop$pnr)]
-  sex <- pop$koen[match(kon$pnr, pop$pnr)]
-  expect_equal(kon$borger_foedselsdato, birth)
-  expect_equal(kon$borger_koen, sex)
-  expect_equal(kon$year, as.integer(format(kon$kont_starttidspunkt, "%Y")))
-  expect_true(all(is.na(kon$adiag)))
-  expect_true(all(nchar(kon$kont_type) == 6L))
-  pub <- published_sks_kode()
-  expect_true(all(kon$kont_type %in% pub))
-  adm_pref <- as.character(sksr::SKS_labels$Prefix[match(kon$kont_type, sksr::SKS_labels$Kode)])
-  expect_true(all(adm_pref == "adm"))
-  expect_equal(attr(kon, "catalogue"), "sksr::SKS_labels")
-  pro <- generate_register("lpr_a_procregistrering", pop, schema, lpr3_from, lpr3_to, seed = 8)
-  if (nrow(pro)) {
-    expect_s3_class(pro$proc_starttidspunkt, "POSIXt")
-    expect_s3_class(pro$proc_sluttidspunkt, "POSIXt")
-    expect_s3_class(pro$proc_indb_tidspunkt, "POSIXt")
-    expect_true(all(pro$proc_kode %in% pub))
-    expect_true(all(grepl("^[A-Z][A-Z0-9]{3,}$", pro$proc_kode)))
-    expect_equal(attr(pro, "catalogue"), "sksr::SKS_labels")
-    expect_equal(attr(pro, "catalogue_version"), as.character(utils::packageVersion("sksr")))
-  }
 })

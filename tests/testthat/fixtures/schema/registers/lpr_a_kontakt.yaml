@@ -2,6 +2,7 @@
 id: lpr_a_kontakt
 name: "LPR3 contacts (test double)"
 family: lpr3
+one_row_per: event_from_person
 coverage:
   from: 2017
   to: 2025
@@ -32,12 +33,11 @@ columns:
     name: adiag
     type: character
     role: code
-    code_system: icd10
+    code_system: icd10_sks
   - id: borger_koen
     name: borger_koen
-    type: integer
+    type: character
     role: code
-    code_system: koen
   - id: borger_foedselsdato
     name: borger_foedselsdato
     type: date

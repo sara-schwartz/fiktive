@@ -132,13 +132,15 @@ coerce_schema_type <- function(x, type) {
 }
 
 lookup_keys <- function(cs) {
-  if (is.null(cs) || isTRUE(identical(cs$enumerated, FALSE))) {
+  if (is.null(cs)) {
     return(NULL)
   }
   lu <- cs$lookup
   if (is.null(lu)) {
     return(NULL)
   }
+  # enumerated: false means the list may be incomplete, not "ignore lookup".
+  # Fixtures may ship a small era-safe subset (e.g. post-2007 kom codes).
   nms <- names(lu)
   if (is.null(nms) || !length(nms)) {
     return(NULL)

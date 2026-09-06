@@ -1,6 +1,7 @@
 # TEST DOUBLE only
 id: lmdb
 name: "LMDB (test double)"
+one_row_per: event_from_person
 update_cadence: annual
 reference_timing: event
 coverage:
@@ -39,3 +40,14 @@ columns:
     type: integer
     role: date
     origin: tooling
+  - id: cpr_kom
+    name: cpr_kom
+    type: character
+    role: code
+    code_system: kom
+  - id: cpr_reg
+    name: cpr_reg
+    type: character
+    role: code
+    code_system: reg
+

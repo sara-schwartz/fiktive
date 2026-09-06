@@ -1,0 +1,13 @@
+# TEST DOUBLE — Danish SKS D-prefixed ICD-10 (LPR diagnoses).
+id: icd10_sks
+enumerated: false
+values_complete: false
+values_from:
+  kind: package
+  candidates: [sksr]
+  dataset: SKS_labels
+  filter: {column: Prefix, value: dia}
+lookup: null
+structure:
+  pattern: "D + letter + 2 digits, optionally followed by more digits"
+  example: "DE119"

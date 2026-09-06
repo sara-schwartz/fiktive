@@ -1,5 +1,13 @@
-# TEST DOUBLE — not enumerated; no municipality list.
+# TEST DOUBLE — CSV mixes eras; fixture ships post-2007-only lookup subset.
 id: kom
 enumerated: false
 values_complete: false
-lookup: null
+values_from:
+  kind: csv
+  mixes_eras: true
+lookup:
+  "101": {da: "Kobenhavn", en: "Copenhagen"}
+  "147": {da: "Frederiksberg", en: "Frederiksberg"}
+  "151": {da: "Ballerup", en: "Ballerup"}
+  "461": {da: "Odense", en: "Odense"}
+  "851": {da: "Aalborg", en: "Aalborg"}
