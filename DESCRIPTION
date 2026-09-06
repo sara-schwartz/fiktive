@@ -20,5 +20,6 @@ Suggests:
     simDAG,
     fabricatr,
     simsurv,
-    sksr
+    sksr,
+    readxl
 Config/testthat/edition: 3
