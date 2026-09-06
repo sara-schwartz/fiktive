@@ -1,9 +1,11 @@
-# TEST DOUBLE — values_from none; fixture supplies a tiny lookup so UDDA runs.
+# TEST DOUBLE — matches live schema values_from.kind: none (no machine-readable
+# DISCED-15 AUDD catalogue). Do not invent an education code list; generation
+# uses documented typed-noise for structural validity.
 id: hfaudd
 enumerated: false
 values_complete: false
+labels_complete: false
 values_from:
   kind: none
-lookup:
-  "1000": {da: "Folkeskole", en: "Primary school"}
-  "4030": {da: "Bachelor", en: "Bachelor"}
+  note: "No machine-readable source found. See DST DISCED-15 AUDD."
+lookup: null
