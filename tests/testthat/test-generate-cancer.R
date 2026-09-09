@@ -74,11 +74,7 @@ test_that("cancer column coverage blanks pre-1978 ICD and pre-2006 region", {
   }
 })
 
-test_that("mfr and lab_dm_forsker stay unimplemented in this step", {
-  schema <- fixture_schema()
-  pop <- tiny_pop(schema, seed = 1)
-  # Not in fixture schema → SCHEMA GAP (unknown id) or not implemented.
-  # Ensure we did not accidentally add them as implemented events.
-  expect_false("mfr" %in% fiktive:::.IMPLEMENTED_EVENTS)
+test_that("lab_dm_forsker stays unimplemented after cancer step", {
+  # STEP 6b implements mfr separately; lab remains later.
   expect_false("lab_dm_forsker" %in% fiktive:::.IMPLEMENTED_EVENTS)
 })
