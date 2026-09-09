@@ -47,7 +47,8 @@ generate_register <- function(register, population, schema, from, to,
       "a register id that exists in registers/*.yaml"
     )
   }
-  dispatch_generate_register(register, spec, population, schema, from, to, seed)
+  tbl <- dispatch_generate_register(register, spec, population, schema, from, to, seed)
+  stamp_generation(tbl, schema = schema, seed = seed)
 }
 
 .KNOWN_GRAINS <- c(
