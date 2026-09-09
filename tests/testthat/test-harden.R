@@ -37,7 +37,13 @@ test_that("single-year column coverage is softened against multi-year register",
 })
 
 test_that("PLAN clinical catalogue lock still distinguishes icd10 vs icd10_sks", {
-  plan <- paste(readLines(testthat::test_path("..", "..", "notes", "PLAN.md"), warn = FALSE), collapse = "\n")
+  plan_path <- testthat::test_path("..", "..", "notes", "PLAN.md")
+  # notes/ is dev-only documentation, not part of the installed package (R
+  # only ships R/, man/, tests/, etc.), so this file is absent under R CMD
+  # check / a from-source install and this consistency check is source-tree
+  # only.
+  testthat::skip_if_not(file.exists(plan_path), "notes/PLAN.md not shipped with the installed package")
+  plan <- paste(readLines(plan_path, warn = FALSE), collapse = "\n")
   expect_match(plan, "icd10_sks")
   expect_match(plan, "ICD10Koodit")
   expect_match(plan, "Prefix == \"dia\"|Prefix `dia`|Prefix dia")

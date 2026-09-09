@@ -1,4 +1,4 @@
-# STEP 8b–8d — apply scenario associations / confounders / biases AFTER
+# STEP 8b-8d - apply scenario associations / confounders / biases AFTER
 # structural generation and BEFORE fidelity. Coefficients live only on the
 # scenario object (never YAML / custom column CSV).
 
@@ -249,11 +249,6 @@ apply_associations <- function(tables, associations, register_hint = NULL) {
   if (!length(associations)) {
     return(tables)
   }
-  key <- if (is.data.frame(tables)) {
-    NULL
-  } else {
-    join_key_for_tables(tables)
-  }
   for (a in associations) {
     link <- validate_link(a$link)
     coef <- as.numeric(a$coefficient)[[1]]
@@ -306,6 +301,11 @@ apply_associations <- function(tables, associations, register_hint = NULL) {
         out_tbl[[out_p$column]] <- y
         tables <- set_table(tables, out_p$register, out_tbl)
       } else {
+        # Scoped to just the two tables this association references — not
+        # every table in the batch (a third, unrelated register lacking pnr
+        # could otherwise silently degrade the join key for everyone, see
+        # join_key_for_tables()).
+        key <- join_key_for_tables(list(exp_tbl, out_tbl))
         x_on_out <- align_by_key(exp_tbl, x_on_exp, out_tbl, key)
         y <- draw_outcome_from_exposure(x_on_out, link, coef,
                                         intercept = intercept, sigma = sigma)
@@ -325,9 +325,9 @@ apply_confounders <- function(tables, scenario, register_hint = NULL) {
   }
   # First ship: one confounder + primary association.
   cfd <- cfds[[1]]
-  assoc <- (scenario$associations %||% list())[[1]]
+  assoc <- first_or_null(scenario$associations)
   if (is.null(assoc)) {
-    stop("Confounding scenario needs a primary association (E→Y).", call. = FALSE)
+    stop("Confounding scenario needs a primary association (E\u2192Y).", call. = FALSE)
   }
   link <- validate_link(assoc$link)
   beta <- as.numeric(assoc$coefficient)[[1]]
@@ -394,7 +394,7 @@ apply_biases <- function(tables, scenario, register_hint = NULL) {
   if (!length(biases)) {
     return(tables)
   }
-  assoc <- (scenario$associations %||% list())[[1]]
+  assoc <- first_or_null(scenario$associations)
   for (b in biases) {
     typ <- as.character(b$type)[[1]]
     # Target column for missingness / selection (default: outcome).
@@ -426,11 +426,19 @@ apply_biases <- function(tables, scenario, register_hint = NULL) {
     p <- invlogit(intercept + coef_m * z)
     if (identical(typ, "mnar")) {
       miss <- stats::runif(nrow(tbl)) < p
+      # z (hence p) is NA wherever the target already has a structural NA
+      # (e.g. column coverage narrower than the register window) - nothing
+      # to additionally blank out there.
+      miss[is.na(miss)] <- FALSE
       tbl[[target_ref$column]][miss] <- NA
     } else if (identical(typ, "complete_case")) {
       keep <- stats::runif(nrow(tbl)) < p
       # Selection: keep rows with higher p (selected sample).
       # If selection depends on outcome, selected mean of E differs.
+      # A row-subsetting index with NA (from a structurally-NA target,
+      # see above) injects phantom all-NA rows rather than being excluded -
+      # treat "can't evaluate selection" as "not selected".
+      keep[is.na(keep)] <- FALSE
       tbl <- tbl[keep, , drop = FALSE]
     } else {
       stop(sprintf("Unsupported bias type '%s'.", typ), call. = FALSE)

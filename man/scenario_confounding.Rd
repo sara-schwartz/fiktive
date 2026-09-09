@@ -25,11 +25,11 @@ scenario_confounding(
 
 \item{link}{Link for Y|E,U (default \code{"identity"}).}
 
-\item{coefficient}{E→Y effect on the link scale.}
+\item{coefficient}{E->Y effect on the link scale.}
 
-\item{affects_exposure}{Coefficient U→E.}
+\item{affects_exposure}{Coefficient U->E.}
 
-\item{affects_outcome}{Coefficient U→Y (additive on the linear predictor).}
+\item{affects_outcome}{Coefficient U->Y (additive on the linear predictor).}
 
 \item{intercept, sigma}{Outcome intercept / residual SD.}
 
@@ -43,6 +43,6 @@ scenario_confounding(
 A list of class \code{fiktive_scenario}.
 }
 \description{
-One confounder affecting exposure and outcome; known E→Y coefficient.
+One confounder affecting exposure and outcome; known E->Y coefficient.
 Truth stamps distinct naive vs adjusted expectations.
 }

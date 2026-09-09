@@ -106,7 +106,10 @@ draw_custom_column <- function(col, n) {
   type <- col$type %||% "character"
   if (!is.null(col$values) && length(col$values)) {
     vals <- col$values
-    drawn <- sample(vals, n, replace = TRUE)
+    # sample(vals, ...) mis-samples when length(vals) == 1 and vals is
+    # numeric: sample(42, n) draws from 1:42, not the constant 42. Index by
+    # position instead so a single value is always just recycled.
+    drawn <- vals[sample.int(length(vals), n, replace = TRUE)]
     return(coerce_schema_type(drawn, type))
   }
   if (!is.null(col$min) || !is.null(col$max)) {

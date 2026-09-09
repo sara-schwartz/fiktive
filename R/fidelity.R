@@ -207,10 +207,10 @@ apply_fidelity <- function(tbl, spec, fidelity_info) {
 
 outlier_values <- function(targets, full_col) {
   if (inherits(full_col, "POSIXt")) {
-    return(as.POSIXct(full_col[seq_along(targets)], tz = "UTC") + 86400 * 5000)
+    return(as.POSIXct(targets, tz = "UTC") + 86400 * 5000)
   }
   if (inherits(full_col, "Date")) {
-    return(as.Date(full_col[seq_along(targets)]) + 5000)
+    return(as.Date(targets) + 5000)
   }
   if (is.integer(full_col)) {
     base <- suppressWarnings(as.integer(stats::median(full_col, na.rm = TRUE)))

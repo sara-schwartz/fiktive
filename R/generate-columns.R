@@ -24,18 +24,27 @@ emit_schema_table <- function(spec, rows, schema) {
       out[[name]] <- values
       rows[[name]] <- values
     }
+    # A column can carry a clinical code_system id yet still be left NA for
+    # this register (e.g. lpr_adm's icd10_sks field: only the diagnosis
+    # child tables actually sample it, see draw_sks_dia_codes()). Stamping
+    # catalogue/catalogue_version from the code_system id alone, regardless
+    # of whether real values were drawn, produced a stamp that was both
+    # wrong (claims a catalogue this register never touched) and
+    # order-dependent (NA vs a real version depending on whether some other
+    # register already lazy-loaded it earlier in the session).
+    has_values <- !is.null(values) && nrow(rows) > 0L && any(!is.na(values))
     cs_id <- as.character(col$code_system %||% "")
-    if (cs_id %in% c("sks", "kont_type", "icd10_sks") && nrow(rows) > 0L) {
+    if (cs_id %in% c("sks", "kont_type", "icd10_sks") && has_values) {
       used_sks <- TRUE
     }
-    if (identical(cs_id, "icd10") && nrow(rows) > 0L) {
+    if (identical(cs_id, "icd10") && has_values) {
       used_icd_who <- TRUE
     }
-    if ((identical(cs_id, "atc") || identical(name, "atc")) && nrow(rows) > 0L) {
+    if ((identical(cs_id, "atc") || identical(name, "atc")) && has_values) {
       used_atc <- TRUE
     }
     if ((identical(name, "analysiscode") ||
-         identical(as.character(col$id %||% ""), "analysiscode")) && nrow(rows) > 0L) {
+         identical(as.character(col$id %||% ""), "analysiscode")) && has_values) {
       used_labterm <- TRUE
     }
   }

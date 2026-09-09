@@ -94,25 +94,31 @@ dplyr::inner_join(tables$bef, tables$lmdb, by = "pnr")
 
 ### LPR parent then child
 
-**What:** hospital contact rows, then diagnoses (or procedures) that hang off
-those contacts.
-**Why:** LPR diagnoses/procedures expand from the **same** contact table that
-was written — the child needs the parent's `recnum`s.
-**How:** generate the parent contact register first (or include it in
-`registers=`), then the child.
+**What:** hospital contacts (`lpr_adm`), then diagnoses that hang off them
+(`lpr_diag`).
+**Why:** `lpr_diag` is `expand_from_parent` — it carries no `pnr`, only a
+`recnum` back to its parent contact. This is the one register pattern the
+first example above doesn't cover, so it gets its own minimal example.
+**How:** request both ids in the same call (order doesn't matter — `lpr_adm`
+just has to be in the list, or you never get it back to join to).
 
 ```r
-# Parent (lpr_adm) and child (lpr_diag) in one call — parent is drawn first
 lpr <- generate_registers(
-  registers = c("lpr_adm", "lpr_diag"),  # parent before / with child
+  registers = c("lpr_adm", "lpr_diag"),  # lpr_diag needs lpr_adm in the list too
   population = pop,
   schema = schema,
-  from = as.Date("2010-01-01"),
-  to = as.Date("2010-12-31"),
+  from = as.Date("2010-01-01"),  # window start — set your own, need not match other calls
+  to = as.Date("2010-12-31"),    # window end
   seed = 1
 )
-# lpr$lpr_diag joins to lpr$lpr_adm on recnum (schema join_keys)
-dplyr::inner_join(lpr$lpr_diag, lpr$lpr_adm, by = "recnum")
+dplyr::inner_join(lpr$lpr_diag, lpr$lpr_adm, by = "recnum")  # recnum here, not pnr
+
+# Same `pop` across calls -> tables$bef and lpr$lpr_adm still join on pnr.
+# many-to-many since both are multi-row-per-person (snapshots x contacts).
+dplyr::inner_join(
+  tables$bef, lpr$lpr_adm,
+  by = "pnr", relationship = "many-to-many"
+)
 ```
 
 ### Custom / external register (structure only)

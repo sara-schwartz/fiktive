@@ -40,5 +40,5 @@ A list of class \code{fiktive_scenario}.
 \description{
 Generates an association, then sets the target column to NA with probability
 depending on its value (informative MNAR). Cosmetic MCAR fidelity stays
-orthogonal — use \code{fidelity = "clean"} (default) when evaluating truth.
+orthogonal -- use \code{fidelity = "clean"} (default) when evaluating truth.
 }

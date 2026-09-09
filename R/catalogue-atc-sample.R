@@ -30,11 +30,11 @@ sample_atc_codes <- function(n) {
   if (!length(codes)) {
     # Fallback: WHOCC dump via existing loader if available
     if (exists("load_whocc_atc_catalogue", mode = "function", inherits = TRUE)) {
-      cat_tbl <- tryCatch(load_whocc_atc_catalogue(), error = function(e) NULL)
-      if (!is.null(cat_tbl) && nrow(cat_tbl)) {
-        codes <- atc_level5(cat_tbl$code %||% cat_tbl$atc %||% cat_tbl[[1]])
+      cat_tbl <- tryCatch(load_whocc_atc_catalogue(required = FALSE), error = function(e) NULL)
+      if (!is.null(cat_tbl) && length(cat_tbl$codes)) {
+        codes <- atc_level5(cat_tbl$codes)
         .fiktive_atc_stamp$catalogue <- "WHOCC"
-        .fiktive_atc_stamp$version <- attr(cat_tbl, "version") %||% NA_character_
+        .fiktive_atc_stamp$version <- cat_tbl$version %||% NA_character_
       }
     }
   } else {

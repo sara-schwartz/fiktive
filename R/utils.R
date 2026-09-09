@@ -2,6 +2,14 @@
   if (is.null(a)) b else a
 }
 
+# list()[[1]] errors ("subscript out of bounds") rather than returning NULL,
+# unlike %||% which only substitutes on NULL. Callers that mean "the first
+# entry, or NULL if there isn't one" (e.g. an optional scenario association)
+# need this instead of `(x %||% list())[[1]]`.
+first_or_null <- function(x) {
+  if (length(x)) x[[1]] else NULL
+}
+
 with_rng_seed <- function(seed, expr) {
   if (is.null(seed)) {
     return(force(expr))

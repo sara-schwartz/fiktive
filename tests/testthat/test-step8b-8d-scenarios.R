@@ -250,6 +250,31 @@ test_that("logit and log links produce plausible outcomes", {
   expect_equal(get_truth(tab_g)$causal_effect$scale, "log")
 })
 
+test_that("cross-register association aligns on pnr even when a third batched register has no pnr", {
+  # Regression: join_key_for_tables() used to be computed once over the
+  # WHOLE batch, so a third register with no pnr (e.g. lpr_diag, keyed on
+  # recnum) silently degraded the join key for every association in the
+  # batch down to whatever column *is* shared by all tables (here: year) -
+  # misaligning exposure/outcome by year instead of by person and silently
+  # corrupting the planted association instead of raising an error.
+  schema <- fixture_schema()
+  pop <- tiny_pop(schema, n = 20L, seed = 1)
+  sc <- scenario_association(
+    exposure = "bef.alder", outcome = "udda.hfaudd",
+    link = "identity", coefficient = 2
+  )
+  out <- generate_registers(
+    registers = c("bef", "udda", "lpr_diag"),
+    population = pop, schema = schema,
+    from = win_from, to = win_to, seed = 1, scenario = sc
+  )
+  bef1 <- out$bef[!duplicated(out$bef$pnr), c("pnr", "alder")]
+  udda1 <- out$udda[!duplicated(out$udda$pnr), c("pnr", "hfaudd")]
+  m <- merge(bef1, udda1, by = "pnr")
+  beta <- coef(lm(hfaudd ~ alder, data = m))[["alder"]]
+  expect_equal(beta, 2, tolerance = 0.1)
+})
+
 test_that("generate_registers attaches scenario truth on the list", {
   schema <- fixture_schema()
   pop <- tiny_pop(schema, n = 15L, seed = 809)

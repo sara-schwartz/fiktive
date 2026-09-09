@@ -37,8 +37,8 @@ as_fiktive_scenario <- function(x) {
 
 #' Pure association scenario (STEP 8b)
 #'
-#' Fills `associations` with one exposure→outcome link. `confounders` and
-#' `biases` stay empty. Coefficients live **only** here — never in schema YAML
+#' Fills `associations` with one exposure->outcome link. `confounders` and
+#' `biases` stay empty. Coefficients live **only** here -- never in schema YAML
 #' or custom column CSV.
 #'
 #' @param exposure Exposure as `register.column`.
@@ -84,14 +84,14 @@ scenario_association <- function(exposure, outcome,
 
 #' Confounding scenario (STEP 8c)
 #'
-#' One confounder affecting exposure and outcome; known E→Y coefficient.
+#' One confounder affecting exposure and outcome; known E->Y coefficient.
 #' Truth stamps distinct naive vs adjusted expectations.
 #'
 #' @param exposure,outcome,confounder `register.column` refs (same register).
 #' @param link Link for Y|E,U (default `"identity"`).
-#' @param coefficient E→Y effect on the link scale.
-#' @param affects_exposure Coefficient U→E.
-#' @param affects_outcome Coefficient U→Y (additive on the linear predictor).
+#' @param coefficient E->Y effect on the link scale.
+#' @param affects_exposure Coefficient U->E.
+#' @param affects_outcome Coefficient U->Y (additive on the linear predictor).
 #' @param intercept,sigma Outcome intercept / residual SD.
 #' @param intercept_exposure,sigma_exposure Exposure intercept / residual SD.
 #' @param id Scenario id (default `"confounding"`).
@@ -146,7 +146,7 @@ scenario_confounding <- function(exposure, outcome, confounder,
 #'
 #' Generates an association, then sets the target column to NA with probability
 #' depending on its value (informative MNAR). Cosmetic MCAR fidelity stays
-#' orthogonal — use `fidelity = "clean"` (default) when evaluating truth.
+#' orthogonal -- use `fidelity = "clean"` (default) when evaluating truth.
 #'
 #' @param exposure,outcome `register.column` refs.
 #' @param link,coefficient Association link and effect.
@@ -293,7 +293,7 @@ make_truth_from_scenario <- function(scenario) {
     return(make_independence_truth())
   }
 
-  assoc <- (sc$associations %||% list())[[1]]
+  assoc <- first_or_null(sc$associations)
   if (is.null(assoc)) {
     stop("Non-independence scenario needs at least one association.", call. = FALSE)
   }
@@ -304,7 +304,7 @@ make_truth_from_scenario <- function(scenario) {
 
   causal_effect <- list(
     estimand = sprintf("E[%s | %s] association on %s scale", outcome, exposure, link),
-    parameter = sprintf("coefficient(%s → %s)", exposure, outcome),
+    parameter = sprintf("coefficient(%s \u2192 %s)", exposure, outcome),
     value = beta,
     scale = link
   )

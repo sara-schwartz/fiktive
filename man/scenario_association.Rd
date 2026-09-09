@@ -36,7 +36,7 @@ scenario_association(
 A list of class \code{fiktive_scenario}.
 }
 \description{
-Fills \code{associations} with one exposure→outcome link. \code{confounders} and
-\code{biases} stay empty. Coefficients live \strong{only} here — never in schema YAML
+Fills \code{associations} with one exposure->outcome link. \code{confounders} and
+\code{biases} stay empty. Coefficients live \strong{only} here -- never in schema YAML
 or custom column CSV.
 }
