@@ -112,11 +112,14 @@ test_that("year is derived from referencetid and civst is not D", {
   expect_false(all(is.na(bef$foerste_indvandring)))
 })
 
-test_that("get_truth stub has empty slots", {
+test_that("get_truth independence stub has expected association 0", {
   tr <- get_truth()
-  expect_named(
-    tr,
-    c("estimand", "naive_estimator", "adjusted_estimator", "expected_naive", "expected_adjusted")
-  )
-  expect_true(all(vapply(tr, is.null, logical(1))))
+  expect_s3_class(tr, "fiktive_truth")
+  expect_equal(tr$scenario_id, "independence")
+  expect_equal(tr$expected_naive, 0)
+  expect_equal(tr$expected_adjusted, 0)
+  expect_equal(tr$causal_effect, 0)
+  expect_true(is.character(tr$estimand) && nzchar(tr$estimand))
+  expect_true(is.character(tr$naive_estimator) && nzchar(tr$naive_estimator))
+  expect_true(is.character(tr$adjusted_estimator) && nzchar(tr$adjusted_estimator))
 })
