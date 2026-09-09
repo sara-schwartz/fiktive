@@ -95,14 +95,66 @@ dplyr::inner_join(tables$bef, ext, by = "pnr")
 
 Household-year customs must pass household-side `join_keys` (e.g. `familie_id`), never a silent `pnr` default. Expand-from-parent customs need an already-generated `parent` table.
 
-## Truth and fidelity (independence)
+## Truth, scenarios, and fidelity
 
-Default generation is independence (`scenario = NULL`): structurally valid noise that joins. Every generator always attaches a `fiktive_truth` object — retrieve it with `get_truth()`. Under independence the expected association is **0 within Monte Carlo error**; bias / confounding / MAR / MNAR scenarios are not claimed here (STEP 8b+).
+Default generation is independence (`scenario = NULL`): structurally valid noise that joins. Every generator always attaches a `fiktive_truth` object — retrieve it with `get_truth()` / `get_scenario()`.
 
-Opt-in **fidelity** is data quality only (not signal):
+**Progression:** independence → association → confounding → MNAR / complete-case.
 
-- `fidelity = "clean"` (default) — effective `na_rate` / `outlier_rate` are 0
-- `fidelity = "messy"` — small fixed MCAR-ish NA rates and rare numeric/date extremes (package constants; **never** DST rates from real microdata; never stored in schema YAML)
+| Scenario | Constructor | Truth claim |
+|---|---|---|
+| Independence | `scenario = NULL` / `scenario_independence()` | expected association **0** within MC error |
+| Association (8b) | `scenario_association()` | `expected_naive` = `expected_adjusted` = coefficient; adjusted **same** as naive; no bias claim |
+| Confounding (8c) | `scenario_confounding()` | naive ≠ adjusted; full estimand / estimator fields |
+| MNAR (8d) | `scenario_mnar()` | informative missingness; complete-case ≠ full-data |
+| Complete-case selection (8d) | `scenario_complete_case()` | selected-sample ≠ population estimand |
+
+Coefficients live **only** on the scenario object (`associations`), never in schema YAML or the custom column CSV. Core backend first (no synthpop); optional Suggests such as simDAG / simstudy may appear later for alternate backends.
+
+Customs are the easiest DGP surface: describe numeric columns structurally, then pass `scenario=` with `register.column` refs (e.g. `"study.x"`).
+
+```r
+cols <- tibble::tibble(
+  name = c("x", "y", "u"),
+  type = c("numeric", "numeric", "numeric"),
+  min = c(-2, -2, -2),
+  max = c(2, 2, 2)
+)
+
+# 8b — pure association (identity link recovers beta)
+sc <- scenario_association(
+  exposure = "study.x", outcome = "study.y",
+  link = "identity", coefficient = 1.5
+)
+study <- generate_custom_register(
+  id = "study", one_row_per = "person_reference_date",
+  columns = cols, population = pop, schema = schema,
+  from = as.Date("2008-01-01"), to = as.Date("2008-12-31"),
+  seed = 1, scenario = sc, cadence = "annual"
+)
+get_truth(study)$expected_naive  # 1.5
+
+# 8c — one confounder (U affects E and Y)
+sc_c <- scenario_confounding(
+  exposure = "study.x", outcome = "study.y", confounder = "study.u",
+  coefficient = 1.0, affects_exposure = 1.5, affects_outcome = 1.5
+)
+
+# 8d — MNAR missingness or complete-case selection
+sc_m <- scenario_mnar(
+  exposure = "study.x", outcome = "study.y",
+  coefficient = 2.0, mnar_coefficient = 1.2
+)
+sc_s <- scenario_complete_case(
+  exposure = "study.x", outcome = "study.y",
+  coefficient = 1.8, selection_coefficient = 1.5
+)
+```
+
+Opt-in **fidelity** is data quality only (not signal), applied **after** the scenario DGP:
+
+- `fidelity = "clean"` (default) — effective `na_rate` / `outlier_rate` are 0; **default under scenarios** (truth expects clean)
+- `fidelity = "messy"` — small fixed MCAR-ish NA rates and rare numeric/date extremes (package constants; **never** DST rates from real microdata; never stored in schema YAML). Messy + scenarios is for **pipeline stress** — cosmetic MCAR must not be read as moving estimands
 - Optional `na_rate` / `outlier_rate` overrides in `[0, 1]` win when set; outputs stamp **preset + effective rates**
 
 NA is applied only to non-key, non-derived columns. Outliers only on numeric/date (never inventing invalid clinical catalogue codes). Join keys, presence flags, and derived columns (e.g. `alder`) stay complete.
