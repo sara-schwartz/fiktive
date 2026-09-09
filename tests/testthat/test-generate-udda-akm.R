@@ -16,7 +16,7 @@ test_that("udda is annual person x year, persistent, columns subset of schema", 
   expect_true(all(counts == 3L))
 })
 
-test_that("akm is annual, alder_ult_ink matches 31 Dec, socio13 is typed noise", {
+test_that("akm is annual, alder_ult_ink matches 31 Dec, socio13 samples CS lookup", {
   schema <- fixture_schema()
   pop <- tiny_pop(schema, seed = 2)
   akm <- generate_register("akm", pop, schema, from, to, seed = 22)
@@ -30,6 +30,8 @@ test_that("akm is annual, alder_ult_ink matches 31 Dec, socio13 is typed noise",
   before <- format(snap, "%m-%d") < format(birth, "%m-%d")
   expect_equal(akm$alder_ult_ink, year_diff - as.integer(before))
   expect_type(akm$socio13, "integer")
+  socio_keys <- as.integer(lookup_keys(schema$code_systems$socio13))
+  expect_true(all(akm$socio13 %in% socio_keys))
   expect_true(all(is.na(akm$socio_gl)))
   expect_false(all(is.na(akm$socio13)))
 })
