@@ -252,6 +252,72 @@ scenario_complete_case <- function(exposure, outcome,
   ))
 }
 
+#' Code misclassification bias scenario (STEP 8d)
+#'
+#' Generates an association, then **swaps** a coded column's true value for
+#' a different value already occurring elsewhere in that same column (never
+#' an invented code), with a probability that can depend on the outcome.
+#' Models measurement error in a diagnosis/drug/other code column, e.g. a
+#' mislabeled ICD or ATC code. `misclass_coefficient = 0` (the default) is
+#' **non-differential** misclassification: a flat rate from
+#' `misclass_intercept` alone, independent of outcome. A non-zero
+#' `misclass_coefficient` makes it **differential**: the misclassification
+#' rate itself depends on the outcome's value, which is a materially
+#' different (and often worse) bias than the non-differential case.
+#'
+#' @inheritParams scenario_mnar
+#' @param on Column whose values get swapped. Unlike [scenario_mnar()] /
+#'   [scenario_complete_case()], this defaults to `exposure`, not `outcome`
+#'   — code misclassification is usually about the exposure/diagnosis code,
+#'   not the outcome.
+#' @param misclass_intercept,misclass_coefficient Logit intercept / slope
+#'   for P(misclassified). The slope multiplies the **outcome's** value
+#'   (not `on`'s value) — that is what makes misclassification
+#'   differential vs. non-differential.
+#' @param id Scenario id (default `"misclassification"`).
+#' @return A list of class `fiktive_scenario`.
+#' @export
+scenario_misclassification <- function(exposure, outcome,
+                                       link = c("identity", "logit", "log"),
+                                       coefficient,
+                                       on = NULL,
+                                       misclass_intercept = -2,
+                                       misclass_coefficient = 0,
+                                       intercept = 0,
+                                       sigma = 1,
+                                       id = "misclassification",
+                                       version = 1L) {
+  link <- match.arg(link)
+  if (missing(coefficient) || length(coefficient) != 1L || is.na(coefficient) ||
+      !is.numeric(coefficient)) {
+    stop("`coefficient` must be a single non-NA number.", call. = FALSE)
+  }
+  parse_register_column(exposure, "exposure")
+  parse_register_column(outcome, "outcome")
+  on_ref <- if (is.null(on)) as.character(exposure)[[1]] else as.character(on)[[1]]
+  parse_register_column(on_ref, "on")
+  as_fiktive_scenario(list(
+    id = as.character(id)[[1]],
+    version = as.integer(version)[[1]],
+    associations = list(list(
+      exposure = as.character(exposure)[[1]],
+      outcome = as.character(outcome)[[1]],
+      link = link,
+      coefficient = as.numeric(coefficient)[[1]],
+      intercept = as.numeric(intercept)[[1]],
+      sigma = as.numeric(sigma)[[1]]
+    )),
+    confounders = list(),
+    biases = list(list(
+      type = "misclassification",
+      on = on_ref,
+      intercept = as.numeric(misclass_intercept)[[1]],
+      coefficient = as.numeric(misclass_coefficient)[[1]]
+    )),
+    backend = "core"
+  ))
+}
+
 #' @noRd
 make_independence_truth <- function() {
   structure(
@@ -320,6 +386,54 @@ simulate_expected_naive_selection <- function(beta, intercept, sigma,
       return(NA_real_)
     }
     unname(stats::coef(stats::lm(y_obs ~ x_obs))[[2]])
+  })
+}
+
+# Same reference-exposure / fixed-seed approach as
+# simulate_expected_naive_selection(), for misclassification instead of
+# missingness/selection. P(misclassified) always depends on the outcome
+# (differential when bias_coefficient != 0) regardless of which column
+# (`on`) actually gets its value swapped -- mirrors the real generator
+# (apply_biases()'s "misclassification" branch, R/scenario-apply.R), where
+# the swap driver and the swapped column can differ. A "swap" is modelled
+# as replacing the value with a fresh, independent draw from the same
+# reference distribution -- what a large-sample cyclic shift among the
+# flagged rows (the real generator's mechanism) converges to.
+simulate_expected_naive_misclassification <- function(beta, intercept, sigma,
+                                                       bias_intercept, bias_coefficient,
+                                                       on_is_exposure) {
+  with_rng_seed(.MNAR_SIM_SEED, {
+    n <- .MNAR_SIM_N
+    x <- stats::rnorm(n)
+    y <- intercept + beta * x + stats::rnorm(n, sd = sigma)
+    p <- stats::plogis(bias_intercept + bias_coefficient * y)
+    swap <- stats::runif(n) < p
+    idx <- which(swap)
+    # Flagged rows are not a uniform random subset when bias_coefficient
+    # != 0 (differential): P(flagged) depends on y, which correlates with
+    # x. Resampling a swapped value from an unconditional fresh draw would
+    # ignore that. The real generator (apply_biases()'s "misclassification"
+    # branch) cyclic-shifts values *within* the flagged rows only -- match
+    # that by resampling within the same flagged pool, not the unconditional
+    # marginal.
+    if (isTRUE(on_is_exposure)) {
+      x_obs <- x
+      if (length(idx) > 1L) {
+        x_obs[idx] <- sample(x[idx])
+      }
+      if (stats::sd(x_obs) < 1e-8) {
+        return(NA_real_)
+      }
+      return(unname(stats::coef(stats::lm(y ~ x_obs))[[2]]))
+    }
+    y_obs <- y
+    if (length(idx) > 1L) {
+      y_obs[idx] <- sample(y[idx])
+    }
+    if (stats::sd(x) < 1e-8) {
+      return(NA_real_)
+    }
+    unname(stats::coef(stats::lm(y_obs ~ x))[[2]])
   })
 }
 
@@ -505,6 +619,64 @@ make_truth_from_scenario <- function(scenario) {
           bias_coefficient = as.numeric(b$coefficient %||% 1)[[1]],
           on_is_exposure = identical(tolower(on_ref), tolower(exposure)),
           drop_rows = TRUE
+        )
+      } else {
+        exp_naive <- NA_real_
+      }
+      if (is.na(exp_naive)) {
+        # Non-identity link, or `on` references a third column this
+        # simulation has no information about: fall back to a fixed
+        # distinct value so expected_naive != expected_adjusted still holds.
+        exp_naive <- beta * 0.5
+        if (identical(exp_naive, beta)) {
+          exp_naive <- beta - sign(beta + 1e-8) * 0.5
+        }
+      }
+      return(structure(
+        list(
+          scenario_id = sc$id,
+          causal_effect = causal_effect,
+          estimand = est,
+          naive_estimator = naive,
+          adjusted_estimator = adj,
+          expected_naive = exp_naive,
+          expected_adjusted = beta,
+          associations = sc$associations,
+          confounders = list(),
+          biases = sc$biases
+        ),
+        class = "fiktive_truth"
+      ))
+    }
+    if (identical(typ, "misclassification")) {
+      on_ref <- as.character(b$on %||% exposure)[[1]]
+      est <- sprintf(
+        "population %s-link coefficient of %s on %s (correctly classified)",
+        link, exposure, outcome
+      )
+      naive <- sprintf(
+        "unadjusted %s fit of %s ~ %s with misclassification on %s",
+        link, outcome, exposure, on_ref
+      )
+      adj <- sprintf(
+        "correctly classified (or bias-corrected) %s fit of %s ~ %s",
+        link, outcome, exposure
+      )
+      # Differential-by-outcome measurement error on exposure or outcome.
+      # For identity link, simulate the actual naive expectation under this
+      # scenario's own misclass_intercept/misclass_coefficient (see
+      # simulate_expected_naive_misclassification()) instead of a fixed
+      # offset blind to how strong the misclassification actually is.
+      if (identical(link, "identity") &&
+          (identical(tolower(on_ref), tolower(outcome)) ||
+           identical(tolower(on_ref), tolower(exposure)))) {
+        exp_naive <- simulate_expected_naive_misclassification(
+          beta = beta,
+          intercept = as.numeric(assoc$intercept %||% 0)[[1]],
+          sigma = as.numeric(assoc$sigma %||% 1)[[1]],
+          bias_intercept = as.numeric(b$intercept %||% -2)[[1]],
+          bias_coefficient = as.numeric(b$coefficient %||% 0)[[1]],
+          on_is_exposure = identical(tolower(on_ref), tolower(exposure))
         )
       } else {
         exp_naive <- NA_real_

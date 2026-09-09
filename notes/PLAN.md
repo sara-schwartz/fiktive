@@ -301,20 +301,30 @@ remains, correctly pinned to `beta`). Regression tests added:
 `tests/testthat/test-step8b-8d-scenarios.R` ("MNAR expected_naive tracks
 mnar_coefficient strength, not a fixed offset").
 
-### Deferred biases — proposed unpark plan (not locked; awaiting a decision)
+### Deferred biases — unpark status
 
-Still out of scope per the 8d lock; inventing any of these without a PLAN
-lock remains a fail-a-PR condition. The four deferred items are not one
-lump of equal-sized work — proposed split, for whenever there's a decision
-to unpark any of them:
+Still out of scope per the 8d lock unless noted done below; inventing any
+remaining item without a PLAN lock stays a fail-a-PR condition.
 
-- **Code misclassification** — cheap, fits the existing architecture.
-  Same shape as `fidelity = "messy"`'s NA/outlier injection, applied to a
-  coded column instead: with probability `p`, swap the true code for a
-  different valid code from that column's own `code-systems/*.yaml`
-  lookup (optionally differential — probability depends on the outcome,
-  same pattern as `mnar`/`complete_case`). No new grain. Reuses
-  `sample_lookup_keys()` and the existing `biases` slot.
+- **Code misclassification — done (2026-09-09).** `scenario_misclassification()`
+  (`R/truth.R`) + a `"misclassification"` branch in `apply_biases()`
+  (`R/scenario-apply.R`): with probability `p`, a coded column's value is
+  swapped for a **different value already occurring elsewhere in that same
+  column** (a cyclic shift within the flagged rows — never an invented
+  code, no schema/code-system access needed). `on` defaults to the
+  **exposure**, unlike `mnar`/`complete_case` (which default to the
+  outcome) — code misclassification is normally about the exposure/
+  diagnosis code. `misclass_coefficient = 0` (default) is non-differential
+  (flat rate); non-zero makes it differential (rate depends on the
+  outcome's value, always — not on `on`'s own value, which is what makes
+  it a genuinely different mechanic from `mnar`/`complete_case` rather
+  than a copy with a new name). `expected_naive` uses the same
+  deterministic-simulation approach as the MNAR/complete-case hardening
+  fix; verified against real generated data: non-differential within
+  ~0.001–0.05 of the actual naive fit, differential within ~3–5% relative
+  (same known approximation limitation as MNAR/complete-case — exact bias
+  depends on the real exposure's distribution, which truth computation
+  can't see). 3 new tests, `R CMD check` 0/0/0.
 - **Immortal time bias** / **left truncation** — a different order of
   work. Both are fundamentally time-to-event (entry date, event/censoring
   date, and for immortal time a time-varying exposure-start date), which

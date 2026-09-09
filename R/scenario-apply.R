@@ -66,9 +66,9 @@ validate_fiktive_scenario <- function(scenario) {
   }
   for (b in sc$biases %||% list()) {
     if (is.null(b$type) || !as.character(b$type)[[1]] %in%
-        c("mnar", "complete_case")) {
+        c("mnar", "complete_case", "misclassification")) {
       stop(
-        "Each bias$type must be 'mnar' or 'complete_case' in this ship.",
+        "Each bias$type must be 'mnar', 'complete_case', or 'misclassification' in this ship.",
         call. = FALSE
       )
     }
@@ -420,28 +420,75 @@ apply_biases <- function(tables, scenario, register_hint = NULL) {
     if (!target_ref$column %in% names(tbl)) {
       stop(sprintf("Bias target column '%s' missing.", target_ref$column), call. = FALSE)
     }
-    z <- as_numeric_exposure(tbl[[target_ref$column]])
     intercept <- as.numeric(b$intercept %||% -1)[[1]]
     coef_m <- as.numeric(b$coefficient %||% 1)[[1]]
-    p <- invlogit(intercept + coef_m * z)
-    if (identical(typ, "mnar")) {
-      miss <- stats::runif(nrow(tbl)) < p
-      # z (hence p) is NA wherever the target already has a structural NA
-      # (e.g. column coverage narrower than the register window) - nothing
-      # to additionally blank out there.
-      miss[is.na(miss)] <- FALSE
-      tbl[[target_ref$column]][miss] <- NA
-    } else if (identical(typ, "complete_case")) {
-      keep <- stats::runif(nrow(tbl)) < p
-      # Selection: keep rows with higher p (selected sample).
-      # If selection depends on outcome, selected mean of E differs.
-      # A row-subsetting index with NA (from a structurally-NA target,
-      # see above) injects phantom all-NA rows rather than being excluded -
-      # treat "can't evaluate selection" as "not selected".
-      keep[is.na(keep)] <- FALSE
-      tbl <- tbl[keep, , drop = FALSE]
+    if (identical(typ, "misclassification")) {
+      # Differential-by-outcome, unlike mnar/complete_case: P(misclassified)
+      # depends on the association's OUTCOME value, not on target_ref's own
+      # value (misclass_coefficient = 0, the default, makes it non-
+      # differential: a flat rate from misclass_intercept alone). The
+      # column that actually gets its codes swapped is target_ref (`on`,
+      # defaults to exposure) -- a different column from the one driving
+      # the probability, which is the real distinction from mnar/complete_case.
+      if (is.null(assoc)) {
+        stop("misclassification bias needs an association.", call. = FALSE)
+      }
+      outcome_ref <- parse_register_column(assoc$outcome)
+      outcome_tbl <- if (is.data.frame(tables)) {
+        tbl
+      } else {
+        lookup_table(tables, outcome_ref$register)
+      }
+      if (is.null(outcome_tbl) || !outcome_ref$column %in% names(outcome_tbl)) {
+        stop(
+          sprintf(
+            "Register '%s' column '%s' (association outcome) required for misclassification bias.",
+            outcome_ref$register, outcome_ref$column
+          ),
+          call. = FALSE
+        )
+      }
+      z_outcome <- as_numeric_exposure(outcome_tbl[[outcome_ref$column]])
+      if (!identical(tolower(outcome_ref$register), tolower(target_ref$register)) ||
+          !identical(nrow(outcome_tbl), nrow(tbl))) {
+        key <- join_key_for_tables(list(outcome_tbl, tbl))
+        z_outcome <- align_by_key(outcome_tbl, z_outcome, tbl, key)
+      }
+      p <- invlogit(intercept + coef_m * z_outcome)
+      swap <- stats::runif(nrow(tbl)) < p
+      swap[is.na(swap)] <- FALSE
+      idx <- which(swap)
+      if (length(idx) > 1L) {
+        vals <- tbl[[target_ref$column]][idx]
+        # Cyclic shift within the misclassified rows: every swapped row
+        # gets a real, already-occurring value from elsewhere in the
+        # column (never an invented code) and, unless every flagged value
+        # happens to be identical, always ends up different from its own
+        # true value.
+        tbl[[target_ref$column]][idx] <- c(vals[-1], vals[1])
+      }
     } else {
-      stop(sprintf("Unsupported bias type '%s'.", typ), call. = FALSE)
+      z <- as_numeric_exposure(tbl[[target_ref$column]])
+      p <- invlogit(intercept + coef_m * z)
+      if (identical(typ, "mnar")) {
+        miss <- stats::runif(nrow(tbl)) < p
+        # z (hence p) is NA wherever the target already has a structural NA
+        # (e.g. column coverage narrower than the register window) - nothing
+        # to additionally blank out there.
+        miss[is.na(miss)] <- FALSE
+        tbl[[target_ref$column]][miss] <- NA
+      } else if (identical(typ, "complete_case")) {
+        keep <- stats::runif(nrow(tbl)) < p
+        # Selection: keep rows with higher p (selected sample).
+        # If selection depends on outcome, selected mean of E differs.
+        # A row-subsetting index with NA (from a structurally-NA target,
+        # see above) injects phantom all-NA rows rather than being excluded -
+        # treat "can't evaluate selection" as "not selected".
+        keep[is.na(keep)] <- FALSE
+        tbl <- tbl[keep, , drop = FALSE]
+      } else {
+        stop(sprintf("Unsupported bias type '%s'.", typ), call. = FALSE)
+      }
     }
     if (is.data.frame(tables)) {
       tables <- tbl

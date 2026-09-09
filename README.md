@@ -282,8 +282,9 @@ can test whether your code handles them correctly too:
 | `scenario_confounding()` | a third variable biasing the naive estimate | your code actually adjusts for confounders |
 | `scenario_mnar()` | missing values that depend on the value itself | your code doesn't ignore informative missingness |
 | `scenario_complete_case()` | rows dropped depending on a column's value | your "complete case" analysis isn't secretly biased |
+| `scenario_misclassification()` | a coded column's values swapped for other real codes | your code isn't thrown off by mislabeled diagnosis/drug codes |
 
-All four work the same way as the example above: build the scenario, pass
+All five work the same way as the example above: build the scenario, pass
 it as `scenario=`, then compare your own fit against
 `get_truth(x)$expected_naive` (the answer a straightforward analysis
 should find) and `$expected_adjusted` (the answer after doing it
@@ -291,8 +292,8 @@ properly — e.g. adjusting for the confounder). For a plain association
 those two are the same number; for the trickier scenarios they're
 deliberately different, which is exactly what lets you test whether your
 code does the adjustment correctly. Run `?scenario_confounding`,
-`?scenario_mnar`, or `?scenario_complete_case` for each one's full parameter
-list and a runnable example.
+`?scenario_mnar`, `?scenario_complete_case`, or `?scenario_misclassification`
+for each one's full parameter list and a runnable example.
 
 Leave `scenario=` out entirely (or generate any ordinary register like
 `bef`) and you get **independence** — no planted relationship;

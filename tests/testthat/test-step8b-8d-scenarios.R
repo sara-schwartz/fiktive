@@ -185,6 +185,55 @@ test_that("complete-case selection: naive != adjusted as stamped", {
   expect_true(abs(sel_est - beta) > 0.03)
 })
 
+test_that("misclassification: non-differential attenuates and tracks the real naive fit", {
+  schema <- fixture_schema()
+  beta <- 2.0
+  sc <- scenario_misclassification(
+    exposure = "study.x", outcome = "study.y", coefficient = beta,
+    misclass_intercept = -1.5, misclass_coefficient = 0
+  )
+  pop <- tiny_pop(schema, n = 5000L, seed = 606)
+  tab <- gen_person_custom(pop, schema, sc, seed = 606)
+  tr <- get_truth(tab)
+  expect_equal(tr$scenario_id, "misclassification")
+  expect_equal(tr$biases[[1]]$type, "misclassification")
+  expect_equal(tr$expected_adjusted, beta)
+  # Rows are all still present (misclassification swaps values, doesn't
+  # drop/NA rows, unlike complete_case/mnar).
+  expect_equal(nrow(tab), nrow(pop))
+  expect_false(anyNA(tab$x))
+  naive_est <- unname(stats::coef(stats::lm(y ~ x, data = tab))[["x"]])
+  expect_true(abs(naive_est - beta) > 0.05)
+  expect_equal(tr$expected_naive, naive_est, tolerance = 0.15)
+})
+
+test_that("misclassification default `on` is the exposure, not the outcome", {
+  sc <- scenario_misclassification(exposure = "study.x", outcome = "study.y", coefficient = 1)
+  expect_equal(sc$biases[[1]]$on, "study.x")
+})
+
+test_that("misclassification coefficient strength changes the swap rate (more swapped rows -> more attenuation)", {
+  schema <- fixture_schema()
+  beta <- 2.0
+  weak <- scenario_misclassification(
+    exposure = "study.x", outcome = "study.y", coefficient = beta,
+    misclass_intercept = -4, misclass_coefficient = 0
+  )
+  strong <- scenario_misclassification(
+    exposure = "study.x", outcome = "study.y", coefficient = beta,
+    misclass_intercept = 0, misclass_coefficient = 0
+  )
+  pop <- tiny_pop(schema, n = 5000L, seed = 707)
+  tab_weak <- gen_person_custom(pop, schema, weak, seed = 707)
+  tab_strong <- gen_person_custom(pop, schema, strong, seed = 707)
+  naive_weak <- get_truth(tab_weak)$expected_naive
+  naive_strong <- get_truth(tab_strong)$expected_naive
+  # Higher misclass_intercept -> more rows misclassified -> more attenuation
+  # toward 0 -- these must differ (the old beta * 0.5 heuristic stamped the
+  # same value regardless of rate).
+  expect_true(abs(naive_strong - beta) > abs(naive_weak - beta) + 0.3)
+})
+
 test_that("coefficients not required in schema / custom column CSV", {
   schema <- fixture_schema()
   pop <- tiny_pop(schema, n = 2000L, seed = 505)
