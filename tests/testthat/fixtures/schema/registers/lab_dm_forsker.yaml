@@ -1,0 +1,77 @@
+# TEST DOUBLE only — lab_dm_forsker event_from_person; types from live
+# registers-guide lab_dm_forsker.yaml @ tip 8079ab8e. analysiscode has NO
+# code_system / values_from (HARD GAP) — generator samples LabTerm / IFCC NPU.
+id: lab_dm_forsker
+name: "Laboratoriedatabasens Forskertabel (test double)"
+scope: sds
+reference_timing: event
+one_row_per: event_from_person
+coverage: {from: 2008, to: 2025}
+join_keys: [patient_cpr]
+relationships:
+  - to: bef
+    key: patient_cpr
+    to_key: pnr
+    cardinality: many_to_one
+columns:
+  - id: patient_cpr
+    name: patient_cpr
+    type: character
+    role: join_key
+    key: true
+  - id: samplingdate
+    name: samplingdate
+    type: date
+    role: date
+    key: true
+  - id: samplingtime
+    name: samplingtime
+    type: character
+    role: value
+  - id: analysiscode
+    name: analysiscode
+    type: character
+    role: code
+    key: true
+  - id: value
+    name: value
+    type: character
+    role: value
+    key: true
+  - id: unit
+    name: unit
+    type: character
+    role: code
+    key: true
+  - id: resulttype
+    name: resulttype
+    type: character
+    role: code
+  - id: laboratorium_idcode
+    name: laboratorium_idcode
+    type: character
+    role: code
+  - id: referenceinterval_lowerlimit
+    name: referenceinterval_lowerlimit
+    type: character
+    role: value
+  - id: referenceinterval_upperlimit
+    name: referenceinterval_upperlimit
+    type: character
+    role: value
+  - id: resultvalidation
+    name: resultvalidation
+    type: character
+    role: code
+  - id: rekvirent_id
+    name: rekvirent_id
+    type: character
+    role: code
+  - id: rekvirent_idtype
+    name: rekvirent_idtype
+    type: character
+    role: code
+  - id: operator
+    name: operator
+    type: character
+    role: code

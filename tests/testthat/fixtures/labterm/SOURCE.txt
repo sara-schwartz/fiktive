@@ -1,0 +1,3 @@
+Test-double NPU codes excerpted from the public IFCC C-NPU CSV
+(https://cms.ifcc.org/wp-content/uploads/npu-codes-latest.csv).
+Not invented. Full Danish LabTerm dumps (NPU+DNK) require SDS registration.
