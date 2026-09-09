@@ -2,7 +2,18 @@
 \alias{generate_register}
 \title{Generate a fictitious register table}
 \usage{
-generate_register(register, population, schema, from, to, seed = NULL, scenario = NULL)
+generate_register(
+  register,
+  population,
+  schema,
+  from,
+  to,
+  seed = NULL,
+  scenario = NULL,
+  fidelity = c("clean", "messy"),
+  na_rate = NULL,
+  outlier_rate = NULL
+)
 }
 \arguments{
 \item{register}{Lowercase register id (fastreg name), e.g. \code{"bef"}.}
@@ -11,7 +22,10 @@ generate_register(register, population, schema, from, to, seed = NULL, scenario 
 \item{from}{Start of the requested window.}
 \item{to}{End of the requested window.}
 \item{seed}{Optional RNG seed. Restored on exit.}
-\item{scenario}{Must be \code{NULL} (independence).}
+\item{scenario}{Must be \code{NULL} (independence). Always attaches truth.}
+\item{fidelity}{\code{"clean"} (default) or \code{"messy"}.}
+\item{na_rate}{Optional override in \eqn{[0,1]}.}
+\item{outlier_rate}{Optional override in \eqn{[0,1]}.}
 }
 \value{
 A tibble whose columns are a subset of the schema column names for \code{register}.

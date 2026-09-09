@@ -40,7 +40,10 @@ register_stamps <- function(tbl) {
     seed = attr(tbl, "seed", exact = TRUE),
     fiktive_version = attr(tbl, "fiktive_version", exact = TRUE),
     catalogue = attr(tbl, "catalogue", exact = TRUE),
-    catalogue_version = attr(tbl, "catalogue_version", exact = TRUE)
+    catalogue_version = attr(tbl, "catalogue_version", exact = TRUE),
+    fidelity = attr(tbl, "fidelity", exact = TRUE),
+    na_rate = attr(tbl, "na_rate", exact = TRUE),
+    outlier_rate = attr(tbl, "outlier_rate", exact = TRUE)
   )
 }
 
@@ -61,6 +64,15 @@ stamp_meta_list <- function(tbl) {
   }
   if (!is.null(st$catalogue_version)) {
     meta$catalogue_version <- st$catalogue_version
+  }
+  if (!is.null(st$fidelity)) {
+    meta$fidelity <- st$fidelity
+  }
+  if (!is.null(st$na_rate)) {
+    meta$na_rate <- st$na_rate
+  }
+  if (!is.null(st$outlier_rate)) {
+    meta$outlier_rate <- st$outlier_rate
   }
   meta
 }
