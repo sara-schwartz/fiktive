@@ -146,3 +146,69 @@ parse_custom_columns <- function(columns) {
   }
   columns
 }
+
+build_custom_spec <- function(id, grain, join_keys, col_df) {
+  cols <- lapply(seq_len(nrow(col_df)), function(i) {
+    col <- list(
+      id = col_df$name[[i]],
+      name = col_df$name[[i]],
+      type = col_df$type[[i]]
+    )
+    if ("min" %in% names(col_df) && !is.na(col_df$min[[i]])) {
+      col$min <- col_df$min[[i]]
+    }
+    if ("max" %in% names(col_df) && !is.na(col_df$max[[i]])) {
+      col$max <- col_df$max[[i]]
+    }
+    if ("values" %in% names(col_df) && !is.na(col_df$values[[i]]) &&
+        nzchar(as.character(col_df$values[[i]]))) {
+      col$values <- parse_custom_values(col_df$values[[i]])
+    }
+    if (col$name %in% join_keys) {
+      col$role <- "join_key"
+    }
+    col
+  })
+  # Ensure join keys appear as columns even if omitted from the CSV.
+  have <- vapply(cols, function(c) c$name, character(1))
+  for (jk in join_keys) {
+    if (!jk %in% have) {
+      cols <- c(
+        list(list(id = jk, name = jk, type = "character", role = "join_key")),
+        cols
+      )
+    }
+  }
+  # household_year grain is household x year — include year when omitted.
+  have <- vapply(cols, function(c) c$name, character(1))
+  if (identical(grain, "household_year") && !"year" %in% have) {
+    cols <- c(cols, list(list(id = "year", name = "year", type = "integer")))
+  }
+  list(
+    id = id,
+    name = id,
+    one_row_per = grain,
+    join_keys = as.list(join_keys),
+    columns = cols
+  )
+}
+
+parse_custom_values <- function(x) {
+  if (is.null(x) || (length(x) == 1L && is.na(x))) {
+    return(NULL)
+  }
+  if (is.list(x)) {
+    return(unlist(x, use.names = FALSE))
+  }
+  if (is.numeric(x) || is.logical(x)) {
+    return(x)
+  }
+  s <- as.character(x)[[1]]
+  # Pipe or semicolon separated small allowed set.
+  parts <- strsplit(s, "\\s*[|;]\\s*")[[1]]
+  parts <- parts[nzchar(parts)]
+  if (!length(parts)) {
+    return(NULL)
+  }
+  parts
+}
