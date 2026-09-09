@@ -1,4 +1,4 @@
-# fiktive — locked plan (2026-09-01, catch-up 2026-09-06, catalogue lock 2026-09-06, ICD split 2026-09-06, STEP 7 lock 2026-09-09, STEP 8a lock 2026-09-09, STEP 8b–8d lock 2026-09-09)
+# fiktive — locked plan (2026-09-01, catch-up 2026-09-06, catalogue lock 2026-09-06, ICD split 2026-09-06, STEP 7 lock 2026-09-09, STEP 8a lock 2026-09-09, STEP 8b–8d lock 2026-09-09, full-review catch-up 2026-09-09)
 
 Canonical project plan. Locked product decisions. Agents follow this; do not invent a second product.
 
@@ -244,6 +244,76 @@ Fidelity is **data quality** (MCAR-ish NA + rare numeric extremes), **not** info
    - **8b–8d (this lock):** association (`associations` + pure-assoc truth); confounding (one confounder; naive ≠ adjusted; full bias fields); named biases (MNAR + complete-case; immortal time / left truncation / code misclassification / open bias DSL deferred); wire `scenario=` through generators; core backend first; README progression independence → association → confounding → MNAR/complete-case
 
 Do not wait for per-step sign-off unless a product decision is blocking.
+
+---
+
+## Full-review catch-up (2026-09-09)
+
+Build sequence steps 1–8d above are all **done and verified**: 633 passing
+tests, `R CMD check` clean (0 errors/warnings/notes), and a full-package
+review (8 finder passes: correctness, missing-guards, cross-file
+consistency, reuse, simplification, efficiency, altitude, conventions)
+found and fixed several real bugs, most severe being a cross-register
+scenario join that silently degraded from `pnr` to a coincidental shared
+column (e.g. `year`) whenever a third, unrelated register lacking `pnr`
+was batched into the same `generate_registers()` call — corrupting the
+planted association instead of raising an error. README rewritten for
+new users (plain language, one worked example per feature, every code
+block verified to run end-to-end).
+
+The **end goal** (pipeline rehearsal outside DST + custom-register joins +
+opt-in scenario/truth oracle) is functionally reached for every register
+currently in `registers-guide`. Open items below are extensions/hardening
+on top of that, not blockers to the core product.
+
+### Known gap — MNAR / complete-case `expected_naive` is a fixed heuristic, not derived
+
+`make_truth_from_scenario()` (`R/truth.R`, both the `mnar` and
+`complete_case` branches) stamps `expected_naive <- beta * 0.5` — a
+constant 50% attenuation — regardless of the actual `mnar_coefficient` /
+`selection_coefficient` strength the caller passed in. Confirmed
+empirically: with `coefficient = 2.0`, the real naive OLS fit on the
+actual generated data moves from **2.02** (weak MNAR, `mnar_coefficient =
+0.1`) to **1.78** (`= 1.2`) to **1.53** (`= 5`) — real, coefficient-strength-
+dependent attenuation — while the stamped `expected_naive` stays frozen at
+**1.0** in all three cases. For the opt-in AI-eval use case (does the
+model recover the known answer?), this means the oracle can be further
+from the real data's actual naive estimate than a correct analysis would
+be, at most `mnar_coefficient`/`selection_coefficient` settings. Not a
+crash, not silently wrong for the **adjusted** estimate (that one's
+correct: pinned to `beta`), just an imprecise `expected_naive`. Tightening
+this to a real closed-form or simulation-derived function of
+`mnar_coefficient` / `selection_coefficient` (rather than a fixed
+constant) is a PLAN-scope decision, not a bug fix — flagging here rather
+than changing it unilaterally.
+
+### Deferred biases — still deferred
+
+Immortal time, left truncation, code misclassification, and an open bias
+DSL remain **out of scope** per the 8d lock above; inventing any of them
+without a new PLAN lock is still a fail-a-PR condition. No change since
+the 8d lock — listed here only so "should we add these" has a clear
+current answer: not yet, needs an explicit decision to unpark.
+
+### Schema gaps still standing (verified against registers-guide commit `8305b87`, 2026-09-09)
+
+IND (person income), DREAM, and BFL are still absent from
+`registers-guide/schema/registers/` — confirmed by directly checking the
+live repo, not just re-asserting the earlier note. fiktive cannot add
+these itself (schema is read-only from fiktive's side, per the repo
+boundary at the top of this file) — they need YAML added to
+`registers-guide` first. See the chat response in this session for the
+generic register-YAML shape and what's needed per register before fiktive
+can generate any of them.
+
+### Polish / ship
+
+- README: done this session (rewritten for new users).
+- Vignette: not started — no `vignettes/` directory, no `knitr`/`rmarkdown`
+  in `DESCRIPTION` yet. Optional; the rewritten README may already cover
+  most of what a vignette would.
+- "Rename" — unclear what this refers to; no prior reference found in
+  `notes/` or git history. Needs clarification before scoping.
 
 ---
 
