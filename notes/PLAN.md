@@ -12,7 +12,7 @@ An R package that **creates** structurally valid **fictitious Danish register da
 
 - Title: Fictitious Danish Register Data
 - Description: Generate structurally valid fictitious Danish register data, for writing and checking analysis code outside Statistics Denmark.
-- The data is **created**, not pulled. Never call outputs “extracts.”
+- The data is **created**, not pulled. Never call outputs "extracts."
 - Never install or vendor this package **inside** DST.
 - Licenses: MIT (code), CC-BY-4.0 (generated datasets).
 
@@ -46,15 +46,15 @@ Default generation is **structural noise that joins** (`scenario = NULL` = indep
 - Prefer register/family `one_row_per` and code-system `values_from` from live YAML when present.
 - Schema is structure only. No scenario coefficients / DGP equations in YAML. Optional `value_domain` ranges and small `sample_values` stubs (guide aids) are not a substitute for published clinical catalogues.
 - Format authority when sources disagree: **registers-guide**. Branch on `code_system` id — do not assume every diagnosis column is D-prefixed SKS.
-- **Column coverage:** if a column has no `coverage`, inherit the register (or family) coverage. Do not treat a missing stamp as “column absent forever.”
+- **Column coverage:** if a column has no `coverage`, inherit the register (or family) coverage. Do not treat a missing stamp as "column absent forever."
 
 ### Registers in YAML (as of 2026-09-06; guide tip assessed 8079ab8e on 2026-09-09)
 
 Present (including recent adds): BEF, UDDA, AKM, DOD*, LMDB, VNDS*, LPR2/LPR3 somatic, `t_psyk_*`, FAIK, SSSY, SYSI, **cancer**, **mfr**, **lab_dm_forsker**, plus cause-of-death variants.
 
-Still missing from YAML (not invented here): IND (person income), DREAM, BFL. Thin lookups: LMDB/AKM class columns without enumerations.
+Still missing from YAML (not invented here): IND (person income), DREAM, BFL. Thin lookups: LMDB class columns without enumerations. AKM: tip 8079ab8e wires beskst/beskst02/branche_77/disco*/nace*/discotyp/nystgr/omfang (+ socio*); honour lookup or values_from csv|none (no invent).
 
-Empty-on-purpose clinical/geo code systems (`enumerated: false`, `values_from` set): `icd10`, `icd10_sks`, `icd8`, `atc`, `sks`, `hfaudd`, `kom`, `kont_type`, …. fiktive **reads** `values_from` (`package` / `csv` / `none`) and samples the pointed catalogue — it does not invent lists and does not ignore the field. No parallel `values_from.reason` enum (`kind` already branches).
+Empty-on-purpose clinical/geo/occupation code systems (`enumerated: false`, `values_from` set): `icd10`, `icd10_sks`, `icd8`, `atc`, `sks`, `hfaudd`, `kom`, `kont_type`, `disco08`, `nace_db07`, `branche_77`, `nystgr`, `disco_old`, `nace_old`, …. fiktive **reads** `values_from` (`package` / `csv` / `none`) and samples the pointed catalogue — it does not invent lists and does not ignore the field. No parallel `values_from.reason` enum (`kind` already branches).
 
 `kom`: schema CSV may set `mixes_eras: true` (pre- and post-2007 in one file). Do not emit abolished municipalities into recent years; prefer validity-aware sampling or a later `kom` / `kom_pre2007` split when the guide lands it.
 
@@ -91,7 +91,7 @@ A few generators, not one function per register:
 
 ## Population model (ours, not schema)
 
-Internal stable persons: `pnr`, `foed_dag`, `koen`. Same pnr ⇒ same birth/sex. **Not** fakeregs’ yearly random pool.
+Internal stable persons: `pnr`, `foed_dag`, `koen`. Same pnr ⇒ same birth/sex. **Not** fakeregs' yearly random pool.
 
 - BEF: one row per (`pnr`, `referencetid`) if resident. Quarterly Mar/Jun/Sep/Dec **since 2008**; December-only before. `alder` derived. No BEF before birth.
 - Exit later: death via `dod.doddato`; emigration via VNDS `U` at `haend_dato`. Never mix `vnds` with `{vnds_hist, vnds_ind, vnds_ud}`.
@@ -112,7 +112,7 @@ Do **not** dump all schema registers. The user names what they want. Skip an id 
 
 ## Scenario and truth API
 
-- `generate_register(..., scenario = NULL)` = independence. A later `generate_registers(registers = c(...), scenario = NULL)` is the same, still opt-in, not “all registers”.
+- `generate_register(..., scenario = NULL)` = independence. A later `generate_registers(registers = c(...), scenario = NULL)` is the same, still opt-in, not "all registers".
 - `fiktive_scenario`: `id`, `version`, empty `associations` / `confounders` / `biases`, `backend = "core"`. Column refs = schema ids (`bef.koen`). Coefficients never in YAML.
 - `fiktive_truth` **always** returned, even under independence. A bias claim is invalid unless it names: estimand, naive_estimator, adjusted_estimator, expected_naive, expected_adjusted. Independence: expected association 0 within MC error.
 - Confounding/bias scenarios only if the naive estimator is named.
@@ -144,11 +144,11 @@ Do not wait for per-step sign-off unless a product decision is blocking.
 | fastreg | Hive `year=` parquet layout; lowercase names | SAS wrapper only; not a generator |
 | UK CeLSIUS LIDS | Closest **product shape**: metadata → structural fakes for pipeline practice | No truth key there; we add one as opt-in |
 | [regkit](https://github.com/amslala/regkit) (Alejandra Martinez Sanchez; was regtools) | Filler/invariant/varying split, `withr::with_seed`, live klass codes, call-as-metadata | Reads **real** Norwegian registers; `simulate_data()` is a side door. Do not depend. |
-| heaven (tagteam) `simPop` / `simAdmissionData` | Toy 1:n pattern | pnr is 1:n; learn, don’t depend |
-| Roche respectables | 1:N pattern | Learn, don’t depend |
+| heaven (tagteam) `simPop` / `simAdmissionData` | Toy 1:n pattern | pnr is 1:n; learn, don't depend |
+| Roche respectables | 1:N pattern | Learn, don't depend |
 | cprr | Parses CPR | Does not generate; we write `gen_pnr` as joinable id only |
 
-DST publishes **no** synthetic microdata. Closest Danish “just invent fictitious examples” is the DST rule, not a dataset.
+DST publishes **no** synthetic microdata. Closest Danish "just invent fictitious examples" is the DST rule, not a dataset.
 
 ---
 
@@ -180,7 +180,7 @@ DST publishes **no** synthetic microdata. Closest Danish “just invent fictitio
 
 - Writes to any repo other than `sara-schwartz/fiktive`
 - Hardcodes register structure instead of walking schema columns
-- Uses fakeregs’ yearly random pool
+- Uses fakeregs' yearly random pool
 - Calls output extracts
 - Invents SCHEMA GAPs / DST code lists (including hardcoded `koen` 1/2 when schema is absent)
 - Silent format-noise for clinical nomenclatures (ICD / ATC / SKS) instead of published catalogues or SCHEMA GAP
