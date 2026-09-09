@@ -185,6 +185,8 @@ derived_column <- function(id, rows, schema = NULL) {
   switch(
     id,
     pnr = rows$pnr,
+    # Cancerregisteret person key (rename before joining DST pnr).
+    k_cprnr = rows$pnr,
     familie_id = if ("familie_id" %in% names(rows)) rows$familie_id else NULL,
     koen = rows$koen,
     foed_dag = rows$foed_dag,
@@ -195,7 +197,13 @@ derived_column <- function(id, rows, schema = NULL) {
     alder_haend = age_years(rows$foed_dag, when),
     aldr = age_years(rows$foed_dag, when),
     v_alder = age_years(rows$foed_dag, when),
+    v_diagnosealder = age_years(rows$foed_dag, when),
+    v_diagaar = as.numeric(lubridate::year(when)),
+    v_diagmd = as.numeric(lubridate::month(when)),
     fdato = rows$foed_dag,
+    d_fdsdato = rows$foed_dag,
+    d_diagnosedato = when,
+    d_statdato = when,
     doddato = when,
     eksd = when,
     haend_dato = when,
