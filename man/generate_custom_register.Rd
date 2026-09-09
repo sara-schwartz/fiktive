@@ -14,7 +14,10 @@ generate_custom_register(
   seed = NULL,
   scenario = NULL,
   parent = NULL,
-  cadence = NULL
+  cadence = NULL,
+  fidelity = c("clean", "messy"),
+  na_rate = NULL,
+  outlier_rate = NULL
 )
 }
 \arguments{
@@ -38,7 +41,10 @@ required and household-side for \code{household_year}.}
 
 \item{seed}{Optional RNG seed.}
 
-\item{scenario}{Must be \code{NULL} (independence).}
+\item{scenario}{Must be \code{NULL} (independence). Always attaches truth.}
+\item{fidelity}{\code{"clean"} (default) or \code{"messy"}.}
+\item{na_rate}{Optional override in \eqn{[0,1]}.}
+\item{outlier_rate}{Optional override in \eqn{[0,1]}.}
 
 \item{parent}{Already-generated parent table when
 \code{one_row_per = "expand_from_parent"}.}
@@ -49,6 +55,7 @@ required and household-side for \code{household_year}.}
 A tibble of structural noise that joins on \code{join_keys}.
 }
 \description{
+Opt-in fidelity (\code{clean}/\code{messy}) and always-on independence truth (STEP 8a).
 Front door for researcher-described tables that are not in the guide YAML.
 Wraps the same grain engine as schema generation.
 \code{\link{generate_register}} stays schema-ids only.
