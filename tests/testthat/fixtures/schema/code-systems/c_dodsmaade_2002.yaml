@@ -1,0 +1,16 @@
+# TEST DOUBLE — manner of death from 2002. Distinct codes from c_dodsmaade.
+id: c_dodsmaade_2002
+enumerated: true
+values_complete: true
+lookup:
+  "0": {da: "Ulykke"}
+  "1": {da: "Voldshandling"}
+  "2": {da: "Selvmord"}
+  "4": {da: "Uoplyst"}
+  "5": {da: "Naturlig dod"}
+periods:
+  - {code: "0", da: "Ulykke", valid_from: 2002-01-01, valid_to: null}
+  - {code: "1", da: "Voldshandling", valid_from: 2002-01-01, valid_to: null}
+  - {code: "2", da: "Selvmord", valid_from: 2002-01-01, valid_to: null}
+  - {code: "4", da: "Uoplyst", valid_from: 2002-01-01, valid_to: null}
+  - {code: "5", da: "Naturlig dod", valid_from: 2002-01-01, valid_to: null}

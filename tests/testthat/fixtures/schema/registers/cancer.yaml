@@ -1,0 +1,87 @@
+# TEST DOUBLE only — event_from_person tumour grain; types from live
+# registers-guide cancer.yaml @ tip (no invented code lists).
+id: cancer
+name: "Cancerregisteret (test double)"
+one_row_per: event_from_person
+update_cadence: annual
+reference_timing: event
+coverage:
+  from: 1943
+  to: 2024
+join_keys: [k_cprnr]
+columns:
+  - id: k_cprnr
+    name: k_cprnr
+    type: character
+    role: join_key
+  - id: k_tumornr
+    name: k_tumornr
+    type: character
+    role: code
+  - id: d_diagnosedato
+    name: d_diagnosedato
+    type: date
+    role: date
+  - id: d_fdsdato
+    name: d_fdsdato
+    type: date
+    role: date
+  - id: d_statdato
+    name: d_statdato
+    type: date
+    role: date
+  - id: c_icd10
+    name: c_icd10
+    type: character
+    role: code
+    code_system: icd10
+    coverage: {from: 1978, to: 2024}
+  - id: c_orggr_idc10
+    name: c_orggr_idc10
+    type: character
+    role: code
+    code_system: icd10
+    coverage: {from: 1978, to: 2024}
+  - id: c_kommune
+    name: c_kommune
+    type: character
+    role: code
+    code_system: kom
+    coverage: {from: 1978, to: 2024}
+  - id: c_region
+    name: c_region
+    type: character
+    role: code
+    code_system: reg
+    coverage: {from: 2006, to: 2024}
+  - id: c_sex
+    name: c_sex
+    type: character
+    role: code
+  - id: c_behandling
+    name: c_behandling
+    type: character
+    role: code
+    coverage: {from: 1943, to: 2003}
+  - id: c_topo3
+    name: c_topo3
+    type: character
+    role: code
+    coverage: {from: 1978, to: 2024}
+  - id: c_morfo03
+    name: c_morfo03
+    type: character
+    role: code
+    coverage: {from: 1978, to: 2024}
+  - id: v_diagnosealder
+    name: v_diagnosealder
+    type: numeric
+    role: value
+  - id: v_diagaar
+    name: v_diagaar
+    type: numeric
+    role: value
+  - id: v_diagmd
+    name: v_diagmd
+    type: numeric
+    role: value

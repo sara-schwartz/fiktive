@@ -20,11 +20,12 @@ Zero rows is a valid event or child table.
 \description{
 \code{scenario = NULL} is independence. Snapshot grains: \code{bef} (quarterly),
 \code{udda} and \code{akm} (annual). Event-from-person: \code{dod}, \code{lmdb},
-\code{vnds}. Expand-from-parent: LPR2 (\code{lpr_adm} then \code{lpr_diag} /
-\code{lpr_sksopr} / \code{lpr_sksube}) and LPR3 (\code{lpr_a_kontakt} then
-\code{lpr_a_diagnose} / \code{lpr_a_procregistrering}) off the same contact
-table. LPR procedure codes sample \code{sksr::SKS_labels} at runtime.
-ICD-10 diagnosis columns SCHEMA GAP until a published ICD-10 catalogue is
-chosen (not SKS, not ATC, not decoder). Psych LPR (\code{t_psyk_*}) is not
-this step. Never mix \code{vnds} with \code{vnds_hist}/\code{vnds_ind}/\code{vnds_ud}.
+\code{vnds}, \code{cancer}. Expand-from-parent: LPR2 (\code{lpr_adm} then
+\code{lpr_diag} / \code{lpr_sksopr} / \code{lpr_sksube}) and LPR3
+(\code{lpr_a_kontakt} then \code{lpr_a_diagnose} / \code{lpr_a_procregistrering})
+off the same contact table. Household-year: \code{faik}. Branch on
+\code{code_system}: plain \code{icd10} (cancer) samples
+\code{codeCollection::ICD10Koodit}; \code{icd10_sks} samples sksr Prefix dia.
+Psych LPR (\code{t_psyk_*}) is not this step. Never mix \code{vnds} with
+\code{vnds_hist}/\code{vnds_ind}/\code{vnds_ud}.
 }

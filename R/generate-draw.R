@@ -31,14 +31,16 @@ draw_independent_column <- function(col, n, schema, register_id = NULL, when = N
   unique_ids <- unique(cs_ids)
   if (length(unique_ids) == 1L) {
     return(draw_from_code_system(
-      unique_ids[[1]], col, n, schema, register_id = register_id, type = type, role = role, name = name
+      unique_ids[[1]], col, n, schema, register_id = register_id, type = type, role = role, name = name,
+      when = when
     ))
   }
   out <- vector(mode = mode_for_type(type), length = n)
   for (cid in unique_ids) {
     idx <- which(cs_ids == cid)
     out[idx] <- draw_from_code_system(
-      cid, col, length(idx), schema, register_id = register_id, type = type, role = role, name = name
+      cid, col, length(idx), schema, register_id = register_id, type = type, role = role, name = name,
+      when = when[idx]
     )
   }
   coerce_schema_type(out, type)
@@ -69,7 +71,60 @@ resolve_code_system_ids <- function(col, n, when) {
   ifelse(!is.na(years) & years <= until_y, prev_id, primary)
 }
 
-draw_from_code_system <- function(cs_id, col, n, schema, register_id, type, role, name) {
+
+# Sample from static or periodised lookup. Returns NULL when no keys available
+# (caller falls through to catalogue / typed_noise). Never merges distinct
+# code-system ids (c_dodsmaade vs c_dodsmaade_2002 stay separate files).
+sample_lookup_keys <- function(cs, cs_id, n, when = NULL) {
+  n <- as.integer(n)[[1]]
+  if (n == 0L) {
+    return(character())
+  }
+  periods <- cs$periods
+  use_periods <- !is.null(periods) && length(periods) && !is.null(when) && length(when)
+  if (!use_periods) {
+    keys <- lookup_keys(cs)
+    if (is.null(keys) || !length(keys)) {
+      return(NULL)
+    }
+    if (identical(cs_id, "civst")) {
+      keys <- setdiff(keys, "D")
+    }
+    return(sample(keys, n, replace = TRUE))
+  }
+  when <- as.Date(when)
+  if (length(when) == 1L && n > 1L) {
+    when <- rep(when, n)
+  }
+  if (length(when) != n) {
+    keys <- lookup_keys_at(cs, when = when[[1]])
+    if (is.null(keys) || !length(keys)) {
+      return(NULL)
+    }
+    if (identical(cs_id, "civst")) {
+      keys <- setdiff(keys, "D")
+    }
+    return(sample(keys, n, replace = TRUE))
+  }
+  out <- character(n)
+  for (d in unique(when)) {
+    idx <- which(when == d)
+    keys <- lookup_keys_at(cs, when = d)
+    if (is.null(keys) || !length(keys)) {
+      keys <- lookup_keys(cs)
+    }
+    if (is.null(keys) || !length(keys)) {
+      return(NULL)
+    }
+    if (identical(cs_id, "civst")) {
+      keys <- setdiff(keys, "D")
+    }
+    out[idx] <- sample(keys, length(idx), replace = TRUE)
+  }
+  out
+}
+
+draw_from_code_system <- function(cs_id, col, n, schema, register_id, type, role, name, when = NULL) {
   cs_id <- as.character(cs_id %||% "")
   if (!nzchar(cs_id)) {
     return(typed_noise(type, n, role = role, name = name))
@@ -85,17 +140,11 @@ draw_from_code_system <- function(cs_id, col, n, schema, register_id, type, role
 
   # kind:none must not use invented fixture lookups as SoT (hfaudd soft-warn).
   vf_kind <- as.character((cs$values_from$kind) %||% "")
-  keys <- if (identical(vf_kind, "none")) {
-    NULL
-  } else {
-    lookup_keys(cs)
-  }
-  if (!is.null(keys) && length(keys)) {
-    if (identical(cs_id, "civst")) {
-      keys <- setdiff(keys, "D")
+  if (!identical(vf_kind, "none")) {
+    drawn <- sample_lookup_keys(cs, cs_id, n, when = when)
+    if (!is.null(drawn)) {
+      return(coerce_schema_type(drawn, type))
     }
-    drawn <- sample(keys, n, replace = TRUE)
-    return(coerce_schema_type(drawn, type))
   }
 
   if (identical(cs_id, "icd10")) {

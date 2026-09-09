@@ -1,0 +1,19 @@
+# TEST DOUBLE — manner of death to 2001. Periods honour code-4 meaning change.
+id: c_dodsmaade
+enumerated: true
+values_complete: true
+lookup:
+  "1": {da: "Naturlig dod"}
+  "2": {da: "Ulykke"}
+  "3": {da: "Selvmord"}
+  "4": {da: "Drab/vold"}
+  "5": {da: "Uoplyst"}
+periods:
+  - {code: "1", da: "Naturlig dod", valid_from: 1971-01-01, valid_to: null}
+  - {code: "2", da: "Ulykke", valid_from: 1971-01-01, valid_to: null}
+  - {code: "3", da: "Selvmord", valid_from: 1991-01-01, valid_to: null}
+  - {code: "4", da: "Selvmord", valid_from: 1977-01-01, valid_to: 1990-12-31}
+  - {code: "4", da: "Drab/vold", valid_from: 1991-01-01, valid_to: null}
+  - {code: "5", da: "Uoplyst", valid_from: 1991-01-01, valid_to: null}
+  - {code: "6", da: "Drab/vold", valid_from: 1971-01-01, valid_to: 1990-12-31}
+  - {code: "9", da: "Uoplyst", valid_from: 1971-01-01, valid_to: 1990-12-31}

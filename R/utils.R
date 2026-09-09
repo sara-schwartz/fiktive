@@ -131,6 +131,8 @@ coerce_schema_type <- function(x, type) {
   )
 }
 
+# Static lookup keys (era-collapsed). Prefer lookup_keys_at() when a row date
+# is known and the code system carries `periods` (e.g. c_dodsmaade).
 lookup_keys <- function(cs) {
   if (is.null(cs)) {
     return(NULL)
@@ -147,6 +149,50 @@ lookup_keys <- function(cs) {
   }
   keep <- nzchar(nms) & !vapply(lu, is.null, logical(1))
   nms[keep]
+}
+
+# Periodised date-filter lookup. Honour `periods` when present (c_dodsmaade
+# code 4 meaning change; codes 6/9 stop at 1990; c_dodsmaade_2002 is a
+# different set — never merge the two). Falls back to static lookup_keys().
+lookup_keys_at <- function(cs, when = NULL) {
+  if (is.null(cs)) {
+    return(NULL)
+  }
+  periods <- cs$periods
+  if (is.null(periods) || !length(periods) || is.null(when) || !length(when)) {
+    return(lookup_keys(cs))
+  }
+  when <- as.Date(when)[[1]]
+  if (is.na(when)) {
+    return(lookup_keys(cs))
+  }
+  codes <- character()
+  for (p in periods) {
+    code <- as.character(p$code %||% "")
+    if (!nzchar(code) || identical(code, "blank")) {
+      next
+    }
+    vf <- p$valid_from
+    vt <- p$valid_to
+    from <- if (is.null(vf) || (is.character(vf) && !nzchar(vf))) {
+      as.Date("0001-01-01")
+    } else {
+      as.Date(vf)
+    }
+    to <- if (is.null(vt) || (is.character(vt) && !nzchar(vt))) {
+      as.Date("9999-12-31")
+    } else {
+      as.Date(vt)
+    }
+    if (!is.na(from) && !is.na(to) && when >= from && when <= to) {
+      codes <- c(codes, code)
+    }
+  }
+  codes <- unique(codes)
+  if (!length(codes)) {
+    return(lookup_keys(cs))
+  }
+  codes
 }
 
 schema_column_ids <- function(register_obj) {
