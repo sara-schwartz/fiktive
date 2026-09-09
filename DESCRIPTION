@@ -12,7 +12,9 @@ Imports:
     purrr,
     lubridate,
     rlang,
-    yaml
+    yaml,
+    sksr,
+    codeCollection
 Suggests:
     testthat (>= 3.0.0),
     arrow,
@@ -20,8 +22,6 @@ Suggests:
     simDAG,
     fabricatr,
     simsurv,
-    sksr,
-    readxl,
-    codeCollection
+    readxl
 Config/testthat/edition: 3
 RoxygenNote: 7.3.2

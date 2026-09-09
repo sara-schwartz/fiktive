@@ -29,13 +29,35 @@ generate_background_population <- function(n, seed = NULL, schema = NULL, ...) {
     span <- as.integer(birth_to - birth_from)
     foed_dag <- birth_from + sample.int(span + 1L, n, replace = TRUE) - 1L
     koen_keys <- koen_lookup_keys(schema)
-    koen <- as.integer(sample(koen_keys, n, replace = TRUE))
+    koen <- as.integer(sample_koen(koen_keys, n))
     tibble::tibble(
       pnr = pnr,
       foed_dag = as.Date(foed_dag),
       koen = koen
     )
   })
+}
+
+# koen.yaml's own reader_note: sex is derived deterministically from the CPR
+# number (even digit = female, odd = male), so a real delivery essentially
+# never contains DST's residual `9` ("Uoplyst") code even though the
+# classification defines it as valid. Draw the schema's binary sex codes
+# (1/2) evenly and keep any other lookup keys (9, or a future addition) as a
+# rare residual rather than uniform across the whole lookup.
+sample_koen <- function(keys, n) {
+  binary <- keys[keys %in% c(1L, 2L)]
+  residual <- keys[!keys %in% c(1L, 2L)]
+  if (!length(binary)) {
+    return(as.integer(sample(keys, n, replace = TRUE)))
+  }
+  if (!length(residual)) {
+    return(as.integer(sample(binary, n, replace = TRUE)))
+  }
+  weights <- c(
+    rep(0.999 / length(binary), length(binary)),
+    rep(0.001 / length(residual), length(residual))
+  )
+  as.integer(sample(c(binary, residual), n, replace = TRUE, prob = weights))
 }
 
 koen_lookup_keys <- function(schema) {

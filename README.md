@@ -31,13 +31,26 @@ commit used as `schema_commit`. The YAML is consumed at runtime and is not
 vendored into this package as the source of truth. Pass a local schema root
 (a directory that contains `registers/`) for offline use.
 
-## Prior art
+For the full list of register ids you can pass to `registers=`, see
+[Available registers](#available-registers) at the bottom of this page.
 
-[fakeregs](https://github.com/steno-aarhus/fakeregs) by Anders Aasted Isaksen
-is prior art for fictitious Danish register data. fiktive is **not** a
-fakeregs clone: people are a stable spine (not a yearly random pool), columns
-are driven from the live schema, and this package does not copy fakeregs
-architecture.
+## Installation
+
+```r
+# From GitHub (this repo is not on CRAN)
+remotes::install_github("sara-schwartz/fiktive")
+```
+
+**Imports** (installed automatically with the package above, all on CRAN):
+dplyr, tibble, purrr, lubridate, rlang, yaml, sksr, codeCollection.
+
+- `sksr` — samples published SKS codes (LPR procedures/diagnoses,
+  `code_system: icd10_sks` / `sks`).
+- `codeCollection` — samples plain WHO ICD-10 (`code_system: icd10`) and
+  WHO-form ATC codes (LMDB `atc` column).
+
+Optional, only needed for specific alternate backends or running the test
+suite: `install.packages(c("testthat", "arrow", "simstudy", "simDAG", "fabricatr", "simsurv", "readxl"))`.
 
 ## Usage
 
@@ -52,7 +65,7 @@ library(fiktive)
 
 # Load the live registers-guide schema (stamps schema_commit on every table)
 schema <- load_registers_schema()
-schema$schema_commit
+schema$schema_commit  # git commit of registers-guide this schema came from
 
 # Stable person spine: n people, shared across every register you generate
 pop <- generate_background_population(
@@ -307,8 +320,8 @@ study_m <- generate_custom_register(
   fidelity = "clean",      # MNAR is the scenario bias — keep fidelity clean
   cadence = "annual"
 )
-get_truth(study_m)$expected_naive
-get_truth(study_m)$expected_adjusted
+get_truth(study_m)$expected_naive     # biased naive estimate under MNAR (≠ 2.0)
+get_truth(study_m)$expected_adjusted  # true coefficient (2.0)
 
 # --- Complete-case selection (8d) -------------------------------------------
 # What: rows dropped with selection depending on a column.
@@ -332,8 +345,8 @@ study_s <- generate_custom_register(
   fidelity = "clean",
   cadence = "annual"
 )
-get_truth(study_s)$expected_naive
-get_truth(study_s)$expected_adjusted
+get_truth(study_s)$expected_naive     # biased complete-case estimate (≠ 1.8)
+get_truth(study_s)$expected_adjusted  # true coefficient (1.8)
 ```
 
 Quick map of constructors → truth claim:
@@ -382,3 +395,49 @@ get_truth(bef)$expected_naive   # 0 under independence
 register_stamps(bef)$fidelity   # "messy"
 register_stamps(bef)$na_rate    # effective rate used
 ```
+
+## Available registers
+
+Pass any `id` below to `registers=` in `generate_register()` /
+`generate_registers()` — no `generate_custom_register()` step needed. That
+function is only for columns the guide doesn't define (see [Custom /
+external register](#custom--external-register-structure-only) above).
+
+This reflects the live schema at the time of writing (27 registers). Since
+fiktive loads the schema live rather than vendoring it, the guide can add or
+change registers between releases — run `names(load_registers_schema()$registers)`
+for the current, definitive set.
+
+| id | Register | Grain | Notes |
+|---|---|---|---|
+| `akm` | Arbejdsklassifikationsmodulet (labour classification) | person_reference_date | Socioeconomic status per person per year (employed, unemployed, pensioner, …) |
+| `bef` | Befolkningen (population register) | person_reference_date | Quarterly population snapshot: demographics, municipality, marital status |
+| `cancer` | Cancerregisteret | event_from_person | One row per incident cancer diagnosis |
+| `dod` | Døde i Danmark (deaths) | event_from_person | One row per death; date of death |
+| `dodsaars` | Dødsårssagsregistret | event_from_person | Cause of death 1970–2001. Closed |
+| `dodsaasg` | Dødsårsagsregister | event_from_person | Cause of death 2002–2022. Closed |
+| `dodsaarsager` | Dødsårsagsregister | event_from_person | Cause of death 2022–. Current |
+| `faik` | Familieindkomster (family income) | household_year | Household-level income, keyed on household not person |
+| `lab_dm_forsker` | Laboratoriedatabasens Forskertabel | event_from_person | Lab test results per request |
+| `lmdb` | Lægemiddeldatabasen (prescription register) | event_from_person | One row per dispensed prescription |
+| `lpr_adm` | Landspatientregistret (LPR2) — admin/contact | event_from_person | Parent for `lpr_diag` / `lpr_sksopr` / `lpr_sksube` |
+| `lpr_diag` | LPR2 — diagnoser | expand_from_parent | Child of `lpr_adm` (join on `recnum`) |
+| `lpr_sksopr` | LPR2 — operationer | expand_from_parent | Child of `lpr_adm` (join on `recnum`) |
+| `lpr_sksube` | LPR2 — undersøgelser og behandlinger | expand_from_parent | Child of `lpr_adm` (join on `recnum`) |
+| `lpr_a_kontakt` | LPR3 — kontaktoplysninger | event_from_person | Parent for `lpr_a_diagnose` / `lpr_a_procregistrering` |
+| `lpr_a_diagnose` | LPR3 — diagnoseoplysning | expand_from_parent | Child of `lpr_a_kontakt` (join on `dw_ek_kontakt`) |
+| `lpr_a_procregistrering` | LPR3 — procedureregistreringer | expand_from_parent | Child of `lpr_a_kontakt` (join on `dw_ek_kontakt`) |
+| `t_psyk_adm` | LPR psykiatri — administrative oplysninger | event_from_person | Parent for `t_psyk_diag`; separate from `lpr_adm` |
+| `t_psyk_diag` | LPR psykiatri — diagnoser | expand_from_parent | Child of `t_psyk_adm` |
+| `mfr` | MFR — levendefødte | event_from_person | One row per live birth (mother + child) |
+| `sysi` | Sygesikring (6-cifret) | event_from_person | Primary-care fee settlements |
+| `sssy` | Sygesikring (6-cifret) | event_from_person | Continuation of `sysi`; same shape |
+| `udda` | Uddannelser (BUE, education) | person_reference_date | Completed-education code per person per year |
+| `vnds` | Historiske vandringer (migrations) | event_from_person | One row per migration event (immigration or emigration) |
+| `vnds_hist` | Historiske vandringer 1973–2004 | event_from_person | Frozen; closed, not updated |
+| `vnds_ind` | Indvandringer (immigrations, 2005–) | event_from_person | One row per immigration |
+| `vnds_ud` | Udvandringer (emigrations, 2005–) | event_from_person | One row per emigration |
+
+`expand_from_parent` registers need their parent generated in the same
+`registers=` call (or already generated) — see [LPR parent then
+child](#lpr-parent-then-child) above.
