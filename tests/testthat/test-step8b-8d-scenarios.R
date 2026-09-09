@@ -129,6 +129,35 @@ test_that("MNAR: stamped naive != adjusted; complete-case biased vs beta", {
   cc_est <- unname(stats::coef(stats::lm(y ~ x, data = cc))[["x"]])
   # Complete-case should not recover beta tightly under strong MNAR-on-Y.
   expect_true(abs(cc_est - beta) > 0.05)
+  # Regression: expected_naive is simulated from this scenario's own
+  # mnar_intercept/mnar_coefficient (see simulate_expected_naive_selection()
+  # in R/truth.R), not a fixed beta*0.5 placeholder that ignored the actual
+  # bias strength -- it should track the real naive fit, not just differ
+  # from beta.
+  expect_equal(tr$expected_naive, cc_est, tolerance = 0.1)
+})
+
+test_that("MNAR expected_naive tracks mnar_coefficient strength, not a fixed offset", {
+  schema <- fixture_schema()
+  beta <- 2.0
+  weak <- scenario_mnar(
+    exposure = "study.x", outcome = "study.y", coefficient = beta,
+    mnar_intercept = -1, mnar_coefficient = 0.1
+  )
+  strong <- scenario_mnar(
+    exposure = "study.x", outcome = "study.y", coefficient = beta,
+    mnar_intercept = -1, mnar_coefficient = 5
+  )
+  pop <- tiny_pop(schema, n = 4000L, seed = 505)
+  tab_weak <- gen_person_custom(pop, schema, weak, seed = 505)
+  tab_strong <- gen_person_custom(pop, schema, strong, seed = 505)
+  naive_weak <- get_truth(tab_weak)$expected_naive
+  naive_strong <- get_truth(tab_strong)$expected_naive
+  # Weak missingness should barely move the naive estimate off beta; strong
+  # missingness should move it substantially further -- these must differ
+  # (the old beta * 0.5 heuristic stamped the same 1.0 for both).
+  expect_true(abs(naive_weak - beta) < 0.2)
+  expect_true(abs(naive_strong - beta) > abs(naive_weak - beta) + 0.2)
 })
 
 test_that("complete-case selection: naive != adjusted as stamped", {

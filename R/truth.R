@@ -285,6 +285,44 @@ expected_naive_confounding_identity <- function(beta, a_ue, a_uy,
   beta + a_uy * a_ue * var_u / var_e
 }
 
+# MNAR / complete-case selection bias (identity link) has no closed form for
+# a logit-shaped P(missing | on) in general -- it depends on the exposure's
+# actual distribution, which make_truth_from_scenario() cannot see (truth is
+# a function of the scenario alone, not the generated data). This simulates
+# the exact same DGP the real generator uses (draw_outcome_from_exposure(),
+# invlogit() selection) against a standard-normal reference exposure, with a
+# fixed internal seed so it is a deterministic calculation, not a fresh
+# random draw. It is exact for a standard-normal exposure and an
+# approximation otherwise -- accuracy degrades the further the real exposure
+# is from that (e.g. a narrow uniform range, or a skewed/bounded column).
+.MNAR_SIM_N <- 200000L
+.MNAR_SIM_SEED <- 20260909L
+
+simulate_expected_naive_selection <- function(beta, intercept, sigma,
+                                              bias_intercept, bias_coefficient,
+                                              on_is_exposure, drop_rows) {
+  with_rng_seed(.MNAR_SIM_SEED, {
+    n <- .MNAR_SIM_N
+    x <- stats::rnorm(n)
+    y <- intercept + beta * x + stats::rnorm(n, sd = sigma)
+    z <- if (isTRUE(on_is_exposure)) x else y
+    p <- stats::plogis(bias_intercept + bias_coefficient * z)
+    if (isTRUE(drop_rows)) {
+      keep <- stats::runif(n) < p
+      x_obs <- x[keep]
+      y_obs <- y[keep]
+    } else {
+      miss <- stats::runif(n) < p
+      x_obs <- x[!miss]
+      y_obs <- y[!miss]
+    }
+    if (length(x_obs) < 30L || stats::sd(x_obs) < 1e-8) {
+      return(NA_real_)
+    }
+    unname(stats::coef(stats::lm(y_obs ~ x_obs))[[2]])
+  })
+}
+
 #' @noRd
 make_truth_from_scenario <- function(scenario) {
   sc <- as_fiktive_scenario(scenario)
@@ -391,19 +429,35 @@ make_truth_from_scenario <- function(scenario) {
         "full-data (or correctly adjusted) %s fit of %s ~ %s",
         link, outcome, exposure
       )
-      # Under MNAR-on-outcome, complete-case OLS is biased; stamp a distinct
-      # naive expectation. For identity we use a qualitative offset marker:
-      # expected_naive != beta. Exact finite-sample bias depends on the MNAR
-      # curve; tests check naive estimate closer to stamped naive and
-      # adjusted (full-data before NA, or known beta) closer to beta.
-      # Use a fixed distinct value derived from MNAR slope sign.
-      mnar_slope <- as.numeric(b$coefficient %||% 1)[[1]]
-      # Heuristic asymptotic bias direction for identity + MNAR on Y:
-      # complete-case attenuates toward 0 when missingness rises with |Y|
-      # and exposure is related; stamp attenuated target for tests.
-      exp_naive <- beta * 0.5
-      if (identical(exp_naive, beta)) {
-        exp_naive <- beta - sign(beta + 1e-8) * 0.5
+      # Under MNAR-on-outcome, complete-case OLS is biased. For identity
+      # link, simulate the actual naive expectation under this scenario's
+      # own mnar_intercept/mnar_coefficient (see
+      # simulate_expected_naive_selection()) instead of a fixed offset that
+      # ignored how strong the missingness mechanism actually is.
+      on_ref <- as.character(b$on %||% outcome)[[1]]
+      if (identical(link, "identity") &&
+          (identical(tolower(on_ref), tolower(outcome)) ||
+           identical(tolower(on_ref), tolower(exposure)))) {
+        exp_naive <- simulate_expected_naive_selection(
+          beta = beta,
+          intercept = as.numeric(assoc$intercept %||% 0)[[1]],
+          sigma = as.numeric(assoc$sigma %||% 1)[[1]],
+          bias_intercept = as.numeric(b$intercept %||% -1)[[1]],
+          bias_coefficient = as.numeric(b$coefficient %||% 1)[[1]],
+          on_is_exposure = identical(tolower(on_ref), tolower(exposure)),
+          drop_rows = FALSE
+        )
+      } else {
+        exp_naive <- NA_real_
+      }
+      if (is.na(exp_naive)) {
+        # Non-identity link, or `on` references a third column this
+        # simulation has no information about: fall back to a fixed
+        # distinct value so expected_naive != expected_adjusted still holds.
+        exp_naive <- beta * 0.5
+        if (identical(exp_naive, beta)) {
+          exp_naive <- beta - sign(beta + 1e-8) * 0.5
+        }
       }
       return(structure(
         list(
@@ -434,11 +488,35 @@ make_truth_from_scenario <- function(scenario) {
         "population (pre-selection) %s fit of %s ~ %s",
         link, outcome, exposure
       )
-      sel_slope <- as.numeric(b$coefficient %||% 1)[[1]]
-      # Selection on outcome biases the slope; stamp distinct naive.
-      exp_naive <- beta * 0.5
-      if (identical(exp_naive, beta)) {
-        exp_naive <- beta - sign(beta + 1e-8) * 0.5
+      # Selection on outcome biases the slope. For identity link, simulate
+      # the actual naive expectation under this scenario's own
+      # selection_intercept/selection_coefficient (see
+      # simulate_expected_naive_selection()) instead of a fixed offset that
+      # ignored how strong the selection mechanism actually is.
+      on_ref <- as.character(b$on %||% outcome)[[1]]
+      if (identical(link, "identity") &&
+          (identical(tolower(on_ref), tolower(outcome)) ||
+           identical(tolower(on_ref), tolower(exposure)))) {
+        exp_naive <- simulate_expected_naive_selection(
+          beta = beta,
+          intercept = as.numeric(assoc$intercept %||% 0)[[1]],
+          sigma = as.numeric(assoc$sigma %||% 1)[[1]],
+          bias_intercept = as.numeric(b$intercept %||% 0)[[1]],
+          bias_coefficient = as.numeric(b$coefficient %||% 1)[[1]],
+          on_is_exposure = identical(tolower(on_ref), tolower(exposure)),
+          drop_rows = TRUE
+        )
+      } else {
+        exp_naive <- NA_real_
+      }
+      if (is.na(exp_naive)) {
+        # Non-identity link, or `on` references a third column this
+        # simulation has no information about: fall back to a fixed
+        # distinct value so expected_naive != expected_adjusted still holds.
+        exp_naive <- beta * 0.5
+        if (identical(exp_naive, beta)) {
+          exp_naive <- beta - sign(beta + 1e-8) * 0.5
+        }
       }
       return(structure(
         list(

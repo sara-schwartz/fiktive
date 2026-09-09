@@ -266,26 +266,40 @@ opt-in scenario/truth oracle) is functionally reached for every register
 currently in `registers-guide`. Open items below are extensions/hardening
 on top of that, not blockers to the core product.
 
-### Known gap — MNAR / complete-case `expected_naive` is a fixed heuristic, not derived
+### Resolved — MNAR / complete-case `expected_naive` was a fixed heuristic, now simulated (2026-09-09)
 
-`make_truth_from_scenario()` (`R/truth.R`, both the `mnar` and
-`complete_case` branches) stamps `expected_naive <- beta * 0.5` — a
-constant 50% attenuation — regardless of the actual `mnar_coefficient` /
-`selection_coefficient` strength the caller passed in. Confirmed
-empirically: with `coefficient = 2.0`, the real naive OLS fit on the
-actual generated data moves from **2.02** (weak MNAR, `mnar_coefficient =
-0.1`) to **1.78** (`= 1.2`) to **1.53** (`= 5`) — real, coefficient-strength-
-dependent attenuation — while the stamped `expected_naive` stays frozen at
-**1.0** in all three cases. For the opt-in AI-eval use case (does the
-model recover the known answer?), this means the oracle can be further
-from the real data's actual naive estimate than a correct analysis would
-be, at most `mnar_coefficient`/`selection_coefficient` settings. Not a
-crash, not silently wrong for the **adjusted** estimate (that one's
-correct: pinned to `beta`), just an imprecise `expected_naive`. Tightening
-this to a real closed-form or simulation-derived function of
-`mnar_coefficient` / `selection_coefficient` (rather than a fixed
-constant) is a PLAN-scope decision, not a bug fix — flagging here rather
-than changing it unilaterally.
+Was: `make_truth_from_scenario()` stamped `expected_naive <- beta * 0.5` —
+a constant 50% attenuation — regardless of the actual
+`mnar_coefficient`/`selection_coefficient` strength. Confirmed empirically
+at the time: with `coefficient = 2.0`, the real naive OLS fit moved from
+2.02 (weak, `mnar_coefficient = 0.1`) to 1.78 (`= 1.2`) to 1.53 (`= 5`)
+while the stamp stayed frozen at 1.0 throughout.
+
+Fix: for identity link with `on` targeting the exposure or outcome (the
+common case — self-censoring on Y, or on the exposure), `expected_naive`
+is now computed by `simulate_expected_naive_selection()` in `R/truth.R` —
+a deterministic Monte Carlo simulation (fixed internal seed, N=200k) of
+the *exact* generator mechanism (`draw_outcome_from_exposure()` +
+`invlogit()` selection) against a **standard-normal reference exposure**.
+Verified against real generated data (`Uniform(-2, 2)` exposure, not the
+reference distribution): now within ~0.01–0.02 of the actual naive fit
+across weak/medium/strong `mnar_coefficient`/`selection_coefficient`,
+versus being off by up to 1.0 before.
+
+Known remaining limitation: still an approximation, not exact, since
+`make_truth_from_scenario()` has no visibility into the real exposure's
+actual distribution (only the scenario, not the generated data) — accuracy
+is best for roughly symmetric, unit-scale exposures and degrades for
+exposures far from that (e.g. a narrow uniform range, or a
+skewed/bounded schema column). Non-identity links (`logit`/`log`) and an
+`on` column that references neither the exposure nor outcome still fall
+back to the old fixed-offset heuristic (no closed form / no simulatable
+info in those cases either way) — same as before, not a regression.
+
+Adjusted estimate was never affected (`expected_adjusted` was, and
+remains, correctly pinned to `beta`). Regression tests added:
+`tests/testthat/test-step8b-8d-scenarios.R` ("MNAR expected_naive tracks
+mnar_coefficient strength, not a fixed offset").
 
 ### Deferred biases — still deferred
 
