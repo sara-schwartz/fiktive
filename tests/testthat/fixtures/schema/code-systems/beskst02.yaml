@@ -1,0 +1,18 @@
+# TEST DOUBLE — BESKST02/BESKST13 published codes (2002 onwards). Shared list.
+id: beskst02
+enumerated: true
+values_complete: true
+lookup:
+  "01": {da: "Selvstaendig", en: null}
+  "02": {da: "Medarbejdende aegtefaelle", en: null}
+  "03": {da: "Loenmodtager og ejer af virksomhed", en: null}
+  "04": {da: "Loenmodtager", en: null}
+  "05": {da: "Loenmodtager med understoettelse", en: null}
+  "06": {da: "Pensionist og ejer af virksomhed", en: null}
+  "07": {da: "Pensionist", en: null}
+  "08": {da: "Oevrige", en: null}
+  "09": {da: "Efterloensmodtager", en: null}
+  "10": {da: "Arbejdslos mindst halvdelen af aaret", en: null}
+  "11": {da: "Modtager af dagpenge", en: null}
+  "12": {da: "Kontanthjaelpsmodtager", en: null}
+  "99": {da: "Ikke i AKM", en: null}

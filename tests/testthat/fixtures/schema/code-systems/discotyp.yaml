@@ -1,0 +1,16 @@
+# TEST DOUBLE — DISCOTYP published codes (source of DISCO occupation code).
+id: discotyp
+enumerated: true
+values_complete: true
+lookup:
+  "0": {da: "Uoplyst", en: null}
+  "1": {da: "Stat", en: null}
+  "2": {da: "Kommune", en: null}
+  "3": {da: "A-kasse", en: null}
+  "4": {da: "Privat virksomhed, mindst 10 ansatte", en: null}
+  "5": {da: "CPR (1991-1999)", en: null}
+  "6": {da: "Foregaaende aar, samme arbejdsgiver", en: null}
+  "7": {da: "Uddannelse igangvaerende", en: null}
+  "8": {da: "A-kasse og branchekode", en: null}
+  "9": {da: "Uddannelse afsluttet + branche", en: null}
+  "10": {da: "Danmarks Statistiks e-indkomstregister", en: null}

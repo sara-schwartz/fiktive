@@ -1,0 +1,9 @@
+# TEST DOUBLE — matches live values_from.kind:none (302 codes, no CSV).
+id: nystgr
+enumerated: false
+values_complete: false
+labels_complete: false
+values_from:
+  kind: none
+  note: "Browse DST Hoejkvalitetsvariable NYSTGR; no downloadable file."
+lookup: null

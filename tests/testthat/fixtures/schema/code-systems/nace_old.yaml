@@ -1,0 +1,9 @@
+# TEST DOUBLE — matches live values_from.kind:none (pre-DB07 NACE closed).
+id: nace_old
+enumerated: false
+values_complete: false
+labels_complete: false
+values_from:
+  kind: none
+  note: "No published pre-DB07 NACE list; do not invent from nace_db07."
+lookup: null

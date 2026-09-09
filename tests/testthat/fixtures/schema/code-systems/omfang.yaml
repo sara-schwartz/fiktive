@@ -1,0 +1,12 @@
+# TEST DOUBLE — OMFANG tax-liability scope published codes.
+id: omfang
+enumerated: true
+values_complete: true
+lookup:
+  "0": {da: "Boern under 15 aar uden indkomst (1998-2001)", en: null}
+  "1": {da: "Fuldt skattepligtig primo og ultimo", en: null}
+  "2": {da: "Ikke boet i DK hele aaret / doed i aaret", en: null}
+  "3": {da: "I oplysningsseddel men ikke slutligning", en: null}
+  "4": {da: "Under 15 uden indkomst / ikke skattepligtig", en: null}
+  "5": {da: "Doed (bobehandling) uden indkomst", en: null}
+  "6": {da: "Indkomst usandsynlig, kan ikke rettes", en: null}
