@@ -21,13 +21,7 @@
 
 .FIKTIVE_PRESENCE_ROLES <- c("presence", "presence_flag")
 
-#' Resolve fidelity preset + optional rate overrides
-#'
-#' @param fidelity `"clean"` or `"messy"`.
-#' @param na_rate Optional override in `[0, 1]`.
-#' @param outlier_rate Optional override in `[0, 1]`.
-#' @return Named list: `preset`, `na_rate`, `outlier_rate`.
-#' @keywords internal
+#' @noRd
 resolve_fidelity <- function(fidelity = c("clean", "messy"),
                              na_rate = NULL,
                              outlier_rate = NULL) {
@@ -103,12 +97,7 @@ is_presence_column <- function(col) {
   role %in% .FIKTIVE_PRESENCE_ROLES
 }
 
-#' Columns eligible for MCAR-ish NA under fidelity
-#'
-#' Non-key, non-derived, non-presence only. Join keys / presence / derived
-#' (e.g. `alder`) stay complete.
-#'
-#' @keywords internal
+#' @noRd
 fidelity_na_eligible <- function(tbl, spec) {
   nms <- names(tbl)
   if (!length(nms)) {
@@ -132,12 +121,7 @@ fidelity_na_eligible <- function(tbl, spec) {
   nms[keep]
 }
 
-#' Columns eligible for rare extremes under fidelity
-#'
-#' Numeric / date / datetime only; never invent invalid catalogue codes.
-#' Join keys, derived, presence, and `code_system` columns are excluded.
-#'
-#' @keywords internal
+#' @noRd
 fidelity_outlier_eligible <- function(tbl, spec) {
   nms <- fidelity_na_eligible(tbl, spec)
   if (!length(nms)) {
@@ -186,13 +170,7 @@ infer_vec_type <- function(x) {
   "character"
 }
 
-#' Apply opt-in fidelity (MCAR-ish NA + rare extremes)
-#'
-#' @param tbl Generated tibble.
-#' @param spec Register spec (schema or custom) with `columns` / `join_keys`.
-#' @param fidelity_info From [resolve_fidelity()].
-#' @return `tbl` with fidelity applied and stamped.
-#' @keywords internal
+#' @noRd
 apply_fidelity <- function(tbl, spec, fidelity_info) {
   if (!is.data.frame(tbl)) {
     stop("`tbl` must be a data frame / tibble.", call. = FALSE)
