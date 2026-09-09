@@ -126,6 +126,9 @@ typed_noise <- function(type, n, role = NULL, name = NULL, code_system = NULL, c
   if (identical(type, "numeric")) {
     return(stats::runif(n, 0.5, 20))
   }
+  if (identical(type, "logical")) {
+    return(sample(c(TRUE, FALSE), n, replace = TRUE))
+  }
   if (identical(type, "date")) {
     return(as.Date("1990-01-01") + sample.int(10000L, n, replace = TRUE) - 1L)
   }
