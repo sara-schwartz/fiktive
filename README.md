@@ -43,17 +43,21 @@ library(fiktive)
 # 1. Load the rulebook: column names, types, and codes for real Danish registers
 schema <- load_registers_schema()
 
-# 2. Make 100 fake people (the same people appear in every table you generate)
-pop <- generate_background_population(n = 100, seed = 1, schema = schema)
+# 2. Make some fake people (the same people appear in every table you generate)
+pop <- generate_background_population(
+  n = 100,        # however many people you want -- 100 is just an example
+  seed = 1,       # any number; the same seed always gives the same people
+  schema = schema
+)
 
 # 3. Generate the registers you want, for those people
 tables <- generate_registers(
-  registers = c("bef", "lmdb"),   # "population register" + "prescriptions"
+  registers = c("bef", "lmdb"),   # "population register" + "prescriptions" -- pick any ids from the table below
   population = pop,
   schema = schema,
-  from = as.Date("2008-01-01"),   # window start
+  from = as.Date("2008-01-01"),   # window start -- these dates are just an example, use your own
   to = as.Date("2009-12-31"),     # window end
-  seed = 1
+  seed = 1                        # any number; same seed -> same fake data every time
 )
 
 tables$bef    # a tibble: fake population snapshots
@@ -91,15 +95,27 @@ the whole interface, no matter which register it is.
 
 ## Saving your data to files
 
+`write_register()` saves **one** table. `write_registers()` saves **every**
+table in a named list (like `tables` from `generate_registers()`) in one
+call — it's just a shortcut for calling `write_register()` on each one
+yourself.
+
 ```r
-write_register(tables$bef, "out/bef")      # writes out/bef.csv
-write_registers(tables, "out/registers")   # writes one .csv per table in the list
+write_register(tables$bef, "out/bef")      # one table -> writes out/bef.csv
+write_registers(tables, "out/registers")   # whole list -> writes out/registers/bef.csv, out/registers/lmdb.csv, ...
 ```
 
-CSV is the default (parquet is available too — pass `format = "parquet"`).
-Each file also gets a small `.meta.yaml` sidecar recording exactly how it
-was generated, so you can always prove later which schema version and seed
-made a given file.
+CSV is the default. For parquet instead, add `format = "parquet"` to either
+function:
+
+```r
+write_register(tables$bef, "out/bef", format = "parquet")    # writes out/bef.parquet
+write_registers(tables, "out/registers", format = "parquet") # same, for every table
+```
+
+Either way, each file also gets a small `.meta.yaml` sidecar recording
+exactly how it was generated, so you can always prove later which schema
+version and seed made a given file.
 
 ## Joining tables together
 
@@ -133,7 +149,7 @@ lpr <- generate_registers(
   registers = c("lpr_adm", "lpr_diag"),   # lpr_adm = the visit, lpr_diag = its diagnoses
   population = pop,
   schema = schema,
-  from = as.Date("2010-01-01"),   # this call can use its own window
+  from = as.Date("2010-01-01"),   # this call can use its own window -- doesn't have to match other calls
   to = as.Date("2010-12-31"),
   seed = 1
 )
@@ -166,15 +182,15 @@ cols <- tibble::tibble(
 )
 
 ext <- generate_custom_register(
-  id = "my_study",
+  id = "my_study",   # any name you want for this table
   one_row_per = "person_reference_date",   # one row per person per snapshot date
   columns = cols,
   population = pop,
   schema = schema,
-  from = as.Date("2008-01-01"),
+  from = as.Date("2008-01-01"),   # dates are just an example, use your own window
   to = as.Date("2009-12-31"),
   seed = 1,
-  cadence = "annual"   # one snapshot per year
+  cadence = "annual"   # one snapshot per year ("quarterly" is the other option)
 )
 
 dplyr::inner_join(tables$bef, ext, by = "pnr", relationship = "many-to-many")
@@ -182,9 +198,36 @@ dplyr::inner_join(tables$bef, ext, by = "pnr", relationship = "many-to-many")
 
 ## Checking whether your analysis code is actually correct
 
-This is the feature that makes fiktive more than a random-data generator:
-you can tell it to secretly bake in a real, known relationship, then check
-whether *your own analysis script* actually finds it.
+Normally when you test analysis code, you don't actually know what the
+right answer is supposed to be — you're just checking that it runs and the
+output looks plausible. fiktive lets you flip that around: you tell it a
+real, exact relationship to secretly build into the data ("increasing `x`
+by 1 always increases `y` by 1.5, on average"), it generates fake data with
+that relationship baked in, and it hands you back that true number. You
+then run **your own** analysis code on the fake data and check whether it
+finds the same number. If it doesn't, the bug is in your code — not the
+data.
+
+Three steps: **describe the relationship to plant → generate data with
+it → compare your analysis against fiktive's true answer.**
+
+**Step 1 — describe the relationship.** `scenario_association()` says
+"column `x` affects column `y`, and here's the true effect size":
+
+```r
+# "increasing x by 1 increases y by 1.5, on average" -- the true, known answer
+sc <- scenario_association(exposure = "study.x", outcome = "study.y", coefficient = 1.5)
+```
+
+`exposure` is the column doing the affecting, `outcome` is the column
+being affected, `coefficient` is the true effect size (change this to
+whatever number you want to test against). `"study.x"` means "column `x`
+on the table called `study`" — the table you generate next.
+
+**Step 2 — generate the data with that relationship.** Same
+`generate_custom_register()` as in [Making up your own
+columns](#making-up-your-own-columns) above, just with `scenario = sc`
+added:
 
 ```r
 cols <- tibble::tibble(
@@ -192,23 +235,27 @@ cols <- tibble::tibble(
   min = c(-2, -2), max = c(2, 2)
 )
 
-# "x causes a 1.5-point increase in y" -- the true, known answer
-sc <- scenario_association(exposure = "study.x", outcome = "study.y", coefficient = 1.5)
-
 study <- generate_custom_register(
   id = "study", one_row_per = "person_reference_date", columns = cols,
   population = pop, schema = schema,
   from = as.Date("2008-01-01"), to = as.Date("2008-12-31"),
   seed = 1, scenario = sc, cadence = "annual"
 )
-
-# Now run YOUR analysis, e.g.:
-fit <- lm(y ~ x, data = study)
-coef(fit)[["x"]]                  # should come out close to 1.5
-
-# ...and compare it against the true answer fiktive is telling you:
-get_truth(study)$expected_naive   # 1.5 -- if your fit is way off, your code has a bug
 ```
+
+**Step 3 — run your own analysis, then compare it to the true answer.**
+`get_truth()` gives you back the answer fiktive planted — it comes free
+with anything you generate, you never pass it in yourself:
+
+```r
+fit <- lm(y ~ x, data = study)
+coef(fit)[["x"]]                  # your analysis's answer -- should come out close to 1.5
+
+get_truth(study)$expected_naive   # fiktive's true answer: 1.5
+```
+
+If those two numbers are close, your analysis code works. If they're way
+off, something in your code needs fixing — not the data.
 
 Beyond a plain association, fiktive can plant trickier situations, so you
 can test whether your code handles them correctly too:
@@ -222,7 +269,12 @@ can test whether your code handles them correctly too:
 
 All four work the same way as the example above: build the scenario, pass
 it as `scenario=`, then compare your own fit against
-`get_truth(x)$expected_naive` / `$expected_adjusted`. Run `?scenario_confounding`,
+`get_truth(x)$expected_naive` (the answer a straightforward analysis
+should find) and `$expected_adjusted` (the answer after doing it
+properly — e.g. adjusting for the confounder). For a plain association
+those two are the same number; for the trickier scenarios they're
+deliberately different, which is exactly what lets you test whether your
+code does the adjustment correctly. Run `?scenario_confounding`,
 `?scenario_mnar`, or `?scenario_complete_case` for each one's full parameter
 list and a runnable example.
 
