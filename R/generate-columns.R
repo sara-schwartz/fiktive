@@ -12,6 +12,7 @@ emit_schema_table <- function(spec, rows, schema) {
   used_sks <- FALSE
   used_atc <- FALSE
   used_icd_who <- FALSE
+  used_labterm <- FALSE
   out <- list()
   for (col in cols) {
     name <- as.character(col$name %||% col$id)
@@ -33,6 +34,10 @@ emit_schema_table <- function(spec, rows, schema) {
     if ((identical(cs_id, "atc") || identical(name, "atc")) && nrow(rows) > 0L) {
       used_atc <- TRUE
     }
+    if ((identical(name, "analysiscode") ||
+         identical(as.character(col$id %||% ""), "analysiscode")) && nrow(rows) > 0L) {
+      used_labterm <- TRUE
+    }
   }
   tbl <- tibble::as_tibble(out)
   if (used_sks) {
@@ -45,6 +50,9 @@ emit_schema_table <- function(spec, rows, schema) {
   }
   if (used_atc) {
     tbl <- stamp_atc_catalogue(tbl)
+  }
+  if (used_labterm && !used_sks && !used_atc && !used_icd_who) {
+    tbl <- stamp_labterm_catalogue(tbl)
   }
   tbl
 }
@@ -190,6 +198,9 @@ derived_column <- function(id, rows, schema = NULL) {
     # MFR Levendefoedte: join_keys is cpr_barn; schema relationship names BEF
     # column `pnr` — map carefully, do not invent an mfr `pnr` column.
     cpr_barn = rows$pnr,
+    # Lab_dm_forsker: join_keys patient_cpr ← pop pnr (map carefully).
+    patient_cpr = rows$pnr,
+    samplingdate = when,
     foedselsdato = when,
     foedselsaar = as.character(lubridate::year(when)),
     familie_id = if ("familie_id" %in% names(rows)) rows$familie_id else NULL,
