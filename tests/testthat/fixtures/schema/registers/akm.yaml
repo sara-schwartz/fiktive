@@ -1,4 +1,4 @@
-# TEST DOUBLE only
+# TEST DOUBLE only — types + code_system wiring mirrored from live tip 8079ab8e.
 id: akm
 name: "AKM (test double)"
 one_row_per: person_reference_date
@@ -27,6 +27,72 @@ columns:
   - id: beskst13
     name: beskst13
     type: integer
+    role: code
+    code_system: beskst02
+    coverage: {from: 1991, to: 2024}
+  - id: beskst
+    name: beskst
+    type: numeric
+    role: code
+    code_system: beskst
+    coverage: {from: 1976, to: 2001}
+  - id: beskst02
+    name: beskst02
+    type: numeric
+    role: code
+    code_system: beskst02
+    coverage: {from: 2002, to: 2013}
+  - id: branche_77
+    name: branche_77
+    type: character
+    role: code
+    code_system: branche_77
+    coverage: {from: 1980, to: 1999}
+  - id: disco08_alle_indk_13
+    name: disco08_alle_indk_13
+    type: character
+    role: code
+    code_system: disco08
+    coverage: {from: 2010, to: 2024}
+  - id: disco_alle_indk_13
+    name: disco_alle_indk_13
+    type: character
+    role: code
+    code_system: disco_old
+    coverage: {from: 1991, to: 2009}
+  - id: discotyp
+    name: discotyp
+    type: character
+    role: code
+    code_system: discotyp
+    coverage: {from: 1991, to: 2024}
+  - id: nace_db07_13
+    name: nace_db07_13
+    type: character
+    role: code
+    code_system: nace_db07
+    coverage: {from: 2007, to: 2024}
+  - id: nace_13
+    name: nace_13
+    type: character
+    role: code
+    code_system: nace_old
+    coverage: {from: 1993, to: 2007}
+  - id: nystgr
+    name: nystgr
+    type: character
+    role: code
+    code_system: nystgr
+    coverage: {from: 1980, to: 1999}
+  - id: omfang
+    name: omfang
+    type: character
+    role: code
+    code_system: omfang
+    coverage: {from: 1991, to: 2024}
+  - id: cprtjek
+    name: cprtjek
+    type: character
     role: code
     coverage: {from: 1991, to: 2024}
   - id: alder_ult_ink
