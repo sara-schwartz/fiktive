@@ -172,7 +172,7 @@ generate_custom_snapshot <- function(population, schema, spec, from, to, seed, c
     grid <- tibble::tibble(
       pnr = rep(pop$pnr, each = length(dates)),
       referencetid = rep(dates, times = nrow(pop))
-    }
+    )
     rows <- dplyr::left_join(grid, pop, by = "pnr")
     rows <- rows[rows$referencetid >= rows$foed_dag, , drop = FALSE]
     rows$year <- as.integer(lubridate::year(rows$referencetid))
@@ -213,7 +213,7 @@ generate_custom_events <- function(population, schema, spec, from, to, seed) {
     }
     rows <- dplyr::bind_rows(pieces)
     if (!nrow(rows)) {
-      return(emit_custom_table(spec, empty_scaffold(spec), schema))
+      return(emit_custom_table(spec, empty_scaffold(spec), schema)}
     }
     rows$year <- as.integer(lubridate::year(rows$referencetid))
     emit_custom_table(spec, rows, schema)
