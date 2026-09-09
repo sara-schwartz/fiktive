@@ -1,4 +1,4 @@
-# fiktive — locked plan (2026-09-01, catch-up 2026-09-06, catalogue lock 2026-09-06, ICD split 2026-09-06)
+# fiktive — locked plan (2026-09-01, catch-up 2026-09-06, catalogue lock 2026-09-06, ICD split 2026-09-06, STEP 7 lock 2026-09-09)
 
 Canonical project plan. Locked product decisions. Agents follow this; do not invent a second product.
 
@@ -83,9 +83,11 @@ A few generators, not one function per register:
 1. **Status snapshot** — person × reference date (BEF; then UDDA, AKM) — schema `person_reference_date`
 2. **Event-from-person** — DOD, LMDB, VNDS, … (empty event tables are valid)
 3. **Expand-from-parent** — LPR diagnoses/procedures off the **same** contact table that was written; psych LPR (`t_psyk_*`) is its own pair (`lpr2_psychiatric`)
-4. **FAIK** — schema `one_row_per: household_year` (household-year on `familie_id`, not a person snapshot). Implement when reached in the build sequence; do not fake a person-level grain.
+4. **FAIK / household_year** — schema `one_row_per: household_year` (household-year on `familie_id`, not a person snapshot)
 
 `year` is fastreg hive **tooling**, not a DST variable.
+
+Custom/external registers may use **any existing** schema grain above (including `household_year`). A grain the schema does not have is a **SCHEMA GAP** — stop; do not invent.
 
 ---
 
@@ -104,16 +106,60 @@ Internal stable persons: `pnr`, `foed_dag`, `koen`. Same pnr ⇒ same birth/sex.
 
 Do **not** dump all schema registers. The user names what they want. Skip an id and it is not created.
 
-- Current API: `generate_register(id, ...)` one table. Same `population` + window so tables join.
-- Do **not** add `generate_registers()` until the write-out/docs step (locked 2026-09-01).
+- Schema path: `generate_register(id, ...)` one table. Same `population` + window so tables join.
+- Batch path (STEP 7): `generate_registers(registers = c(...), ...)` — **`registers` is required**; never a silent default of every implemented id. Not "all registers."
+- Custom/external path (STEP 7): `generate_custom_register(...)` — see below. Not overloaded into `generate_register("bef")`.
 - Before calling the package usable: README and user instructions must make this opt-in choice obvious. LPR diagnoses/procedures require the parent contact table that was generated.
+
+---
+
+## STEP 7 — write-out, batch opt-in, custom external (locked 2026-09-09)
+
+### Write-out
+
+- Primary return value remains in-memory tables.
+- **Default on-disk format: CSV.** Parquet (and optional hive `year=` via arrow) are **opt-in**, not the default.
+- Stamp schema commit, seed, package version, and catalogue stamps when catalogues were used.
+- Never call outputs extracts.
+
+### Batch schema generation
+
+- `generate_registers(registers = c("bef", "lmdb", ...), population, schema, ...)` builds the named schema registers only.
+- Missing / unknown ids → clear error (or SCHEMA GAP), not silent skip-all.
+
+### Custom / external registers (structure only)
+
+**Purpose:** researcher-described tables that are **not** in the guide YAML, so pipeline code that joins an external register can be rehearsed. **Never raw rows. Never coefficients. Never prevalences.**
+
+**API (easiest path):**
+
+- Register metadata = **R function arguments** on `generate_custom_register()`: at least `id`, `one_row_per`, `join_keys`, plus `population` / `schema` / window like schema generators.
+- Columns = **CSV path or tibble** with: `name`, `type`, optional `min`, `max`, `values` (small allowed set for structural noise — user stubs, not DST catalogues).
+- YAML is **not** required for the normal path.
+- `generate_custom_register()` is the front door; it wraps the **same engine** as schema generation. `generate_register(id)` stays **schema ids only**.
+
+**Defaults / rules:**
+
+- Default `join_keys` for person-side grains: `pnr` (shared population spine — no second person spine).
+- If `one_row_per = "household_year"`, `join_keys` must be household-side (e.g. `familie_id`) — do **not** silently default to `pnr`.
+- Types limited to what we already emit (`character` / `integer` / `numeric` / `date` / `logical`) unless schema later expands.
+- Optional ranges / `values` describe structural noise only; signal/DGP stays in scenarios (STEP 8).
+- Empty event-grain custom tables remain valid.
+- `expand_from_parent` customs require an explicit already-generated parent table; do not invent parents.
+- Custom columns become referenceable as `register.column` once in the run (for later scenarios); coefficients never live in the column CSV.
+
+**Non-goals:** new grains; synthpop-from-real / raw extracts; dumping all schema registers; batch of many customs inside `generate_registers` in STEP 7 (customs stay one-at-a-time unless later extended).
+
+### README / docs (same step)
+
+Document: pick registers → generate → write CSV → join; LPR parent/child; one custom-external example (CSV columns + R args).
 
 ---
 
 ## Scenario and truth API
 
-- `generate_register(..., scenario = NULL)` = independence. A later `generate_registers(registers = c(...), scenario = NULL)` is the same, still opt-in, not "all registers".
-- `fiktive_scenario`: `id`, `version`, empty `associations` / `confounders` / `biases`, `backend = "core"`. Column refs = schema ids (`bef.koen`). Coefficients never in YAML.
+- `generate_register(..., scenario = NULL)` = independence. `generate_registers(registers = c(...), scenario = NULL)` is the same, still opt-in, not "all registers".
+- `fiktive_scenario`: `id`, `version`, empty `associations` / `confounders` / `biases`, `backend = "core"`. Column refs = schema ids (`bef.koen`) or custom `register.column` once declared. Coefficients never in YAML / column CSV.
 - `fiktive_truth` **always** returned, even under independence. A bias claim is invalid unless it names: estimand, naive_estimator, adjusted_estimator, expected_naive, expected_adjusted. Independence: expected association 0 within MC error.
 - Confounding/bias scenarios only if the naive estimator is named.
 
@@ -125,9 +171,9 @@ Do **not** dump all schema registers. The user names what they want. Skip an id 
 2. Snapshot grain: UDDA, AKM — done (main)
 3. Event-from-person: DOD, LMDB, VNDS — done (main); `ym_start`/`ym_end` quarter digit fixed
 4. Expand-from-parent: LPR2 then LPR3; psych LPR as its own pair — done (main); harden for `icd10` vs `icd10_sks` split
-5. FAIK (household-year — grain now known in schema)
-6. New schema registers of known grain: **cancer** (STEP 6a, event_from_person, ICD10Koodit) — done; **mfr** / Levendefoedte (STEP 6b, event_from_person, join_keys `cpr_barn`, coverage 1997–2018 deprecated) — done; **lab_dm_forsker** (STEP 6c, event_from_person, join_keys `patient_cpr`, LabTerm/IFCC NPU for `analysiscode`, coverage 2008–2025) — done on main when merged; then custom structure-only
-7. Write-out — CSV always; parquet + hive `year=` via arrow; stamp schema commit + seed. **Also:** README and user instructions so choosing a few registers is obvious.
+5. FAIK (household-year) — done (main)
+6. New schema registers of known grain: cancer, mfr / Levendefødte, lab_dm_forsker — done (main); lookup hardens for FAIK/AKM/periodised codes — done
+7. **Write-out + batch opt-in + custom external + README** — STEP 7 (this lock); implement next
 8. Scenario + truth — independence first; then one known association; then confounding/bias only with named estimators
 
 Do not wait for per-step sign-off unless a product decision is blocking.
@@ -154,7 +200,7 @@ DST publishes **no** synthetic microdata. Closest Danish "just invent fictitious
 
 ## Backends — write vs call vs forbid
 
-**We write:** schema loader, population model, grains, custom-register spec, fastreg parquet layout, scenario/truth objects, `gen_pnr`, catalogue adapters that honour `values_from`.
+**We write:** schema loader, population model, grains, custom-register spec (`generate_custom_register` + CSV/tibble columns), write-out helpers (CSV default; parquet opt-in), `generate_registers`, scenario/truth objects, `gen_pnr`, catalogue adapters that honour `values_from`.
 
 **Imports:** yaml, arrow, withr, uuid, dplyr/tibble/purrr/lubridate/rlang, truncnorm.
 
@@ -186,5 +232,7 @@ DST publishes **no** synthetic microdata. Closest Danish "just invent fictitious
 - Silent format-noise for clinical nomenclatures (ICD / ATC / SKS) instead of published catalogues or SCHEMA GAP
 - Maps plain `icd10` through sksr dia / D-prefix, or emits bare WHO into `icd10_sks` LPR columns, or puts SKS surgery codes in diagnosis columns / ICD in surgery columns, or `sksr` ATC (`MC09…`) into ATC columns
 - Vendors schema YAML as the source of truth
-- Puts scenario coefficients in the YAML schema
+- Puts scenario coefficients in the YAML schema or in custom column CSV
 - Uses synthpop or real microdata
+- Implements `generate_registers()` that dumps all schema registers by default
+- Invents a new grain for custom/external registers
