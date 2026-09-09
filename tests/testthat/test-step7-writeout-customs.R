@@ -52,6 +52,58 @@ test_that("write_register parquet and hive_year are opt-in", {
   expect_true(length(year_dirs) >= 1L)
 })
 
+test_that("write_all_registers writes one file per table, each with a valid stamped sidecar", {
+  schema <- fixture_schema()
+  pop <- tiny_pop(schema, n = 6L, seed = 10)
+  tables <- generate_registers(
+    registers = c("bef", "udda"),
+    population = pop, schema = schema,
+    from = win_from, to = win_to, seed = 10
+  )
+  tmp <- tempfile("fiktive-write-all")
+  on.exit(unlink(tmp, recursive = TRUE), add = TRUE)
+  out_dir <- write_all_registers(tables, tmp)
+  expect_equal(out_dir, tmp)
+  for (nm in names(tables)) {
+    path <- file.path(tmp, paste0(nm, ".csv"))
+    expect_true(file.exists(path))
+    meta_path <- paste0(path, ".meta.yaml")
+    expect_true(file.exists(meta_path))
+    meta <- yaml::read_yaml(meta_path)
+    expect_equal(meta$schema_commit, schema$schema_commit)
+    expect_equal(meta$seed, 10)
+    re <- utils::read.csv(path, stringsAsFactors = FALSE)
+    expect_equal(nrow(re), nrow(tables[[nm]]))
+  }
+})
+
+test_that("write_all_registers parquet is opt-in, same as write_register", {
+  skip_if_not_installed("arrow")
+  schema <- fixture_schema()
+  pop <- tiny_pop(schema, n = 6L, seed = 11)
+  tables <- generate_registers(
+    registers = c("bef", "udda"),
+    population = pop, schema = schema,
+    from = win_from, to = win_to, seed = 11
+  )
+  tmp <- tempfile("fiktive-write-all-parquet")
+  on.exit(unlink(tmp, recursive = TRUE), add = TRUE)
+  write_all_registers(tables, tmp, format = "parquet")
+  for (nm in names(tables)) {
+    path <- file.path(tmp, paste0(nm, ".parquet"))
+    expect_true(file.exists(path))
+    expect_true(file.exists(paste0(path, ".meta.yaml")))
+  }
+})
+
+test_that("write_all_registers requires a named list of tibbles", {
+  tmp <- tempfile("fiktive-write-all-bad")
+  on.exit(unlink(tmp, recursive = TRUE), add = TRUE)
+  err <- tryCatch(write_all_registers(list(1, 2), tmp), error = function(e) e)
+  expect_s3_class(err, "error")
+  expect_match(err$message, "named list")
+})
+
 test_that("generate_registers requires registers= (no silent dump)", {
   schema <- fixture_schema()
   pop <- tiny_pop(schema, n = 5L, seed = 10)
