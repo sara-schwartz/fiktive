@@ -213,7 +213,7 @@ generate_custom_events <- function(population, schema, spec, from, to, seed) {
     }
     rows <- dplyr::bind_rows(pieces)
     if (!nrow(rows)) {
-      return(emit_custom_table(spec, empty_scaffold(spec), schema)}
+      return(emit_custom_table(spec, empty_scaffold(spec), schema))
     }
     rows$year <- as.integer(lubridate::year(rows$referencetid))
     emit_custom_table(spec, rows, schema)
