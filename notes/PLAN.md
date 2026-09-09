@@ -1,4 +1,4 @@
-# fiktive — locked plan (2026-09-01, catch-up 2026-09-06, catalogue lock 2026-09-06, ICD split 2026-09-06, STEP 7 lock 2026-09-09)
+# fiktive — locked plan (2026-09-01, catch-up 2026-09-06, catalogue lock 2026-09-06, ICD split 2026-09-06, STEP 7 lock 2026-09-09, STEP 8a lock 2026-09-09)
 
 Canonical project plan. Locked product decisions. Agents follow this; do not invent a second product.
 
@@ -163,6 +163,38 @@ Document: pick registers → generate → write CSV → join; LPR parent/child; 
 - `fiktive_truth` **always** returned, even under independence. A bias claim is invalid unless it names: estimand, naive_estimator, adjusted_estimator, expected_naive, expected_adjusted. Independence: expected association 0 within MC error.
 - Confounding/bias scenarios only if the naive estimator is named.
 
+### STEP 8a — independence path + opt-in fidelity (locked 2026-09-09)
+
+**First ship of STEP 8.** Wire the independence path and opt-in data-quality fidelity only. Informative MAR/MNAR, biasing outliers, confounding, and known associations are **not** in 8a — deferred to STEP 8b+.
+
+#### Independence (default)
+
+- `scenario = NULL` remains the default on `generate_register` / `generate_registers` / `generate_custom_register`.
+- Always return `fiktive_truth`, even under independence.
+- Under independence: expected association **0 within MC error**; bias fields null/empty as appropriate.
+- Coefficients never in YAML or custom column CSV.
+- No synthpop / real microdata.
+
+#### Opt-in fidelity (data quality) — NOT default association/bias
+
+Fidelity is **data quality** (MCAR-ish NA + rare numeric extremes), **not** informative missingness or confounding.
+
+- **API:** `fidelity = "clean" | "messy"` plus optional `na_rate` / `outlier_rate` overrides (each in [0, 1]).
+- **Default:** `fidelity = "clean"` (effective rates 0).
+- **`messy`:** small fixed MCAR-ish rates — document e.g. ~1–5% NA on eligible columns; rare numeric extremes. **Never invent DST rates from real microdata.**
+- **Overrides win** when set; stamp **preset + effective rates** on outputs.
+- **Column eligibility:**
+  - NA on **non-key, non-derived** columns only.
+  - Outliers **only** on numeric/date columns.
+  - Join keys, presence flags, and derived columns (e.g. `alder`) stay **COMPLETE**.
+- Same knobs on `generate_register` / `generate_registers` / `generate_custom_register`.
+
+#### Explicitly deferred to STEP 8b+
+
+- Informative MAR / MNAR missingness
+- Biasing outliers / confounding / known associations
+- Named estimands and naive/adjusted estimators beyond the independence truth stub
+
 ---
 
 ## Build sequence
@@ -173,8 +205,10 @@ Document: pick registers → generate → write CSV → join; LPR parent/child; 
 4. Expand-from-parent: LPR2 then LPR3; psych LPR as its own pair — done (main); harden for `icd10` vs `icd10_sks` split
 5. FAIK (household-year) — done (main)
 6. New schema registers of known grain: cancer, mfr / Levendefødte, lab_dm_forsker — done (main); lookup hardens for FAIK/AKM/periodised codes — done
-7. **Write-out + batch opt-in + custom external + README** — STEP 7 (this lock); implement next
-8. Scenario + truth — independence first; then one known association; then confounding/bias only with named estimators
+7. **Write-out + batch opt-in + custom external + README** — STEP 7 — done (main)
+8. Scenario + truth:
+   - **8a (first ship):** independence path (`scenario = NULL`); always return `fiktive_truth`; opt-in fidelity (`clean`/`messy` + rate overrides); eligibility rules — this lock
+   - **8b+ (later):** known associations; informative MAR/MNAR; biasing outliers; confounding/bias only with named estimators
 
 Do not wait for per-step sign-off unless a product decision is blocking.
 
@@ -236,3 +270,7 @@ DST publishes **no** synthetic microdata. Closest Danish "just invent fictitious
 - Uses synthpop or real microdata
 - Implements `generate_registers()` that dumps all schema registers by default
 - Invents a new grain for custom/external registers
+- Defaults `fidelity` to `"messy"` (must default `"clean"` / rates 0)
+- Applies NA to join keys, presence flags, or derived columns (e.g. `alder`) under fidelity
+- Treats fidelity outliers as inventing invalid clinical catalogue codes
+- Bakes missingness rates into registers-guide YAML
