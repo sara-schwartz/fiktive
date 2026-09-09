@@ -1,5 +1,5 @@
 # TEST DOUBLE only — household_year grain; structural noise (no family-graph truth).
-# Column types mirrored from live registers-guide faik.yaml (no invented code lists).
+# Column types + code_system wiring mirrored from live registers-guide faik.yaml.
 id: faik
 name: "FAIK (test double)"
 one_row_per: household_year
@@ -30,10 +30,12 @@ columns:
     name: famtype
     type: numeric
     role: code
+    code_system: famtype
   - id: famboligform
     name: famboligform
     type: numeric
     role: code
+    code_system: famboligform
   - id: famboligtype
     name: famboligtype
     type: numeric
@@ -46,6 +48,7 @@ columns:
     name: famsociogrup_13
     type: numeric
     role: code
+    code_system: socio13
   - id: version
     name: version
     type: numeric

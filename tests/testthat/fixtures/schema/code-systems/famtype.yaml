@@ -1,0 +1,13 @@
+# TEST DOUBLE — FAIK famtype published codes (no code 5).
+id: famtype
+enumerated: true
+values_complete: true
+lookup:
+  "0": {da: "Ingen oplysninger", en: "No information"}
+  "1": {da: "Aegtepar forskelligt kon", en: "Married couple, different sex"}
+  "2": {da: "Registreret partnerskab", en: "Registered partnership"}
+  "3": {da: "Samlevende par", en: "Cohabiting couple"}
+  "4": {da: "Samboende par", en: "Couple living together"}
+  "6": {da: "Enlig maend", en: "Single men"}
+  "7": {da: "Enlig kvinder", en: "Single women"}
+  "8": {da: "Aegtepar samme kon", en: "Married couple, same sex"}
