@@ -1,0 +1,8 @@
+# TEST DOUBLE — FAIK famboligform published codes.
+id: famboligform
+enumerated: true
+values_complete: true
+lookup:
+  "1": {da: "Ejerbolig", en: "Owner-occupied"}
+  "2": {da: "Lejebolig", en: "Rented"}
+  "9": {da: "Uoplyst", en: "Not stated"}

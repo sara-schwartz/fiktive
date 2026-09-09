@@ -48,7 +48,7 @@ Default generation is **structural noise that joins** (`scenario = NULL` = indep
 - Format authority when sources disagree: **registers-guide**. Branch on `code_system` id — do not assume every diagnosis column is D-prefixed SKS.
 - **Column coverage:** if a column has no `coverage`, inherit the register (or family) coverage. Do not treat a missing stamp as “column absent forever.”
 
-### Registers in YAML (as of 2026-09-06; guide tip assessed 263a131a on 2026-09-09)
+### Registers in YAML (as of 2026-09-06; guide tip assessed 9dea655d on 2026-09-09)
 
 Present (including recent adds): BEF, UDDA, AKM, DOD*, LMDB, VNDS*, LPR2/LPR3 somatic, `t_psyk_*`, FAIK, SSSY, SYSI, **cancer**, **mfr**, **lab_dm_forsker**, plus cause-of-death variants.
 

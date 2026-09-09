@@ -39,15 +39,31 @@ test_that("faik pnr is blank NA (not a real FAIK key / not person grain)", {
   expect_false(any(faik$pnr %in% pop$pnr, na.rm = TRUE))
 })
 
-test_that("faik code cols without code_system are typed noise from schema types", {
+test_that("faik CS-wired cols sample published lookups (not typed noise)", {
+  schema <- fixture_schema()
+  pop <- tiny_pop(schema, n = 20L, seed = 43)
+  faik <- generate_register("faik", pop, schema, faik_from, faik_to, seed = 43)
+  expect_true(nrow(faik) > 0L)
+
+  famtype_keys <- as.numeric(lookup_keys(schema$code_systems$famtype))
+  expect_true(all(faik$famtype %in% famtype_keys))
+  expect_false(5 %in% faik$famtype) # published set has no code 5
+  expect_type(faik$famtype, "double")
+
+  bolig_keys <- as.numeric(lookup_keys(schema$code_systems$famboligform))
+  expect_true(all(faik$famboligform %in% bolig_keys))
+  expect_type(faik$famboligform, "double")
+
+  socio_keys <- as.numeric(lookup_keys(schema$code_systems$socio13))
+  expect_true(all(faik$famsociogrup_13 %in% socio_keys))
+  expect_type(faik$famsociogrup_13, "double")
+})
+
+test_that("faik cols without code_system stay typed noise from schema types", {
   schema <- fixture_schema()
   pop <- tiny_pop(schema, n = 10L, seed = 43)
   faik <- generate_register("faik", pop, schema, faik_from, faik_to, seed = 43)
-  # Six numeric role=code columns (live types; no invented code lists)
-  for (nm in c(
-    "famtype", "famboligform", "famboligtype",
-    "famsociogrup", "famsociogrup_13", "version"
-  )) {
+  for (nm in c("famboligtype", "famsociogrup", "version")) {
     expect_true(nm %in% names(faik), info = nm)
     expect_type(faik[[nm]], "double")
     expect_false(all(is.na(faik[[nm]])), info = nm)

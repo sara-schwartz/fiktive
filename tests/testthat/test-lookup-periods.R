@@ -43,3 +43,43 @@ test_that("sample_lookup_keys date-filters across mixed event years", {
   expect_true(all(drawn[1:2] %in% c("1", "2", "4", "6", "9")))
   expect_true(all(drawn[3:4] %in% c("1", "2", "3", "4", "5")))
 })
+
+test_that("pattype periods date-filter LPR sheet codes (1 ends 2001; 3 ends 2013)", {
+  schema <- fixture_schema()
+  cs <- schema$code_systems$pattype
+  expect_true(!is.null(cs$periods))
+
+  y1980 <- lookup_keys_at(cs, when = as.Date("1980-06-15"))
+  expect_true(all(c("0", "1", "2") %in% y1980))
+  expect_false("3" %in% y1980)
+
+  y1995 <- lookup_keys_at(cs, when = as.Date("1995-06-15"))
+  expect_true(all(c("0", "1", "2", "3") %in% y1995))
+
+  y2010 <- lookup_keys_at(cs, when = as.Date("2010-06-15"))
+  expect_true(all(c("0", "2", "3") %in% y2010))
+  expect_false("1" %in% y2010) # Deldoegnspatient ends 2001-12-31
+
+  y2015 <- lookup_keys_at(cs, when = as.Date("2015-06-15"))
+  expect_true(all(c("0", "2") %in% y2015))
+  expect_false("1" %in% y2015)
+  expect_false("3" %in% y2015) # Skadestue ends 2013-12-31
+
+  # Periodised empty must not collapse to static 0-3.
+  set.seed(11)
+  when <- as.Date(c("2010-01-01", "2010-01-01", "2015-01-01", "2015-01-01"))
+  drawn <- sample_lookup_keys(cs, "pattype", length(when), when = when)
+  expect_true(all(drawn[1:2] %in% c("0", "2", "3")))
+  expect_true(all(drawn[3:4] %in% c("0", "2")))
+  expect_false(any(drawn[3:4] == "3"))
+})
+
+test_that("periodised lookup_keys_at does not fall back to static when empty", {
+  schema <- fixture_schema()
+  cs <- schema$code_systems$pattype
+  # Far future: only codes with open-ended valid_to remain (0, 2).
+  far <- lookup_keys_at(cs, when = as.Date("2099-01-01"))
+  expect_true(all(far %in% c("0", "2")))
+  expect_false("1" %in% far)
+  expect_false("3" %in% far)
+})

@@ -1,5 +1,23 @@
-# TEST DOUBLE — large nomenclature, not enumerated.
+# TEST DOUBLE — published SOCIO13 codes (era-safe subset; not invent noise).
+# Leaf codes mirror live registers-guide socio13.yaml (and FAIK delivery notes).
 id: socio13
-enumerated: false
+enumerated: true
 values_complete: false
-lookup: null
+lookup:
+  "110": {da: "Selvstaendige"}
+  "111": {da: "Selvstaendige med 10 eller flere ansatte"}
+  "112": {da: "Selvstaendige med 5-9 ansatte"}
+  "113": {da: "Selvstaendige med 1-4 ansatte"}
+  "114": {da: "Selvstaendige uden ansatte"}
+  "120": {da: "Medarbejdende aegtefaelle"}
+  "131": {da: "Loenmodtagere med ledelsesarbejde"}
+  "132": {da: "Loenmodtager hoejeste niveau"}
+  "134": {da: "Loenmodtager grundniveau"}
+  "135": {da: "Andre loenmodtagere"}
+  "210": {da: "Arbejdslose"}
+  "310": {da: "Under uddannelse"}
+  "321": {da: "Foertidspensionister"}
+  "322": {da: "Folkepensionister"}
+  "330": {da: "Kontanthjaelpsmodtagere"}
+  "410": {da: "Andre"}
+  "420": {da: "Boern under 15 aar"}

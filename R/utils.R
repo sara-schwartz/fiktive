@@ -153,7 +153,9 @@ lookup_keys <- function(cs) {
 
 # Periodised date-filter lookup. Honour `periods` when present (c_dodsmaade
 # code 4 meaning change; codes 6/9 stop at 1990; c_dodsmaade_2002 is a
-# different set — never merge the two). Falls back to static lookup_keys().
+# different set - never merge the two; pattype LPR-sheet eras). When `when` is
+# absent, falls back to static lookup_keys(); with a date, never re-admit
+# expired codes via the static set.
 lookup_keys_at <- function(cs, when = NULL) {
   if (is.null(cs)) {
     return(NULL)
@@ -188,11 +190,9 @@ lookup_keys_at <- function(cs, when = NULL) {
       codes <- c(codes, code)
     }
   }
-  codes <- unique(codes)
-  if (!length(codes)) {
-    return(lookup_keys(cs))
-  }
-  codes
+  # Periodised path: return the date-filtered set even when empty. Do not
+  # collapse back to the static lookup (that would re-admit expired codes).
+  unique(codes)
 }
 
 schema_column_ids <- function(register_obj) {
