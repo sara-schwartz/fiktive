@@ -1,9 +1,17 @@
-# TEST DOUBLE — published codes are 0–3 only.
+# TEST DOUBLE — LPR2 c_pattype from Kodeark periods (codes 0–3 only).
 id: pattype
 enumerated: true
 values_complete: true
 lookup:
-  "0": {da: "Heldoegns indlaeggelse", en: "Inpatient, full day"}
-  "1": {da: "Deldoegns indlaeggelse", en: "Inpatient, part day"}
-  "2": {da: "Ambulant", en: "Outpatient"}
-  "3": {da: "Skadestue", en: "Emergency room"}
+  "0": {da: "Indlagt patient", en: "Inpatient"}
+  "1": {da: "Deldoegnspatient", en: "Part-day inpatient"}
+  "2": {da: "Ambulant patient", en: "Outpatient"}
+  "3": {da: "Skadestuepatient", en: "Emergency room"}
+periods:
+  - {code: "0", da: "Heldoegnspatient", valid_from: 1977-01-01, valid_to: 2001-12-31}
+  - {code: "0", da: "Indlagt patient", valid_from: 2002-01-01, valid_to: null}
+  - {code: "1", da: "Dagpatient", valid_from: 1977-01-01, valid_to: 1986-12-31}
+  - {code: "1", da: "Deldoegnspatient", valid_from: 1987-01-01, valid_to: 2001-12-31}
+  - {code: "2", da: "Natpatient", valid_from: 1977-01-01, valid_to: 1986-12-31}
+  - {code: "2", da: "Ambulant patient", valid_from: 1987-01-01, valid_to: null}
+  - {code: "3", da: "Skadestuepatient", valid_from: 1987-01-01, valid_to: 2013-12-31}
