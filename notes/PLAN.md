@@ -52,7 +52,7 @@ Default generation is **structural noise that joins** (`scenario = NULL` = indep
 
 Present (including recent adds): BEF, UDDA, AKM, DOD*, LMDB, VNDS*, LPR2/LPR3 somatic, `t_psyk_*`, FAIK, SSSY, SYSI, **cancer**, **mfr**, **lab_dm_forsker**, plus cause-of-death variants.
 
-Still missing from YAML (not invented here): IND (person income), DREAM, BFL. Thin lookups: LMDB class columns without enumerations. AKM: tip 8079ab8e wires beskst/beskst02/branche_77/disco*/nace*/discotyp/nystgr/omfang (+ socio*); honour lookup or values_from csv|none (no invent).
+Thin lookups: LMDB class columns without enumerations. AKM: tip 8079ab8e wires beskst/beskst02/branche_77/disco*/nace*/discotyp/nystgr/omfang (+ socio*); honour lookup or values_from csv|none (no invent).
 
 Empty-on-purpose clinical/geo/occupation code systems (`enumerated: false`, `values_from` set): `icd10`, `icd10_sks`, `icd8`, `atc`, `sks`, `hfaudd`, `kom`, `kont_type`, `disco08`, `nace_db07`, `branche_77`, `nystgr`, `disco_old`, `nace_old`, …. fiktive **reads** `values_from` (`package` / `csv` / `none`) and samples the pointed catalogue — it does not invent lists and does not ignore the field. No parallel `values_from.reason` enum (`kind` already branches).
 
@@ -301,33 +301,50 @@ remains, correctly pinned to `beta`). Regression tests added:
 `tests/testthat/test-step8b-8d-scenarios.R` ("MNAR expected_naive tracks
 mnar_coefficient strength, not a fixed offset").
 
-### Deferred biases — still deferred
+### Deferred biases — proposed unpark plan (not locked; awaiting a decision)
 
-Immortal time, left truncation, code misclassification, and an open bias
-DSL remain **out of scope** per the 8d lock above; inventing any of them
-without a new PLAN lock is still a fail-a-PR condition. No change since
-the 8d lock — listed here only so "should we add these" has a clear
-current answer: not yet, needs an explicit decision to unpark.
+Still out of scope per the 8d lock; inventing any of these without a PLAN
+lock remains a fail-a-PR condition. The four deferred items are not one
+lump of equal-sized work — proposed split, for whenever there's a decision
+to unpark any of them:
 
-### Schema gaps still standing (verified against registers-guide commit `8305b87`, 2026-09-09)
+- **Code misclassification** — cheap, fits the existing architecture.
+  Same shape as `fidelity = "messy"`'s NA/outlier injection, applied to a
+  coded column instead: with probability `p`, swap the true code for a
+  different valid code from that column's own `code-systems/*.yaml`
+  lookup (optionally differential — probability depends on the outcome,
+  same pattern as `mnar`/`complete_case`). No new grain. Reuses
+  `sample_lookup_keys()` and the existing `biases` slot.
+- **Immortal time bias** / **left truncation** — a different order of
+  work. Both are fundamentally time-to-event (entry date, event/censoring
+  date, and for immortal time a time-varying exposure-start date), which
+  no current grain carries (snapshot / event / household-year all lack
+  entry-censoring-hazard structure). Needs a new grain and a real
+  survival-model truth derivation, not a tweak to the existing
+  linear/logit DGP — closer in scope to a new STEP than a new bias type.
+  Real value given how often immortal time bias specifically shows up in
+  pharmacoepi work, but deserves its own PLAN lock and design pass, not a
+  quick bolt-on alongside misclassification.
+- **Open bias DSL** — recommend leaving this gated indefinitely, not just
+  deferred. A formula-based "define your own bias" mechanism conflicts
+  with what makes the AI-eval use case trustworthy: every named bias
+  ships a derivable, honest `expected_naive`/`expected_adjusted`. An open
+  DSL either needs a general symbolic bias solver (a research project of
+  its own) or ships biases with no truth guarantee, quietly breaking the
+  one thing that makes the truth oracle worth trusting.
 
-IND (person income), DREAM, and BFL are still absent from
-`registers-guide/schema/registers/` — confirmed by directly checking the
-live repo, not just re-asserting the earlier note. fiktive cannot add
-these itself (schema is read-only from fiktive's side, per the repo
-boundary at the top of this file) — they need YAML added to
-`registers-guide` first. See the chat response in this session for the
-generic register-YAML shape and what's needed per register before fiktive
-can generate any of them.
+No change to scope has actually happened — this section exists so a
+future "should we add these" has a ready answer instead of re-deriving
+this split from scratch.
 
 ### Polish / ship
 
-- README: done this session (rewritten for new users).
+- README: done (rewritten for new users, table of contents added).
+- Renamed `zz-step8a-wire.R` -> `generate-api.R` and `write_registers()` ->
+  `write_all_registers()` — done.
 - Vignette: not started — no `vignettes/` directory, no `knitr`/`rmarkdown`
   in `DESCRIPTION` yet. Optional; the rewritten README may already cover
   most of what a vignette would.
-- "Rename" — unclear what this refers to; no prior reference found in
-  `notes/` or git history. Needs clarification before scoping.
 
 ---
 
