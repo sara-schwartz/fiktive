@@ -230,6 +230,102 @@ Fidelity is **data quality** (MCAR-ish NA + rare numeric extremes), **not** info
 
 ---
 
+## STEP 9 — time-to-event grain: immortal time bias + left truncation (locked 2026-09-09)
+
+Unparks 2 of the 4 deferred-bias items (open bias DSL stays gated per the
+proposal above; this is the "different order of work" item flagged there).
+Both are fundamentally survival-analysis biases, not a tweak to the
+existing linear/logit association DGP — no existing grain (snapshot /
+event / household-year / expand-from-parent) carries entry-censoring-hazard
+structure, so this adds a **new grain**, custom-register-only (no schema
+register currently has this shape; a schema register could adopt it later
+without any change here — same rule as every other grain).
+
+**Important asymmetry discovered during design, driving the sequencing
+below:** immortal time bias needs only a time-varying exposure on a
+constant-hazard (exponential) survival time — standard, well-understood.
+Left truncation, however, produces **no bias to demonstrate** under a
+constant hazard: the exponential distribution is memoryless, so "time
+since delayed entry" and "age, properly left-truncated" give the *same*
+unbiased answer regardless of how late entry is. Left truncation bias only
+exists when the hazard is **age-varying** (Weibull/Gompertz-shaped), so it
+needs a genuinely different hazard model, not a truncation wrapper around
+the same exponential machinery immortal time uses. These are sequenced as
+two phases for that reason, not because one is unimportant.
+
+### New grain: `time_to_event`
+
+- Added to `.KNOWN_GRAINS` (`R/generate.R`), custom-register-only via
+  `generate_custom_register(one_row_per = "time_to_event", ...)` — same
+  status as every other grain (a schema register could use it once
+  registers-guide documents one shaped this way; not invented into the
+  live schema here).
+- Fixed column shape (not user-described via a columns CSV/tibble, unlike
+  ordinary customs — the whole feature is the *correlation* between these
+  columns, which a user-supplied independent-column spec can't express):
+  `pnr`, `entry_time` (numeric, cohort entry on the risk time scale),
+  `exit_time` (numeric, event-or-censoring time), `event` (0/1 indicator).
+  Immortal-time custom registers add `exposure_start_time` (numeric,
+  `NA` if never exposed before `exit_time`) and `ever_exposed` (0/1
+  convenience flag).
+- Requires the `survival` package (`Surv()`, `coxph()`) for both the
+  generator's own truth simulation and for the examples a user would write
+  against the generated data. `survival` ships as part of every standard R
+  installation (an R "Recommended" package, not an optional extra) — add
+  to `Imports`, no new install burden in practice.
+
+### Phase 1 — immortal time bias
+
+- `scenario_immortal_time(baseline_hazard, true_hazard_ratio, exposure_rate, ...)`.
+- DGP (piecewise-exponential, the standard technique for a time-varying-
+  covariate survival simulation): draw an unexposed-clock event time at
+  `baseline_hazard`; draw an independent exposure-start time at
+  `exposure_rate`. If the unexposed clock fires first, the event happens
+  unexposed. If exposure would start first, re-draw the *remaining* time
+  from exposure start using hazard `baseline_hazard * true_hazard_ratio`
+  (memoryless property makes this exact, not approximate). Censor at the
+  requested window end.
+- Truth: `expected_adjusted` = `true_hazard_ratio` (log scale internally,
+  reported on the hazard-ratio scale) — what a correctly time-varying Cox
+  model (`coxph(Surv(tstart, tstop, event) ~ exposed)` with the exposure
+  window split via `survival::tmerge`/`survSplit`) recovers.
+  `expected_naive` = simulated (same deterministic-simulation pattern as
+  the MNAR/complete-case/misclassification hardening: fixed internal seed,
+  large N, single `coxph()` fit — not a closed form, since the naive bias
+  size depends on the baseline hazard and exposure-rate shape) from
+  treating `ever_exposed` as a **fixed baseline** covariate in
+  `coxph(Surv(entry_time, exit_time, event) ~ ever_exposed)` — the classic
+  immortal-time mistake. Expect `expected_naive < true_hazard_ratio`
+  (spurious protection) even when `true_hazard_ratio = 1`.
+
+### Phase 2 — left truncation
+
+- `scenario_left_truncation(shape, scale, age_effect, ...)` (Weibull
+  hazard: age-varying, needed for the bias to exist at all — see above).
+- DGP: draw each person's TRUE age-at-event via inverse-CDF from a Weibull
+  hazard; draw an independent `entry_age` (delayed entry); a person is
+  only observed at all if `entry_age < true_age_at_event` (left truncation
+  is a survivorship condition, not just a later time-zero) — same
+  selection-mechanic *shape* as `complete_case`, different scale (age, not
+  a linear outcome).
+- Truth: `expected_adjusted` = the true Weibull age-effect, recovered by
+  `coxph(Surv(entry_age, exit_age, event) ~ 1)` with truncation correctly
+  declared. `expected_naive` = simulated from the common mistake:
+  `coxph(Surv(exit_age - entry_age, event) ~ 1)`, i.e. treating time since
+  entry as time zero and discarding truncation entirely.
+
+### Non-goals (this lock)
+
+- No general time-varying-covariate framework beyond what immortal time
+  needs — not building a `tmerge`-style public API surface, just what the
+  two scenarios require internally.
+- No competing risks, no recurrent events.
+- Not wired into `generate_registers()` for schema ids (no schema register
+  has this grain yet) — `generate_custom_register()` only, same as every
+  other grain-gated feature.
+
+---
+
 ## Build sequence
 
 1. Skeleton + schema-driven BEF — done (main)
@@ -325,16 +421,10 @@ remaining item without a PLAN lock stays a fail-a-PR condition.
   (same known approximation limitation as MNAR/complete-case — exact bias
   depends on the real exposure's distribution, which truth computation
   can't see). 3 new tests, `R CMD check` 0/0/0.
-- **Immortal time bias** / **left truncation** — a different order of
-  work. Both are fundamentally time-to-event (entry date, event/censoring
-  date, and for immortal time a time-varying exposure-start date), which
-  no current grain carries (snapshot / event / household-year all lack
-  entry-censoring-hazard structure). Needs a new grain and a real
-  survival-model truth derivation, not a tweak to the existing
-  linear/logit DGP — closer in scope to a new STEP than a new bias type.
-  Real value given how often immortal time bias specifically shows up in
-  pharmacoepi work, but deserves its own PLAN lock and design pass, not a
-  quick bolt-on alongside misclassification.
+- **Immortal time bias** / **left truncation** — locked and in progress,
+  see `## STEP 9` below for the full design (new `time_to_event` grain,
+  phased: immortal time first, left truncation second since it needs a
+  different, age-varying hazard model to have any bias to demonstrate).
 - **Open bias DSL** — recommend leaving this gated indefinitely, not just
   deferred. A formula-based "define your own bias" mechanism conflicts
   with what makes the AI-eval use case trustworthy: every named bias
