@@ -1,0 +1,21 @@
+# TEST DOUBLE — DB07/NACE Rev.2 values_from.kind=csv; fixture ships undotted
+# level-2 codes as AKM columns hold them (011100 not 01.11.00).
+id: nace_db07
+enumerated: false
+values_complete: false
+values_from:
+  kind: csv
+  url: https://www.dst.dk/klassifikationsbilag/5ccbf808-48a1-48ce-86b3-749115087feccsv_da
+  delimiter: ";"
+  encoding: UTF-8-BOM
+  code_column: KODE
+  label_column: TITEL
+  level_column: NIVEAU
+  level: 2
+lookup:
+  "011100": {da: "Dyrkning af korn (undtagen ris)"}
+  "011300": {da: "Dyrkning af groentsager"}
+  "620100": {da: "Computerprogrammering"}
+  "861000": {da: "Hospitaler"}
+  "471100": {da: "Detailhandel med foedevarer"}
+  "411000": {da: "Udfoerelse af byggeprojekter"}

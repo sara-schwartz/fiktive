@@ -1,0 +1,9 @@
+# TEST DOUBLE — matches live values_from.kind:none (597 codes, no CSV).
+id: branche_77
+enumerated: false
+values_complete: false
+labels_complete: false
+values_from:
+  kind: none
+  note: "Browse DST Hoejkvalitetsvariable BRANCHE-77; no downloadable file."
+lookup: null

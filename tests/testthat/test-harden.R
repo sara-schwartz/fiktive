@@ -49,7 +49,7 @@ test_that("values_from.kind=package is cross-checked against PLAN locks", {
   expect_identical(schema$code_systems$atc$values_from$dataset, "ATCKoodit")
   expect_identical(schema$code_systems$icd10_sks$values_from$filter$value, "dia")
 
-  # Mismatch: wrong dataset under package kind → SCHEMA GAP (no silent override).
+  # Mismatch: wrong dataset under package kind -> SCHEMA GAP (no silent override).
   schema$code_systems$atc$values_from$dataset <- "WrongDataset"
   pop <- tiny_pop(schema, n = 40L, seed = 3)
   err <- tryCatch(
@@ -70,4 +70,18 @@ test_that("hfaudd fixture matches kind:none (no invented lookup catalogue)", {
   udda <- generate_register("udda", pop, schema, as.Date("2008-01-01"), as.Date("2009-12-31"), seed = 7)
   expect_type(udda$hfaudd, "character")
   expect_true(nrow(udda) > 0L)
+})
+
+test_that("values_from.kind=csv without lookup SCHEMA GAPs (no invent)", {
+  schema <- fixture_schema()
+  expect_identical(as.character(schema$code_systems$disco08$values_from$kind), "csv")
+  schema$code_systems$disco08$lookup <- NULL
+  pop <- tiny_pop(schema, n = 10L, seed = 1)
+  err <- tryCatch(
+    generate_register("akm", pop, schema, as.Date("2010-01-01"), as.Date("2011-12-31"), seed = 1),
+    error = function(e) e
+  )
+  expect_s3_class(err, "error")
+  expect_match(err$message, "^SCHEMA GAP:")
+  expect_match(err$message, "csv|disco08|loadable", ignore.case = TRUE)
 })

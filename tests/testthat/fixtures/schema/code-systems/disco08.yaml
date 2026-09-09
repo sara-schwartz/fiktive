@@ -1,0 +1,21 @@
+# TEST DOUBLE — DISCO-08 values_from.kind=csv; fixture ships level-5 subset
+# (live CSV is downloadable; do not invent occupation codes).
+id: disco08
+enumerated: false
+values_complete: false
+values_from:
+  kind: csv
+  url: https://www.dst.dk/klassifikationsbilag/27573556-f064-4660-946b-53ab7938ee2bcsv_da
+  delimiter: ";"
+  encoding: UTF-8-BOM
+  code_column: KODE
+  label_column: TITEL
+  level_column: NIVEAU
+  level: 5
+lookup:
+  "111100": {da: "Oeverste ledelse i lovgivende myndigheder"}
+  "111200": {da: "Oeverste ledelse i offentlige virksomheder"}
+  "112010": {da: "Oeverste administrerende virksomhedsledelse"}
+  "121100": {da: "Ledelse inden for oekonomifunktioner"}
+  "221100": {da: "Laeger"}
+  "532100": {da: "Social- og sundhedsassistenter"}

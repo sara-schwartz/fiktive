@@ -277,16 +277,27 @@ honour_values_from_or_gap <- function(cs, cs_id, name) {
     }
     return(invisible(NULL))
   }
-  if (identical(kind, "csv") && isTRUE(vf$mixes_eras)) {
+  if (identical(kind, "csv")) {
     keys <- lookup_keys(cs)
-    # Fixture may supply an era-safe lookup subset; otherwise do not invent / download.
+    # Fixture may supply a CSV-aligned lookup subset (kom post-2007; disco08 /
+    # nace_db07 level slices). Without loadable codes: SCHEMA GAP -- do not invent.
     if (is.null(keys) || !length(keys)) {
+      if (isTRUE(vf$mixes_eras)) {
+        schema_gap(
+          sprintf(
+            "code system '%s' CSV mixes eras (e.g. pre/post-2007 municipalities); no era-safe sampler",
+            cs_id
+          ),
+          "validity-aware kom sampling or a post-reform-only lookup; do not emit abolished munis blindly"
+        )
+      }
       schema_gap(
         sprintf(
-          "code system '%s' CSV mixes eras (e.g. pre/post-2007 municipalities); no era-safe sampler",
-          cs_id
+          "code system '%s' for column '%s' has values_from.kind=csv with no loadable codes",
+          cs_id,
+          name
         ),
-        "validity-aware kom sampling or a post-reform-only lookup; do not emit abolished munis blindly"
+        "a fixture/runtime CSV lookup (values_from.url); do not invent occupation/industry lists"
       )
     }
   }

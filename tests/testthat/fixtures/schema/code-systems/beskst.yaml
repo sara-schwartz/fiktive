@@ -1,0 +1,14 @@
+# TEST DOUBLE — BESKST published codes (1976-2001). Not comparable with beskst02.
+id: beskst
+enumerated: true
+values_complete: true
+lookup:
+  "01": {da: "Selvstaendig", en: null}
+  "02": {da: "Medarbejd.", en: null}
+  "03": {da: "Loenmodt. m. virksom.", en: null}
+  "04": {da: "Loenmodtager", en: null}
+  "05": {da: "Loenmodtager med understoet.", en: null}
+  "06": {da: "Pensionist m. virksom.", en: null}
+  "07": {da: "Pensionist", en: null}
+  "08": {da: "Oevrige", en: null}
+  "99": {da: "Ikke i AKM", en: null}

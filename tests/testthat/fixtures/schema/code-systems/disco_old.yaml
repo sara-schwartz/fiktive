@@ -1,0 +1,9 @@
+# TEST DOUBLE — matches live values_from.kind:none (pre-2010 DISCO closed).
+id: disco_old
+enumerated: false
+values_complete: false
+labels_complete: false
+values_from:
+  kind: none
+  note: "No published pre-2010 DISCO list; do not invent from DISCO-08."
+lookup: null
