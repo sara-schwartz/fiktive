@@ -1,0 +1,108 @@
+# TEST DOUBLE only — MFR Levendefoedte event_from_person; types from live
+# registers-guide mfr.yaml @ tip 8079ab8e (no invented code lists / code_systems).
+id: mfr
+name: "MFR - Levendefoedte fra det medicinske foedselsregister (test double)"
+one_row_per: event_from_person
+reference_timing: status_period
+coverage: {from: 1997, to: 2018}
+deprecated: true
+superseded_by: null
+join_keys: [cpr_barn]
+relationships:
+  - to: bef
+    key: pnr
+    cardinality: many_to_one
+columns:
+  - id: cpr_barn
+    name: cpr_barn
+    type: character
+    role: join_key
+    key: true
+    coverage: {from: 1997, to: 2018}
+  - id: cpr_moder
+    name: cpr_moder
+    type: character
+    role: join_key
+    key: true
+    coverage: {from: 1997, to: 2018}
+  - id: cpr_fader
+    name: cpr_fader
+    type: character
+    role: join_key
+    coverage: {from: 1997, to: 2018}
+  - id: foedselsdato
+    name: foedselsdato
+    type: date
+    role: date
+    coverage: {from: 1997, to: 2018}
+  - id: foedselsaar
+    name: foedselsaar
+    type: character
+    role: code
+    coverage: {from: 1997, to: 2018}
+  - id: alder_moder
+    name: alder_moder
+    type: numeric
+    role: value
+    key: true
+    coverage: {from: 1997, to: 2018}
+  - id: vaegt_barn
+    name: vaegt_barn
+    type: numeric
+    role: value
+    key: true
+    coverage: {from: 1997, to: 2018}
+  - id: gestationsalder_dage
+    name: gestationsalder_dage
+    type: numeric
+    role: value
+    key: true
+    coverage: {from: 1997, to: 2018}
+  - id: laengde_barn
+    name: laengde_barn
+    type: character
+    role: code
+    key: true
+    coverage: {from: 1997, to: 2018}
+  - id: koen_barn
+    name: koen_barn
+    type: character
+    role: code
+    coverage: {from: 1997, to: 2018}
+  - id: levende_eller_doedfoedt
+    name: levende_eller_doedfoedt
+    type: character
+    role: code
+    coverage: {from: 1997, to: 2018}
+  - id: markoer_kejsersnit
+    name: markoer_kejsersnit
+    type: character
+    role: code
+    coverage: {from: 1997, to: 2018}
+  - id: bmi_moder
+    name: bmi_moder
+    type: numeric
+    role: value
+    key: true
+    coverage: {from: 2003, to: 2018}
+  - id: vaegt_moder
+    name: vaegt_moder
+    type: numeric
+    role: value
+    key: true
+    coverage: {from: 2003, to: 2018}
+  - id: amnioinfusion
+    name: amnioinfusion
+    type: character
+    role: code
+    coverage: {from: 1998, to: 2018}
+  - id: doedsdato_barn
+    name: doedsdato_barn
+    type: date
+    role: date
+    coverage: {from: 1997, to: 2018}
+  - id: pk_mfr
+    name: pk_mfr
+    type: character
+    role: code
+    coverage: {from: 1997, to: 2018}

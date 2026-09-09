@@ -20,7 +20,8 @@ Zero rows is a valid event or child table.
 \description{
 \code{scenario = NULL} is independence. Snapshot grains: \code{bef} (quarterly),
 \code{udda} and \code{akm} (annual). Event-from-person: \code{dod}, \code{lmdb},
-\code{vnds}, \code{cancer}. Expand-from-parent: LPR2 (\code{lpr_adm} then
+\code{vnds}, \code{cancer}, \code{mfr} (Levendefoedte; coverage ends 2018).
+Expand-from-parent: LPR2 (\code{lpr_adm} then
 \code{lpr_diag} / \code{lpr_sksopr} / \code{lpr_sksube}) and LPR3
 (\code{lpr_a_kontakt} then \code{lpr_a_diagnose} / \code{lpr_a_procregistrering})
 off the same contact table. Household-year: \code{faik}. Branch on

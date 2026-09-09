@@ -48,7 +48,7 @@ Default generation is **structural noise that joins** (`scenario = NULL` = indep
 - Format authority when sources disagree: **registers-guide**. Branch on `code_system` id — do not assume every diagnosis column is D-prefixed SKS.
 - **Column coverage:** if a column has no `coverage`, inherit the register (or family) coverage. Do not treat a missing stamp as “column absent forever.”
 
-### Registers in YAML (as of 2026-09-06; guide tip assessed 9dea655d on 2026-09-09)
+### Registers in YAML (as of 2026-09-06; guide tip assessed 8079ab8e on 2026-09-09)
 
 Present (including recent adds): BEF, UDDA, AKM, DOD*, LMDB, VNDS*, LPR2/LPR3 somatic, `t_psyk_*`, FAIK, SSSY, SYSI, **cancer**, **mfr**, **lab_dm_forsker**, plus cause-of-death variants.
 
@@ -126,7 +126,7 @@ Do **not** dump all schema registers. The user names what they want. Skip an id 
 3. Event-from-person: DOD, LMDB, VNDS — done (main); `ym_start`/`ym_end` quarter digit fixed
 4. Expand-from-parent: LPR2 then LPR3; psych LPR as its own pair — done (main); harden for `icd10` vs `icd10_sks` split
 5. FAIK (household-year — grain now known in schema)
-6. New schema registers of known grain: **cancer** (STEP 6a, event_from_person, ICD10Koodit) — done on main when merged; then mfr, `lab_dm_forsker`, … then custom structure-only
+6. New schema registers of known grain: **cancer** (STEP 6a, event_from_person, ICD10Koodit) — done; **mfr** / Levendefoedte (STEP 6b, event_from_person, join_keys `cpr_barn`, coverage 1997–2018 deprecated) — done on main when merged; then `lab_dm_forsker`, … then custom structure-only
 7. Write-out — CSV always; parquet + hive `year=` via arrow; stamp schema commit + seed. **Also:** README and user instructions so choosing a few registers is obvious.
 8. Scenario + truth — independence first; then one known association; then confounding/bias only with named estimators
 
