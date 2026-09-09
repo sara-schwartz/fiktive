@@ -1,4 +1,4 @@
-# fiktive — locked plan (2026-09-01, catch-up 2026-09-06, catalogue lock 2026-09-06, ICD split 2026-09-06, STEP 7 lock 2026-09-09, STEP 8a lock 2026-09-09)
+# fiktive — locked plan (2026-09-01, catch-up 2026-09-06, catalogue lock 2026-09-06, ICD split 2026-09-06, STEP 7 lock 2026-09-09, STEP 8a lock 2026-09-09, STEP 8b–8d lock 2026-09-09)
 
 Canonical project plan. Locked product decisions. Agents follow this; do not invent a second product.
 
@@ -165,7 +165,7 @@ Document: pick registers → generate → write CSV → join; LPR parent/child; 
 
 ### STEP 8a — independence path + opt-in fidelity (locked 2026-09-09)
 
-**First ship of STEP 8.** Wire the independence path and opt-in data-quality fidelity only. Informative MAR/MNAR, biasing outliers, confounding, and known associations are **not** in 8a — deferred to STEP 8b+.
+**First ship of STEP 8.** Wire the independence path and opt-in data-quality fidelity only. Informative MAR/MNAR, biasing outliers, confounding, and known associations are **not** in 8a — see STEP 8b–8d lock below.
 
 #### Independence (default)
 
@@ -189,11 +189,44 @@ Fidelity is **data quality** (MCAR-ish NA + rare numeric extremes), **not** info
   - Join keys, presence flags, and derived columns (e.g. `alder`) stay **COMPLETE**.
 - Same knobs on `generate_register` / `generate_registers` / `generate_custom_register`.
 
-#### Explicitly deferred to STEP 8b+
+#### Explicitly out of 8a (covered by STEP 8b–8d)
 
 - Informative MAR / MNAR missingness
 - Biasing outliers / confounding / known associations
 - Named estimands and naive/adjusted estimators beyond the independence truth stub
+
+### STEP 8b–8d — association, confounding, named biases (locked 2026-09-09)
+
+**Full first 8b+ ship** covers **8b–8d in one PLAN lock**. Do not reshape `fiktive_scenario` — **fill** the existing `associations` / `confounders` / `biases` slots. Wire `scenario=` through `generate_register` / `generate_registers` / `generate_custom_register`. **Core backend first**; simDAG/simstudy optional Suggests later OK to mention as optional. No synthpop / real microdata. Coefficients **never** in YAML or custom column CSV.
+
+#### 8b Association
+
+- `fiktive_scenario.associations` list; each element: `exposure`, `outcome` (`register.column`), `link` (`identity` | `logit` | `log`), `coefficient` (numeric; **only here**, never YAML).
+- For **pure association** scenarios: `confounders` / `biases` stay **empty lists**.
+- Truth: `scenario_id`; `causal_effect` `{estimand, parameter, value=coefficient, scale=link}`; estimand named; `naive_estimator` recovers it; `adjusted_estimator` **SAME** as naive in pure 8b; `expected_naive` = `expected_adjusted` = coefficient within MC/CI.
+- **No bias claim** in pure association.
+
+#### 8c Confounding
+
+- One confounder scenario: fill `confounders`; known E→Y effect; confounder affects E and Y.
+- Truth: naive ≠ adjusted; `expected_naive` ≠ `expected_adjusted`; **all four bias fields required** (`estimand`, `naive_estimator`, `adjusted_estimator`, `expected_naive`, `expected_adjusted`).
+
+#### 8d Named biases (small catalogue)
+
+- **IN:** MNAR missingness; complete-case selection bias.
+- **OUT / deferred:** immortal time, left truncation, code misclassification, open bias DSL.
+- Fill `biases` slot; full truth with distinct naive vs adjusted.
+- Cosmetic MCAR fidelity stays **orthogonal** (8a); must **not** silently move estimands; default clean under scenarios.
+
+#### Cross-cutting (8b–8d)
+
+- Do not reshape `fiktive_scenario` — fill `associations` / `confounders` / `biases` slots.
+- Wire `scenario=` through `generate_register` / `generate_registers` / `generate_custom_register`.
+- Customs: `register.column` once in run; shared population; existing grain only.
+- Coefficients never in YAML or custom column CSV.
+- No synthpop / real microdata.
+- Core backend first; simDAG/simstudy optional Suggests later OK to mention as optional.
+- README: independence → association → confounding → MNAR/complete-case examples.
 
 ---
 
@@ -207,8 +240,8 @@ Fidelity is **data quality** (MCAR-ish NA + rare numeric extremes), **not** info
 6. New schema registers of known grain: cancer, mfr / Levendefødte, lab_dm_forsker — done (main); lookup hardens for FAIK/AKM/periodised codes — done
 7. **Write-out + batch opt-in + custom external + README** — STEP 7 — done (main)
 8. Scenario + truth:
-   - **8a (first ship):** independence path (`scenario = NULL`); always return `fiktive_truth`; opt-in fidelity (`clean`/`messy` + rate overrides); eligibility rules — this lock
-   - **8b+ (later):** known associations; informative MAR/MNAR; biasing outliers; confounding/bias only with named estimators
+   - **8a:** independence path (`scenario = NULL`); always return `fiktive_truth`; opt-in fidelity (`clean`/`messy` + rate overrides); eligibility rules — **done (main)**
+   - **8b–8d (this lock):** association (`associations` + pure-assoc truth); confounding (one confounder; naive ≠ adjusted; full bias fields); named biases (MNAR + complete-case; immortal time / left truncation / code misclassification / open bias DSL deferred); wire `scenario=` through generators; core backend first; README progression independence → association → confounding → MNAR/complete-case
 
 Do not wait for per-step sign-off unless a product decision is blocking.
 
@@ -274,3 +307,9 @@ DST publishes **no** synthetic microdata. Closest Danish "just invent fictitious
 - Applies NA to join keys, presence flags, or derived columns (e.g. `alder`) under fidelity
 - Treats fidelity outliers as inventing invalid clinical catalogue codes
 - Bakes missingness rates into registers-guide YAML
+- Ships a "bias" claim without full truth fields (estimand, naive_estimator, adjusted_estimator, expected_naive, expected_adjusted)
+- Puts coefficients in YAML (or custom column CSV) instead of only in `fiktive_scenario.associations`
+- Treats fidelity `messy` (cosmetic MCAR) as MNAR / informative missingness or silently moves estimands under scenarios
+- Invents immortal-time, left truncation, code misclassification, or an open bias DSL without a PLAN lock
+- Reshapes `fiktive_scenario` instead of filling `associations` / `confounders` / `biases` slots
+- Omits wiring `scenario=` through `generate_register` / `generate_registers` / `generate_custom_register` when shipping 8b–8d
