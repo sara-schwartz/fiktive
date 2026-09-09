@@ -296,3 +296,4 @@ generate_custom_events <- function(population, schema, spec, from, to, seed) {
     emit_custom_table(spec, rows, schema)
   })
 }
+
