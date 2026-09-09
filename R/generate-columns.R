@@ -187,6 +187,11 @@ derived_column <- function(id, rows, schema = NULL) {
     pnr = rows$pnr,
     # Cancerregisteret person key (rename before joining DST pnr).
     k_cprnr = rows$pnr,
+    # MFR Levendefoedte: join_keys is cpr_barn; schema relationship names BEF
+    # column `pnr` — map carefully, do not invent an mfr `pnr` column.
+    cpr_barn = rows$pnr,
+    foedselsdato = when,
+    foedselsaar = as.character(lubridate::year(when)),
     familie_id = if ("familie_id" %in% names(rows)) rows$familie_id else NULL,
     koen = rows$koen,
     foed_dag = rows$foed_dag,
