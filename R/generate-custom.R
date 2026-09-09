@@ -212,3 +212,87 @@ parse_custom_values <- function(x) {
   }
   parts
 }
+
+dispatch_custom_register <- function(spec, population, schema, from, to, seed,
+                                     parent, cadence) {
+  grain <- spec$one_row_per
+  if (grain %in% c("person_reference_date", "person")) {
+    return(generate_custom_snapshot(population, schema, spec, from, to, seed, cadence))
+  }
+  if (identical(grain, "event_from_person")) {
+    return(generate_custom_events(population, schema, spec, from, to, seed))
+  }
+  if (identical(grain, "household_year")) {
+    return(generate_custom_household_year(population, schema, spec, from, to, seed))
+  }
+  if (identical(grain, "expand_from_parent")) {
+    return(generate_custom_expand(parent, schema, spec, seed))
+  }
+  schema_gap(
+    sprintf("grain '%s' for custom register '%s'", grain, spec$id),
+    "an existing schema grain"
+  )
+}
+
+generate_custom_snapshot <- function(population, schema, spec, from, to, seed, cadence) {
+  pop <- validate_population(population)
+  from <- as_date1(from)
+  to <- as_date1(to)
+  if (is.na(from) || is.na(to) || to < from) {
+    stop("`from` must be a Date on or before `to`.", call. = FALSE)
+  }
+  dates <- snapshot_dates(from, to, coverage = NULL, cadence = cadence)
+  with_rng_seed(seed, {
+    if (!length(dates) || !nrow(pop)) {
+      return(emit_custom_table(spec, empty_scaffold(spec), schema))
+    }
+    grid <- tibble::tibble(
+      pnr = rep(pop$pnr, each = length(dates)),
+      referencetid = rep(dates, times = nrow(pop))
+    )
+    rows <- dplyr::left_join(grid, pop, by = "pnr")
+    rows <- rows[rows$referencetid >= rows$foed_dag, , drop = FALSE]
+    rows$year <- as.integer(lubridate::year(rows$referencetid))
+    emit_custom_table(spec, rows, schema)
+  })
+}
+
+generate_custom_events <- function(population, schema, spec, from, to, seed) {
+  pop <- validate_population(population)
+  from <- as_date1(from)
+  to <- as_date1(to)
+  if (is.na(from) || is.na(to) || to < from) {
+    stop("`from` must be a Date on or before `to`.", call. = FALSE)
+  }
+  with_rng_seed(seed, {
+    if (!nrow(pop) || to < from) {
+      return(emit_custom_table(spec, empty_scaffold(spec), schema))
+    }
+    n_people <- nrow(pop)
+    n_ev <- stats::rpois(n_people, 0.4)
+    lo <- pmax(pop$foed_dag, from)
+    hi <- rep(to, n_people)
+    pieces <- vector("list", n_people)
+    for (i in seq_len(n_people)) {
+      k <- n_ev[[i]]
+      if (k < 1L || lo[[i]] > hi[[i]]) {
+        next
+      }
+      span <- as.integer(hi[[i]] - lo[[i]])
+      event_date <- lo[[i]] + sample.int(span + 1L, k, replace = TRUE) - 1L
+      pieces[[i]] <- tibble::tibble(
+        pnr = pop$pnr[[i]],
+        foed_dag = pop$foed_dag[[i]],
+        koen = pop$koen[[i]],
+        event_date = as.Date(event_date),
+        referencetid = as.Date(event_date)
+      )
+    }
+    rows <- dplyr::bind_rows(pieces)
+    if (!nrow(rows)) {
+      return(emit_custom_table(spec, empty_scaffold(spec), schema))
+    }
+    rows$year <- as.integer(lubridate::year(rows$referencetid))
+    emit_custom_table(spec, rows, schema)
+  })
+}
