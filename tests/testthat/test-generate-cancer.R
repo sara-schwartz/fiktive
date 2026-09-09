@@ -74,7 +74,6 @@ test_that("cancer column coverage blanks pre-1978 ICD and pre-2006 region", {
   }
 })
 
-test_that("lab_dm_forsker stays unimplemented after cancer step", {
-  # STEP 6b implements mfr separately; lab remains later.
-  expect_false("lab_dm_forsker" %in% fiktive:::.IMPLEMENTED_EVENTS)
+test_that("lab_dm_forsker is implemented after STEP 6c", {
+  expect_true("lab_dm_forsker" %in% fiktive:::.IMPLEMENTED_EVENTS)
 })

@@ -15,6 +15,11 @@ draw_independent_column <- function(col, n, schema, register_id = NULL, when = N
     }
     return(sample_atc_codes(n))
   }
+  # lab_dm_forsker analysiscode: HARD GAP (no CS/values_from). PLAN: LabTerm /
+  # published NPU-DNK — never typed_noise / homemade lists.
+  if (identical(name, "analysiscode") || identical(as.character(col$id %||% ""), "analysiscode")) {
+    return(sample_labterm_codes(n))
+  }
   # Unpublished value set: character code with no code_system (e.g. borger_koen).
   if (is.null(col$code_system) && identical(name, "borger_koen")) {
     schema_gap(

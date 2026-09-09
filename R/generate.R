@@ -3,7 +3,8 @@
 #' `scenario = NULL` is independence: structurally valid noise that joins.
 #' Snapshot grains: `bef` (quarterly), `udda` and `akm` (annual).
 #' Event-from-person: `dod`, `lmdb`, `vnds`, `cancer`, `mfr` / Levendefoedte
-#' (empty tables are valid; coverage ends 2018).
+#' (empty tables are valid; coverage ends 2018), `lab_dm_forsker`
+#' (`analysiscode` from LabTerm / published NPU; coverage 2008-2025).
 #' Expand-from-parent: LPR2 (`lpr_adm` then `lpr_diag` / `lpr_sksopr` /
 #' `lpr_sksube`) and LPR3 (`lpr_a_kontakt` then `lpr_a_diagnose` /
 #' `lpr_a_procregistrering`). Diagnoses/procedures are generated off the
@@ -58,7 +59,7 @@ generate_register <- function(register, population, schema, from, to,
 )
 
 .IMPLEMENTED_SNAPSHOT <- c("bef", "udda", "akm")
-.IMPLEMENTED_EVENTS <- c("dod", "lmdb", "vnds", "cancer", "mfr")
+.IMPLEMENTED_EVENTS <- c("dod", "lmdb", "vnds", "cancer", "mfr", "lab_dm_forsker")
 .IMPLEMENTED_PARENTS <- c("lpr_adm", "lpr_a_kontakt")
 .IMPLEMENTED_EXPAND <- c(
   "lpr_diag", "lpr_sksopr", "lpr_sksube",
@@ -259,6 +260,10 @@ event_counts <- function(register_id, n) {
   if (identical(register_id, "mfr")) {
     # Live births (Levendefoedte) per person; empty tables remain valid.
     return(stats::rpois(n, 0.4))
+  }
+  if (identical(register_id, "lab_dm_forsker")) {
+    # Lab results per person; empty tables remain valid.
+    return(stats::rpois(n, 2.0))
   }
   stats::rpois(n, 0.4)
 }

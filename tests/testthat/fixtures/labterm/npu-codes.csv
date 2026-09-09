@@ -1,0 +1,41 @@
+"npu_code","unit_short","scale_type","active"
+"NPU02425","mmol/L","Ratio",1
+"NPU13368","(p.d.u.)","Ratio",1
+"NPU10882","× 10³ IU/L","Ratio",1
+"NPU57440","","Ordinal",1
+"NPU04536","","Ordinal",1
+"NPU04548","µmol/L","Ratio",1
+"NPU06977","","Ordinal",1
+"NPU57771","","Ratio",1
+"NPU21730","× 10³ IU/L","Ratio",1
+"NPU29324","","Ordinal",1
+"NPU14913","","Not Specified",1
+"NPU21869","","Nominal",1
+"NPU08886","mmol/L","Ratio",1
+"NPU06273","","Nominal",1
+"NPU06016","","Ordinal",1
+"NPU06038","","Ordinal",1
+"NPU06032","","Ordinal",1
+"NPU13757","","Ordinal",1
+"NPU06017","","Ordinal",1
+"NPU01529","mL","Ratio",1
+"NPU60311","mg/L","Ratio",1
+"NPU06018","","Ordinal",1
+"NPU06019","","Ordinal",1
+"NPU06020","","Ordinal",1
+"NPU07423","","Ordinal",1
+"NPU06346","","Nominal",1
+"NPU59064","","Narrative",1
+"NPU54140","","Narrative",1
+"NPU60312","mg/L","Ratio",1
+"NPU59134","","Narrative",1
+"NPU13593","","Ordinal",1
+"NPU03959","mmol/L","Ratio",1
+"NPU03966","","Ratio",1
+"NPU04033","kPa","Ratio",1
+"NPU29273","mg/L","Ratio",1
+"NPU04078","kPa","Ratio",1
+"NPU08990","","Ordinal",1
+"NPU01118","µmol/L","Ratio",1
+"NPU01119","µmol/L","Ratio",1
+"NPU17095","","Ordinal",1

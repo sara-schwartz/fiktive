@@ -77,8 +77,6 @@ test_that("mfr column coverage blanks pre-1998 amnioinfusion and pre-2003 BMI", 
   }
 })
 
-test_that("lab_dm_forsker stays unimplemented in this step", {
-  schema <- fixture_schema()
-  expect_false("lab_dm_forsker" %in% fiktive:::.IMPLEMENTED_EVENTS)
-  expect_true("mfr" %in% fiktive:::.IMPLEMENTED_EVENTS)
+test_that("lab_dm_forsker is implemented after STEP 6c", {
+  expect_true("lab_dm_forsker" %in% fiktive:::.IMPLEMENTED_EVENTS)
 })
