@@ -1,418 +1,298 @@
 # fiktive
 
-Fictitious Danish Register Data
+Generate realistic **fake** Danish register data — so you can write, test,
+and teach analysis code without needing real access to Statistics Denmark
+(DST).
 
-Generate structurally valid fictitious Danish register data, for writing and
-checking analysis code outside Statistics Denmark.
+The data isn't real. It's shaped exactly like the real thing (same column
+names, same codes, same join keys), but every value is randomly generated.
+Nothing in it comes from an actual person.
 
-Code is MIT. Generated datasets are CC-BY-4.0. This package creates data; it
-does not extract rows from real registers.
+## Why would I use this?
 
-Author: Sara Schwartz.
+- **Write your analysis script before you have DST access.** Get your
+  pipeline working end-to-end on fake data with the right shape, so it's
+  ready to run the moment you're inside the real DST environment.
+- **Check that your analysis code is actually correct.** fiktive can
+  secretly bake a known, true relationship into the data (e.g. "X causes a
+  2-point increase in Y") and hand you back that true answer. Run your
+  analysis and check whether it finds the number you were told to expect.
+- **Teach or demo register-based analysis** without touching real,
+  sensitive data.
+- **Stress-test your code** against missing values and extreme outliers,
+  without needing real messy data to do it.
 
-## Licenses
-
-- Package code: MIT
-- Generated datasets: [CC-BY-4.0](https://creativecommons.org/licenses/by/4.0/)
-
-This package **creates** fictitious tables. It does not extract from real
-Danish registers.
-
-## Schema
-
-**What:** column layouts and join keys for known registers.
-**Why:** so generated tables look like the real Danish register shapes your
-analysis code expects.
-**How:** structure comes from the live
-[`steno-aarhus/registers-guide`](https://github.com/steno-aarhus/registers-guide)
-schema directory (`schema/registers/`, `schema/code-systems/`,
-`schema/families/`). Each call to `load_registers_schema()` stamps the git
-commit used as `schema_commit`. The YAML is consumed at runtime and is not
-vendored into this package as the source of truth. Pass a local schema root
-(a directory that contains `registers/`) for offline use.
-
-For the full list of register ids you can pass to `registers=`, see
-[Available registers](#available-registers) at the bottom of this page.
-
-## Installation
+## Install
 
 ```r
-# From GitHub (this repo is not on CRAN)
+install.packages("remotes")   # if you don't already have it
 remotes::install_github("sara-schwartz/fiktive")
 ```
 
-**Imports** (installed automatically with the package above, all on CRAN):
-dplyr, tibble, purrr, lubridate, rlang, yaml, sksr, codeCollection.
+Everything fiktive needs (dplyr, tibble, sksr, codeCollection, etc.)
+installs automatically — no extra steps.
 
-- `sksr` — samples published SKS codes (LPR procedures/diagnoses,
-  `code_system: icd10_sks` / `sks`).
-- `codeCollection` — samples plain WHO ICD-10 (`code_system: icd10`) and
-  WHO-form ATC codes (LMDB `atc` column).
+## The 5-minute quickstart
 
-Optional, only needed for specific alternate backends or running the test
-suite: `install.packages(c("testthat", "arrow", "simstudy", "simDAG", "fabricatr", "simsurv", "readxl"))`.
-
-## Usage
-
-**What:** pick the registers you need, generate them, write CSV, then join.
-**Why:** nothing is dumped by default — you opt in to each table id.
-**How:** load schema → build a background population → call
-`generate_registers()` → `write_register()` / `write_registers()` (CSV by
-default).
+Every fiktive script follows the same three steps: **load the schema → make
+a population of fake people → generate the registers you want.**
 
 ```r
 library(fiktive)
 
-# Load the live registers-guide schema (stamps schema_commit on every table)
+# 1. Load the rulebook: column names, types, and codes for real Danish registers
 schema <- load_registers_schema()
-schema$schema_commit  # git commit of registers-guide this schema came from
 
-# Stable person spine: n people, shared across every register you generate
-pop <- generate_background_population(
-  n = 100,          # how many fictitious persons
-  seed = 1,         # reproducible draws
-  schema = schema   # stamps / validation against the loaded schema
-)
+# 2. Make 100 fake people (the same people appear in every table you generate)
+pop <- generate_background_population(n = 100, seed = 1, schema = schema)
 
-# Opt-in batch: registers= is required (never a silent dump of all schema ids)
+# 3. Generate the registers you want, for those people
 tables <- generate_registers(
-  registers = c("bef", "lmdb"),  # only these two ids
-  population = pop,              # join spine (pnr / foed_dag / ...)
-  schema = schema,
-  from = as.Date("2008-01-01"),  # window start
-  to = as.Date("2009-12-31"),    # window end
-  seed = 1                       # same seed → same structural draws
-)
-
-# Default on-disk format is CSV; parquet / hive year= are opt-in
-write_register(tables$bef, "out/bef")       # → out/bef.csv (+ meta sidecar)
-write_registers(tables, "out/registers")    # one file per name under the dir
-
-# Join on shared population keys (pnr is the usual person key)
-dplyr::inner_join(tables$bef, tables$lmdb, by = "pnr")
-```
-
-### LPR parent then child
-
-**What:** hospital contacts (`lpr_adm`), then diagnoses that hang off them
-(`lpr_diag`).
-**Why:** `lpr_diag` is `expand_from_parent` — it carries no `pnr`, only a
-`recnum` back to its parent contact. This is the one register pattern the
-first example above doesn't cover, so it gets its own minimal example.
-**How:** request both ids in the same call (order doesn't matter — `lpr_adm`
-just has to be in the list, or you never get it back to join to).
-
-```r
-lpr <- generate_registers(
-  registers = c("lpr_adm", "lpr_diag"),  # lpr_diag needs lpr_adm in the list too
+  registers = c("bef", "lmdb"),   # "population register" + "prescriptions"
   population = pop,
   schema = schema,
-  from = as.Date("2010-01-01"),  # window start — set your own, need not match other calls
-  to = as.Date("2010-12-31"),    # window end
+  from = as.Date("2008-01-01"),   # window start
+  to = as.Date("2009-12-31"),     # window end
   seed = 1
 )
-dplyr::inner_join(lpr$lpr_diag, lpr$lpr_adm, by = "recnum")  # recnum here, not pnr
 
-# Same `pop` across calls -> tables$bef and lpr$lpr_adm still join on pnr.
-# many-to-many since both are multi-row-per-person (snapshots x contacts).
+tables$bef    # a tibble: fake population snapshots
+tables$lmdb   # a tibble: fake dispensed prescriptions
+```
+
+`tables$bef` and `tables$lmdb` are ordinary tibbles — inspect them, filter
+them, join them, just like any other data frame.
+
+`seed = 1` makes it reproducible: run this exact code again and you get
+back the exact same fake data.
+
+## What registers can I generate?
+
+Anything Statistics Denmark actually has a register for, as long as
+[`registers-guide`](https://github.com/steno-aarhus/registers-guide) (the
+project fiktive reads its rulebook from) has documented its columns. See the
+full, current list at the bottom of this page:
+**[Available registers](#available-registers)**.
+
+A few common ones to get started:
+
+| id | What it is |
+|---|---|
+| `bef` | Population register — who's alive, where they live, marital status |
+| `lmdb` | Prescriptions dispensed at pharmacies |
+| `lpr_adm` / `lpr_diag` | Hospital contacts and their diagnoses (see [below](#hospital-data-needs-two-tables)) |
+| `dod` | Deaths |
+| `udda` | Education |
+| `akm` | Employment status |
+| `mfr` | Births |
+
+You ask for a register by putting its id in `registers = c(...)` — that's
+the whole interface, no matter which register it is.
+
+## Saving your data to files
+
+```r
+write_register(tables$bef, "out/bef")      # writes out/bef.csv
+write_registers(tables, "out/registers")   # writes one .csv per table in the list
+```
+
+CSV is the default (parquet is available too — pass `format = "parquet"`).
+Each file also gets a small `.meta.yaml` sidecar recording exactly how it
+was generated, so you can always prove later which schema version and seed
+made a given file.
+
+## Joining tables together
+
+Every table generated from the same `pop` shares the same people (via
+`pnr`, the person-id column), so you join them just like real register
+data:
+
+```r
 dplyr::inner_join(
-  tables$bef, lpr$lpr_adm,
+  tables$bef, tables$lmdb,
   by = "pnr", relationship = "many-to-many"
 )
 ```
 
-### Custom / external register (structure only)
+`relationship = "many-to-many"` is there because `bef` has several
+snapshots per person and `lmdb` has several prescriptions per person — a
+genuinely many-rows-to-many-rows join, same as in real register data.
 
-**What:** a researcher-described table that is **not** in the guide YAML.
-**Why:** study-specific scores, groups, or covariates you still want to join
-to BEF / other registers.
-**How:** describe columns with a CSV (or tibble) of `name`, `type`, and
-optional `min` / `max` / `values`. No raw rows; **no coefficients** in the
-column CSV — signal goes in `scenario=` (see below).
+## Hospital data needs two tables
 
-Create a column description file first (path is whatever you pass to
-`columns=` — here `columns.csv` in the working directory):
+Hospital registers work a little differently: one table holds the
+**contact** (the hospital visit itself), and a separate table holds the
+**diagnoses** attached to that visit, because in real life one visit can
+have several diagnoses. So the diagnosis table has no `pnr` of its own — it
+only points back to its visit.
+
+Ask for both in the same call, and join them on `recnum` instead of `pnr`:
 
 ```r
-# Write a full columns.csv next to your script (path must exist for generate)
-writeLines(
-  c(
-    "name,type,min,max,values",
-    "score,integer,0,10,",
-    "grp,character,,,A|B|C"
-  ),
-  "columns.csv"
+lpr <- generate_registers(
+  registers = c("lpr_adm", "lpr_diag"),   # lpr_adm = the visit, lpr_diag = its diagnoses
+  population = pop,
+  schema = schema,
+  from = as.Date("2010-01-01"),   # this call can use its own window
+  to = as.Date("2010-12-31"),
+  seed = 1
 )
+dplyr::inner_join(lpr$lpr_diag, lpr$lpr_adm, by = "recnum")
+```
 
-# Read it back if you want to inspect — this is the full file contents:
-# name,type,min,max,values
-# score,integer,0,10,
-# grp,character,,,A|B|C
+A couple of things worth knowing:
+
+- Order in `registers=` doesn't matter — just make sure both ids are in the
+  list, or you won't get the one you left out back to join to.
+- `lpr`/`tables` came from two separate `generate_registers()` calls with
+  different windows, but they share the same `pop`, so `tables$bef` and
+  `lpr$lpr_adm` still join on `pnr` if you need both together.
+
+## Making up your own columns
+
+Sometimes you need a column that isn't a real DST register — a study
+score, a group label. `generate_custom_register()` makes one up
+structurally (you describe the columns; fiktive fills in plausible fake
+values) and it joins to everything else via `pnr`:
+
+```r
+# Describe your columns: a type, plus either a min/max range or a set of values
+cols <- tibble::tibble(
+  name   = c("score", "grp"),
+  type   = c("integer", "character"),
+  min    = c(0, NA),
+  max    = c(10, NA),
+  values = c(NA, "A|B|C")
+)
 
 ext <- generate_custom_register(
-  id = "ext_score",                       # custom register id (not in YAML)
-  one_row_per = "person_reference_date",  # grain: one row per person × date
-  join_keys = "pnr",                      # how it joins to BEF / population
-  columns = "columns.csv",                # path to the CSV above (or a tibble)
+  id = "my_study",
+  one_row_per = "person_reference_date",   # one row per person per snapshot date
+  columns = cols,
   population = pop,
   schema = schema,
   from = as.Date("2008-01-01"),
   to = as.Date("2009-12-31"),
   seed = 1,
-  cadence = "annual"                      # snapshot dates within from/to
+  cadence = "annual"   # one snapshot per year
 )
 
-write_register(ext, "out/ext_score")  # CSV by default
-
-# Join the custom table to BEF on pnr
-dplyr::inner_join(tables$bef, ext, by = "pnr")
+dplyr::inner_join(tables$bef, ext, by = "pnr", relationship = "many-to-many")
 ```
 
-Household-year customs must pass household-side `join_keys` (e.g.
-`familie_id`), never a silent `pnr` default. Expand-from-parent customs need
-an already-generated `parent` table.
+## Checking whether your analysis code is actually correct
 
-## Truth, scenarios, and fidelity
-
-Three related ideas — easy to mix up. They are **not** three separate
-post-processing steps.
-
-| Idea | When | Role |
-|---|---|---|
-| **Scenario** | optional argument **into** `generate_*` (`scenario=`) | the signal / DGP (association, confounding, MNAR, …). Default `NULL` = independence |
-| **Fidelity** | optional argument **into the same** `generate_*` call (`fidelity=`, or `na_rate` / `outlier_rate`) | cosmetic data quality (MCAR NA, rare extremes), applied **inside** generate **after** the scenario DGP |
-| **Truth** | always attached to the result; retrieve with `get_truth()` **after** generate | machine-readable oracle (estimands, `expected_naive`, `expected_adjusted`). You do **not** pass truth as an input |
-
-**One generate call.** Do **not** run a separate post-process after
-`write_register()` / `write_registers()` to “add” scenario, fidelity, or
-truth. Pass `scenario=` and `fidelity=` (if you want them) to
-`generate_register()`, `generate_registers()`, or
-`generate_custom_register()`, then read truth from the returned object.
-
-### Why each exists
-
-- **Why scenarios:** teaching / oracle / AI-eval. You know the β, the
-  confounder, or the MNAR mechanism, and you can check whether an analysis
-  recovers `expected_naive` / `expected_adjusted`.
-- **Why fidelity:** pipeline rehearsal — does your code handle `is.na()`,
-  extreme numerics/dates? Rates are package constants, **never** claimed DST
-  rates from real microdata, and never stored in schema YAML.
-- **Why truth:** know what the data should imply. Under independence,
-  expected association is 0 within MC error. Under scenarios, compare your
-  fit to the stamped expectations.
-
-### Scenario vs fidelity vs truth (rules of thumb)
-
-1. **Scenario = signal** passed **in** via `scenario=`. Omit it (or pass
-   `scenario_independence()`) for structurally valid noise that joins.
-2. **Fidelity = quality** passed **in** on the **same** call. Default
-   `"clean"` (effective NA/outlier rates 0). `"messy"` is for pipeline
-   stress only.
-3. **Truth = oracle** retrieved **out** with `get_truth(x)` (and
-   `get_scenario(x)` for the attached scenario object). Always present —
-   including under independence.
-
-Under scenarios, prefer `fidelity = "clean"` for oracle checks. `messy` is
-for pipeline stress and **must not** be read as moving estimands (cosmetic
-MCAR does not change the stamped truth).
-
-Coefficients live **only** on the scenario object (`associations` /
-confounder / bias fields), never in schema YAML or the custom column CSV.
-Core backend first (no synthpop); optional Suggests such as simDAG /
-simstudy may appear later for alternate backends.
-
-### Progression: independence → association → confounding → MNAR / CC
-
-Customs are the easiest DGP surface: describe numeric columns structurally,
-then pass `scenario=` with `register.column` refs (e.g. `"study.x"`).
+This is the feature that makes fiktive more than a random-data generator:
+you can tell it to secretly bake in a real, known relationship, then check
+whether *your own analysis script* actually finds it.
 
 ```r
-# Structural columns only — ranges for noise; NO coefficients here
 cols <- tibble::tibble(
-  name = c("x", "y", "u"),
-  type = c("numeric", "numeric", "numeric"),
-  min = c(-2, -2, -2),
-  max = c(2, 2, 2)
+  name = c("x", "y"), type = c("numeric", "numeric"),
+  min = c(-2, -2), max = c(2, 2)
 )
 
-# --- Independence (default) -------------------------------------------------
-# What: no planted signal. Why: joinable noise for pipeline wiring.
-# How: omit scenario= (same as scenario_independence()).
-study0 <- generate_custom_register(
-  id = "study",
-  one_row_per = "person_reference_date",
-  columns = cols,
-  population = pop,
-  schema = schema,
-  from = as.Date("2008-01-01"),
-  to = as.Date("2008-12-31"),
-  seed = 1,
-  cadence = "annual"
-  # scenario = NULL,          # default: independence
-  # fidelity = "clean"        # default: no cosmetic NA / outliers
-)
-get_truth(study0)$expected_naive  # 0 within MC error
+# "x causes a 1.5-point increase in y" -- the true, known answer
+sc <- scenario_association(exposure = "study.x", outcome = "study.y", coefficient = 1.5)
 
-# --- Association (8b) -------------------------------------------------------
-# What: pure E→Y link. Why: recover a known β with an unadjusted fit.
-# How: scenario_association() → pass as scenario= (fidelity stays clean).
-sc <- scenario_association(
-  exposure = "study.x",   # register.column ref (id + column name)
-  outcome = "study.y",
-  link = "identity",      # identity → OLS recovers coefficient
-  coefficient = 1.5       # lives ONLY on the scenario object
-)
 study <- generate_custom_register(
-  id = "study",
-  one_row_per = "person_reference_date",
-  columns = cols,
-  population = pop,
-  schema = schema,
-  from = as.Date("2008-01-01"),
-  to = as.Date("2008-12-31"),
-  seed = 1,
-  scenario = sc,            # DGP overlay applied inside generate
-  fidelity = "clean",       # prefer clean for oracle / AI-eval checks
-  cadence = "annual"
+  id = "study", one_row_per = "person_reference_date", columns = cols,
+  population = pop, schema = schema,
+  from = as.Date("2008-01-01"), to = as.Date("2008-12-31"),
+  seed = 1, scenario = sc, cadence = "annual"
 )
-tr <- get_truth(study)      # truth is an output attribute, not an input
-tr$expected_naive           # 1.5
-tr$expected_adjusted        # 1.5 (same as naive — no bias claim)
 
-# --- Confounding (8c) -------------------------------------------------------
-# What: U affects both E and Y. Why: naive ≠ adjusted; teach adjustment.
-sc_c <- scenario_confounding(
-  exposure = "study.x",
-  outcome = "study.y",
-  confounder = "study.u",
-  coefficient = 1.0,          # E→Y causal coefficient
-  affects_exposure = 1.5,     # U→E
-  affects_outcome = 1.5       # U→Y
-)
-study_c <- generate_custom_register(
-  id = "study",
-  one_row_per = "person_reference_date",
-  columns = cols,
-  population = pop,
-  schema = schema,
-  from = as.Date("2008-01-01"),
-  to = as.Date("2008-12-31"),
-  seed = 1,
-  scenario = sc_c,
-  fidelity = "clean",
-  cadence = "annual"
-)
-get_truth(study_c)$expected_naive     # ≠ adjusted under confounding
-get_truth(study_c)$expected_adjusted  # = coefficient (1.0)
+# Now run YOUR analysis, e.g.:
+fit <- lm(y ~ x, data = study)
+coef(fit)[["x"]]                  # should come out close to 1.5
 
-# --- MNAR missingness (8d) --------------------------------------------------
-# What: informative NA on a column. Why: complete-case fit ≠ full-data β.
-sc_m <- scenario_mnar(
-  exposure = "study.x",
-  outcome = "study.y",
-  coefficient = 2.0,
-  mnar_coefficient = 1.2   # logit slope for P(missing)
-)
-study_m <- generate_custom_register(
-  id = "study",
-  one_row_per = "person_reference_date",
-  columns = cols,
-  population = pop,
-  schema = schema,
-  from = as.Date("2008-01-01"),
-  to = as.Date("2008-12-31"),
-  seed = 1,
-  scenario = sc_m,
-  fidelity = "clean",      # MNAR is the scenario bias — keep fidelity clean
-  cadence = "annual"
-)
-get_truth(study_m)$expected_naive     # biased naive estimate under MNAR (≠ 2.0)
-get_truth(study_m)$expected_adjusted  # true coefficient (2.0)
-
-# --- Complete-case selection (8d) -------------------------------------------
-# What: rows dropped with selection depending on a column.
-# Why: selected-sample estimand ≠ population estimand.
-sc_s <- scenario_complete_case(
-  exposure = "study.x",
-  outcome = "study.y",
-  coefficient = 1.8,
-  selection_coefficient = 1.5
-)
-study_s <- generate_custom_register(
-  id = "study",
-  one_row_per = "person_reference_date",
-  columns = cols,
-  population = pop,
-  schema = schema,
-  from = as.Date("2008-01-01"),
-  to = as.Date("2008-12-31"),
-  seed = 1,
-  scenario = sc_s,
-  fidelity = "clean",
-  cadence = "annual"
-)
-get_truth(study_s)$expected_naive     # biased complete-case estimate (≠ 1.8)
-get_truth(study_s)$expected_adjusted  # true coefficient (1.8)
+# ...and compare it against the true answer fiktive is telling you:
+get_truth(study)$expected_naive   # 1.5 -- if your fit is way off, your code has a bug
 ```
 
-Quick map of constructors → truth claim:
+Beyond a plain association, fiktive can plant trickier situations, so you
+can test whether your code handles them correctly too:
 
-| Scenario | Constructor | Truth claim |
+| Function | Plants... | Use it to test... |
 |---|---|---|
-| Independence | `scenario = NULL` / `scenario_independence()` | expected association **0** within MC error |
-| Association | `scenario_association()` | `expected_naive` = `expected_adjusted` = coefficient; no bias claim |
-| Confounding | `scenario_confounding()` | naive ≠ adjusted; full estimand / estimator fields |
-| MNAR | `scenario_mnar()` | informative missingness; complete-case ≠ full-data |
-| Complete-case selection | `scenario_complete_case()` | selected-sample ≠ population estimand |
+| `scenario_association()` | a straight X → Y effect | your basic model recovers the right coefficient |
+| `scenario_confounding()` | a third variable biasing the naive estimate | your code actually adjusts for confounders |
+| `scenario_mnar()` | missing values that depend on the value itself | your code doesn't ignore informative missingness |
+| `scenario_complete_case()` | rows dropped depending on a column's value | your "complete case" analysis isn't secretly biased |
 
-### Fidelity only (pipeline stress)
+All four work the same way as the example above: build the scenario, pass
+it as `scenario=`, then compare your own fit against
+`get_truth(x)$expected_naive` / `$expected_adjusted`. Run `?scenario_confounding`,
+`?scenario_mnar`, or `?scenario_complete_case` for each one's full parameter
+list and a runnable example.
 
-**What:** MCAR-ish NA and rare numeric/date extremes.
-**Why:** rehearse `is.na()` / outlier handling without claiming real DST
-rates.
-**How:** pass `fidelity = "messy"` (or explicit `na_rate` /
-`outlier_rate` in `[0, 1]`) on the **same** `generate_*` call. Applied
-after any scenario DGP inside generate — not a second user step.
+Leave `scenario=` out entirely (or generate any ordinary register like
+`bef`) and you get **independence** — no planted relationship;
+`get_truth(x)$expected_naive` comes back `0`.
 
-- `fidelity = "clean"` (default) — effective rates 0; **prefer under
-  scenarios** (truth expects clean).
-- `fidelity = "messy"` — small fixed package rates; **never** DST rates;
-  never stored in schema YAML. Messy + scenarios = pipeline stress only —
-  do not read cosmetic MCAR as moving estimands.
-- Optional `na_rate` / `outlier_rate` overrides win when set; outputs stamp
-  **preset + effective rates** via `register_stamps()`.
+## Making data messier (to test your pipeline's robustness)
 
-NA is applied only to non-key, non-derived columns. Outliers only on
-numeric/date (never inventing invalid clinical catalogue codes). Join keys,
-presence flags, and derived columns (e.g. `alder`) stay complete.
+Real data has missing values and the occasional wild outlier. To rehearse
+how your code handles that, ask for `fidelity = "messy"` on any generate
+call:
 
 ```r
-# Independence + messy fidelity: stress-test NA / extremes in one call
-bef <- generate_register(
-  "bef",
-  pop,
-  schema,
-  from = as.Date("2008-01-01"),
-  to = as.Date("2009-12-31"),
+bef_messy <- generate_register(
+  "bef", pop, schema,
+  from = as.Date("2008-01-01"), to = as.Date("2009-12-31"),
   seed = 1,
-  fidelity = "messy"   # applied inside generate after the (null) scenario
+  fidelity = "messy"   # sprinkles in some NAs and extreme values
 )
-get_truth(bef)$expected_naive   # 0 under independence
-register_stamps(bef)$fidelity   # "messy"
-register_stamps(bef)$na_rate    # effective rate used
 ```
+
+Default is `fidelity = "clean"` (no artificial noise) — use that whenever
+you're checking `get_truth()` against a scenario, so cosmetic messiness
+doesn't get mixed up with the relationship you actually planted.
+
+## Where the data model comes from
+
+fiktive doesn't invent what a Danish register looks like — it reads the
+column layouts live from
+[`steno-aarhus/registers-guide`](https://github.com/steno-aarhus/registers-guide),
+a project that documents the real DST register structures. That means:
+
+- The schema can be updated any time, without a new fiktive release.
+- To work offline, pass a local copy instead of fetching live:
+  `load_registers_schema(source = "path/to/local/registers-guide/schema")`.
+- If fiktive doesn't know how to fill in a value safely, it stops with a
+  clear error rather than guessing — see below.
+
+### "SCHEMA GAP" errors
+
+If you see an error starting with `SCHEMA GAP:`, fiktive is telling you it
+deliberately refused to make something up, rather than risk giving you
+subtly wrong fake data. This usually means either a column needs
+information the live schema doesn't have yet, or (for a few registers) the
+real-world code list mixes two eras of history with no way to tell them
+apart safely — for example, Danish municipality codes were reorganized in
+2007, and some old codes were reused for entirely different, unrelated
+municipalities. This isn't something to work around in your own code — it's
+a gap in the schema itself, worth reporting upstream.
+
+## Licenses
+
+- Package code: MIT
+- Generated (fake) datasets: [CC-BY-4.0](https://creativecommons.org/licenses/by/4.0/)
+
+fiktive **creates** fictitious tables. It never extracts rows from a real
+Danish register.
 
 ## Available registers
 
 Pass any `id` below to `registers=` in `generate_register()` /
 `generate_registers()` — no `generate_custom_register()` step needed. That
-function is only for columns the guide doesn't define (see [Custom /
-external register](#custom--external-register-structure-only) above).
+function is only for columns the guide doesn't define (see [Making up your
+own columns](#making-up-your-own-columns) above).
 
 This reflects the live schema at the time of writing (27 registers). Since
 fiktive loads the schema live rather than vendoring it, the guide can add or
-change registers between releases — run `names(load_registers_schema()$registers)`
-for the current, definitive set.
+change registers between releases — run
+`names(load_registers_schema()$registers)` for the current, definitive set.
 
 | id | Register | Grain | Notes |
 |---|---|---|---|
@@ -445,5 +325,5 @@ for the current, definitive set.
 | `vnds_ud` | Udvandringer (emigrations, 2005–) | event_from_person | One row per emigration |
 
 `expand_from_parent` registers need their parent generated in the same
-`registers=` call (or already generated) — see [LPR parent then
-child](#lpr-parent-then-child) above.
+`registers=` call (or already generated) — see [Hospital data needs two
+tables](#hospital-data-needs-two-tables) above.
