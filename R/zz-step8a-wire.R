@@ -1,17 +1,66 @@
-# STEP 8a — wire independence truth + opt-in fidelity through the public
-# generators without reshaping grain dispatch (STEP 1–7).
+# STEP 8a–8d — wire independence / association / confounding / named biases
+# + opt-in fidelity through the public generators without reshaping grain
+# dispatch (STEP 1–7).
+#
+# Order: structural draw → scenario DGP → fidelity (default clean) → stamps →
+# truth/scenario attrs. Messy fidelity after scenarios is for pipeline stress
+# only; stamped truth expects clean (cosmetic MCAR must not silently move
+# estimands).
 
-#' @rdname generate_register
+#' Generate a fictitious register table
+#'
+#' `scenario = NULL` is independence: structurally valid noise that joins.
+#' Pass a [scenario_association()], [scenario_confounding()],
+#' [scenario_mnar()], or [scenario_complete_case()] object to overlay a
+#' known DGP after structural generation. Coefficients live only on the
+#' scenario — never in schema YAML.
+#'
+#' Snapshot grains: `bef` (quarterly), `udda` and `akm` (annual).
+#' Event-from-person: `dod`, `lmdb`, `vnds`, `cancer`, `mfr` / Levendefoedte
+#' (empty tables are valid; coverage ends 2018), `lab_dm_forsker`
+#' (`analysiscode` from LabTerm / published NPU; coverage 2008-2025).
+#' Expand-from-parent: LPR2 (`lpr_adm` then `lpr_diag` / `lpr_sksopr` /
+#' `lpr_sksube`) and LPR3 (`lpr_a_kontakt` then `lpr_a_diagnose` /
+#' `lpr_a_procregistrering`). Diagnoses/procedures are generated off the
+#' **same** contact table that was written. Household-year: `faik` (one row
+#' per `familie_id` × year; `pnr` blank when present). Branch on `code_system`
+#' id: `icd10_sks` → `sksr::SKS_labels` Prefix `dia` (D-prefixed, e.g. DE119);
+#' plain `icd10` → WHO via `codeCollection::ICD10Koodit` (E119, never sksr);
+#' `icd8` / `previous_code_system` until 1993 → honour or SCHEMA GAP.
+#' Procedures sample `sksr` Prefix `opr` / related. LMDB `atc` samples WHO-form
+#' codes from `codeCollection::ATCKoodit` (or WHOCC dump). Dispatch prefers
+#' schema `one_row_per` when present. Psych LPR (`t_psyk_*`) is not this step.
+#' Never mix `vnds` with `vnds_hist` / `vnds_ind` / `vnds_ud`. Other schema
+#' registers error as not implemented; unknown ids / novel grains are a
+#' SCHEMA GAP.
+#'
+#' @param register Lowercase register id (fastreg name), e.g. `"bef"`.
+#' @param population Persons table from [generate_background_population()].
+#' @param schema Schema from [load_registers_schema()].
+#' @param from Start of the requested window (Date or coercible).
+#' @param to End of the requested window (Date or coercible).
+#' @param seed Optional RNG seed. Restored on exit.
+#' @param scenario `NULL` (independence) or a `fiktive_scenario` from the
+#'   scenario_* constructors.
+#' @param fidelity `"clean"` (default) or `"messy"`. Under scenarios, prefer
+#'   clean; messy is for pipeline stress and must not be read as moving
+#'   estimands.
+#' @param na_rate,outlier_rate Optional fidelity rate overrides in `[0, 1]`.
+#'
+#' @return A tibble whose columns are a subset of the schema column names
+#'   for `register`. Zero rows is a valid event or child table.
 #' @export
 generate_register <- function(register, population, schema, from, to,
                               seed = NULL, scenario = NULL,
                               fidelity = c("clean", "messy"),
                               na_rate = NULL, outlier_rate = NULL) {
-  if (!is.null(scenario)) {
-    stop("Only scenario = NULL (independence) is supported.", call. = FALSE)
-  }
   if (is.null(schema) || is.null(schema$registers)) {
     stop("`schema` from load_registers_schema() is required.", call. = FALSE)
+  }
+  sc <- if (is.null(scenario)) {
+    scenario_independence()
+  } else {
+    validate_fiktive_scenario(scenario)
   }
   fidelity_info <- resolve_fidelity(fidelity, na_rate = na_rate, outlier_rate = outlier_rate)
   register <- tolower(as.character(register)[[1]])
@@ -23,12 +72,36 @@ generate_register <- function(register, population, schema, from, to,
     )
   }
   tbl <- dispatch_generate_register(register, spec, population, schema, from, to, seed)
-  tbl <- with_rng_seed(seed, apply_fidelity(tbl, spec, fidelity_info))
+  tbl <- with_rng_seed(seed, {
+    # Scenario DGP first (associations / confounding / biases), then fidelity.
+    tbl <- apply_scenario(tbl, sc, register_hint = register)
+    apply_fidelity(tbl, spec, fidelity_info)
+  })
   tbl <- stamp_generation(tbl, schema = schema, seed = seed)
-  attach_run_meta(tbl)
+  attach_run_meta(tbl, scenario = sc)
 }
 
-#' @rdname generate_registers
+#' Generate several schema registers (opt-in batch)
+#'
+#' Builds **only** the named schema registers. `registers` is **required** —
+#' there is no silent default of every implemented id. Customs are not accepted
+#' here; use [generate_custom_register()] one-at-a-time.
+#'
+#' When `scenario` associations span registers, tables are drawn structurally
+#' first, then the scenario is applied across the list (joining on `pnr` when
+#' needed), then fidelity is applied per table.
+#'
+#' @param registers Character vector of schema register ids (required).
+#' @param population Persons table from [generate_background_population()].
+#' @param schema Schema from [load_registers_schema()].
+#' @param from Start of the requested window (Date or coercible).
+#' @param to End of the requested window (Date or coercible).
+#' @param seed Optional RNG seed. Restored on exit (per register call).
+#' @param scenario `NULL` (independence) or a `fiktive_scenario`.
+#' @param fidelity `"clean"` (default) or `"messy"`.
+#' @param na_rate,outlier_rate Optional fidelity rate overrides in `[0, 1]`.
+#'
+#' @return A named list of tibbles, one per requested id (lowercase names).
 #' @export
 generate_registers <- function(registers, population, schema, from, to,
                                seed = NULL, scenario = NULL,
@@ -48,34 +121,81 @@ generate_registers <- function(registers, population, schema, from, to,
   if (anyNA(registers) || any(!nzchar(registers))) {
     stop("`registers` must be a non-empty character vector of schema ids.", call. = FALSE)
   }
-  if (!is.null(scenario)) {
-    stop("Only scenario = NULL (independence) is supported.", call. = FALSE)
-  }
   if (is.null(schema) || is.null(schema$registers)) {
     stop("`schema` from load_registers_schema() is required.", call. = FALSE)
   }
+  sc <- if (is.null(scenario)) {
+    scenario_independence()
+  } else {
+    validate_fiktive_scenario(scenario)
+  }
   fidelity <- match.arg(fidelity)
+  fidelity_info <- resolve_fidelity(fidelity, na_rate = na_rate, outlier_rate = outlier_rate)
   ids <- tolower(registers)
   out <- vector("list", length(ids))
   names(out) <- ids
+  # Structural draw only (no scenario / fidelity yet) so cross-register
+  # associations can join before cosmetic missingness.
   for (i in seq_along(ids)) {
-    out[[i]] <- generate_register(
-      ids[[i]],
-      population = population,
-      schema = schema,
-      from = from,
-      to = to,
-      seed = seed,
-      scenario = scenario,
-      fidelity = fidelity,
-      na_rate = na_rate,
-      outlier_rate = outlier_rate
-    )
+    rid <- ids[[i]]
+    spec <- schema$registers[[rid]]
+    if (is.null(spec)) {
+      schema_gap(
+        sprintf("register id '%s' is not in the schema.", rid),
+        "a register id that exists in registers/*.yaml"
+      )
+    }
+    tbl <- dispatch_generate_register(rid, spec, population, schema, from, to, seed)
+    tbl <- stamp_generation(tbl, schema = schema, seed = seed)
+    out[[i]] <- tbl
   }
-  attach_run_meta(out)
+  out <- with_rng_seed(seed, {
+    out <- apply_scenario(out, sc, register_hint = NULL)
+    for (i in seq_along(ids)) {
+      rid <- ids[[i]]
+      spec <- schema$registers[[rid]]
+      out[[i]] <- apply_fidelity(out[[i]], spec, fidelity_info)
+      out[[i]] <- stamp_generation(out[[i]], schema = schema, seed = seed)
+      out[[i]] <- attach_run_meta(out[[i]], scenario = sc)
+    }
+    out
+  })
+  attach_run_meta(out, scenario = sc)
 }
 
-#' @rdname generate_custom_register
+#' Generate a custom / external register (structure only + optional scenario)
+#'
+#' Front door for researcher-described tables that are **not** in the guide
+#' YAML. Register metadata is passed as R arguments; columns come from a CSV
+#' path or tibble with `name`, `type`, and optional `min` / `max` / `values`
+#' (structural noise only — **no coefficients**). Pass `scenario` to overlay
+#' association / confounding / MNAR / complete-case after the structural draw.
+#'
+#' Grains: any existing schema grain (`person`, `person_reference_date`,
+#' `event_from_person`, `expand_from_parent`, `household_year`). A novel grain
+#' is a SCHEMA GAP. For `household_year`, `join_keys` must be household-side
+#' (e.g. `familie_id`) — never a silent `pnr` default. `expand_from_parent`
+#' requires an already-generated `parent` table.
+#'
+#' @param id Custom register id (not looked up in schema YAML).
+#' @param one_row_per Grain (see details).
+#' @param join_keys Character vector of join keys. Defaults to `pnr` for
+#'   person-side grains; required and household-side for `household_year`.
+#' @param columns CSV path or tibble/data.frame with columns `name`, `type`,
+#'   and optional `min`, `max`, `values`. Extra columns (e.g. coefficients)
+#'   are ignored — do not put DGP coeffs here.
+#' @param population Persons table from [generate_background_population()].
+#' @param schema Schema from [load_registers_schema()] (stamps / population).
+#' @param from,to Window (Date or coercible).
+#' @param seed Optional RNG seed.
+#' @param scenario `NULL` (independence) or a `fiktive_scenario`.
+#' @param parent Already-generated parent table when
+#'   `one_row_per = "expand_from_parent"`.
+#' @param cadence Snapshot cadence: `"annual"` (default) or `"quarterly"`.
+#' @param fidelity `"clean"` (default) or `"messy"`.
+#' @param na_rate,outlier_rate Optional fidelity rate overrides in `[0, 1]`.
+#'
+#' @return A tibble of structural noise that joins on `join_keys`.
 #' @export
 generate_custom_register <- function(id, one_row_per, join_keys = NULL, columns,
                                      population, schema, from, to,
@@ -83,11 +203,13 @@ generate_custom_register <- function(id, one_row_per, join_keys = NULL, columns,
                                      parent = NULL, cadence = NULL,
                                      fidelity = c("clean", "messy"),
                                      na_rate = NULL, outlier_rate = NULL) {
-  if (!is.null(scenario)) {
-    stop("Only scenario = NULL (independence) is supported.", call. = FALSE)
-  }
   if (is.null(schema) || is.null(schema$registers)) {
     stop("`schema` from load_registers_schema() is required.", call. = FALSE)
+  }
+  sc <- if (is.null(scenario)) {
+    scenario_independence()
+  } else {
+    validate_fiktive_scenario(scenario)
   }
   fidelity_info <- resolve_fidelity(fidelity, na_rate = na_rate, outlier_rate = outlier_rate)
   id <- as.character(id)[[1]]
@@ -123,7 +245,10 @@ generate_custom_register <- function(id, one_row_per, join_keys = NULL, columns,
     spec, population, schema, from, to, seed,
     parent = parent, cadence = cad
   )
-  tbl <- with_rng_seed(seed, apply_fidelity(tbl, spec, fidelity_info))
+  tbl <- with_rng_seed(seed, {
+    tbl <- apply_scenario(tbl, sc, register_hint = id)
+    apply_fidelity(tbl, spec, fidelity_info)
+  })
   tbl <- stamp_generation(tbl, schema = schema, seed = seed)
-  attach_run_meta(tbl)
+  attach_run_meta(tbl, scenario = sc)
 }

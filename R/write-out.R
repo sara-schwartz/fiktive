@@ -8,16 +8,7 @@ fiktive_pkg_version <- function() {
   )
 }
 
-#' Attach generation stamps to a register table
-#'
-#' Stamps schema commit, seed, and package version. Catalogue stamps already
-#' set by emitters are preserved. Used by generators and available for tests.
-#'
-#' @param tbl A tibble.
-#' @param schema Schema from [load_registers_schema()], or `NULL`.
-#' @param seed Optional RNG seed used for the draw.
-#' @return `tbl` with stamp attributes.
-#' @keywords internal
+#' @noRd
 stamp_generation <- function(tbl, schema = NULL, seed = NULL) {
   if (!is.null(schema) && !is.null(schema$schema_commit)) {
     attr(tbl, "schema_commit") <- as.character(schema$schema_commit)[[1]]
