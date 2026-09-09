@@ -110,9 +110,8 @@ sample_lookup_keys <- function(cs, cs_id, n, when = NULL) {
   for (d in unique(when)) {
     idx <- which(when == d)
     keys <- lookup_keys_at(cs, when = d)
-    if (is.null(keys) || !length(keys)) {
-      keys <- lookup_keys(cs)
-    }
+    # Periods present: empty means no code valid on that date - do not invent
+    # from the era-collapsed static lookup.
     if (is.null(keys) || !length(keys)) {
       return(NULL)
     }
