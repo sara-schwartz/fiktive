@@ -1,2 +1,2 @@
-# Public generate_registers() lives in zz-step8a-wire.R (scenario + fidelity).
+# Public generate_registers() lives in generate-api.R (scenario + fidelity).
 # This file kept so historical paths/docs stay discoverable.

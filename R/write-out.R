@@ -154,7 +154,7 @@ ensure_ext <- function(path, ext) {
   paste0(path, ".", ext)
 }
 
-#' Write several generated register tables
+#' Write every table in a named list of generated registers
 #'
 #' @param tables Named list of tibbles.
 #' @param dir Output directory.
@@ -162,8 +162,8 @@ ensure_ext <- function(path, ext) {
 #' @param hive_year Passed to [write_register()].
 #' @return Invisibly, `dir`.
 #' @export
-write_registers <- function(tables, dir, format = c("csv", "parquet"),
-                            hive_year = FALSE) {
+write_all_registers <- function(tables, dir, format = c("csv", "parquet"),
+                                 hive_year = FALSE) {
   format <- match.arg(format)
   if (!is.list(tables) || is.null(names(tables)) || any(!nzchar(names(tables)))) {
     stop("`tables` must be a named list of tibbles.", call. = FALSE)

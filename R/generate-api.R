@@ -1,6 +1,7 @@
-# STEP 8a–8d — wire independence / association / confounding / named biases
-# + opt-in fidelity through the public generators without reshaping grain
-# dispatch (STEP 1–7).
+# The three public generate_*() entry points: generate_register(),
+# generate_registers(), generate_custom_register(). Each wires independence /
+# association / confounding / named biases + opt-in fidelity around the grain
+# dispatch in generate.R / generate-pipeline.R, without reshaping it.
 #
 # Order: structural draw → scenario DGP → fidelity (default clean) → stamps →
 # truth/scenario attrs. Messy fidelity after scenarios is for pipeline stress

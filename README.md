@@ -8,6 +8,22 @@ The data isn't real. It's shaped exactly like the real thing (same column
 names, same codes, same join keys), but every value is randomly generated.
 Nothing in it comes from an actual person.
 
+## Contents
+
+- [Why would I use this?](#why-would-i-use-this)
+- [Install](#install)
+- [The 5-minute quickstart](#the-5-minute-quickstart)
+- [What registers can I generate?](#what-registers-can-i-generate)
+- [Saving your data to files](#saving-your-data-to-files)
+- [Joining tables together](#joining-tables-together)
+- [Hospital data needs two tables](#hospital-data-needs-two-tables)
+- [Making up your own columns](#making-up-your-own-columns)
+- [Checking whether your analysis code is actually correct](#checking-whether-your-analysis-code-is-actually-correct)
+- [Making data messier (to test your pipeline's robustness)](#making-data-messier-to-test-your-pipelines-robustness)
+- [Where the data model comes from](#where-the-data-model-comes-from)
+- [Licenses](#licenses)
+- [Available registers](#available-registers)
+
 ## Why would I use this?
 
 - **Write your analysis script before you have DST access.** Get your
@@ -95,14 +111,14 @@ the whole interface, no matter which register it is.
 
 ## Saving your data to files
 
-`write_register()` saves **one** table. `write_registers()` saves **every**
+`write_register()` saves **one** table. `write_all_registers()` saves **every**
 table in a named list (like `tables` from `generate_registers()`) in one
 call — it's just a shortcut for calling `write_register()` on each one
 yourself.
 
 ```r
 write_register(tables$bef, "out/bef")      # one table -> writes out/bef.csv
-write_registers(tables, "out/registers")   # whole list -> writes out/registers/bef.csv, out/registers/lmdb.csv, ...
+write_all_registers(tables, "out/registers")   # whole list -> writes out/registers/bef.csv, out/registers/lmdb.csv, ...
 ```
 
 CSV is the default. For parquet instead, add `format = "parquet"` to either
@@ -110,7 +126,7 @@ function:
 
 ```r
 write_register(tables$bef, "out/bef", format = "parquet")    # writes out/bef.parquet
-write_registers(tables, "out/registers", format = "parquet") # same, for every table
+write_all_registers(tables, "out/registers", format = "parquet") # same, for every table
 ```
 
 Either way, each file also gets a small `.meta.yaml` sidecar recording

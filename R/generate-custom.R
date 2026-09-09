@@ -1,6 +1,6 @@
 # Custom / external registers (STEP 7) — structure only; never raw extracts;
 # never coefficients in the column CSV.
-# Public generate_custom_register() lives in zz-step8a-wire.R (scenario + fidelity).
+# Public generate_custom_register() lives in generate-api.R (scenario + fidelity).
 
 .CUSTOM_ALLOWED_TYPES <- c("character", "integer", "numeric", "date", "logical", "datetime")
 

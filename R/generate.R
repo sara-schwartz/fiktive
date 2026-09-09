@@ -1,4 +1,4 @@
-# Public generate_register() lives in zz-step8a-wire.R (scenario + fidelity).
+# Public generate_register() lives in generate-api.R (scenario + fidelity).
 
 .KNOWN_GRAINS <- c(
   "person",
