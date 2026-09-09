@@ -5,13 +5,15 @@
 get_truth(x = NULL, ...)
 }
 \arguments{
-\item{x}{Unused. Reserved for a generated object.}
+\item{x}{A generated tibble or named list of tibbles, or \code{NULL}.}
+
 \item{...}{Unused.}
 }
 \value{
-A list with empty \code{estimand}, \code{naive_estimator},
-\code{adjusted_estimator}, \code{expected_naive}, and \code{expected_adjusted} slots.
+A list of class \code{fiktive_truth}.
 }
 \description{
-STEP 1 stub. No numbers are invented here.
+Always available, including under independence (\code{scenario = NULL}).
+Under independence the expected association is 0 within Monte Carlo error.
+Bias / confounding / MAR / MNAR claims are deferred to later steps.
 }
