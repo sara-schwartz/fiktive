@@ -141,6 +141,12 @@ typed_noise <- function(type, n, role = NULL, name = NULL, code_system = NULL, c
       "codeCollection::ATCKoodit or FIKTIVE_WHOCC_ATC; never sprintf; never decoder::atc"
     )
   }
+  if (identical(name, "analysiscode")) {
+    schema_gap(
+      "lab_dm_forsker analysiscode without LabTerm / published NPU catalogue",
+      "FIKTIVE_LABTERM or IFCC C-NPU CSV; never sprintf NPU/DNK noise"
+    )
+  }
   if (as.character(code_system %||% "") %in% c("icd10", "icd10_sks", "icd8", "sks", "kont_type")) {
     stop(
       "Internal error: clinical nomenclature must not fall through to typed noise.",
