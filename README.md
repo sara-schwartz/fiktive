@@ -94,3 +94,26 @@ dplyr::inner_join(tables$bef, ext, by = "pnr")
 ```
 
 Household-year customs must pass household-side `join_keys` (e.g. `familie_id`), never a silent `pnr` default. Expand-from-parent customs need an already-generated `parent` table.
+
+## Truth and fidelity (independence)
+
+Default generation is independence (`scenario = NULL`): structurally valid noise that joins. Every generator always attaches a `fiktive_truth` object — retrieve it with `get_truth()`. Under independence the expected association is **0 within Monte Carlo error**; bias / confounding / MAR / MNAR scenarios are not claimed here (STEP 8b+).
+
+Opt-in **fidelity** is data quality only (not signal):
+
+- `fidelity = "clean"` (default) — effective `na_rate` / `outlier_rate` are 0
+- `fidelity = "messy"` — small fixed MCAR-ish NA rates and rare numeric/date extremes (package constants; **never** DST rates from real microdata; never stored in schema YAML)
+- Optional `na_rate` / `outlier_rate` overrides in `[0, 1]` win when set; outputs stamp **preset + effective rates**
+
+NA is applied only to non-key, non-derived columns. Outliers only on numeric/date (never inventing invalid clinical catalogue codes). Join keys, presence flags, and derived columns (e.g. `alder`) stay complete.
+
+```r
+bef <- generate_register(
+  "bef", pop, schema,
+  from = as.Date("2008-01-01"), to = as.Date("2009-12-31"),
+  seed = 1,
+  fidelity = "messy"
+)
+get_truth(bef)$expected_naive  # 0 under independence
+register_stamps(bef)$fidelity  # "messy"
+```
