@@ -141,7 +141,7 @@ Every table generated from the same `pop` shares the same people (via
 data:
 
 ```r
-dplyr::inner_join(
+joined <- dplyr::inner_join(
   tables$bef, tables$lmdb,
   by = "pnr", relationship = "many-to-many"
 )
@@ -170,7 +170,7 @@ lpr <- generate_registers(
   to = as.Date("2010-12-31"),
   seed = 1
 )
-dplyr::inner_join(lpr$lpr_diag, lpr$lpr_adm, by = "recnum")
+diagnoses_with_visits <- dplyr::inner_join(lpr$lpr_diag, lpr$lpr_adm, by = "recnum")
 ```
 
 A couple of things worth knowing:
@@ -210,7 +210,7 @@ ext <- generate_custom_register(
   cadence = "annual"   # one snapshot per year ("quarterly" is the other option)
 )
 
-dplyr::inner_join(tables$bef, ext, by = "pnr", relationship = "many-to-many")
+joined <- dplyr::inner_join(tables$bef, ext, by = "pnr", relationship = "many-to-many")
 ```
 
 ## Checking whether your analysis code is actually correct
