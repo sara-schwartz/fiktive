@@ -496,13 +496,17 @@ remaining item without a PLAN lock stays a fail-a-PR condition.
   phases, see `## STEP 9` below for the full design and what was
   refined during execution (new `time_to_event` grain,
   `scenario_immortal_time()` / `scenario_left_truncation()`).
-- **Open bias DSL** — recommend leaving this gated indefinitely, not just
-  deferred. A formula-based "define your own bias" mechanism conflicts
-  with what makes the AI-eval use case trustworthy: every named bias
-  ships a derivable, honest `expected_naive`/`expected_adjusted`. An open
-  DSL either needs a general symbolic bias solver (a research project of
-  its own) or ships biases with no truth guarantee, quietly breaking the
-  one thing that makes the truth oracle worth trusting.
+- **Open bias DSL — rejected (2026-09-10).** Not deferred, not gated —
+  out of scope permanently unless a future PLAN entry explicitly reopens
+  it with a concrete design. A formula-based "define your own bias"
+  mechanism conflicts with what makes the AI-eval use case trustworthy:
+  every named bias ships a derivable, honest
+  `expected_naive`/`expected_adjusted`. An open DSL either needs a
+  general symbolic bias solver (a research project of its own) or ships
+  biases with no truth guarantee, quietly breaking the one thing that
+  makes the truth oracle worth trusting. This closes out the last of the
+  4 deferred-bias items — all four have a final disposition now (3
+  shipped, 1 rejected).
 
 No change to scope has actually happened — this section exists so a
 future "should we add these" has a ready answer instead of re-deriving
@@ -513,9 +517,15 @@ this split from scratch.
 - README: done (rewritten for new users, table of contents added).
 - Renamed `zz-step8a-wire.R` -> `generate-api.R` and `write_registers()` ->
   `write_all_registers()` — done.
-- Vignette: not started — no `vignettes/` directory, no `knitr`/`rmarkdown`
-  in `DESCRIPTION` yet. Optional; the rewritten README may already cover
-  most of what a vignette would.
+- Vignette: **evaluated, not needed (2026-09-10).** The README already
+  has a TOC and runs the full progression a vignette would cover —
+  quickstart, registers, joins, custom columns, truth/bias checking,
+  immortal time, left truncation, messiness, schema gaps, licensing.
+  Adding `vignettes/` + `knitr`/`rmarkdown` to `Suggests` would duplicate
+  that content and add CRAN-style build infrastructure this project
+  doesn't otherwise need (no CRAN submission planned; README is what
+  gets read on GitHub/pkgdown). Revisit only if a specific worked example
+  needs runnable/knitted output the README can't show inline.
 
 ---
 
