@@ -17,7 +17,7 @@ Nothing in it comes from an actual person.
 - [Saving your data to files](#saving-your-data-to-files)
 - [Joining tables together](#joining-tables-together)
 - [Hospital data needs two tables](#hospital-data-needs-two-tables)
-- [Making up your own columns](#making-up-your-own-columns)
+- [Describing your own register (e.g. a study cohort)](#describing-your-own-register-eg-a-study-cohort)
 - [Checking whether your analysis code is actually correct](#checking-whether-your-analysis-code-is-actually-correct)
 - [Testing for immortal time bias (advanced)](#testing-for-immortal-time-bias-advanced)
 - [Testing for left truncation bias (advanced)](#testing-for-left-truncation-bias-advanced)
@@ -182,12 +182,12 @@ A couple of things worth knowing:
   different windows, but they share the same `pop`, so `tables$bef` and
   `lpr$lpr_adm` still join on `pnr` if you need both together.
 
-## Making up your own columns
+## Describing your own register (e.g. a study cohort)
 
-Sometimes you need a column that isn't a real DST register — a study
-score, a group label. `generate_custom_register()` makes one up
-structurally (you describe the columns; fiktive fills in plausible fake
-values) and it joins to everything else via `pnr`:
+Sometimes you have a table that isn't a real DST register — a study
+cohort, a set of questionnaire scores, a group label. `generate_custom_register()`
+makes one up structurally (you describe the columns; fiktive fills in
+plausible fake values) and it joins to everything else via `pnr`:
 
 ```r
 # Describe your columns: a type, plus either a min/max range or a set of values
@@ -213,6 +213,45 @@ ext <- generate_custom_register(
 
 joined <- dplyr::inner_join(tables$bef, ext, by = "pnr", relationship = "many-to-many")
 ```
+
+### Describing many columns with a CSV instead
+
+For a real cohort with dozens or hundreds of variables, typing out a
+tibble by hand doesn't scale. Pass a CSV path instead of a tibble — same
+`name` / `type` / `min` / `max` / `values` columns, one row per variable.
+Any other columns already in your file (a label, a request status, a
+source note — whatever you're tracking for your own bookkeeping) are
+simply ignored, so your documentation columns can live right next to the
+ones fiktive reads:
+
+```csv
+name,type,min,max,values,dataset,label,status,source
+id,integer,1,60000,,journal,KKH ID number,available,catalogue
+mdato,date,1993-12-01,1997-05-31,,journal,Date of participation,requested,catalogue
+center,character,,,KBH|AAR,journal,Study center,requested,catalogue
+kqn,character,,,M|K,journal,Gender,requested,catalogue
+vaegt,numeric,42,145,,journal,Weight (kg),requested,catalogue
+fedtbiop,integer,,,0|1,journal,Fat biopsy taken (yes/no),available,catalogue
+```
+
+```r
+ext <- generate_custom_register(
+  id = "kkh",
+  one_row_per = "person_reference_date",
+  columns = "kkh_columns.csv",   # path to the CSV above
+  population = pop,
+  schema = schema,
+  from = as.Date("1993-12-01"),
+  to = as.Date("1997-05-31"),
+  seed = 1,
+  cadence = "annual"
+)
+```
+
+`values` accepts `|` or `;` as the separator (`KBH|AAR`, `0|1`, ...).
+Rows with neither `min`/`max` nor `values` filled in still work — fiktive
+falls back to a generic default for that type, so a work-in-progress CSV
+where you haven't decided every range yet won't error out.
 
 ## Checking whether your analysis code is actually correct
 
