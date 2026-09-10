@@ -174,16 +174,18 @@ generate_registers <- function(registers, population, schema, from, to,
 #'
 #' Grains: any existing schema grain (`person`, `person_reference_date`,
 #' `event_from_person`, `expand_from_parent`, `household_year`), plus
-#' `time_to_event` (STEP 9: immortal time bias / left truncation — see
-#' [scenario_immortal_time()]). A novel grain is a SCHEMA GAP. For
+#' `time_to_event` (STEP 9: [scenario_immortal_time()] /
+#' [scenario_left_truncation()]). A novel grain is a SCHEMA GAP. For
 #' `household_year`, `join_keys` must be household-side (e.g. `familie_id`)
 #' — never a silent `pnr` default. `expand_from_parent` requires an
 #' already-generated `parent` table. `time_to_event` ignores `columns`
-#' entirely (its column shape is fixed — `entry_time`, `exit_time`, `event`,
-#' `exposure_start_time`, `ever_exposed` — because the correlation between
-#' them, driven by `scenario`, is the whole point) and requires a
-#' `scenario` built with [scenario_immortal_time()]; there is no
-#' independence version of this grain.
+#' entirely — its column shape is fixed (`entry_time`/`exit_time`/`event`/
+#' `exposure_start_time`/`ever_exposed` for immortal time,
+#' `entry_age`/`exit_age`/`event`/`group` for left truncation), because the
+#' correlation between them, driven by `scenario`, is the whole point — and
+#' requires a `scenario` built with [scenario_immortal_time()] or
+#' [scenario_left_truncation()]; there is no independence version of this
+#' grain.
 #'
 #' @param id Custom register id (not looked up in schema YAML).
 #' @param one_row_per Grain (see details).
@@ -198,7 +200,8 @@ generate_registers <- function(registers, population, schema, from, to,
 #' @param from,to Window (Date or coercible).
 #' @param seed Optional RNG seed.
 #' @param scenario `NULL` (independence) or a `fiktive_scenario`. Required
-#'   (a [scenario_immortal_time()]) for `one_row_per = "time_to_event"`.
+#'   (a [scenario_immortal_time()] or [scenario_left_truncation()]) for
+#'   `one_row_per = "time_to_event"`.
 #' @param parent Already-generated parent table when
 #'   `one_row_per = "expand_from_parent"`.
 #' @param cadence Snapshot cadence: `"annual"` (default) or `"quarterly"`.
@@ -238,10 +241,11 @@ generate_custom_register <- function(id, one_row_per, join_keys = NULL, columns 
   }
   if (identical(grain, "time_to_event")) {
     first_bias <- first_or_null(sc$biases)
-    if (is.null(first_bias) || !identical(as.character(first_bias$type)[[1]], "immortal_time")) {
+    bias_type <- if (!is.null(first_bias)) as.character(first_bias$type)[[1]] else ""
+    if (!bias_type %in% c("immortal_time", "left_truncation")) {
       stop(
-        "`one_row_per = \"time_to_event\"` needs `scenario = scenario_immortal_time(...)`; ",
-        "there is no independence version of this grain.",
+        "`one_row_per = \"time_to_event\"` needs `scenario = scenario_immortal_time(...)` ",
+        "or `scenario_left_truncation(...)`; there is no independence version of this grain.",
         call. = FALSE
       )
     }
@@ -249,12 +253,16 @@ generate_custom_register <- function(id, one_row_per, join_keys = NULL, columns 
     # alternate join key for a grain whose columns are not user-described.
     # fidelity does not apply here: apply_fidelity()'s eligibility isn't
     # scoped to spec$columns, so with no columns declared it would treat
-    # exit_time/event/exposure_start_time as fair game for NA/outlier
-    # injection -- which would corrupt Surv() rather than rehearse
-    # anything meaningful. There is no safe subset of these columns for
-    # cosmetic noise, so fidelity is skipped entirely for this grain.
+    # exit_time/exit_age/event/... as fair game for NA/outlier injection --
+    # which would corrupt Surv() rather than rehearse anything meaningful.
+    # There is no safe subset of these columns for cosmetic noise, so
+    # fidelity is skipped entirely for this grain.
     spec <- list(id = id, one_row_per = grain, join_keys = "pnr", columns = list())
-    tbl <- generate_immortal_time_cohort(population, first_bias, from, to, seed)
+    tbl <- if (identical(bias_type, "immortal_time")) {
+      generate_immortal_time_cohort(population, first_bias, from, to, seed)
+    } else {
+      generate_left_truncation_cohort(population, first_bias, seed)
+    }
     tbl <- stamp_generation(tbl, schema = schema, seed = seed)
     return(attach_run_meta(tbl, scenario = sc))
   }

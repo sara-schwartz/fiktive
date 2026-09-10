@@ -44,7 +44,8 @@ are ignored — do not put DGP coeffs here. Not used for
 \item{seed}{Optional RNG seed.}
 
 \item{scenario}{\code{NULL} (independence) or a \code{fiktive_scenario}. Required
-(a \code{\link[=scenario_immortal_time]{scenario_immortal_time()}}) for \code{one_row_per = "time_to_event"}.}
+(a \code{\link[=scenario_immortal_time]{scenario_immortal_time()}} or \code{\link[=scenario_left_truncation]{scenario_left_truncation()}}) for
+\code{one_row_per = "time_to_event"}.}
 
 \item{parent}{Already-generated parent table when
 \code{one_row_per = "expand_from_parent"}.}
@@ -71,14 +72,16 @@ association / confounding / MNAR / complete-case after the structural draw.
 \details{
 Grains: any existing schema grain (\code{person}, \code{person_reference_date},
 \code{event_from_person}, \code{expand_from_parent}, \code{household_year}), plus
-\code{time_to_event} (STEP 9: immortal time bias / left truncation — see
-\code{\link[=scenario_immortal_time]{scenario_immortal_time()}}). A novel grain is a SCHEMA GAP. For
+\code{time_to_event} (STEP 9: \code{\link[=scenario_immortal_time]{scenario_immortal_time()}} /
+\code{\link[=scenario_left_truncation]{scenario_left_truncation()}}). A novel grain is a SCHEMA GAP. For
 \code{household_year}, \code{join_keys} must be household-side (e.g. \code{familie_id})
 — never a silent \code{pnr} default. \code{expand_from_parent} requires an
 already-generated \code{parent} table. \code{time_to_event} ignores \code{columns}
-entirely (its column shape is fixed — \code{entry_time}, \code{exit_time}, \code{event},
-\code{exposure_start_time}, \code{ever_exposed} — because the correlation between
-them, driven by \code{scenario}, is the whole point) and requires a
-\code{scenario} built with \code{\link[=scenario_immortal_time]{scenario_immortal_time()}}; there is no
-independence version of this grain.
+entirely — its column shape is fixed (\code{entry_time}/\code{exit_time}/\code{event}/
+\code{exposure_start_time}/\code{ever_exposed} for immortal time,
+\code{entry_age}/\code{exit_age}/\code{event}/\code{group} for left truncation), because the
+correlation between them, driven by \code{scenario}, is the whole point — and
+requires a \code{scenario} built with \code{\link[=scenario_immortal_time]{scenario_immortal_time()}} or
+\code{\link[=scenario_left_truncation]{scenario_left_truncation()}}; there is no independence version of this
+grain.
 }

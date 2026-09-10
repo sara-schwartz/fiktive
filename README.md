@@ -20,6 +20,7 @@ Nothing in it comes from an actual person.
 - [Making up your own columns](#making-up-your-own-columns)
 - [Checking whether your analysis code is actually correct](#checking-whether-your-analysis-code-is-actually-correct)
 - [Testing for immortal time bias (advanced)](#testing-for-immortal-time-bias-advanced)
+- [Testing for left truncation bias (advanced)](#testing-for-left-truncation-bias-advanced)
 - [Making data messier (to test your pipeline's robustness)](#making-data-messier-to-test-your-pipelines-robustness)
 - [Where the data model comes from](#where-the-data-model-comes-from)
 - [Licenses](#licenses)
@@ -331,8 +332,8 @@ cohort <- generate_custom_register(
 )
 
 # The mistake: exposure treated as fixed from the start
-survival::coxph(survival::Surv(entry_time, exit_time, event) ~ ever_exposed, data = cohort)
-# -> hazard ratio well below 1, even though true_hazard_ratio = 1
+fit <- survival::coxph(survival::Surv(entry_time, exit_time, event) ~ ever_exposed, data = cohort)
+exp(coef(fit)[["ever_exposed"]])  # hazard ratio well below 1, even though true_hazard_ratio = 1
 
 get_truth(cohort)$expected_naive     # the biased answer the mistake above produces
 get_truth(cohort)$expected_adjusted  # 1 -- the true answer, recovered by correctly
@@ -341,8 +342,48 @@ get_truth(cohort)$expected_adjusted  # 1 -- the true answer, recovered by correc
 ```
 
 `one_row_per = "time_to_event"` always needs a `scenario_immortal_time()`
-— there's no independence version of this grain, and `columns=`/`fidelity=`
-don't apply to it (its shape is fixed, not user-described).
+or `scenario_left_truncation()` (below) — there's no independence version
+of this grain, and `columns=`/`fidelity=` don't apply to it (its shape is
+fixed, not user-described).
+
+## Testing for left truncation bias (advanced)
+
+Also a `time_to_event` register, but a genuinely different mistake from
+immortal time: this one is about **delayed entry**. People only enter a
+cohort at some age, not at birth, and are only observed at all if they
+survived to that age. Analyzing "time since entry" instead of properly
+accounting for age at entry biases the result whenever risk actually
+depends on age (which it usually does — older people are usually at
+higher risk of most things):
+
+```r
+sc <- scenario_left_truncation(
+  shape = 5,                # how strongly risk increases with age (1 = no age effect, no bias to demonstrate)
+  scale = 80,                # a characteristic age for the outcome, e.g. lifetime/mortality-style
+  true_hazard_ratio = 1.5,   # true effect of `group` -- must not be 1, or there's nothing to bias
+  max_entry_age = 70         # people enter at a random age between 0 and this
+)
+
+cohort <- generate_custom_register(
+  id = "cohort",
+  one_row_per = "time_to_event",   # fixed shape: entry_age, exit_age, event, group
+  population = pop,
+  schema = schema,
+  from = as.Date("2010-01-01"),    # this scenario's clock is age, not calendar time --
+  to = as.Date("2015-01-01"),      # from/to don't affect it, just needed by generate_custom_register()
+  seed = 1,
+  scenario = sc
+)
+
+# The mistake: age at entry discarded, "time since entry" used instead
+fit <- survival::coxph(survival::Surv(exit_age - entry_age, event) ~ group, data = cohort)
+exp(coef(fit)[["group"]])  # biased toward 1, even though true_hazard_ratio = 1.5
+
+get_truth(cohort)$expected_naive     # the biased answer the mistake above produces
+get_truth(cohort)$expected_adjusted  # 1.5 -- the true answer, recovered by correctly
+                                      # declaring entry_age as the left-truncation point:
+                                      # survival::coxph(survival::Surv(entry_age, exit_age, event) ~ group, data = cohort)
+```
 
 ## Making data messier (to test your pipeline's robustness)
 

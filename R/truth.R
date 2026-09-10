@@ -402,6 +402,87 @@ scenario_immortal_time <- function(baseline_hazard = 0.1,
   ))
 }
 
+#' Left truncation bias scenario (STEP 9)
+#'
+#' Generates a **time-to-event cohort** (`one_row_per = "time_to_event"` on
+#' [generate_custom_register()]), like [scenario_immortal_time()] — but a
+#' genuinely different mechanism, not a variant of the same one. Immortal
+#' time bias is about mishandling a *time-varying exposure*; left
+#' truncation is about mishandling the *time scale* itself under **delayed
+#' entry**: each person has a true age-at-event, but is only observed from
+#' their (later) entry age onward, and is only observed **at all** if they
+#' survived to that age. The baseline hazard here is age-varying (Weibull),
+#' not constant — under a constant hazard the exponential distribution is
+#' memoryless, so there is no bias to demonstrate at all (confirmed during
+#' design, not assumed): ignoring truncation and ignoring it correctly give
+#' the same answer. A fixed baseline covariate (`group`, not time-varying —
+#' this scenario has no analogue of `ever_exposed`) has a true hazard
+#' ratio. Analyzing `Surv(exit_age - entry_age, event) ~ group` ("time
+#' since entry", discarding entry age entirely) instead of correctly
+#' left-truncated `Surv(entry_age, exit_age, event) ~ group` (age as the
+#' time scale) biases the recovered hazard ratio. Unlike immortal time,
+#' this bias only appears when `true_hazard_ratio` is not `1` — with no
+#' true group effect, the naive and correct analyses agree (also confirmed
+#' during design).
+#'
+#' The clock here is age, not calendar time, so unlike
+#' [scenario_immortal_time()] this scenario is unaffected by the `from`/`to`
+#' window passed to [generate_custom_register()] — there is no equivalent
+#' of `horizon_years` to set.
+#'
+#' @param shape Weibull shape for the age-at-event distribution (positive;
+#'   `1` = constant hazard, i.e. no bias to demonstrate — pick something
+#'   bigger, e.g. the default `5`, for an age-varying hazard).
+#' @param scale Weibull scale for the age-at-event distribution (positive;
+#'   a characteristic age, e.g. `80` for a lifetime/mortality-style
+#'   outcome).
+#' @param true_hazard_ratio True causal hazard ratio for `group` (positive;
+#'   must not be `1` for this bias to have anything to bias — see Details).
+#' @param max_entry_age People enter at a uniformly random age between `0`
+#'   and this value (positive) — the delayed-entry / left-truncation
+#'   mechanism. Bigger values make the bias more pronounced.
+#' @param id Scenario id (default `"left_truncation"`).
+#' @param version Integer scenario version.
+#' @return A list of class `fiktive_scenario`.
+#' @export
+scenario_left_truncation <- function(shape = 5,
+                                     scale = 80,
+                                     true_hazard_ratio = 1.5,
+                                     max_entry_age = 70,
+                                     id = "left_truncation",
+                                     version = 1L) {
+  shape <- as.numeric(shape)[[1]]
+  scale <- as.numeric(scale)[[1]]
+  true_hazard_ratio <- as.numeric(true_hazard_ratio)[[1]]
+  max_entry_age <- as.numeric(max_entry_age)[[1]]
+  if (is.na(shape) || shape <= 0) {
+    stop("`shape` must be a single positive number.", call. = FALSE)
+  }
+  if (is.na(scale) || scale <= 0) {
+    stop("`scale` must be a single positive number.", call. = FALSE)
+  }
+  if (is.na(true_hazard_ratio) || true_hazard_ratio <= 0) {
+    stop("`true_hazard_ratio` must be a single positive number.", call. = FALSE)
+  }
+  if (is.na(max_entry_age) || max_entry_age <= 0) {
+    stop("`max_entry_age` must be a single positive number.", call. = FALSE)
+  }
+  as_fiktive_scenario(list(
+    id = as.character(id)[[1]],
+    version = as.integer(version)[[1]],
+    associations = list(),
+    confounders = list(),
+    biases = list(list(
+      type = "left_truncation",
+      shape = shape,
+      scale = scale,
+      true_hazard_ratio = true_hazard_ratio,
+      max_entry_age = max_entry_age
+    )),
+    backend = "core"
+  ))
+}
+
 #' @noRd
 make_independence_truth <- function() {
   structure(
@@ -575,6 +656,63 @@ make_immortal_time_truth <- function(sc, bias) {
   )
 }
 
+# Same DGP as draw_left_truncation() (R/generate-survival.R), fit with a
+# real coxph() on one large deterministic draw. No closed form (depends on
+# shape, scale, true_hazard_ratio, and max_entry_age together) -- same
+# simulate-the-real-mechanism pattern as every other expected_naive helper
+# in this file. Unlike immortal time, no reference-window guess is needed:
+# every parameter this DGP needs is already on the scenario itself (see
+# scenario_left_truncation() Details -- this scenario's clock is age, not
+# calendar time, so it never depended on from/to in the first place).
+simulate_expected_naive_left_truncation <- function(shape, scale, true_hazard_ratio, max_entry_age) {
+  with_rng_seed(.MNAR_SIM_SEED, {
+    n <- .MNAR_SIM_N
+    dat <- draw_left_truncation(n, shape, scale, true_hazard_ratio, max_entry_age)
+    if (length(unique(dat$group)) < 2L || sum(dat$event) < 10L) {
+      return(NA_real_)
+    }
+    dat$dur <- dat$exit_age - dat$entry_age
+    fit <- survival::coxph(survival::Surv(dur, event) ~ group, data = dat)
+    unname(exp(stats::coef(fit)[["group"]]))
+  })
+}
+
+#' @noRd
+make_left_truncation_truth <- function(sc, bias) {
+  shape <- as.numeric(bias$shape %||% 5)[[1]]
+  scale <- as.numeric(bias$scale %||% 80)[[1]]
+  hr <- as.numeric(bias$true_hazard_ratio %||% 1.5)[[1]]
+  max_entry_age <- as.numeric(bias$max_entry_age %||% 70)[[1]]
+  exp_naive <- simulate_expected_naive_left_truncation(shape, scale, hr, max_entry_age)
+  if (is.na(exp_naive)) {
+    # Degenerate parameter combination: no simulatable naive bias, fall
+    # back to "not distinguishable from the truth" rather than fabricate
+    # a number.
+    exp_naive <- hr
+  }
+  causal_effect <- list(
+    estimand = "hazard ratio for group, correctly left-truncated (age as the time scale)",
+    parameter = "hazard_ratio(group = 1 vs group = 0)",
+    value = hr,
+    scale = "hazard_ratio"
+  )
+  structure(
+    list(
+      scenario_id = sc$id,
+      causal_effect = causal_effect,
+      estimand = "population hazard ratio for group, with age as the time scale and entry age correctly declared as left-truncation",
+      naive_estimator = "coxph(Surv(exit_age - entry_age, event) ~ group) -- \"time since entry\" used as the time scale, discarding entry age (the left truncation mistake)",
+      adjusted_estimator = "coxph(Surv(entry_age, exit_age, event) ~ group) -- age as the time scale, entry age correctly declared as the left-truncation point",
+      expected_naive = exp_naive,
+      expected_adjusted = hr,
+      associations = list(),
+      confounders = list(),
+      biases = sc$biases
+    ),
+    class = "fiktive_truth"
+  )
+}
+
 #' @noRd
 make_truth_from_scenario <- function(scenario) {
   sc <- as_fiktive_scenario(scenario)
@@ -587,8 +725,14 @@ make_truth_from_scenario <- function(scenario) {
   # there is no separate exposure/outcome association to require, unlike
   # every other bias type.
   first_bias <- first_or_null(sc$biases)
-  if (!is.null(first_bias) && identical(as.character(first_bias$type)[[1]], "immortal_time")) {
-    return(make_immortal_time_truth(sc, first_bias))
+  if (!is.null(first_bias)) {
+    bias_type <- as.character(first_bias$type)[[1]]
+    if (identical(bias_type, "immortal_time")) {
+      return(make_immortal_time_truth(sc, first_bias))
+    }
+    if (identical(bias_type, "left_truncation")) {
+      return(make_left_truncation_truth(sc, first_bias))
+    }
   }
 
   assoc <- first_or_null(sc$associations)

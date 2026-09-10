@@ -334,21 +334,56 @@ Original design (for reference):
   immortal-time mistake. Expect `expected_naive < true_hazard_ratio`
   (spurious protection) even when `true_hazard_ratio = 1`.
 
-### Phase 2 — left truncation
+### Phase 2 — left truncation — done (2026-09-10)
 
-- `scenario_left_truncation(shape, scale, age_effect, ...)` (Weibull
-  hazard: age-varying, needed for the bias to exist at all — see above).
-- DGP: draw each person's TRUE age-at-event via inverse-CDF from a Weibull
-  hazard; draw an independent `entry_age` (delayed entry); a person is
-  only observed at all if `entry_age < true_age_at_event` (left truncation
-  is a survivorship condition, not just a later time-zero) — same
-  selection-mechanic *shape* as `complete_case`, different scale (age, not
-  a linear outcome).
-- Truth: `expected_adjusted` = the true Weibull age-effect, recovered by
-  `coxph(Surv(entry_age, exit_age, event) ~ 1)` with truncation correctly
-  declared. `expected_naive` = simulated from the common mistake:
-  `coxph(Surv(exit_age - entry_age, event) ~ 1)`, i.e. treating time since
-  entry as time zero and discarding truncation entirely.
+`scenario_left_truncation()` + `generate_left_truncation_cohort()` /
+`draw_left_truncation()` (`R/generate-survival.R`), reusing the
+`time_to_event` grain/dispatch built for Phase 1. One refinement from the
+original design: `coxph()` can't estimate a Weibull baseline-hazard shape
+directly as a single coefficient, so rather than target "the true Weibull
+age-effect" itself, the truth claim is the hazard ratio of a **fixed
+baseline covariate** (`group`) under a Weibull (age-varying) baseline —
+the same target shape as immortal time's `ever_exposed`, but here `group`
+is not time-varying (there's no analogue of `exposure_start_time`; the
+mistake is entirely about the *time scale*, not exposure timing).
+
+Two findings from empirically checking the mechanism before writing any
+code (not assumed from the original design):
+
+- **The bias only exists when `true_hazard_ratio != 1`.** With no true
+  `group` effect, the naive (time-since-entry) and correct
+  (age-scale, left-truncated) analyses agree exactly — confirmed by
+  simulation (both ~1.00 at `true_hazard_ratio = 1`). This is the opposite
+  of immortal time, where the bias is most starkly visible precisely
+  *at* the null. Reflected in the roxygen docs and the default
+  (`true_hazard_ratio = 1.5`, not `1`).
+- **Bias magnitude is small at low Weibull shape / narrow entry-age
+  range** (~8% relative at `shape = 3`) and grows with both — `shape = 5`,
+  `max_entry_age = 70` gives a clear, reliable demonstration (naive HR
+  ~1.25 vs. true 1.5) without needing extreme parameters.
+
+Unlike immortal time, no reference-window approximation is needed at
+all: this scenario's clock is age, not calendar time, so `from`/`to`
+never entered the DGP in the first place — every parameter
+`expected_naive`'s simulation needs is already on the scenario object.
+
+DGP: draw each person's true age-at-event via inverse-CDF from a Weibull
+distribution with a proportional-hazards `group` effect; draw an
+independent `entry_age` (delayed entry); a person is only observed at all
+if `entry_age < true_age_at_event` (left truncation is a survivorship
+condition, not just a later time zero — same selection-mechanic *shape*
+as `complete_case`, different scale). Verified: `nrow(result) <
+nrow(population)` (left truncation genuinely excludes people, unlike
+immortal time which keeps everyone). Truth: `expected_adjusted =
+true_hazard_ratio`, recovered by `coxph(Surv(entry_age, exit_age, event)
+~ group)` (age as the time scale, entry age correctly declared).
+`expected_naive` simulated from the common mistake:
+`coxph(Surv(exit_age - entry_age, event) ~ group)`, treating time since
+entry as time zero and discarding truncation entirely. Verified
+empirically end to end: naive HR ~1.25 vs. true 1.5, matching stamped
+`expected_naive` within ~0.01; correct HR ~1.50, matching
+`expected_adjusted` exactly. 26 new tests, `R CMD check` 0/0/0, README
+section added.
 
 ### Non-goals (this lock)
 
@@ -457,10 +492,10 @@ remaining item without a PLAN lock stays a fail-a-PR condition.
   (same known approximation limitation as MNAR/complete-case — exact bias
   depends on the real exposure's distribution, which truth computation
   can't see). 3 new tests, `R CMD check` 0/0/0.
-- **Immortal time bias** / **left truncation** — locked and in progress,
-  see `## STEP 9` below for the full design (new `time_to_event` grain,
-  phased: immortal time first, left truncation second since it needs a
-  different, age-varying hazard model to have any bias to demonstrate).
+- **Immortal time bias** / **left truncation** — done (2026-09-10), both
+  phases, see `## STEP 9` below for the full design and what was
+  refined during execution (new `time_to_event` grain,
+  `scenario_immortal_time()` / `scenario_left_truncation()`).
 - **Open bias DSL** — recommend leaving this gated indefinitely, not just
   deferred. A formula-based "define your own bias" mechanism conflicts
   with what makes the AI-eval use case trustworthy: every named bias
