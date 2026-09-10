@@ -13,7 +13,8 @@ Imports:
     lubridate,
     yaml,
     sksr,
-    codeCollection
+    codeCollection,
+    survival
 Suggests:
     testthat (>= 3.0.0),
     arrow,

@@ -5,7 +5,8 @@
   "person_reference_date",
   "event_from_person",
   "expand_from_parent",
-  "household_year"
+  "household_year",
+  "time_to_event"
 )
 
 .IMPLEMENTED_SNAPSHOT <- c("bef", "udda", "akm")

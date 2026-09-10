@@ -8,7 +8,7 @@ generate_custom_register(
   id,
   one_row_per,
   join_keys = NULL,
-  columns,
+  columns = NULL,
   population,
   schema,
   from,
@@ -32,7 +32,8 @@ person-side grains; required and household-side for \code{household_year}.}
 
 \item{columns}{CSV path or tibble/data.frame with columns \code{name}, \code{type},
 and optional \code{min}, \code{max}, \code{values}. Extra columns (e.g. coefficients)
-are ignored — do not put DGP coeffs here.}
+are ignored — do not put DGP coeffs here. Not used for
+\code{one_row_per = "time_to_event"} (see Details).}
 
 \item{population}{Persons table from \code{\link[=generate_background_population]{generate_background_population()}}.}
 
@@ -42,16 +43,20 @@ are ignored — do not put DGP coeffs here.}
 
 \item{seed}{Optional RNG seed.}
 
-\item{scenario}{\code{NULL} (independence) or a \code{fiktive_scenario}.}
+\item{scenario}{\code{NULL} (independence) or a \code{fiktive_scenario}. Required
+(a \code{\link[=scenario_immortal_time]{scenario_immortal_time()}}) for \code{one_row_per = "time_to_event"}.}
 
 \item{parent}{Already-generated parent table when
 \code{one_row_per = "expand_from_parent"}.}
 
 \item{cadence}{Snapshot cadence: \code{"annual"} (default) or \code{"quarterly"}.}
 
-\item{fidelity}{\code{"clean"} (default) or \code{"messy"}.}
+\item{fidelity}{\code{"clean"} (default) or \code{"messy"}. Not applied for
+\code{one_row_per = "time_to_event"} (no safe subset of its fixed columns
+for cosmetic noise without corrupting the survival times).}
 
-\item{na_rate, outlier_rate}{Optional fidelity rate overrides in \verb{[0, 1]}.}
+\item{na_rate, outlier_rate}{Optional fidelity rate overrides in \verb{[0, 1]}.
+Same \code{time_to_event} exception as \code{fidelity}.}
 }
 \value{
 A tibble of structural noise that joins on \code{join_keys}.
@@ -65,8 +70,15 @@ association / confounding / MNAR / complete-case after the structural draw.
 }
 \details{
 Grains: any existing schema grain (\code{person}, \code{person_reference_date},
-\code{event_from_person}, \code{expand_from_parent}, \code{household_year}). A novel grain
-is a SCHEMA GAP. For \code{household_year}, \code{join_keys} must be household-side
-(e.g. \code{familie_id}) — never a silent \code{pnr} default. \code{expand_from_parent}
-requires an already-generated \code{parent} table.
+\code{event_from_person}, \code{expand_from_parent}, \code{household_year}), plus
+\code{time_to_event} (STEP 9: immortal time bias / left truncation — see
+\code{\link[=scenario_immortal_time]{scenario_immortal_time()}}). A novel grain is a SCHEMA GAP. For
+\code{household_year}, \code{join_keys} must be household-side (e.g. \code{familie_id})
+— never a silent \code{pnr} default. \code{expand_from_parent} requires an
+already-generated \code{parent} table. \code{time_to_event} ignores \code{columns}
+entirely (its column shape is fixed — \code{entry_time}, \code{exit_time}, \code{event},
+\code{exposure_start_time}, \code{ever_exposed} — because the correlation between
+them, driven by \code{scenario}, is the whole point) and requires a
+\code{scenario} built with \code{\link[=scenario_immortal_time]{scenario_immortal_time()}}; there is no
+independence version of this grain.
 }

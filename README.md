@@ -19,6 +19,7 @@ Nothing in it comes from an actual person.
 - [Hospital data needs two tables](#hospital-data-needs-two-tables)
 - [Making up your own columns](#making-up-your-own-columns)
 - [Checking whether your analysis code is actually correct](#checking-whether-your-analysis-code-is-actually-correct)
+- [Testing for immortal time bias (advanced)](#testing-for-immortal-time-bias-advanced)
 - [Making data messier (to test your pipeline's robustness)](#making-data-messier-to-test-your-pipelines-robustness)
 - [Where the data model comes from](#where-the-data-model-comes-from)
 - [Licenses](#licenses)
@@ -298,6 +299,50 @@ for each one's full parameter list and a runnable example.
 Leave `scenario=` out entirely (or generate any ordinary register like
 `bef`) and you get **independence** — no planted relationship;
 `get_truth(x)$expected_naive` comes back `0`.
+
+## Testing for immortal time bias (advanced)
+
+This one works differently from the scenarios above: instead of adding a
+bias on top of an ordinary table, it generates a **survival cohort** —
+people with an entry time, an exposure that starts at some point during
+follow-up (or never), and an event (or censoring) time. Immortal time bias
+is a classic mistake: treating "ever exposed" as if it were true from the
+start, which credits exposed people with survival time before their
+exposure actually began — making the exposure look protective even when it
+does nothing.
+
+```r
+sc <- scenario_immortal_time(
+  baseline_hazard = 0.1,     # unexposed event rate per year
+  true_hazard_ratio = 1,     # 1 = exposure truly does nothing -- isolates the bias
+  exposure_rate = 0.2,       # how quickly people who ever get exposed, do
+  horizon_years = 5          # match this to your to - from window below
+)
+
+cohort <- generate_custom_register(
+  id = "cohort",
+  one_row_per = "time_to_event",   # fixed shape: entry_time, exit_time, event, exposure_start_time, ever_exposed
+  population = pop,
+  schema = schema,
+  from = as.Date("2010-01-01"),
+  to = as.Date("2015-01-01"),      # 5 years, matching horizon_years above
+  seed = 1,
+  scenario = sc
+)
+
+# The mistake: exposure treated as fixed from the start
+survival::coxph(survival::Surv(entry_time, exit_time, event) ~ ever_exposed, data = cohort)
+# -> hazard ratio well below 1, even though true_hazard_ratio = 1
+
+get_truth(cohort)$expected_naive     # the biased answer the mistake above produces
+get_truth(cohort)$expected_adjusted  # 1 -- the true answer, recovered by correctly
+                                      # treating exposure as time-varying (see ?scenario_immortal_time
+                                      # for a worked example using survival::tmerge())
+```
+
+`one_row_per = "time_to_event"` always needs a `scenario_immortal_time()`
+— there's no independence version of this grain, and `columns=`/`fidelity=`
+don't apply to it (its shape is fixed, not user-described).
 
 ## Making data messier (to test your pipeline's robustness)
 

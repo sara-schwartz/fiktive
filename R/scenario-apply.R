@@ -66,9 +66,9 @@ validate_fiktive_scenario <- function(scenario) {
   }
   for (b in sc$biases %||% list()) {
     if (is.null(b$type) || !as.character(b$type)[[1]] %in%
-        c("mnar", "complete_case", "misclassification")) {
+        c("mnar", "complete_case", "misclassification", "immortal_time")) {
       stop(
-        "Each bias$type must be 'mnar', 'complete_case', or 'misclassification' in this ship.",
+        "Each bias$type must be 'mnar', 'complete_case', 'misclassification', or 'immortal_time' in this ship.",
         call. = FALSE
       )
     }
@@ -504,6 +504,13 @@ apply_scenario <- function(tables, scenario, register_hint = NULL) {
   sc <- validate_fiktive_scenario(scenario)
   if (identical(sc$id, "independence") &&
       !length(sc$associations) && !length(sc$confounders) && !length(sc$biases)) {
+    return(tables)
+  }
+  first_bias <- first_or_null(sc$biases)
+  if (!is.null(first_bias) && identical(as.character(first_bias$type)[[1]], "immortal_time")) {
+    # time_to_event scenarios (STEP 9) generate the whole table themselves,
+    # in dispatch_custom_register() -- there's no existing exposure/outcome
+    # column here to overlay an association or perturb with a bias.
     return(tables)
   }
   if (length(sc$confounders)) {

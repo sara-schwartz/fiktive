@@ -173,10 +173,17 @@ generate_registers <- function(registers, population, schema, from, to,
 #' association / confounding / MNAR / complete-case after the structural draw.
 #'
 #' Grains: any existing schema grain (`person`, `person_reference_date`,
-#' `event_from_person`, `expand_from_parent`, `household_year`). A novel grain
-#' is a SCHEMA GAP. For `household_year`, `join_keys` must be household-side
-#' (e.g. `familie_id`) — never a silent `pnr` default. `expand_from_parent`
-#' requires an already-generated `parent` table.
+#' `event_from_person`, `expand_from_parent`, `household_year`), plus
+#' `time_to_event` (STEP 9: immortal time bias / left truncation — see
+#' [scenario_immortal_time()]). A novel grain is a SCHEMA GAP. For
+#' `household_year`, `join_keys` must be household-side (e.g. `familie_id`)
+#' — never a silent `pnr` default. `expand_from_parent` requires an
+#' already-generated `parent` table. `time_to_event` ignores `columns`
+#' entirely (its column shape is fixed — `entry_time`, `exit_time`, `event`,
+#' `exposure_start_time`, `ever_exposed` — because the correlation between
+#' them, driven by `scenario`, is the whole point) and requires a
+#' `scenario` built with [scenario_immortal_time()]; there is no
+#' independence version of this grain.
 #'
 #' @param id Custom register id (not looked up in schema YAML).
 #' @param one_row_per Grain (see details).
@@ -184,21 +191,26 @@ generate_registers <- function(registers, population, schema, from, to,
 #'   person-side grains; required and household-side for `household_year`.
 #' @param columns CSV path or tibble/data.frame with columns `name`, `type`,
 #'   and optional `min`, `max`, `values`. Extra columns (e.g. coefficients)
-#'   are ignored — do not put DGP coeffs here.
+#'   are ignored — do not put DGP coeffs here. Not used for
+#'   `one_row_per = "time_to_event"` (see Details).
 #' @param population Persons table from [generate_background_population()].
 #' @param schema Schema from [load_registers_schema()] (stamps / population).
 #' @param from,to Window (Date or coercible).
 #' @param seed Optional RNG seed.
-#' @param scenario `NULL` (independence) or a `fiktive_scenario`.
+#' @param scenario `NULL` (independence) or a `fiktive_scenario`. Required
+#'   (a [scenario_immortal_time()]) for `one_row_per = "time_to_event"`.
 #' @param parent Already-generated parent table when
 #'   `one_row_per = "expand_from_parent"`.
 #' @param cadence Snapshot cadence: `"annual"` (default) or `"quarterly"`.
-#' @param fidelity `"clean"` (default) or `"messy"`.
+#' @param fidelity `"clean"` (default) or `"messy"`. Not applied for
+#'   `one_row_per = "time_to_event"` (no safe subset of its fixed columns
+#'   for cosmetic noise without corrupting the survival times).
 #' @param na_rate,outlier_rate Optional fidelity rate overrides in `[0, 1]`.
+#'   Same `time_to_event` exception as `fidelity`.
 #'
 #' @return A tibble of structural noise that joins on `join_keys`.
 #' @export
-generate_custom_register <- function(id, one_row_per, join_keys = NULL, columns,
+generate_custom_register <- function(id, one_row_per, join_keys = NULL, columns = NULL,
                                      population, schema, from, to,
                                      seed = NULL, scenario = NULL,
                                      parent = NULL, cadence = NULL,
@@ -221,8 +233,30 @@ generate_custom_register <- function(id, one_row_per, join_keys = NULL, columns,
   if (!grain %in% .KNOWN_GRAINS || identical(grain, "unknown")) {
     schema_gap(
       sprintf("one_row_per '%s' for custom register '%s'", grain, id),
-      "an existing schema grain (person / person_reference_date / event_from_person / expand_from_parent / household_year); do not invent a new grain"
+      "an existing schema grain (person / person_reference_date / event_from_person / expand_from_parent / household_year / time_to_event); do not invent a new grain"
     )
+  }
+  if (identical(grain, "time_to_event")) {
+    first_bias <- first_or_null(sc$biases)
+    if (is.null(first_bias) || !identical(as.character(first_bias$type)[[1]], "immortal_time")) {
+      stop(
+        "`one_row_per = \"time_to_event\"` needs `scenario = scenario_immortal_time(...)`; ",
+        "there is no independence version of this grain.",
+        call. = FALSE
+      )
+    }
+    # Fixed shape, always keyed on pnr -- no reason to support an
+    # alternate join key for a grain whose columns are not user-described.
+    # fidelity does not apply here: apply_fidelity()'s eligibility isn't
+    # scoped to spec$columns, so with no columns declared it would treat
+    # exit_time/event/exposure_start_time as fair game for NA/outlier
+    # injection -- which would corrupt Surv() rather than rehearse
+    # anything meaningful. There is no safe subset of these columns for
+    # cosmetic noise, so fidelity is skipped entirely for this grain.
+    spec <- list(id = id, one_row_per = grain, join_keys = "pnr", columns = list())
+    tbl <- generate_immortal_time_cohort(population, first_bias, from, to, seed)
+    tbl <- stamp_generation(tbl, schema = schema, seed = seed)
+    return(attach_run_meta(tbl, scenario = sc))
   }
   join_keys <- resolve_custom_join_keys(grain, join_keys)
   col_df <- parse_custom_columns(columns)

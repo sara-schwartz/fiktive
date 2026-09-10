@@ -318,6 +318,90 @@ scenario_misclassification <- function(exposure, outcome,
   ))
 }
 
+#' Immortal time bias scenario (STEP 9)
+#'
+#' Generates a **time-to-event cohort** (`one_row_per = "time_to_event"` on
+#' [generate_custom_register()]), not an association overlay on an existing
+#' table like the other scenarios — the whole point is the correlation
+#' between exposure timing and event timing, which can't be expressed as
+#' independent columns plus a later perturbation. Simulates a time-varying
+#' exposure: each person has an independent exposure-start time and an
+#' event/censoring time, where the hazard **increases (or decreases) by
+#' `true_hazard_ratio`** from the moment exposure actually starts, not from
+#' cohort entry. Classifying `ever_exposed` as a fixed baseline covariate
+#' (`coxph(Surv(entry_time, exit_time, event) ~ ever_exposed)`) instead of
+#' correctly time-varying is the classic immortal time mistake: it credits
+#' exposed people with survival time before their exposure even started,
+#' producing spurious protection even when `true_hazard_ratio = 1`.
+#'
+#' A correctly time-varying analysis (what recovers `true_hazard_ratio`,
+#' i.e. `expected_adjusted`) needs the exposure split into pre/post
+#' intervals, e.g. with `survival::tmerge()`:
+#'
+#' ```r
+#' cohort$exposure_start_time[is.na(cohort$exposure_start_time)] <- Inf
+#' long <- survival::tmerge(cohort, cohort, id = pnr, event = event(exit_time, event))
+#' long <- survival::tmerge(long, cohort, id = pnr, exposed = tdc(exposure_start_time))
+#' survival::coxph(survival::Surv(tstart, tstop, event) ~ exposed, data = long)
+#' ```
+#'
+#' @param baseline_hazard Unexposed event hazard per year (positive).
+#' @param true_hazard_ratio True causal hazard ratio once exposed (positive;
+#'   `1` = no true effect, useful for demonstrating pure immortal time bias
+#'   with nothing else going on).
+#' @param exposure_rate Hazard per year of *starting* exposure (positive) —
+#'   how quickly people who will ever be exposed become exposed.
+#' @param horizon_years Follow-up length in years, matching the `from`/`to`
+#'   window you intend to pass to [generate_custom_register()] (e.g.
+#'   `to - from` in years). `expected_naive` is computed from the scenario
+#'   alone (`make_truth_from_scenario()` never sees the actual generated
+#'   data or its window), and the naive bias's exact size genuinely depends
+#'   on follow-up length, so this is what lets it be exact rather than a
+#'   guess. Defaults to `5` (a representative reference window) if omitted
+#'   — reasonable for a rough check, but pass your real window length for a
+#'   precise one.
+#' @param id Scenario id (default `"immortal_time"`).
+#' @param version Integer scenario version.
+#' @return A list of class `fiktive_scenario`.
+#' @export
+scenario_immortal_time <- function(baseline_hazard = 0.1,
+                                   true_hazard_ratio = 1,
+                                   exposure_rate = 0.2,
+                                   horizon_years = 5,
+                                   id = "immortal_time",
+                                   version = 1L) {
+  baseline_hazard <- as.numeric(baseline_hazard)[[1]]
+  true_hazard_ratio <- as.numeric(true_hazard_ratio)[[1]]
+  exposure_rate <- as.numeric(exposure_rate)[[1]]
+  horizon_years <- as.numeric(horizon_years)[[1]]
+  if (is.na(baseline_hazard) || baseline_hazard <= 0) {
+    stop("`baseline_hazard` must be a single positive number.", call. = FALSE)
+  }
+  if (is.na(true_hazard_ratio) || true_hazard_ratio <= 0) {
+    stop("`true_hazard_ratio` must be a single positive number.", call. = FALSE)
+  }
+  if (is.na(exposure_rate) || exposure_rate <= 0) {
+    stop("`exposure_rate` must be a single positive number.", call. = FALSE)
+  }
+  if (is.na(horizon_years) || horizon_years <= 0) {
+    stop("`horizon_years` must be a single positive number.", call. = FALSE)
+  }
+  as_fiktive_scenario(list(
+    id = as.character(id)[[1]],
+    version = as.integer(version)[[1]],
+    associations = list(),
+    confounders = list(),
+    biases = list(list(
+      type = "immortal_time",
+      baseline_hazard = baseline_hazard,
+      true_hazard_ratio = true_hazard_ratio,
+      exposure_rate = exposure_rate,
+      horizon_years = horizon_years
+    )),
+    backend = "core"
+  ))
+}
+
 #' @noRd
 make_independence_truth <- function() {
   structure(
@@ -437,12 +521,74 @@ simulate_expected_naive_misclassification <- function(beta, intercept, sigma,
   })
 }
 
+# Same DGP as draw_immortal_time() (R/generate-survival.R), fit with a real
+# coxph() on one large deterministic draw -- no closed form for the naive
+# bias (depends on baseline_hazard, exposure_rate, and horizon_years all
+# together), same simulate-the-real-mechanism pattern as the other
+# expected_naive helpers in this file.
+simulate_expected_naive_immortal_time <- function(baseline_hazard, true_hazard_ratio,
+                                                   exposure_rate, horizon_years) {
+  with_rng_seed(.MNAR_SIM_SEED, {
+    n <- .MNAR_SIM_N
+    dat <- draw_immortal_time(n, baseline_hazard, true_hazard_ratio, exposure_rate, horizon_years)
+    if (length(unique(dat$ever_exposed)) < 2L || sum(dat$event) < 10L) {
+      return(NA_real_)
+    }
+    fit <- survival::coxph(survival::Surv(entry_time, exit_time, event) ~ ever_exposed, data = dat)
+    unname(exp(stats::coef(fit)[["ever_exposed"]]))
+  })
+}
+
+#' @noRd
+make_immortal_time_truth <- function(sc, bias) {
+  baseline_hazard <- as.numeric(bias$baseline_hazard %||% 0.1)[[1]]
+  hr <- as.numeric(bias$true_hazard_ratio %||% 1)[[1]]
+  exposure_rate <- as.numeric(bias$exposure_rate %||% 0.2)[[1]]
+  horizon_years <- as.numeric(bias$horizon_years %||% 5)[[1]]
+  exp_naive <- simulate_expected_naive_immortal_time(baseline_hazard, hr, exposure_rate, horizon_years)
+  if (is.na(exp_naive)) {
+    # Degenerate parameter combination (e.g. essentially nobody reaches an
+    # event): no simulatable naive bias, fall back to "not distinguishable
+    # from the truth" rather than fabricate a number.
+    exp_naive <- hr
+  }
+  causal_effect <- list(
+    estimand = "hazard ratio for exposure, correctly time-varying",
+    parameter = "hazard_ratio(exposed vs unexposed)",
+    value = hr,
+    scale = "hazard_ratio"
+  )
+  structure(
+    list(
+      scenario_id = sc$id,
+      causal_effect = causal_effect,
+      estimand = "population hazard ratio comparing exposed to unexposed person-time (exposure correctly time-varying)",
+      naive_estimator = "coxph(Surv(entry_time, exit_time, event) ~ ever_exposed) -- ever_exposed treated as a fixed baseline covariate (the immortal time mistake)",
+      adjusted_estimator = "coxph on correctly time-varying exposure (e.g. via survival::tmerge()/survSplit() splitting each exposed row at exposure_start_time)",
+      expected_naive = exp_naive,
+      expected_adjusted = hr,
+      associations = list(),
+      confounders = list(),
+      biases = sc$biases
+    ),
+    class = "fiktive_truth"
+  )
+}
+
 #' @noRd
 make_truth_from_scenario <- function(scenario) {
   sc <- as_fiktive_scenario(scenario)
   if (identical(sc$id, "independence") &&
       !length(sc$associations) && !length(sc$confounders) && !length(sc$biases)) {
     return(make_independence_truth())
+  }
+
+  # time_to_event scenarios (STEP 9) generate the whole table themselves --
+  # there is no separate exposure/outcome association to require, unlike
+  # every other bias type.
+  first_bias <- first_or_null(sc$biases)
+  if (!is.null(first_bias) && identical(as.character(first_bias$type)[[1]], "immortal_time")) {
+    return(make_immortal_time_truth(sc, first_bias))
   }
 
   assoc <- first_or_null(sc$associations)

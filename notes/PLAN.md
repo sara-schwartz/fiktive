@@ -274,7 +274,43 @@ two phases for that reason, not because one is unimportant.
   installation (an R "Recommended" package, not an optional extra) — add
   to `Imports`, no new install burden in practice.
 
-### Phase 1 — immortal time bias
+### Phase 1 — immortal time bias — done (2026-09-10)
+
+`scenario_immortal_time()` (`R/truth.R`) + `generate_immortal_time_cohort()`
+/ `draw_immortal_time()` (`R/generate-survival.R`) + a `time_to_event`
+branch in `generate_custom_register()` (`R/generate-api.R`). Built
+essentially as designed below, with two refinements found during
+execution:
+
+- Added `horizon_years` to the scenario (not in the original design) after
+  discovering the naive HR is meaningfully sensitive to follow-up length
+  (0.635 at 2yr vs. 0.273 at 20yr for the same true HR=1.5, in early
+  testing) — bigger than the corresponding sensitivity for
+  MNAR/complete-case/misclassification's reference-exposure
+  approximation. Since the user already knows their intended
+  `from`/`to` window, having them pass its length lets `expected_naive`
+  be computed exactly for their case instead of guessed from a fixed
+  reference, unlike the other bias types (which have no equally cheap
+  fix available).
+- `apply_fidelity()` is skipped entirely for this grain: its column
+  eligibility isn't scoped to `spec$columns`, so with none declared it
+  would have treated `exit_time`/`event`/`exposure_start_time` as fair
+  game for NA/outlier injection under `fidelity = "messy"` — corrupting
+  `Surv()` rather than rehearsing anything meaningful. Caught before
+  shipping by tracing the eligibility function rather than assuming.
+
+Verified empirically (not just asserted): the naive fixed-baseline-
+covariate analysis shows spurious protection (HR ~0.52 at true HR=1.5,
+HR ~0.36–0.52 at true HR=1 depending on parameters) matching stamped
+`expected_naive` within ~0.01–0.05; a correctly time-varying analysis via
+`survival::tmerge()` recovers the true HR (1.49 vs. true 1.5; 1.53 vs.
+true 1.5 in a second run) matching stamped `expected_adjusted` exactly (by
+construction, but the *recovery* was verified, not assumed). 33 new
+tests, `R CMD check` 0/0/0, README section added, `survival` added to
+Imports (confirmed already present in every standard R install before
+committing to it).
+
+Original design (for reference):
 
 - `scenario_immortal_time(baseline_hazard, true_hazard_ratio, exposure_rate, ...)`.
 - DGP (piecewise-exponential, the standard technique for a time-varying-
