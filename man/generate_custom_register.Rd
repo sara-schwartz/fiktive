@@ -50,7 +50,10 @@ are ignored — do not put DGP coeffs here. Not used for
 \item{parent}{Already-generated parent table when
 \code{one_row_per = "expand_from_parent"}.}
 
-\item{cadence}{Snapshot cadence: \code{"annual"} (default) or \code{"quarterly"}.}
+\item{cadence}{Snapshot cadence for \code{person_reference_date}: \code{"annual"}
+(default) or \code{"quarterly"}. Meaningless for \code{one_row_per = "person"}
+(one row per person, not a repeated snapshot) -- errors if set there
+rather than being silently ignored.}
 
 \item{fidelity}{\code{"clean"} (default) or \code{"messy"}. Not applied for
 \code{one_row_per = "time_to_event"} (no safe subset of its fixed columns
@@ -73,10 +76,21 @@ association / confounding / MNAR / complete-case after the structural draw.
 Grains: any existing schema grain (\code{person}, \code{person_reference_date},
 \code{event_from_person}, \code{expand_from_parent}, \code{household_year}), plus
 \code{time_to_event} (STEP 9: \code{\link[=scenario_immortal_time]{scenario_immortal_time()}} /
-\code{\link[=scenario_left_truncation]{scenario_left_truncation()}}). A novel grain is a SCHEMA GAP. For
-\code{household_year}, \code{join_keys} must be household-side (e.g. \code{familie_id})
-— never a silent \code{pnr} default. \code{expand_from_parent} requires an
-already-generated \code{parent} table. \code{time_to_event} ignores \code{columns}
+\code{\link[=scenario_left_truncation]{scenario_left_truncation()}}). A novel grain is a SCHEMA GAP.
+\code{person} and \code{person_reference_date} are \strong{not} aliases, despite the
+similar name: \code{person} is exactly one row per eligible person (a
+baseline/cohort table -- born after \code{to} excludes a person entirely;
+\code{cadence} doesn't apply and errors if set), with \code{referencetid}/\code{year},
+when declared as output columns, filled from an independent date drawn
+per person within their own \verb{[max(from, foed_dag), to]} window --
+faithful to staggered recruitment, but a different meaning from the
+snapshot grain's shared as-of date. \code{person_reference_date} is one row
+per person \strong{per snapshot date} (annual/quarterly via \code{cadence}) across
+the whole window -- a 5-year window is 5 (or 20) rows per person, not 1.
+For \code{household_year}, \code{join_keys} must be household-side (e.g.
+\code{familie_id}) — never a silent \code{pnr} default. \code{expand_from_parent}
+requires an already-generated \code{parent} table. \code{time_to_event} ignores
+\code{columns}
 entirely — its column shape is fixed (\code{entry_time}/\code{exit_time}/\code{event}/
 \code{exposure_start_time}/\code{ever_exposed} for immortal time,
 \code{entry_age}/\code{exit_age}/\code{event}/\code{group} for left truncation), because the

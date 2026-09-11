@@ -206,10 +206,21 @@ generate_registers <- function(registers, population, schema, from, to,
 #' Grains: any existing schema grain (`person`, `person_reference_date`,
 #' `event_from_person`, `expand_from_parent`, `household_year`), plus
 #' `time_to_event` (STEP 9: [scenario_immortal_time()] /
-#' [scenario_left_truncation()]). A novel grain is a SCHEMA GAP. For
-#' `household_year`, `join_keys` must be household-side (e.g. `familie_id`)
-#' — never a silent `pnr` default. `expand_from_parent` requires an
-#' already-generated `parent` table. `time_to_event` ignores `columns`
+#' [scenario_left_truncation()]). A novel grain is a SCHEMA GAP.
+#' `person` and `person_reference_date` are **not** aliases, despite the
+#' similar name: `person` is exactly one row per eligible person (a
+#' baseline/cohort table -- born after `to` excludes a person entirely;
+#' `cadence` doesn't apply and errors if set), with `referencetid`/`year`,
+#' when declared as output columns, filled from an independent date drawn
+#' per person within their own `[max(from, foed_dag), to]` window --
+#' faithful to staggered recruitment, but a different meaning from the
+#' snapshot grain's shared as-of date. `person_reference_date` is one row
+#' per person **per snapshot date** (annual/quarterly via `cadence`) across
+#' the whole window -- a 5-year window is 5 (or 20) rows per person, not 1.
+#' For `household_year`, `join_keys` must be household-side (e.g.
+#' `familie_id`) — never a silent `pnr` default. `expand_from_parent`
+#' requires an already-generated `parent` table. `time_to_event` ignores
+#' `columns`
 #' entirely — its column shape is fixed (`entry_time`/`exit_time`/`event`/
 #' `exposure_start_time`/`ever_exposed` for immortal time,
 #' `entry_age`/`exit_age`/`event`/`group` for left truncation), because the
@@ -235,7 +246,10 @@ generate_registers <- function(registers, population, schema, from, to,
 #'   `one_row_per = "time_to_event"`.
 #' @param parent Already-generated parent table when
 #'   `one_row_per = "expand_from_parent"`.
-#' @param cadence Snapshot cadence: `"annual"` (default) or `"quarterly"`.
+#' @param cadence Snapshot cadence for `person_reference_date`: `"annual"`
+#'   (default) or `"quarterly"`. Meaningless for `one_row_per = "person"`
+#'   (one row per person, not a repeated snapshot) -- errors if set there
+#'   rather than being silently ignored.
 #' @param fidelity `"clean"` (default) or `"messy"`. Not applied for
 #'   `one_row_per = "time_to_event"` (no safe subset of its fixed columns
 #'   for cosmetic noise without corrupting the survival times).
@@ -311,8 +325,17 @@ generate_custom_register <- function(id, one_row_per, join_keys = NULL, columns 
       stop("`parent` must be a data frame / tibble.", call. = FALSE)
     }
   }
-  cad <- cadence %||% "annual"
-  if (!cad %in% c("annual", "quarterly")) {
+  # "person" is one row per person, not a repeated snapshot -- cadence is
+  # meaningless for it. Keep the raw (possibly NULL) value through to
+  # dispatch instead of defaulting/validating it here, so
+  # generate_custom_person() can tell "not supplied" from "explicitly set"
+  # and error on the latter rather than silently ignoring it.
+  cad <- if (identical(grain, "person")) {
+    cadence
+  } else {
+    cadence %||% "annual"
+  }
+  if (!identical(grain, "person") && !cad %in% c("annual", "quarterly")) {
     stop("`cadence` must be \"annual\" or \"quarterly\".", call. = FALSE)
   }
   tbl <- dispatch_custom_register(

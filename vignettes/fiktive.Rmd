@@ -121,6 +121,37 @@ ext <- generate_custom_register(
 joined <- dplyr::inner_join(tables$bef, ext, by = "pnr", relationship = "many-to-many")
 ```
 
+### A baseline cohort instead of repeated snapshots
+
+`one_row_per = "person_reference_date"` above gives one row per person
+**per snapshot date** — a 2-year annual window is 2 rows per person, not
+one. If what you actually have is a baseline table — a cohort where each
+person was measured (recruited, interviewed, sampled) exactly once,
+possibly on a different date for each person, which is how real cohorts
+staggered over months or years actually work — use `one_row_per = "person"`
+instead:
+
+```{r custom-register-person}
+baseline <- generate_custom_register(
+  id = "my_cohort",
+  one_row_per = "person",   # exactly one row per eligible person, not a snapshot series
+  columns = cols,
+  population = pop,
+  schema = schema,
+  from = as.Date("2008-01-01"),   # recruitment window -- each person gets
+  to = as.Date("2009-12-31"),     # one independent date somewhere in it
+  seed = 1
+  # no cadence= -- meaningless for this grain, errors if you set it
+)
+
+nrow(baseline) == length(unique(baseline$pnr))   # TRUE: exactly one row per person
+```
+
+Someone born after `to` is excluded entirely (never eligible), rather than
+getting a row with a nonsensical date. If you declare `referencetid`
+and/or `year` among your columns, they're filled from that person's own
+drawn date, not `typed_noise()`.
+
 ### Describing many columns with a CSV instead
 
 For a real cohort with dozens or hundreds of variables, typing out a

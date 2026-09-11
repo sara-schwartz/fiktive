@@ -139,8 +139,11 @@ parse_custom_values <- function(x) {
 dispatch_custom_register <- function(spec, population, schema, from, to, seed,
                                      parent, cadence) {
   grain <- spec$one_row_per
-  if (grain %in% c("person_reference_date", "person")) {
+  if (identical(grain, "person_reference_date")) {
     return(generate_custom_snapshot(population, schema, spec, from, to, seed, cadence))
+  }
+  if (identical(grain, "person")) {
+    return(generate_custom_person(population, schema, spec, from, to, seed, cadence))
   }
   if (identical(grain, "event_from_person")) {
     return(generate_custom_events(population, schema, spec, from, to, seed))
@@ -175,6 +178,41 @@ generate_custom_snapshot <- function(population, schema, spec, from, to, seed, c
     )
     rows <- dplyr::left_join(grid, pop, by = "pnr")
     rows <- rows[rows$referencetid >= rows$foed_dag, , drop = FALSE]
+    rows$year <- as.integer(lubridate::year(rows$referencetid))
+    emit_custom_table(spec, rows, schema)
+  })
+}
+
+generate_custom_person <- function(population, schema, spec, from, to, seed, cadence) {
+  if (!is.null(cadence)) {
+    stop(
+      "`cadence` does not apply to `one_row_per = \"person\"` (one row per ",
+      "person, not a repeated snapshot) -- omit it, or use ",
+      "`one_row_per = \"person_reference_date\"` for repeated snapshots ",
+      "over time.",
+      call. = FALSE
+    )
+  }
+  pop <- validate_population(population)
+  from <- as_date1(from)
+  to <- as_date1(to)
+  if (is.na(from) || is.na(to) || to < from) {
+    stop("`from` must be a Date on or before `to`.", call. = FALSE)
+  }
+  with_rng_seed(seed, {
+    rows <- pop[pop$foed_dag <= to, , drop = FALSE]
+    if (!nrow(rows)) {
+      return(emit_custom_table(spec, empty_scaffold(spec), schema))
+    }
+    lo <- pmax(rows$foed_dag, from)
+    span <- as.integer(to - lo)
+    # One independent date per person within their own eligible window --
+    # not a shared as-of date like person_reference_date's snapshot dates.
+    # Faithful to staggered recruitment (e.g. a cohort enrolled over
+    # several years): referencetid means "this person's own date", a
+    # different meaning from the snapshot grain's, documented as such on
+    # generate_custom_register().
+    rows$referencetid <- lo + floor(stats::runif(nrow(rows)) * (span + 1L))
     rows$year <- as.integer(lubridate::year(rows$referencetid))
     emit_custom_table(spec, rows, schema)
   })

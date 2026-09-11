@@ -157,6 +157,109 @@ test_that("generate_custom_register person_reference_date joins on pnr", {
   expect_equal(register_stamps(ext)$schema_commit, schema$schema_commit)
 })
 
+test_that("generate_custom_register person is exactly one row per eligible person", {
+  schema <- fixture_schema()
+  pop <- tiny_pop(schema, n = 40L, seed = 11)
+  cols <- tibble::tibble(name = "score", type = "integer", min = 0, max = 5)
+  ext <- generate_custom_register(
+    id = "ext_baseline",
+    one_row_per = "person",
+    columns = cols,
+    population = pop,
+    schema = schema,
+    from = win_from,
+    to = win_to,
+    seed = 11
+  )
+  expect_equal(nrow(ext), length(unique(ext$pnr)))
+  expect_equal(max(table(ext$pnr)), 1L)
+})
+
+test_that("generate_custom_register person returns one row per person even when from == to", {
+  schema <- fixture_schema()
+  pop <- tiny_pop(schema, n = 20L, seed = 11)
+  cols <- tibble::tibble(name = "score", type = "integer", min = 0, max = 5)
+  ext <- generate_custom_register(
+    id = "ext_baseline",
+    one_row_per = "person",
+    columns = cols,
+    population = pop,
+    schema = schema,
+    from = win_from,
+    to = win_from,
+    seed = 11
+  )
+  expect_true(nrow(ext) > 0L)
+  expect_equal(max(table(ext$pnr)), 1L)
+})
+
+test_that("generate_custom_register person fills referencetid/year per person, staggered within the window", {
+  schema <- fixture_schema()
+  pop <- tiny_pop(schema, n = 40L, seed = 11)
+  cols <- tibble::tibble(
+    name = c("score", "referencetid", "year"),
+    type = c("integer", "date", "integer"),
+    min = c(0, NA, NA),
+    max = c(5, NA, NA)
+  )
+  ext <- generate_custom_register(
+    id = "ext_baseline",
+    one_row_per = "person",
+    columns = cols,
+    population = pop,
+    schema = schema,
+    from = win_from,
+    to = win_to,
+    seed = 11
+  )
+  expect_true(all(ext$referencetid >= win_from & ext$referencetid <= win_to))
+  expect_equal(ext$year, as.integer(format(ext$referencetid, "%Y")))
+  expect_true(length(unique(ext$referencetid)) > 1L)
+  birth <- pop$foed_dag[match(ext$pnr, pop$pnr)]
+  expect_true(all(ext$referencetid >= birth))
+})
+
+test_that("generate_custom_register person excludes people born after the window", {
+  schema <- fixture_schema()
+  pop <- generate_background_population(
+    n = 20L, seed = 3, schema = schema,
+    birth_from = as.Date("2005-01-01"), birth_to = as.Date("2015-01-01")
+  )
+  cols <- tibble::tibble(name = "score", type = "integer", min = 0, max = 5)
+  ext <- generate_custom_register(
+    id = "ext_baseline",
+    one_row_per = "person",
+    columns = cols,
+    population = pop,
+    schema = schema,
+    from = as.Date("2008-01-01"),
+    to = as.Date("2010-12-31"),
+    seed = 3
+  )
+  expect_true(all(ext$pnr %in% pop$pnr[pop$foed_dag <= as.Date("2010-12-31")]))
+  expect_false(any(ext$pnr %in% pop$pnr[pop$foed_dag > as.Date("2010-12-31")]))
+})
+
+test_that("generate_custom_register person rejects an explicit cadence", {
+  schema <- fixture_schema()
+  pop <- tiny_pop(schema, n = 10L, seed = 11)
+  cols <- tibble::tibble(name = "score", type = "integer", min = 0, max = 5)
+  expect_error(
+    generate_custom_register(
+      id = "ext_baseline",
+      one_row_per = "person",
+      columns = cols,
+      population = pop,
+      schema = schema,
+      from = win_from,
+      to = win_to,
+      seed = 11,
+      cadence = "annual"
+    ),
+    "does not apply to `one_row_per = \"person\"`"
+  )
+})
+
 test_that("generate_custom_register household_year requires household join_keys", {
   schema <- fixture_schema()
   pop <- tiny_pop(schema, n = 8L, seed = 12)
