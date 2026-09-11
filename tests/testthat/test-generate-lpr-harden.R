@@ -11,8 +11,9 @@ published_sks_kode <- function() {
   as.character(sksr::SKS_labels$Kode)
 }
 
-# LPR3 fixtures include borger_koen (character, no CS) → SCHEMA GAP on fill.
-# Drop it for happy-path contact/child tests; dedicated test covers the gap.
+# LPR3 fixtures include borger_koen (character, no CS) → warning() + NA on
+# fill (see test-generate-lpr.R). Drop it for happy-path contact/child
+# tests that aren't about that column, so they don't also assert on it.
 schema_without_borger_koen <- function(schema) {
   cols <- schema$registers$lpr_a_kontakt$columns
   keep <- !vapply(cols, function(col) {
@@ -159,14 +160,70 @@ test_that("lpr_a_diagnose coverage starts 2019 while contacts exist from 2017", 
   expect_true("diag_kode" %in% names(dia))
 })
 
-test_that("kont_type has a PLAN-locked sksr catalogue (adm prefix)", {
+test_that("kont_type falls back to always-SKS-adm when the schema has no lprindberetningssystem", {
+  skip_if_not_installed("sksr")
+  schema <- schema_without_borger_koen(fixture_schema())
+  # Drop lprindberetningssystem entirely -- simulates a schema that hasn't
+  # picked up registers-guide's newer code system yet.
+  cols <- schema$registers$lpr_a_kontakt$columns
+  keep <- !vapply(cols, function(col) {
+    identical(as.character(col$id %||% col$name), "lprindberetningssystem")
+  }, logical(1))
+  schema$registers$lpr_a_kontakt$columns <- cols[keep]
+  pop <- tiny_pop(schema, n = 20L, seed = 8)
+  kon <- generate_register("lpr_a_kontakt", pop, schema, lpr3_from, lpr3_to, seed = 8)
+  expect_false("lprindberetningssystem" %in% names(kon))
+  expect_true(all(nchar(kon$kont_type) == 6L))
+})
+
+test_that("lprindberetningssystem is drawn uniformly by default (realistic = FALSE)", {
+  schema <- schema_without_borger_koen(fixture_schema())
+  pop <- tiny_pop(schema, n = 400L, seed = 8)
+  kon <- generate_register("lpr_a_kontakt", pop, schema, lpr3_from, lpr3_to, seed = 8)
+  share <- prop.table(table(kon$lprindberetningssystem))
+  expect_true(all(share > 0.15 & share < 0.35))
+})
+
+test_that("lprindberetningssystem is weighted toward LPR3 under realistic = TRUE", {
+  schema <- schema_without_borger_koen(fixture_schema())
+  pop <- tiny_pop(schema, n = 400L, seed = 8)
+  kon <- generate_register(
+    "lpr_a_kontakt", pop, schema, lpr3_from, lpr3_to,
+    seed = 8, realistic = TRUE
+  )
+  share <- prop.table(table(kon$lprindberetningssystem))
+  expect_gt(unname(share[["LPR3"]]), 0.6)
+  expect_lt(unname(share[["LPR1"]]), 0.05)
+})
+
+test_that("kont_type format always agrees with its own row's lprindberetningssystem", {
+  skip_if_not_installed("sksr")
+  schema <- schema_without_borger_koen(fixture_schema())
+  pop <- tiny_pop(schema, n = 400L, seed = 8)
+  kon <- generate_register("lpr_a_kontakt", pop, schema, lpr3_from, lpr3_to, seed = 8)
+  is_sks_format <- nchar(kon$kont_type) == 6L
+  expect_equal(is_sks_format, kon$lprindberetningssystem == "LPR3")
+})
+
+test_that("kont_type has a PLAN-locked sksr catalogue (adm prefix) for LPR3 rows", {
   skip_if_not_installed("sksr")
   schema <- schema_without_borger_koen(fixture_schema())
   pop <- tiny_pop(schema, n = 20L, seed = 8)
   kon <- generate_register("lpr_a_kontakt", pop, schema, lpr3_from, lpr3_to, seed = 8)
   expect_true(nrow(kon) > 0L)
+  lpr3 <- kon[kon$lprindberetningssystem == "LPR3", ]
   pub <- published_sks_kode()
-  expect_true(all(kon$kont_type %in% pub))
+  expect_true(all(lpr3$kont_type %in% pub))
+})
+
+test_that("kont_type is a legacy digit for non-LPR3 lprindberetningssystem", {
+  skip_if_not_installed("sksr")
+  schema <- schema_without_borger_koen(fixture_schema())
+  pop <- tiny_pop(schema, n = 40L, seed = 8)
+  kon <- generate_register("lpr_a_kontakt", pop, schema, lpr3_from, lpr3_to, seed = 8)
+  legacy <- kon[kon$lprindberetningssystem != "LPR3", ]
+  skip_if(nrow(legacy) == 0L, "no legacy rows drawn for this seed")
+  expect_true(all(legacy$kont_type %in% c("0", "2")))
 })
 
 test_that("lpr_a_kontakt copies person fields and uses datetime contact bounds", {
@@ -183,10 +240,11 @@ test_that("lpr_a_kontakt copies person fields and uses datetime contact bounds",
   expect_false("borger_koen" %in% names(kon))
   expect_equal(kon$year, as.integer(format(kon$kont_starttidspunkt, "%Y")))
   expect_true(all(is.na(kon$adiag)))
-  expect_true(all(nchar(kon$kont_type) == 6L))
+  lpr3 <- kon[kon$lprindberetningssystem == "LPR3", ]
+  expect_true(all(nchar(lpr3$kont_type) == 6L))
   pub <- published_sks_kode()
-  expect_true(all(kon$kont_type %in% pub))
-  adm_pref <- as.character(sksr::SKS_labels$Prefix[match(kon$kont_type, sksr::SKS_labels$Kode)])
+  expect_true(all(lpr3$kont_type %in% pub))
+  adm_pref <- as.character(sksr::SKS_labels$Prefix[match(lpr3$kont_type, sksr::SKS_labels$Kode)])
   expect_true(all(adm_pref == "adm"))
   expect_equal(attr(kon, "catalogue"), "sksr::SKS_labels")
   pro <- generate_register("lpr_a_procregistrering", pop, schema, lpr3_from, lpr3_to, seed = 8)

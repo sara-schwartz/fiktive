@@ -54,6 +54,28 @@ draw_sks_dia_codes <- function(name, n, type, register_id, koen = NULL, age_year
   )
 }
 
+# kont_type.yaml's own reader_note: which of two genuinely different code
+# formats a row holds is decided by lprindberetningssystem, not by year --
+# LPR3-reported rows carry an SKS admin code, rows migrated from MiniPAS/
+# LPR2/LPR1 carry a legacy LPR2 patient-type digit ("0" or "2" specifically
+# -- that claim, not the full pattype set, is what kont_type.yaml makes).
+# lprindberetningssystem = NULL (schema doesn't have that code system yet,
+# e.g. older fixtures) falls back to the original always-SKS-adm behaviour.
+draw_kont_type_codes <- function(n, lprindberetningssystem = NULL) {
+  if (is.null(lprindberetningssystem) || !length(lprindberetningssystem)) {
+    return(sample_sks_codes(n, "adm", cs = NULL))
+  }
+  is_lpr3 <- !is.na(lprindberetningssystem) & lprindberetningssystem == "LPR3"
+  out <- character(n)
+  if (any(is_lpr3)) {
+    out[is_lpr3] <- sample_sks_codes(sum(is_lpr3), "adm", cs = NULL)
+  }
+  if (any(!is_lpr3)) {
+    out[!is_lpr3] <- sample(c("0", "2"), sum(!is_lpr3), replace = TRUE)
+  }
+  out
+}
+
 sks_kind_for <- function(cs_id, register_id, name) {
   if (identical(as.character(cs_id), "kont_type")) {
     return("adm")

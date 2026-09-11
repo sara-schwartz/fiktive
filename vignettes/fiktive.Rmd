@@ -47,10 +47,16 @@ tables <- generate_registers(
 ```
 
 Right now that means: `kom` (municipality) weighted by real 2026
-population instead of drawn evenly, and diagnosis codes
-(`icd10`/`icd10_sks`) that never assign a chapter impossible for the
-patient's sex or age (no pregnancy code on a man, no perinatal code on
-someone past infancy).
+population instead of drawn evenly; diagnosis codes (`icd10`/`icd10_sks`)
+that never assign a chapter impossible for the patient's sex or age (no
+pregnancy code on a man, no perinatal code on someone past infancy); and,
+for LPR3, `lprindberetningssystem` (which historical reporting system a
+contact came through: `LPR3`, `LPR2`, `MiniPAS`, or `LPR1`) weighted toward
+`LPR3` instead of drawn evenly across all four. `kont_type`'s own format
+(an SKS admin code for `LPR3` rows, a legacy LPR2 patient-type digit for
+the other three) always follows whatever `lprindberetningssystem` that row
+got, regardless of `realistic=` — two columns on the same row have to
+agree with each other no matter what.
 
 This is about **plausibility, not planted signal** — it never changes what
 any `scenario` claims or what `get_truth()` reports. If you want a

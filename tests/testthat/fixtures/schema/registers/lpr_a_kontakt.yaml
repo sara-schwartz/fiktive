@@ -29,6 +29,11 @@ columns:
     type: character
     role: code
     code_system: kont_type
+  - id: lprindberetningssystem
+    name: lprindberetningssystem
+    type: character
+    role: code
+    code_system: lprindberetningssystem
   - id: adiag
     name: adiag
     type: character

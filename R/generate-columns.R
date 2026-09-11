@@ -9,6 +9,23 @@ emit_schema_table <- function(spec, rows, schema) {
     )
   }
   register_id <- as.character(spec$id %||% spec$name %||% "")
+  # kont_type's format (SKS admin code vs legacy pattype digit) depends on
+  # lprindberetningssystem, which comes later in column order on
+  # lpr_a_kontakt -- draw it first if the register has it, so kont_type and
+  # the stored lprindberetningssystem column agree on the same row's value
+  # instead of two independent, possibly-inconsistent draws.
+  if (!("lprindberetningssystem" %in% names(rows)) && nrow(rows) > 0L) {
+    lprib_col <- Find(
+      function(c) identical(as.character(c$code_system %||% ""), "lprindberetningssystem"),
+      cols
+    )
+    if (!is.null(lprib_col)) {
+      rows$lprindberetningssystem <- fill_schema_column(
+        lprib_col, rows, schema,
+        register_id = register_id, spec = spec
+      )
+    }
+  }
   used_sks <- FALSE
   used_atc <- FALSE
   used_icd_who <- FALSE
@@ -155,12 +172,22 @@ fill_schema_column <- function(col, rows, schema, register_id = NULL, spec = NUL
     } else {
       NULL
     }
+    # kont_type's format must match its own row's lprindberetningssystem
+    # regardless of realistic= -- a structural-consistency fix (two columns
+    # on the same row agreeing), not a realism upgrade, so always available
+    # when the register has the column (see emit_schema_table's pre-pass).
+    lprindberetningssystem <- if ("lprindberetningssystem" %in% names(rows)) {
+      rows$lprindberetningssystem
+    } else {
+      NULL
+    }
     values <- draw_independent_column(
       col, n, schema,
       register_id = register_id,
       when = when,
       koen = koen,
-      age_years = age_years
+      age_years = age_years,
+      lprindberetningssystem = lprindberetningssystem
     )
   }
   values <- coerce_schema_type(values, type)
@@ -224,6 +251,10 @@ derived_column <- function(id, rows, schema = NULL) {
     foedselsdato = when,
     foedselsaar = as.character(lubridate::year(when)),
     familie_id = if ("familie_id" %in% names(rows)) rows$familie_id else NULL,
+    # Pre-drawn in emit_schema_table()'s pre-pass (see there) so kont_type,
+    # which sits earlier in column order on lpr_a_kontakt, can read the same
+    # row's value instead of triggering a second, inconsistent draw.
+    lprindberetningssystem = if ("lprindberetningssystem" %in% names(rows)) rows$lprindberetningssystem else NULL,
     koen = rows$koen,
     foed_dag = rows$foed_dag,
     referencetid = rows$referencetid,

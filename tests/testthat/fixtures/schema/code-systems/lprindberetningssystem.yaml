@@ -1,0 +1,9 @@
+# TEST DOUBLE — mirrors registers-guide's confirmed 4-value lookup.
+id: lprindberetningssystem
+enumerated: true
+values_complete: false
+lookup:
+  "LPR3": {da: null, en: "Reported through the current LPR3 system"}
+  "MiniPAS": {da: null, en: "Reported through MiniPAS"}
+  "LPR2": {da: null, en: "Migrated history from LPR2"}
+  "LPR1": {da: null, en: "Migrated history from LPR1"}

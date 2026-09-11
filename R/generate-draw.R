@@ -1,7 +1,8 @@
 # Column draw / code-system resolve (loaded with generate-columns.R).
 
 draw_independent_column <- function(col, n, schema, register_id = NULL, when = NULL,
-                                     koen = NULL, age_years = NULL) {
+                                     koen = NULL, age_years = NULL,
+                                     lprindberetningssystem = NULL) {
   type <- col$type %||% "character"
   role <- col$role
   name <- as.character(col$name %||% col$id)
@@ -49,7 +50,8 @@ draw_independent_column <- function(col, n, schema, register_id = NULL, when = N
   if (length(unique_ids) == 1L) {
     return(draw_from_code_system(
       unique_ids[[1]], col, n, schema, register_id = register_id, type = type, role = role, name = name,
-      when = when, koen = koen, age_years = age_years
+      when = when, koen = koen, age_years = age_years,
+      lprindberetningssystem = lprindberetningssystem
     ))
   }
   out <- vector(mode = mode_for_type(type), length = n)
@@ -59,7 +61,8 @@ draw_independent_column <- function(col, n, schema, register_id = NULL, when = N
       cid, col, length(idx), schema, register_id = register_id, type = type, role = role, name = name,
       when = when[idx],
       koen = if (is.null(koen)) NULL else koen[idx],
-      age_years = if (is.null(age_years)) NULL else age_years[idx]
+      age_years = if (is.null(age_years)) NULL else age_years[idx],
+      lprindberetningssystem = if (is.null(lprindberetningssystem)) NULL else lprindberetningssystem[idx]
     )
   }
   coerce_schema_type(out, type)
@@ -163,18 +166,38 @@ sample_kom_keys_era_aware <- function(keys, n, when) {
   out
 }
 
+# Order-of-magnitude only, reasoned from coverage windows and DARTER-team-
+# confirmed facts (registers-guide code-systems/lprindberetningssystem.yaml
+# provenance), NOT counted from a real delivery -- nobody has run
+# count(lprindberetningssystem) on an actual DARTER extract. LPR3 weighted
+# above its raw ~78% time-share (2019-03 to present, of lpr_a_kontakt's full
+# 2017-present span) because it also reports at finer grain (a diagnosis
+# per visit vs LPR2's per course). LPR1 near-zero: named as a possibility in
+# dst-pitfalls.qmd pitfall 11, but lpr_a_kontakt only reaches back to 2017,
+# decades after LPR1. Replace with the real split once someone has one.
+.LPRINDBERETNINGSSYSTEM_WEIGHTS <- c(
+  "LPR3" = 80, "LPR2" = 15, "MiniPAS" = 3, "LPR1" = 0.5
+)
+
 # Draw from a resolved set of lookup keys. civst never emits "D" (dead) for
 # a living resident -- always on, a structural-validity fix, not "realism".
-# kom weighted by real municipality population instead of drawn uniformly --
-# gated behind realistic=TRUE (see with_realistic()); default is the
-# original uniform draw. Falls back to uniform if a key is missing from the
-# weight table (e.g. a future schema addition), rather than erroring.
+# kom weighted by real municipality population, lprindberetningssystem by
+# the reasoned split above, instead of drawn uniformly -- both gated behind
+# realistic=TRUE (see with_realistic()); default is the original uniform
+# draw. Falls back to uniform if a key is missing from the weight table
+# (e.g. a future schema addition), rather than erroring.
 sample_cs_keys <- function(keys, n, cs_id) {
   if (identical(cs_id, "civst")) {
     keys <- setdiff(keys, "D")
   }
   if (identical(cs_id, "kom") && is_realistic()) {
     w <- .KOM_POPULATION_WEIGHTS[keys]
+    if (!anyNA(w)) {
+      return(sample(keys, n, replace = TRUE, prob = as.numeric(w)))
+    }
+  }
+  if (identical(cs_id, "lprindberetningssystem") && is_realistic()) {
+    w <- .LPRINDBERETNINGSSYSTEM_WEIGHTS[keys]
     if (!anyNA(w)) {
       return(sample(keys, n, replace = TRUE, prob = as.numeric(w)))
     }
@@ -228,7 +251,8 @@ sample_lookup_keys <- function(cs, cs_id, n, when = NULL) {
 }
 
 draw_from_code_system <- function(cs_id, col, n, schema, register_id, type, role, name, when = NULL,
-                                   koen = NULL, age_years = NULL) {
+                                   koen = NULL, age_years = NULL,
+                                   lprindberetningssystem = NULL) {
   cs_id <- as.character(cs_id %||% "")
   if (!nzchar(cs_id)) {
     return(typed_noise(type, n, role = role, name = name))
@@ -263,7 +287,11 @@ draw_from_code_system <- function(cs_id, col, n, schema, register_id, type, role
       "a published ICD-8 list in the schema, or leave previous_code_system rows as SCHEMA GAP"
     )
   }
-  if (cs_id %in% c("sks", "kont_type")) {
+  if (identical(cs_id, "kont_type")) {
+    drawn <- draw_kont_type_codes(n, lprindberetningssystem)
+    return(coerce_schema_type(drawn, type))
+  }
+  if (identical(cs_id, "sks")) {
     kind <- sks_kind_for(cs_id, register_id, name)
     drawn <- sample_sks_codes(n, kind, cs)
     return(coerce_schema_type(drawn, type))

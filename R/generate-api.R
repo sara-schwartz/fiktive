@@ -50,11 +50,18 @@
 #' @param realistic Default `FALSE`: structural noise only, uniform across
 #'   valid codes (e.g. `kom` drawn evenly across municipalities). `TRUE`
 #'   opts into a small set of real-world-shaped defaults: `kom` weighted by
-#'   real municipality population, and diagnosis codes (`icd10`/`icd10_sks`)
+#'   real municipality population; diagnosis codes (`icd10`/`icd10_sks`)
 #'   never assigned a chapter that's impossible for the patient's sex or age
-#'   (e.g. a pregnancy code to a man). Does not change what any scenario/
-#'   truth claims — see `?scenario_association` if you want a planted,
-#'   documented relationship instead of realistic-looking background shape.
+#'   (e.g. a pregnancy code to a man); and LPR3's `lprindberetningssystem`
+#'   weighted toward `"LPR3"` (a reasoned estimate, not measured from a real
+#'   delivery — see `.LPRINDBERETNINGSSYSTEM_WEIGHTS`) instead of uniform
+#'   across its four values. `kont_type`'s own SKS-admin-code vs. legacy
+#'   pattype-digit format always follows `lprindberetningssystem`
+#'   regardless of `realistic=` — that's a structural-consistency fix
+#'   between two columns on the same row, not a realism upgrade. None of
+#'   this changes what any scenario/truth claims — see
+#'   `?scenario_association` if you want a planted, documented relationship
+#'   instead of realistic-looking background shape.
 #'
 #' @return A tibble whose columns are a subset of the schema column names
 #'   for `register`. Zero rows is a valid event or child table.
