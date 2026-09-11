@@ -13,18 +13,12 @@ Nothing in it comes from an actual person.
 - [Why would I use this?](#why-would-i-use-this)
 - [Install](#install)
 - [The 5-minute quickstart](#the-5-minute-quickstart)
-- [Structural noise vs. realistic-looking data](#structural-noise-vs-realistic-looking-data)
 - [What registers can I generate?](#what-registers-can-i-generate)
-  - [What do these columns and codes actually mean?](#what-do-these-columns-and-codes-actually-mean)
 - [Saving your data to files](#saving-your-data-to-files)
 - [Joining tables together](#joining-tables-together)
 - [Hospital data needs two tables](#hospital-data-needs-two-tables)
-- [Describing your own register (e.g. a study cohort)](#describing-your-own-register-eg-a-study-cohort)
-- [Checking whether your analysis code is actually correct](#checking-whether-your-analysis-code-is-actually-correct)
-- [Testing for immortal time bias (advanced)](#testing-for-immortal-time-bias-advanced)
-- [Testing for left truncation bias (advanced)](#testing-for-left-truncation-bias-advanced)
-- [Making data messier (to test your pipeline's robustness)](#making-data-messier-to-test-your-pipelines-robustness)
 - [Where the data model comes from](#where-the-data-model-comes-from)
+- [Learn more](#learn-more)
 - [Licenses](#licenses)
 - [Available registers](#available-registers)
 
@@ -92,66 +86,10 @@ back the exact same fake data.
 
 `generate_background_population()` only strictly needs `n` and `schema`
 (`seed` isn't required either, but skip it and you can't reproduce the same
-fake people later). Everything else is optional, for narrowing who's in the
-population:
-
-```r
-# Optional: control the age range instead of accepting the default
-# (roughly ages 19-86 as of today). Pick ONE of these two styles:
-pop <- generate_background_population(
-  n = 100,
-  seed = 1,
-  schema = schema,
-  age_min = 65,    # whole years, inclusive
-  age_max = 80,
-  reference_date = as.Date("2020-01-01")   # age is measured as of this date; defaults to today
-)
-
-# or, if you'd rather pick actual birth dates:
-pop <- generate_background_population(
-  n = 100,
-  seed = 1,
-  schema = schema,
-  birth_from = as.Date("1950-01-01"),
-  birth_to = as.Date("1960-12-31")
-)
-```
-
-`age_min`/`age_max` and `birth_from`/`birth_to` describe the same thing two
-ways — use whichever is easier to reason about for your case, but not both
-at once.
-
-## Structural noise vs. realistic-looking data
-
-By default, fiktive generates **structural noise that joins** — every code
-is valid, but drawn uniformly, with no attempt to look like real Denmark.
-A municipality column is exactly as likely to say Læsø (pop. 1,655) as
-Copenhagen (pop. 670,389).
-
-Pass `realistic = TRUE` to `generate_register()` / `generate_registers()`
-to opt into a small set of real-world-shaped defaults instead:
-
-```r
-tables <- generate_registers(
-  registers = c("bef", "lpr_adm", "lpr_diag"),
-  population = pop, schema = schema,
-  from = as.Date("2008-01-01"), to = as.Date("2009-12-31"),
-  seed = 1,
-  realistic = TRUE   # opt-in: off by default
-)
-```
-
-Right now that means: `kom` (municipality) weighted by real 2026
-population instead of drawn evenly, and diagnosis codes
-(`icd10`/`icd10_sks`) that never assign a chapter impossible for the
-patient's sex or age (no pregnancy code on a man, no perinatal code on
-someone past infancy).
-
-This is about **plausibility, not planted signal** — it never changes what
-any `scenario` claims or what `get_truth()` reports. If you want a
-specific, known, testable relationship instead of realistic-looking
-background shape, that's what [scenario_association() and friends](#checking-whether-your-analysis-code-is-actually-correct)
-are for.
+fake people later). Want a specific age range instead of the default
+(roughly ages 19-86 as of today)? Pass `age_min`/`age_max` (whole years,
+optionally with `reference_date`) or `birth_from`/`birth_to` (actual
+dates) — see `?generate_background_population` for both styles.
 
 ## What registers can I generate?
 
@@ -176,28 +114,9 @@ A few common ones to get started:
 You ask for a register by putting its id in `registers = c(...)` — that's
 the whole interface, no matter which register it is.
 
-### What do these columns and codes actually mean?
-
-Register columns often have short, cryptic names (`civst`, `hfaudd`,
-`fm_mark`), and their coded values are worse (`civst = "U"`, `koen = 1`).
-`codebook()` looks up the real description for each, straight from the
-same schema that generated your data — in Danish and English:
-
-```r
-codebook(schema, "bef")
-```
-
-| name | label_da | label_en | type | code_system | values |
-|---|---|---|---|---|---|
-| koen | Køn | Sex | numeric | koen | 1: Male; 2: Female; 9: Not stated |
-| civst | Civilstand | Marital status | character | civst | U: Never married; G: Married; ... |
-| kom | Kommunekode | Municipality code | character | kom | 101: Copenhagen; 147: Frederiksberg; ... |
-
-Pass more than one id (`codebook(schema, c("bef", "lmdb"))`) to get several
-registers' columns at once, with a `register` column added so you can tell
-them apart. `NA` in `label_da`/`label_en`/`values` just means the schema
-doesn't document one for that column — same "don't invent it" rule as
-everywhere else in fiktive.
+Column and code names are often short and cryptic (`civst`, `hfaudd`,
+`koen = 1`) — `codebook(schema, "bef")` looks up the real description for
+each, in Danish and English. See `vignette("fiktive")` for details.
 
 ## Saving your data to files
 
@@ -276,267 +195,6 @@ A couple of things worth knowing:
   `left_join()` (every contact, `NA` diagnosis fields where there isn't
   one) depending on what your analysis needs to handle.
 
-## Describing your own register (e.g. a study cohort)
-
-Sometimes you have a table that isn't a real DST register — a study
-cohort, a set of questionnaire scores, a group label. `generate_custom_register()`
-makes one up structurally (you describe the columns; fiktive fills in
-plausible fake values) and it joins to everything else via `pnr`:
-
-```r
-# Describe your columns: a type, plus either a min/max range or a set of values
-cols <- tibble::tibble(
-  name   = c("score", "grp"),
-  type   = c("integer", "character"),
-  min    = c(0, NA),
-  max    = c(10, NA),
-  values = c(NA, "A|B|C")
-)
-
-ext <- generate_custom_register(
-  id = "my_study",   # any name you want for this table
-  one_row_per = "person_reference_date",   # one row per person per snapshot date
-  columns = cols,
-  population = pop,
-  schema = schema,
-  from = as.Date("2008-01-01"),   # dates are just an example, use your own window
-  to = as.Date("2009-12-31"),
-  seed = 1,
-  cadence = "annual"   # one snapshot per year ("quarterly" is the other option)
-)
-
-joined <- dplyr::inner_join(tables$bef, ext, by = "pnr", relationship = "many-to-many")
-```
-
-### Describing many columns with a CSV instead
-
-For a real cohort with dozens or hundreds of variables, typing out a
-tibble by hand doesn't scale. Pass a CSV path instead of a tibble — same
-`name` / `type` / `min` / `max` / `values` columns, one row per variable.
-Any other columns already in your file (a label, a request status, a
-source note — whatever you're tracking for your own bookkeeping) are
-simply ignored, so your documentation columns can live right next to the
-ones fiktive reads:
-
-```csv
-name,type,min,max,values,dataset,label,status,source
-id,integer,1,60000,,journal,KKH ID number,available,catalogue
-mdato,date,1993-12-01,1997-05-31,,journal,Date of participation,requested,catalogue
-center,character,,,KBH|AAR,journal,Study center,requested,catalogue
-kqn,character,,,M|K,journal,Gender,requested,catalogue
-vaegt,numeric,42,145,,journal,Weight (kg),requested,catalogue
-fedtbiop,integer,,,0|1,journal,Fat biopsy taken (yes/no),available,catalogue
-```
-
-```r
-ext <- generate_custom_register(
-  id = "kkh",
-  one_row_per = "person_reference_date",
-  columns = "kkh_columns.csv",   # path to the CSV above
-  population = pop,
-  schema = schema,
-  from = as.Date("1993-12-01"),
-  to = as.Date("1997-05-31"),
-  seed = 1,
-  cadence = "annual"
-)
-```
-
-`values` accepts `|` or `;` as the separator (`KBH|AAR`, `0|1`, ...).
-Rows with neither `min`/`max` nor `values` filled in still work — fiktive
-falls back to a generic default for that type, so a work-in-progress CSV
-where you haven't decided every range yet won't error out.
-
-## Checking whether your analysis code is actually correct
-
-Normally when you test analysis code, you don't actually know what the
-right answer is supposed to be — you're just checking that it runs and the
-output looks plausible. fiktive lets you flip that around: you tell it a
-real, exact relationship to secretly build into the data ("increasing `x`
-by 1 always increases `y` by 1.5, on average"), it generates fake data with
-that relationship baked in, and it hands you back that true number. You
-then run **your own** analysis code on the fake data and check whether it
-finds the same number. If it doesn't, the bug is in your code — not the
-data.
-
-Three steps: **describe the relationship to plant → generate data with
-it → compare your analysis against fiktive's true answer.**
-
-**Step 1 — describe the relationship.** `scenario_association()` says
-"column `x` affects column `y`, and here's the true effect size":
-
-```r
-# "increasing x by 1 increases y by 1.5, on average" -- the true, known answer
-sc <- scenario_association(exposure = "study.x", outcome = "study.y", coefficient = 1.5)
-```
-
-`exposure` is the column doing the affecting, `outcome` is the column
-being affected, `coefficient` is the true effect size (change this to
-whatever number you want to test against). `"study.x"` means "column `x`
-on the table called `study`" — the table you generate next.
-
-**Step 2 — generate the data with that relationship.** Same
-`generate_custom_register()` as in [Making up your own
-columns](#making-up-your-own-columns) above, just with `scenario = sc`
-added:
-
-```r
-cols <- tibble::tibble(
-  name = c("x", "y"), type = c("numeric", "numeric"),
-  min = c(-2, -2), max = c(2, 2)
-)
-
-study <- generate_custom_register(
-  id = "study", one_row_per = "person_reference_date", columns = cols,
-  population = pop, schema = schema,
-  from = as.Date("2008-01-01"), to = as.Date("2008-12-31"),
-  seed = 1, scenario = sc, cadence = "annual"
-)
-```
-
-**Step 3 — run your own analysis, then compare it to the true answer.**
-`get_truth()` gives you back the answer fiktive planted — it comes free
-with anything you generate, you never pass it in yourself:
-
-```r
-fit <- lm(y ~ x, data = study)
-coef(fit)[["x"]]                  # your analysis's answer -- should come out close to 1.5
-
-get_truth(study)$expected_naive   # fiktive's true answer: 1.5
-```
-
-If those two numbers are close, your analysis code works. If they're way
-off, something in your code needs fixing — not the data.
-
-Beyond a plain association, fiktive can plant trickier situations, so you
-can test whether your code handles them correctly too:
-
-| Function | Plants... | Use it to test... |
-|---|---|---|
-| `scenario_association()` | a straight X → Y effect | your basic model recovers the right coefficient |
-| `scenario_confounding()` | a third variable biasing the naive estimate | your code actually adjusts for confounders |
-| `scenario_mnar()` | missing values that depend on the value itself | your code doesn't ignore informative missingness |
-| `scenario_complete_case()` | rows dropped depending on a column's value | your "complete case" analysis isn't secretly biased |
-| `scenario_misclassification()` | a coded column's values swapped for other real codes | your code isn't thrown off by mislabeled diagnosis/drug codes |
-
-All five work the same way as the example above: build the scenario, pass
-it as `scenario=`, then compare your own fit against
-`get_truth(x)$expected_naive` (the answer a straightforward analysis
-should find) and `$expected_adjusted` (the answer after doing it
-properly — e.g. adjusting for the confounder). For a plain association
-those two are the same number; for the trickier scenarios they're
-deliberately different, which is exactly what lets you test whether your
-code does the adjustment correctly. Run `?scenario_confounding`,
-`?scenario_mnar`, `?scenario_complete_case`, or `?scenario_misclassification`
-for each one's full parameter list and a runnable example.
-
-Leave `scenario=` out entirely (or generate any ordinary register like
-`bef`) and you get **independence** — no planted relationship;
-`get_truth(x)$expected_naive` comes back `0`.
-
-## Testing for immortal time bias (advanced)
-
-This one works differently from the scenarios above: instead of adding a
-bias on top of an ordinary table, it generates a **survival cohort** —
-people with an entry time, an exposure that starts at some point during
-follow-up (or never), and an event (or censoring) time. Immortal time bias
-is a classic mistake: treating "ever exposed" as if it were true from the
-start, which credits exposed people with survival time before their
-exposure actually began — making the exposure look protective even when it
-does nothing.
-
-```r
-sc <- scenario_immortal_time(
-  baseline_hazard = 0.1,     # unexposed event rate per year
-  true_hazard_ratio = 1,     # 1 = exposure truly does nothing -- isolates the bias
-  exposure_rate = 0.2,       # how quickly people who ever get exposed, do
-  horizon_years = 5          # match this to your to - from window below
-)
-
-cohort <- generate_custom_register(
-  id = "cohort",
-  one_row_per = "time_to_event",   # fixed shape: entry_time, exit_time, event, exposure_start_time, ever_exposed
-  population = pop,
-  schema = schema,
-  from = as.Date("2010-01-01"),
-  to = as.Date("2015-01-01"),      # 5 years, matching horizon_years above
-  seed = 1,
-  scenario = sc
-)
-
-# The mistake: exposure treated as fixed from the start
-fit <- survival::coxph(survival::Surv(entry_time, exit_time, event) ~ ever_exposed, data = cohort)
-exp(coef(fit)[["ever_exposed"]])  # hazard ratio well below 1, even though true_hazard_ratio = 1
-
-get_truth(cohort)$expected_naive     # the biased answer the mistake above produces
-get_truth(cohort)$expected_adjusted  # 1 -- the true answer, recovered by correctly
-                                      # treating exposure as time-varying (see ?scenario_immortal_time
-                                      # for a worked example using survival::tmerge())
-```
-
-`one_row_per = "time_to_event"` always needs a `scenario_immortal_time()`
-or `scenario_left_truncation()` (below) — there's no independence version
-of this grain, and `columns=`/`fidelity=` don't apply to it (its shape is
-fixed, not user-described).
-
-## Testing for left truncation bias (advanced)
-
-Also a `time_to_event` register, but a genuinely different mistake from
-immortal time: this one is about **delayed entry**. People only enter a
-cohort at some age, not at birth, and are only observed at all if they
-survived to that age. Analyzing "time since entry" instead of properly
-accounting for age at entry biases the result whenever risk actually
-depends on age (which it usually does — older people are usually at
-higher risk of most things):
-
-```r
-sc <- scenario_left_truncation(
-  shape = 5,                # how strongly risk increases with age (1 = no age effect, no bias to demonstrate)
-  scale = 80,                # a characteristic age for the outcome, e.g. lifetime/mortality-style
-  true_hazard_ratio = 1.5,   # true effect of `group` -- must not be 1, or there's nothing to bias
-  max_entry_age = 70         # people enter at a random age between 0 and this
-)
-
-cohort <- generate_custom_register(
-  id = "cohort",
-  one_row_per = "time_to_event",   # fixed shape: entry_age, exit_age, event, group
-  population = pop,
-  schema = schema,
-  from = as.Date("2010-01-01"),    # this scenario's clock is age, not calendar time --
-  to = as.Date("2015-01-01"),      # from/to don't affect it, just needed by generate_custom_register()
-  seed = 1,
-  scenario = sc
-)
-
-# The mistake: age at entry discarded, "time since entry" used instead
-fit <- survival::coxph(survival::Surv(exit_age - entry_age, event) ~ group, data = cohort)
-exp(coef(fit)[["group"]])  # biased toward 1, even though true_hazard_ratio = 1.5
-
-get_truth(cohort)$expected_naive     # the biased answer the mistake above produces
-get_truth(cohort)$expected_adjusted  # 1.5 -- the true answer, recovered by correctly
-                                      # declaring entry_age as the left-truncation point:
-                                      # survival::coxph(survival::Surv(entry_age, exit_age, event) ~ group, data = cohort)
-```
-
-## Making data messier (to test your pipeline's robustness)
-
-Real data has missing values and the occasional wild outlier. To rehearse
-how your code handles that, ask for `fidelity = "messy"` on any generate
-call:
-
-```r
-bef_messy <- generate_register(
-  "bef", pop, schema,
-  from = as.Date("2008-01-01"), to = as.Date("2009-12-31"),
-  seed = 1,
-  fidelity = "messy"   # sprinkles in some NAs and extreme values
-)
-```
-
-Default is `fidelity = "clean"` (no artificial noise) — use that whenever
-you're checking `get_truth()` against a scenario, so cosmetic messiness
-doesn't get mixed up with the relationship you actually planted.
-
 ## Where the data model comes from
 
 fiktive doesn't invent what a Danish register looks like — it reads the
@@ -562,6 +220,20 @@ apart safely — for example, Danish municipality codes were reorganized in
 municipalities. This isn't something to work around in your own code — it's
 a gap in the schema itself, worth reporting upstream.
 
+## Learn more
+
+The quickstart above gets you generating and joining real registers. For
+everything else — an opt-in `realistic = TRUE` mode, looking up what a
+column or code means (`codebook()`), building your own custom register
+(including from a CSV of columns), and the whole scenario/truth system for
+testing whether your analysis code recovers a known answer (associations,
+confounding, missingness, misclassification, immortal time bias, left
+truncation bias) — see the vignette:
+
+```r
+vignette("fiktive", package = "fiktive")
+```
+
 ## Licenses
 
 - Package code: MIT
@@ -574,8 +246,8 @@ Danish register.
 
 Pass any `id` below to `registers=` in `generate_register()` /
 `generate_registers()` — no `generate_custom_register()` step needed. That
-function is only for columns the guide doesn't define (see [Making up your
-own columns](#making-up-your-own-columns) above).
+function is only for columns the guide doesn't define (see
+`vignette("fiktive")`).
 
 This reflects the live schema at the time of writing (27 registers). Since
 fiktive loads the schema live rather than vendoring it, the guide can add or

@@ -23,6 +23,9 @@ Suggests:
     fabricatr,
     simsurv,
     readxl,
-    withr
+    withr,
+    knitr,
+    rmarkdown
 Config/testthat/edition: 3
 RoxygenNote: 7.3.3
+VignetteBuilder: knitr
