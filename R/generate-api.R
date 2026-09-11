@@ -47,6 +47,14 @@
 #'   clean; messy is for pipeline stress and must not be read as moving
 #'   estimands.
 #' @param na_rate,outlier_rate Optional fidelity rate overrides in `[0, 1]`.
+#' @param realistic Default `FALSE`: structural noise only, uniform across
+#'   valid codes (e.g. `kom` drawn evenly across municipalities). `TRUE`
+#'   opts into a small set of real-world-shaped defaults: `kom` weighted by
+#'   real municipality population, and diagnosis codes (`icd10`/`icd10_sks`)
+#'   never assigned a chapter that's impossible for the patient's sex or age
+#'   (e.g. a pregnancy code to a man). Does not change what any scenario/
+#'   truth claims — see `?scenario_association` if you want a planted,
+#'   documented relationship instead of realistic-looking background shape.
 #'
 #' @return A tibble whose columns are a subset of the schema column names
 #'   for `register`. Zero rows is a valid event or child table.
@@ -54,7 +62,8 @@
 generate_register <- function(register, population, schema, from, to,
                               seed = NULL, scenario = NULL,
                               fidelity = c("clean", "messy"),
-                              na_rate = NULL, outlier_rate = NULL) {
+                              na_rate = NULL, outlier_rate = NULL,
+                              realistic = FALSE) {
   if (is.null(schema) || is.null(schema$registers)) {
     stop("`schema` from load_registers_schema() is required.", call. = FALSE)
   }
@@ -72,7 +81,9 @@ generate_register <- function(register, population, schema, from, to,
       "a register id that exists in registers/*.yaml"
     )
   }
-  tbl <- dispatch_generate_register(register, spec, population, schema, from, to, seed)
+  tbl <- with_realistic(realistic, {
+    dispatch_generate_register(register, spec, population, schema, from, to, seed)
+  })
   tbl <- with_rng_seed(seed, {
     # Scenario DGP first (associations / confounding / biases), then fidelity.
     tbl <- apply_scenario(tbl, sc, register_hint = register)
@@ -101,13 +112,17 @@ generate_register <- function(register, population, schema, from, to,
 #' @param scenario `NULL` (independence) or a `fiktive_scenario`.
 #' @param fidelity `"clean"` (default) or `"messy"`.
 #' @param na_rate,outlier_rate Optional fidelity rate overrides in `[0, 1]`.
+#' @param realistic Default `FALSE`. See [generate_register()] for what
+#'   `TRUE` opts into (real municipality weighting, sex/age-coherent
+#'   diagnosis codes).
 #'
 #' @return A named list of tibbles, one per requested id (lowercase names).
 #' @export
 generate_registers <- function(registers, population, schema, from, to,
                                seed = NULL, scenario = NULL,
                                fidelity = c("clean", "messy"),
-                               na_rate = NULL, outlier_rate = NULL) {
+                               na_rate = NULL, outlier_rate = NULL,
+                               realistic = FALSE) {
   if (missing(registers)) {
     stop(
       "`registers` is required. Pass an explicit character vector of schema ids; ",
@@ -137,19 +152,21 @@ generate_registers <- function(registers, population, schema, from, to,
   names(out) <- ids
   # Structural draw only (no scenario / fidelity yet) so cross-register
   # associations can join before cosmetic missingness.
-  for (i in seq_along(ids)) {
-    rid <- ids[[i]]
-    spec <- schema$registers[[rid]]
-    if (is.null(spec)) {
-      schema_gap(
-        sprintf("register id '%s' is not in the schema.", rid),
-        "a register id that exists in registers/*.yaml"
-      )
+  with_realistic(realistic, {
+    for (i in seq_along(ids)) {
+      rid <- ids[[i]]
+      spec <- schema$registers[[rid]]
+      if (is.null(spec)) {
+        schema_gap(
+          sprintf("register id '%s' is not in the schema.", rid),
+          "a register id that exists in registers/*.yaml"
+        )
+      }
+      tbl <- dispatch_generate_register(rid, spec, population, schema, from, to, seed)
+      tbl <- stamp_generation(tbl, schema = schema, seed = seed)
+      out[[i]] <- tbl
     }
-    tbl <- dispatch_generate_register(rid, spec, population, schema, from, to, seed)
-    tbl <- stamp_generation(tbl, schema = schema, seed = seed)
-    out[[i]] <- tbl
-  }
+  })
   out <- with_rng_seed(seed, {
     out <- apply_scenario(out, sc, register_hint = NULL)
     for (i in seq_along(ids)) {

@@ -112,6 +112,28 @@ test_that("year is derived from referencetid and civst is not D", {
   expect_false(all(is.na(bef$foerste_indvandring)))
 })
 
+test_that("kom is drawn uniformly by default (realistic = FALSE)", {
+  schema <- fixture_schema()
+  pop <- tiny_pop(schema, n = 2000L, seed = 9)
+  bef <- generate_register("bef", pop, schema, from, to, seed = 9)
+  share <- prop.table(table(bef$kom))
+  # All 5 fixture municipalities should land near an even 20% share.
+  expect_true(all(share > 0.15 & share < 0.25))
+})
+
+test_that("kom is drawn by real municipality population under realistic = TRUE", {
+  schema <- fixture_schema()
+  pop <- tiny_pop(schema, n = 2000L, seed = 9)
+  bef <- generate_register("bef", pop, schema, from, to, seed = 9, realistic = TRUE)
+  share <- prop.table(table(bef$kom))
+  # Copenhagen (101) is ~53% of the fixture's 5-municipality population by
+  # DST's real 2026Q3 figures; uniform sampling would give it ~20%.
+  expect_gt(unname(share[["101"]]), 0.4)
+  # Ballerup (151) is the smallest of the five; should trail well behind an
+  # even 20% share.
+  expect_lt(unname(share[["151"]]), 0.15)
+})
+
 test_that("get_truth independence stub has expected association 0", {
   tr <- get_truth()
   expect_s3_class(tr, "fiktive_truth")

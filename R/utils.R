@@ -10,6 +10,26 @@ first_or_null <- function(x) {
   if (length(x)) x[[1]] else NULL
 }
 
+# Cross-cutting `realistic=` flag (kom population weighting, sex/age
+# diagnosis-chapter coherence). Default FALSE: uniform structural noise,
+# unchanged from before these features existed. A package-level flag rather
+# than a parameter threaded through every draw function, same idiom as
+# with_rng_seed() above -- generate_register()/generate_registers()/
+# generate_custom_register() are the only callers.
+.fiktive_realistic_state <- new.env(parent = emptyenv())
+.fiktive_realistic_state$enabled <- FALSE
+
+is_realistic <- function() {
+  isTRUE(.fiktive_realistic_state$enabled)
+}
+
+with_realistic <- function(realistic, expr) {
+  old <- .fiktive_realistic_state$enabled
+  on.exit(.fiktive_realistic_state$enabled <- old, add = TRUE)
+  .fiktive_realistic_state$enabled <- isTRUE(realistic)
+  force(expr)
+}
+
 with_rng_seed <- function(seed, expr) {
   if (is.null(seed)) {
     return(force(expr))

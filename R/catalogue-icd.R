@@ -32,7 +32,7 @@ load_icd10koodit_codes <- function() {
   unique(icd10_who_form(d[[col]]))
 }
 
-sample_icd10_who_codes <- function(n) {
+sample_icd10_who_codes <- function(n, koen = NULL, age_years = NULL) {
   n <- as.integer(n)[[1]]
   codes <- load_icd10koodit_codes()
   if (!length(codes)) {
@@ -43,7 +43,79 @@ sample_icd10_who_codes <- function(n) {
   }
   .fiktive_icd_stamp$catalogue <- "codeCollection::ICD10Koodit"
   .fiktive_icd_stamp$version <- as.character(utils::packageVersion("codeCollection"))
-  sample(codes, n, replace = TRUE)
+  sample_icd10_coherent(codes, n, koen = koen, age_years = age_years)
+}
+
+# Definitionally-impossible ICD-10 chapters, not statistical realism: a man
+# cannot carry a pregnancy/childbirth code, a woman cannot carry a male
+# genital organ diagnosis, and a code from the perinatal chapter (conditions
+# only ever diagnosed in the newborn period) cannot belong to someone who
+# is already a year old. Deliberately narrow -- this is not an attempt at
+# realistic age/sex-specific disease prevalence (see PLAN: structural noise,
+# not calibrated realism), only at ruling out combinations WHO's own
+# chapter definitions make impossible, the same kind of fix as excluding
+# civst = "D" for a living resident.
+icd10_chapter_num <- function(codes) {
+  suppressWarnings(as.integer(substr(codes, 2, 3)))
+}
+
+icd10_female_only <- function(codes) {
+  chapter <- substr(codes, 1, 1)
+  num <- icd10_chapter_num(codes)
+  (chapter == "O") | (chapter == "N" & !is.na(num) & num >= 70L & num <= 98L)
+}
+
+icd10_male_only <- function(codes) {
+  chapter <- substr(codes, 1, 1)
+  num <- icd10_chapter_num(codes)
+  chapter == "N" & !is.na(num) & num >= 40L & num <= 53L
+}
+
+icd10_perinatal_only <- function(codes) {
+  substr(codes, 1, 1) == "P"
+}
+
+# Draw from `codes` (plain WHO form), dropping per-row chapters that are
+# impossible for that row's sex (1 = male, 2 = female; any other value, incl.
+# NA/9 "unknown", is left unfiltered) and, when age is known, the perinatal
+# chapter for anyone a year old or older. Falls back to the full pool if a
+# row's filtered pool would be empty (should not happen with a real WHO
+# catalogue, but never draw from nothing).
+sample_icd10_coherent <- function(codes, n, koen = NULL, age_years = NULL) {
+  if ((is.null(koen) || !length(koen)) && (is.null(age_years) || !length(age_years))) {
+    return(sample(codes, n, replace = TRUE))
+  }
+  koen <- if (is.null(koen) || !length(koen)) rep(NA_integer_, n) else as.integer(koen)
+  age_years <- if (is.null(age_years) || !length(age_years)) rep(NA_real_, n) else as.numeric(age_years)
+  female_only <- icd10_female_only(codes)
+  male_only <- icd10_male_only(codes)
+  perinatal_only <- icd10_perinatal_only(codes)
+  not_newborn <- !is.na(age_years) & age_years >= 1
+  # Group rows into a handful of (sex, newborn) buckets so each distinct
+  # filtered pool is only computed and sampled from once, not per row.
+  group <- paste(koen, not_newborn, sep = "|")
+  out <- character(n)
+  for (g in unique(group)) {
+    idx <- which(group == g)
+    parts <- strsplit(g, "|", fixed = TRUE)[[1]]
+    g_koen <- suppressWarnings(as.integer(parts[[1]]))
+    g_not_newborn <- identical(parts[[2]], "TRUE")
+    excl <- logical(length(codes))
+    if (identical(g_koen, 1L)) {
+      excl <- excl | female_only
+    } else if (identical(g_koen, 2L)) {
+      excl <- excl | male_only
+    }
+    if (g_not_newborn) {
+      excl <- excl | perinatal_only
+    }
+    pool <- codes[!excl]
+    if (!length(pool)) {
+      pool <- codes
+    }
+    out[idx] <- sample(pool, length(idx), replace = TRUE)
+  }
+  out
 }
 
 stamp_icd10_who_catalogue <- function(tbl) {

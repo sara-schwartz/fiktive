@@ -1,6 +1,7 @@
 # Column draw / code-system resolve (loaded with generate-columns.R).
 
-draw_independent_column <- function(col, n, schema, register_id = NULL, when = NULL) {
+draw_independent_column <- function(col, n, schema, register_id = NULL, when = NULL,
+                                     koen = NULL, age_years = NULL) {
   type <- col$type %||% "character"
   role <- col$role
   name <- as.character(col$name %||% col$id)
@@ -37,7 +38,7 @@ draw_independent_column <- function(col, n, schema, register_id = NULL, when = N
   if (length(unique_ids) == 1L) {
     return(draw_from_code_system(
       unique_ids[[1]], col, n, schema, register_id = register_id, type = type, role = role, name = name,
-      when = when
+      when = when, koen = koen, age_years = age_years
     ))
   }
   out <- vector(mode = mode_for_type(type), length = n)
@@ -45,7 +46,9 @@ draw_independent_column <- function(col, n, schema, register_id = NULL, when = N
     idx <- which(cs_ids == cid)
     out[idx] <- draw_from_code_system(
       cid, col, length(idx), schema, register_id = register_id, type = type, role = role, name = name,
-      when = when[idx]
+      when = when[idx],
+      koen = if (is.null(koen)) NULL else koen[idx],
+      age_years = if (is.null(age_years)) NULL else age_years[idx]
     )
   }
   coerce_schema_type(out, type)
@@ -77,6 +80,55 @@ resolve_code_system_ids <- function(col, n, when) {
 }
 
 
+# Real population by municipality (kom code), DST Statbank table FOLK1A --
+# same table kom.yaml's own provenance already cites for the current 99-area
+# list -- variable OMRÅDE, KØN=total, ALDER=total, CIVILSTAND=total,
+# 2026Q3 (fetched 2026-09-10). Used to make default `kom` sampling reflect
+# real municipality sizes instead of drawing Læsø (825, pop. 1,655) as often
+# as Copenhagen (101, pop. 670,389). A snapshot, not a live figure -- do not
+# expect it to track future population change.
+.KOM_POPULATION_WEIGHTS <- c(
+  "101" = 670389L, "147" = 105947L, "151" = 53962L, "153" = 40985L, "155" = 14482L,
+  "157" = 75241L, "159" = 70869L, "161" = 25987L, "163" = 32107L, "165" = 29575L,
+  "167" = 54234L, "169" = 60843L, "173" = 58671L, "175" = 45317L, "183" = 24968L,
+  "185" = 44252L, "187" = 18768L, "190" = 43030L, "201" = 26434L, "210" = 42543L,
+  "217" = 64460L, "219" = 55472L, "223" = 25326L, "230" = 58381L, "240" = 46514L,
+  "250" = 47930L, "253" = 54262L, "259" = 64268L, "260" = 31827L, "265" = 93142L,
+  "269" = 25081L, "270" = 42080L, "306" = 31947L, "316" = 75299L, "320" = 38169L,
+  "326" = 47822L, "329" = 36098L, "330" = 80856L, "336" = 23990L, "340" = 31027L,
+  "350" = 30108L, "360" = 38306L, "370" = 85276L, "376" = 58984L, "390" = 44823L,
+  "400" = 38651L, "410" = 40773L, "411" = 91L, "420" = 40224L, "430" = 52268L,
+  "440" = 24340L, "450" = 32477L, "461" = 213140L, "479" = 60075L, "480" = 29124L,
+  "482" = 11804L, "492" = 5730L, "510" = 55119L, "530" = 27276L, "540" = 73874L,
+  "550" = 36172L, "561" = 114824L, "563" = 3322L, "573" = 49454L, "575" = 42671L,
+  "580" = 58249L, "607" = 53115L, "615" = 98999L, "621" = 96140L, "630" = 123947L,
+  "657" = 90910L, "661" = 59331L, "665" = 18505L, "671" = 20100L, "706" = 44559L,
+  "707" = 36355L, "710" = 50028L, "727" = 24448L, "730" = 100921L, "740" = 103293L,
+  "741" = 3633L, "746" = 66617L, "751" = 378270L, "756" = 43484L, "760" = 55205L,
+  "766" = 48813L, "773" = 19321L, "779" = 43913L, "787" = 42573L, "791" = 98104L,
+  "810" = 36639L, "813" = 57428L, "820" = 35546L, "825" = 1655L, "840" = 31369L,
+  "846" = 41565L, "849" = 37890L, "851" = 226404L, "860" = 62909L
+)
+
+# Draw from a resolved set of lookup keys. civst never emits "D" (dead) for
+# a living resident -- always on, a structural-validity fix, not "realism".
+# kom weighted by real municipality population instead of drawn uniformly --
+# gated behind realistic=TRUE (see with_realistic()); default is the
+# original uniform draw. Falls back to uniform if a key is missing from the
+# weight table (e.g. a future schema addition), rather than erroring.
+sample_cs_keys <- function(keys, n, cs_id) {
+  if (identical(cs_id, "civst")) {
+    keys <- setdiff(keys, "D")
+  }
+  if (identical(cs_id, "kom") && is_realistic()) {
+    w <- .KOM_POPULATION_WEIGHTS[keys]
+    if (!anyNA(w)) {
+      return(sample(keys, n, replace = TRUE, prob = as.numeric(w)))
+    }
+  }
+  sample(keys, n, replace = TRUE)
+}
+
 # Sample from static or periodised lookup. Returns NULL when no keys available
 # (caller falls through to catalogue / typed_noise). Never merges distinct
 # code-system ids (c_dodsmaade vs c_dodsmaade_2002 stay separate files).
@@ -92,10 +144,7 @@ sample_lookup_keys <- function(cs, cs_id, n, when = NULL) {
     if (is.null(keys) || !length(keys)) {
       return(NULL)
     }
-    if (identical(cs_id, "civst")) {
-      keys <- setdiff(keys, "D")
-    }
-    return(sample(keys, n, replace = TRUE))
+    return(sample_cs_keys(keys, n, cs_id))
   }
   when <- as.Date(when)
   if (length(when) == 1L && n > 1L) {
@@ -106,10 +155,7 @@ sample_lookup_keys <- function(cs, cs_id, n, when = NULL) {
     if (is.null(keys) || !length(keys)) {
       return(NULL)
     }
-    if (identical(cs_id, "civst")) {
-      keys <- setdiff(keys, "D")
-    }
-    return(sample(keys, n, replace = TRUE))
+    return(sample_cs_keys(keys, n, cs_id))
   }
   out <- character(n)
   for (d in unique(when)) {
@@ -120,15 +166,13 @@ sample_lookup_keys <- function(cs, cs_id, n, when = NULL) {
     if (is.null(keys) || !length(keys)) {
       return(NULL)
     }
-    if (identical(cs_id, "civst")) {
-      keys <- setdiff(keys, "D")
-    }
-    out[idx] <- sample(keys, length(idx), replace = TRUE)
+    out[idx] <- sample_cs_keys(keys, length(idx), cs_id)
   }
   out
 }
 
-draw_from_code_system <- function(cs_id, col, n, schema, register_id, type, role, name, when = NULL) {
+draw_from_code_system <- function(cs_id, col, n, schema, register_id, type, role, name, when = NULL,
+                                   koen = NULL, age_years = NULL) {
   cs_id <- as.character(cs_id %||% "")
   if (!nzchar(cs_id)) {
     return(typed_noise(type, n, role = role, name = name))
@@ -152,10 +196,10 @@ draw_from_code_system <- function(cs_id, col, n, schema, register_id, type, role
   }
 
   if (identical(cs_id, "icd10")) {
-    return(coerce_schema_type(sample_icd10_who_codes(n), type))
+    return(coerce_schema_type(sample_icd10_who_codes(n, koen = koen, age_years = age_years), type))
   }
   if (identical(cs_id, "icd10_sks")) {
-    return(draw_sks_dia_codes(name, n, type, register_id))
+    return(draw_sks_dia_codes(name, n, type, register_id, koen = koen, age_years = age_years))
   }
   if (identical(cs_id, "icd8")) {
     schema_gap(

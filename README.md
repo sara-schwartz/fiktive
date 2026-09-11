@@ -13,6 +13,7 @@ Nothing in it comes from an actual person.
 - [Why would I use this?](#why-would-i-use-this)
 - [Install](#install)
 - [The 5-minute quickstart](#the-5-minute-quickstart)
+- [Structural noise vs. realistic-looking data](#structural-noise-vs-realistic-looking-data)
 - [What registers can I generate?](#what-registers-can-i-generate)
 - [Saving your data to files](#saving-your-data-to-files)
 - [Joining tables together](#joining-tables-together)
@@ -87,6 +88,69 @@ them, join them, just like any other data frame.
 
 `seed = 1` makes it reproducible: run this exact code again and you get
 back the exact same fake data.
+
+`generate_background_population()` only strictly needs `n` and `schema`
+(`seed` isn't required either, but skip it and you can't reproduce the same
+fake people later). Everything else is optional, for narrowing who's in the
+population:
+
+```r
+# Optional: control the age range instead of accepting the default
+# (roughly ages 19-86 as of today). Pick ONE of these two styles:
+pop <- generate_background_population(
+  n = 100,
+  seed = 1,
+  schema = schema,
+  age_min = 65,    # whole years, inclusive
+  age_max = 80,
+  reference_date = as.Date("2020-01-01")   # age is measured as of this date; defaults to today
+)
+
+# or, if you'd rather pick actual birth dates:
+pop <- generate_background_population(
+  n = 100,
+  seed = 1,
+  schema = schema,
+  birth_from = as.Date("1950-01-01"),
+  birth_to = as.Date("1960-12-31")
+)
+```
+
+`age_min`/`age_max` and `birth_from`/`birth_to` describe the same thing two
+ways — use whichever is easier to reason about for your case, but not both
+at once.
+
+## Structural noise vs. realistic-looking data
+
+By default, fiktive generates **structural noise that joins** — every code
+is valid, but drawn uniformly, with no attempt to look like real Denmark.
+A municipality column is exactly as likely to say Læsø (pop. 1,655) as
+Copenhagen (pop. 670,389).
+
+Pass `realistic = TRUE` to `generate_register()` / `generate_registers()`
+to opt into a small set of real-world-shaped defaults instead:
+
+```r
+tables <- generate_registers(
+  registers = c("bef", "lpr_adm", "lpr_diag"),
+  population = pop, schema = schema,
+  from = as.Date("2008-01-01"), to = as.Date("2009-12-31"),
+  seed = 1,
+  realistic = TRUE   # opt-in: off by default
+)
+```
+
+Right now that means: `kom` (municipality) weighted by real 2026
+population instead of drawn evenly, and diagnosis codes
+(`icd10`/`icd10_sks`) that never assign a chapter impossible for the
+patient's sex or age (no pregnancy code on a man, no perinatal code on
+someone past infancy).
+
+This is about **plausibility, not planted signal** — it never changes what
+any `scenario` claims or what `get_truth()` reports. If you want a
+specific, known, testable relationship instead of realistic-looking
+background shape, that's what [scenario_association() and friends](#checking-whether-your-analysis-code-is-actually-correct)
+are for.
 
 ## What registers can I generate?
 
@@ -181,6 +245,12 @@ A couple of things worth knowing:
 - `lpr`/`tables` came from two separate `generate_registers()` calls with
   different windows, but they share the same `pop`, so `tables$bef` and
   `lpr$lpr_adm` still join on `pnr` if you need both together.
+- Not every contact gets a diagnosis row, and some get several — real
+  hospital contacts work the same way (a coded diagnosis isn't
+  guaranteed, and one visit can carry multiple). Decide deliberately
+  between `inner_join()` (only contacts with a coded diagnosis) and
+  `left_join()` (every contact, `NA` diagnosis fields where there isn't
+  one) depending on what your analysis needs to handle.
 
 ## Describing your own register (e.g. a study cohort)
 
@@ -491,8 +561,8 @@ change registers between releases — run
 | id | Register | Grain | Notes |
 |---|---|---|---|
 | `akm` | Arbejdsklassifikationsmodulet (labour classification) | person_reference_date | Socioeconomic status per person per year (employed, unemployed, pensioner, …) |
-| `bef` | Befolkningen (population register) | person_reference_date | Quarterly population snapshot: demographics, municipality, marital status |
-| `cancer` | Cancerregisteret | event_from_person | One row per incident cancer diagnosis |
+| `bef` | Befolkningen (population register) | person_reference_date | Quarterly population snapshot: demographics, municipality, marital status. `kom` (municipality) is uniform by default; pass `realistic = TRUE` to weight it by real 2026 municipality population instead (Copenhagen far more often than Læsø) |
+| `cancer` | Cancerregisteret | event_from_person | One row per incident cancer diagnosis. Under `realistic = TRUE`, never assigns a diagnosis chapter impossible for the patient's sex/age (same rule as `lpr_diag`) |
 | `dod` | Døde i Danmark (deaths) | event_from_person | One row per death; date of death |
 | `dodsaars` | Dødsårssagsregistret | event_from_person | Cause of death 1970–2001. Closed |
 | `dodsaasg` | Dødsårsagsregister | event_from_person | Cause of death 2002–2022. Closed |
@@ -501,14 +571,14 @@ change registers between releases — run
 | `lab_dm_forsker` | Laboratoriedatabasens Forskertabel | event_from_person | Lab test results per request |
 | `lmdb` | Lægemiddeldatabasen (prescription register) | event_from_person | One row per dispensed prescription |
 | `lpr_adm` | Landspatientregistret (LPR2) — admin/contact | event_from_person | Parent for `lpr_diag` / `lpr_sksopr` / `lpr_sksube` |
-| `lpr_diag` | LPR2 — diagnoser | expand_from_parent | Child of `lpr_adm` (join on `recnum`) |
+| `lpr_diag` | LPR2 — diagnoser | expand_from_parent | Child of `lpr_adm` (join on `recnum`). Under `realistic = TRUE`, diagnosis codes never assign a chapter that's impossible for the patient's sex or age (e.g. a pregnancy code to a man, a perinatal code to someone past infancy) |
 | `lpr_sksopr` | LPR2 — operationer | expand_from_parent | Child of `lpr_adm` (join on `recnum`) |
 | `lpr_sksube` | LPR2 — undersøgelser og behandlinger | expand_from_parent | Child of `lpr_adm` (join on `recnum`) |
 | `lpr_a_kontakt` | LPR3 — kontaktoplysninger | event_from_person | Parent for `lpr_a_diagnose` / `lpr_a_procregistrering` |
-| `lpr_a_diagnose` | LPR3 — diagnoseoplysning | expand_from_parent | Child of `lpr_a_kontakt` (join on `dw_ek_kontakt`) |
+| `lpr_a_diagnose` | LPR3 — diagnoseoplysning | expand_from_parent | Child of `lpr_a_kontakt` (join on `dw_ek_kontakt`). Under `realistic = TRUE`, never assigns a diagnosis chapter impossible for the patient's sex/age (same rule as `lpr_diag`) |
 | `lpr_a_procregistrering` | LPR3 — procedureregistreringer | expand_from_parent | Child of `lpr_a_kontakt` (join on `dw_ek_kontakt`) |
 | `t_psyk_adm` | LPR psykiatri — administrative oplysninger | event_from_person | Parent for `t_psyk_diag`; separate from `lpr_adm` |
-| `t_psyk_diag` | LPR psykiatri — diagnoser | expand_from_parent | Child of `t_psyk_adm` |
+| `t_psyk_diag` | LPR psykiatri — diagnoser | expand_from_parent | Child of `t_psyk_adm`. Under `realistic = TRUE`, never assigns a diagnosis chapter impossible for the patient's sex/age (same rule as `lpr_diag`) |
 | `mfr` | MFR — levendefødte | event_from_person | One row per live birth (mother + child) |
 | `sysi` | Sygesikring (6-cifret) | event_from_person | Primary-care fee settlements |
 | `sssy` | Sygesikring (6-cifret) | event_from_person | Continuation of `sysi`; same shape |

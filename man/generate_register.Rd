@@ -14,7 +14,8 @@ generate_register(
   scenario = NULL,
   fidelity = c("clean", "messy"),
   na_rate = NULL,
-  outlier_rate = NULL
+  outlier_rate = NULL,
+  realistic = FALSE
 )
 }
 \arguments{
@@ -38,6 +39,15 @@ clean; messy is for pipeline stress and must not be read as moving
 estimands.}
 
 \item{na_rate, outlier_rate}{Optional fidelity rate overrides in \verb{[0, 1]}.}
+
+\item{realistic}{Default \code{FALSE}: structural noise only, uniform across
+valid codes (e.g. \code{kom} drawn evenly across municipalities). \code{TRUE}
+opts into a small set of real-world-shaped defaults: \code{kom} weighted by
+real municipality population, and diagnosis codes (\code{icd10}/\code{icd10_sks})
+never assigned a chapter that's impossible for the patient's sex or age
+(e.g. a pregnancy code to a man). Does not change what any scenario/
+truth claims — see \code{?scenario_association} if you want a planted,
+documented relationship instead of realistic-looking background shape.}
 }
 \value{
 A tibble whose columns are a subset of the schema column names

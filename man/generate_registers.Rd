@@ -14,7 +14,8 @@ generate_registers(
   scenario = NULL,
   fidelity = c("clean", "messy"),
   na_rate = NULL,
-  outlier_rate = NULL
+  outlier_rate = NULL,
+  realistic = FALSE
 )
 }
 \arguments{
@@ -35,6 +36,10 @@ generate_registers(
 \item{fidelity}{\code{"clean"} (default) or \code{"messy"}.}
 
 \item{na_rate, outlier_rate}{Optional fidelity rate overrides in \verb{[0, 1]}.}
+
+\item{realistic}{Default \code{FALSE}. See \code{\link[=generate_register]{generate_register()}} for what
+\code{TRUE} opts into (real municipality weighting, sex/age-coherent
+diagnosis codes).}
 }
 \value{
 A named list of tibbles, one per requested id (lowercase names).

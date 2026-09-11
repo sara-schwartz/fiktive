@@ -76,6 +76,17 @@ generate_expand_from_parent <- function(population, schema, spec, from, to, seed
     parent_tbl <- generate_parent_contacts(
       population, schema, parent_spec, from, to, seed = NULL
     )
+    # koen/foed_dag are not schema columns of the parent contact register
+    # (emit_schema_table already dropped them), so re-attach them from
+    # population by pnr -- a lookup, not a fresh random draw, so it doesn't
+    # touch the RNG stream. Used only so fill_schema_column can rule out
+    # sex/age-incoherent diagnosis chapters when expanding to children.
+    if ("pnr" %in% names(parent_tbl) && nrow(parent_tbl)) {
+      pop <- validate_population(population)
+      m <- match(parent_tbl$pnr, pop$pnr)
+      parent_tbl$koen <- pop$koen[m]
+      parent_tbl$foed_dag <- pop$foed_dag[m]
+    }
     expand_child_rows(parent_tbl, spec, schema)
   })
 }
@@ -147,6 +158,15 @@ expand_child_rows <- function(parent_tbl, spec, schema) {
     event_date = event_date,
     referencetid = event_date
   )
+  # Not schema columns of the child register (emit_schema_table only ever
+  # writes out spec$columns) -- carried through only so fill_schema_column
+  # can rule out sex/age-incoherent diagnosis chapters for icd10_sks.
+  if ("koen" %in% names(parent_tbl)) {
+    rows$koen <- parent_tbl$koen[idx]
+  }
+  if ("foed_dag" %in% names(parent_tbl)) {
+    rows$foed_dag <- parent_tbl$foed_dag[idx]
+  }
   if ("kont_starttidspunkt" %in% names(parent_tbl)) {
     rows$event_datetime <- as.POSIXct(parent_tbl$kont_starttidspunkt[idx], tz = "UTC")
   }

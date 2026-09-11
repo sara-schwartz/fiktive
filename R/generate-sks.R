@@ -42,13 +42,16 @@ load_sks_labels <- function() {
   .sks_state$labels
 }
 
-draw_sks_dia_codes <- function(name, n, type, register_id) {
+draw_sks_dia_codes <- function(name, n, type, register_id, koen = NULL, age_years = NULL) {
   register_id <- as.character(register_id %||% "")
   # Contact-level action-diagnosis fields stay NA; child diagnosis tables sample.
   if (!register_id %in% c("lpr_diag", "lpr_a_diagnose", "t_psyk_diag")) {
     return(na_of_type(type %||% "character", n))
   }
-  coerce_schema_type(sample_sks_codes(n, "dia", cs = NULL), type %||% "character")
+  coerce_schema_type(
+    sample_sks_codes(n, "dia", cs = NULL, koen = koen, age_years = age_years),
+    type %||% "character"
+  )
 }
 
 sks_kind_for <- function(cs_id, register_id, name) {
@@ -107,7 +110,7 @@ filter_published_sks <- function(labels, kind, cs) {
   unique(kode)
 }
 
-sample_sks_codes <- function(n, kind, cs) {
+sample_sks_codes <- function(n, kind, cs, koen = NULL, age_years = NULL) {
   labels <- load_sks_labels()
   codes <- filter_published_sks(labels, kind, cs)
   if (!length(codes)) {
@@ -115,6 +118,12 @@ sample_sks_codes <- function(n, kind, cs) {
       sprintf("published SKS codes in sksr::SKS_labels for kind '%s'", kind),
       "SKS_labels rows already classified for this grain"
     )
+  }
+  # Diagnosis codes only (dia): same sex/newborn-chapter check as plain WHO
+  # icd10, applied on the D-stripped code (sksr dia codes are D + WHO form,
+  # e.g. "DE119"). Procedure/admin kinds carry no such chapter semantics.
+  if (identical(kind, "dia") && grepl("^D[A-Z]", codes[[1]])) {
+    return(paste0("D", sample_icd10_coherent(sub("^D", "", codes), n, koen = koen, age_years = age_years)))
   }
   sample(codes, n, replace = TRUE)
 }

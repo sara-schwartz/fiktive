@@ -146,10 +146,21 @@ fill_schema_column <- function(col, rows, schema, register_id = NULL, spec = NUL
   when <- if ("event_date" %in% names(rows)) rows$event_date else rows$referencetid
   values <- derived_column(id, rows, schema = schema)
   if (is.null(values)) {
+    # Sex/age diagnosis-chapter coherence is part of realistic=TRUE, not the
+    # uniform-noise default -- see with_realistic(). Skip the lookup/join
+    # work entirely when off.
+    koen <- if (is_realistic() && "koen" %in% names(rows)) rows$koen else NULL
+    age_years <- if (is_realistic() && "foed_dag" %in% names(rows) && n > 0L) {
+      as.numeric(difftime(when, rows$foed_dag, units = "days")) / 365.25
+    } else {
+      NULL
+    }
     values <- draw_independent_column(
       col, n, schema,
       register_id = register_id,
-      when = when
+      when = when,
+      koen = koen,
+      age_years = age_years
     )
   }
   values <- coerce_schema_type(values, type)

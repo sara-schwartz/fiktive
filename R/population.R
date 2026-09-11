@@ -8,18 +8,49 @@
 #' @param n Number of people.
 #' @param seed Optional RNG seed. Restored on exit.
 #' @param schema Schema from [load_registers_schema()]. Required: `koen` is sampled from `code-systems/koen.yaml`. `NULL` is a SCHEMA GAP.
+#' @param birth_from,birth_to Date bounds on birth date (inclusive). Default
+#'   1940-01-01 to 2007-12-31. Cannot be combined with `age_min`/`age_max`.
+#' @param age_min,age_max Age in whole years (inclusive) at `reference_date`,
+#'   as a friendlier alternative to `birth_from`/`birth_to` (e.g.
+#'   `age_min = 65` for a retirement-age cohort). Default `0`/`100` when only
+#'   one of the pair is given. Cannot be combined with `birth_from`/`birth_to`.
+#' @param reference_date Date the `age_min`/`age_max` window is measured
+#'   from. Default `Sys.Date()`. Ignored unless `age_min`/`age_max` is used.
 #' @param ... Unused; reserved.
 #'
 #' @return A tibble with `pnr`, `foed_dag`, and `koen`.
 #' @export
-generate_background_population <- function(n, seed = NULL, schema = NULL, ...) {
+generate_background_population <- function(n, seed = NULL, schema = NULL,
+                                            birth_from = NULL, birth_to = NULL,
+                                            age_min = NULL, age_max = NULL,
+                                            reference_date = NULL, ...) {
   n <- as.integer(n)
   if (length(n) != 1L || is.na(n) || n < 1L) {
     stop("`n` must be a positive integer.", call. = FALSE)
   }
-  extra <- list(...)
-  birth_from <- as_date1(extra$birth_from %||% as.Date("1940-01-01"))
-  birth_to <- as_date1(extra$birth_to %||% as.Date("2007-12-31"))
+  age_given <- !is.null(age_min) || !is.null(age_max)
+  birth_given <- !is.null(birth_from) || !is.null(birth_to)
+  if (age_given && birth_given) {
+    stop(
+      "Use either `age_min`/`age_max` or `birth_from`/`birth_to`, not both.",
+      call. = FALSE
+    )
+  }
+  if (age_given) {
+    ref <- as_date1(reference_date %||% Sys.Date())
+    age_min <- as.integer(age_min %||% 0L)
+    age_max <- as.integer(age_max %||% 100L)
+    if (age_min < 0L || age_max < age_min) {
+      stop("`age_max` must be >= `age_min`, both >= 0.", call. = FALSE)
+    }
+    # Oldest allowed (age_max) was born the day after ref - (age_max + 1)
+    # years; youngest allowed (age_min) was born on ref - age_min years.
+    birth_from <- ref - lubridate::years(age_max + 1L) + 1L
+    birth_to <- ref - lubridate::years(age_min)
+  } else {
+    birth_from <- as_date1(birth_from %||% as.Date("1940-01-01"))
+    birth_to <- as_date1(birth_to %||% as.Date("2007-12-31"))
+  }
   if (birth_to < birth_from) {
     stop("`birth_to` must be on or after `birth_from`.", call. = FALSE)
   }
