@@ -5,3 +5,4 @@
 *.Rproj
 inst/doc
 _ignore/
+.DS_Store

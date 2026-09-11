@@ -15,6 +15,7 @@ Nothing in it comes from an actual person.
 - [The 5-minute quickstart](#the-5-minute-quickstart)
 - [Structural noise vs. realistic-looking data](#structural-noise-vs-realistic-looking-data)
 - [What registers can I generate?](#what-registers-can-i-generate)
+  - [What do these columns and codes actually mean?](#what-do-these-columns-and-codes-actually-mean)
 - [Saving your data to files](#saving-your-data-to-files)
 - [Joining tables together](#joining-tables-together)
 - [Hospital data needs two tables](#hospital-data-needs-two-tables)
@@ -79,8 +80,8 @@ tables <- generate_registers(
   seed = 1                        # any number; same seed -> same fake data every time
 )
 
-tables$bef    # a tibble: fake population snapshots
-tables$lmdb   # a tibble: fake dispensed prescriptions
+tables$bef    # not required -- just prints the tibble so you can see what you got: fake population snapshots
+tables$lmdb   # not required -- same, for fake dispensed prescriptions
 ```
 
 `tables$bef` and `tables$lmdb` are ordinary tibbles — inspect them, filter
@@ -174,6 +175,29 @@ A few common ones to get started:
 
 You ask for a register by putting its id in `registers = c(...)` — that's
 the whole interface, no matter which register it is.
+
+### What do these columns and codes actually mean?
+
+Register columns often have short, cryptic names (`civst`, `hfaudd`,
+`fm_mark`), and their coded values are worse (`civst = "U"`, `koen = 1`).
+`codebook()` looks up the real description for each, straight from the
+same schema that generated your data — in Danish and English:
+
+```r
+codebook(schema, "bef")
+```
+
+| name | label_da | label_en | type | code_system | values |
+|---|---|---|---|---|---|
+| koen | Køn | Sex | numeric | koen | 1: Male; 2: Female; 9: Not stated |
+| civst | Civilstand | Marital status | character | civst | U: Never married; G: Married; ... |
+| kom | Kommunekode | Municipality code | character | kom | 101: Copenhagen; 147: Frederiksberg; ... |
+
+Pass more than one id (`codebook(schema, c("bef", "lmdb"))`) to get several
+registers' columns at once, with a `register` column added so you can tell
+them apart. `NA` in `label_da`/`label_en`/`values` just means the schema
+doesn't document one for that column — same "don't invent it" rule as
+everywhere else in fiktive.
 
 ## Saving your data to files
 
