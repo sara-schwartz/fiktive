@@ -22,11 +22,22 @@ draw_independent_column <- function(col, n, schema, register_id = NULL, when = N
     return(sample_labterm_codes(n))
   }
   # Unpublished value set: character code with no code_system (e.g. borger_koen).
+  # registers-guide checked four separate DST/Sundhedsdatastyrelsen sources
+  # and none publish one -- not a missing wiring (unlike a values_from.kind =
+  # package gap), a genuine absence. NA rather than a hard stop, so the rest
+  # of the register (and any other column) isn't blocked by this one gap; a
+  # visible warning() so it isn't silent, since it's still a real limitation
+  # worth knowing about, not a value fiktive is guessing at.
   if (is.null(col$code_system) && identical(name, "borger_koen")) {
-    schema_gap(
-      "borger_koen has no published code_system / value set",
-      "a documented value set on the column; do not map from BEF koen"
+    warning(
+      "borger_koen has no documented value set anywhere in the schema ",
+      "(registers-guide checked DST's variable list, Sundhedsdatastyrelsen's ",
+      "LPR3_F guidance, the LPR3 reporting guidance, and esundhed's LPR docs -- ",
+      "none publish one). Filled with NA rather than guessed or mapped from ",
+      "BEF koen (a different field, not verified equivalent).",
+      call. = FALSE
     )
+    return(na_of_type(type, n))
   }
   if (is.null(col$code_system) && is.null(col$previous_code_system)) {
     return(typed_noise(type, n, role = role, name = name))
@@ -110,6 +121,34 @@ resolve_code_system_ids <- function(col, n, when) {
   "846" = 41565L, "849" = 37890L, "851" = 226404L, "860" = 62909L
 )
 
+# kom.yaml's own lookup: is current-era only (post-2007 municipalities) --
+# the full pre/post-2007 classification mixes eras with no validity dates
+# (values_from.mixes_eras: true) and reused codes (707, 849) meant something
+# else before the reform. No verified pre-2007 mapping exists in the schema,
+# so a row dated before the reform gets NA rather than an anachronistic
+# current-day code. Always on, not gated behind realistic= -- this is
+# avoiding an actively wrong value, not adding realism. Fiktive-side floor,
+# not sourced from the schema (kom.yaml has no `periods:` of its own).
+.KOM_REFORM_DATE <- as.Date("2007-01-01")
+
+# kom is drawn per-row here (unlike sample_cs_keys' single sample() call)
+# because whether a row even qualifies for the current-era lookup depends on
+# that row's own date -- pre-reform rows get NA, post-reform rows get the
+# normal (optionally population-weighted) draw.
+sample_kom_keys_era_aware <- function(keys, n, when) {
+  when <- as.Date(when)
+  if (length(when) == 1L && n > 1L) {
+    when <- rep(when, n)
+  }
+  post_reform <- !is.na(when) & when >= .KOM_REFORM_DATE
+  out <- rep(NA_character_, n)
+  n_post <- sum(post_reform)
+  if (n_post > 0L) {
+    out[post_reform] <- sample_cs_keys(keys, n_post, "kom")
+  }
+  out
+}
+
 # Draw from a resolved set of lookup keys. civst never emits "D" (dead) for
 # a living resident -- always on, a structural-validity fix, not "realism".
 # kom weighted by real municipality population instead of drawn uniformly --
@@ -143,6 +182,9 @@ sample_lookup_keys <- function(cs, cs_id, n, when = NULL) {
     keys <- lookup_keys(cs)
     if (is.null(keys) || !length(keys)) {
       return(NULL)
+    }
+    if (identical(cs_id, "kom") && !is.null(when) && length(when)) {
+      return(sample_kom_keys_era_aware(keys, n, when))
     }
     return(sample_cs_keys(keys, n, cs_id))
   }
@@ -237,6 +279,11 @@ draw_from_code_system <- function(cs_id, col, n, schema, register_id, type, role
   sks = list(
     packages = c("sksr"),
     dataset = "SKS_labels"
+  ),
+  kont_type = list(
+    packages = c("sksr"),
+    dataset = "SKS_labels",
+    filter = list(column = "Prefix", value = "adm")
   )
 )
 

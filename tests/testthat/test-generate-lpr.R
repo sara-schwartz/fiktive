@@ -121,17 +121,15 @@ test_that("lpr_a_diagnose samples icd10_sks D-prefix", {
   expect_true(all(pref == "dia"))
 })
 
-test_that("borger_koen character with no code_system is SCHEMA GAP (not pop koen)", {
+test_that("borger_koen character with no code_system warns and fills NA (not pop koen)", {
   schema <- fixture_schema()
   pop <- tiny_pop(schema, n = 20L, seed = 19)
-  err <- tryCatch(
-    generate_register("lpr_a_kontakt", pop, schema, lpr3_from, lpr3_to, seed = 8),
-    error = function(e) e
+  expect_warning(
+    kon <- generate_register("lpr_a_kontakt", pop, schema, lpr3_from, lpr3_to, seed = 8),
+    "no documented value set"
   )
-  expect_s3_class(err, "error")
-  expect_match(err$message, "^SCHEMA GAP:")
-  expect_match(err$message, "borger_koen")
-  expect_match(err$message, "do not map from BEF koen")
+  expect_true(nrow(kon) > 0L)
+  expect_true(all(is.na(kon$borger_koen)))
 })
 
 test_that("empty parent window yields 0 child rows with schema columns", {

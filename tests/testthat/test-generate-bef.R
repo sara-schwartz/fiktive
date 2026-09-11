@@ -121,6 +121,19 @@ test_that("kom is drawn uniformly by default (realistic = FALSE)", {
   expect_true(all(share > 0.15 & share < 0.25))
 })
 
+test_that("kom is NA before the 2007 municipal reform, present from 2007 on", {
+  schema <- fixture_schema()
+  pop <- tiny_pop(schema, n = 30L, seed = 9)
+  bef <- generate_register(
+    "bef", pop, schema,
+    as.Date("2000-01-01"), as.Date("2012-12-31"),
+    seed = 9
+  )
+  year <- as.integer(format(bef$referencetid, "%Y"))
+  expect_true(all(is.na(bef$kom[year < 2007L])))
+  expect_false(any(is.na(bef$kom[year >= 2007L])))
+})
+
 test_that("kom is drawn by real municipality population under realistic = TRUE", {
   schema <- fixture_schema()
   pop <- tiny_pop(schema, n = 2000L, seed = 9)

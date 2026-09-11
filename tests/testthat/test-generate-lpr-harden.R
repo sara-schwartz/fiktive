@@ -159,6 +159,16 @@ test_that("lpr_a_diagnose coverage starts 2019 while contacts exist from 2017", 
   expect_true("diag_kode" %in% names(dia))
 })
 
+test_that("kont_type has a PLAN-locked sksr catalogue (adm prefix)", {
+  skip_if_not_installed("sksr")
+  schema <- schema_without_borger_koen(fixture_schema())
+  pop <- tiny_pop(schema, n = 20L, seed = 8)
+  kon <- generate_register("lpr_a_kontakt", pop, schema, lpr3_from, lpr3_to, seed = 8)
+  expect_true(nrow(kon) > 0L)
+  pub <- published_sks_kode()
+  expect_true(all(kon$kont_type %in% pub))
+})
+
 test_that("lpr_a_kontakt copies person fields and uses datetime contact bounds", {
   skip_if_not_installed("sksr")
   schema <- schema_without_borger_koen(fixture_schema())
