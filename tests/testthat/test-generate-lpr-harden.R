@@ -176,7 +176,7 @@ test_that("kont_type falls back to always-SKS-adm when the schema has no lprindb
   expect_true(all(nchar(kon$kont_type) == 6L))
 })
 
-test_that("lprindberetningssystem is drawn uniformly by default (realistic = FALSE)", {
+test_that("lprindberetningssystem is drawn uniformly by default (no constraints)", {
   schema <- schema_without_borger_koen(fixture_schema())
   pop <- tiny_pop(schema, n = 400L, seed = 8)
   kon <- generate_register("lpr_a_kontakt", pop, schema, lpr3_from, lpr3_to, seed = 8)
@@ -184,12 +184,12 @@ test_that("lprindberetningssystem is drawn uniformly by default (realistic = FAL
   expect_true(all(share > 0.15 & share < 0.35))
 })
 
-test_that("lprindberetningssystem is weighted toward LPR3 under realistic = TRUE", {
+test_that("lprindberetningssystem is weighted toward LPR3 under weighted_lprindberetningssystem", {
   schema <- schema_without_borger_koen(fixture_schema())
   pop <- tiny_pop(schema, n = 400L, seed = 8)
   kon <- generate_register(
     "lpr_a_kontakt", pop, schema, lpr3_from, lpr3_to,
-    seed = 8, realistic = TRUE
+    seed = 8, constraints = "weighted_lprindberetningssystem"
   )
   share <- prop.table(table(kon$lprindberetningssystem))
   expect_gt(unname(share[["LPR3"]]), 0.6)

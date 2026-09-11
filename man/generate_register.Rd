@@ -15,7 +15,7 @@ generate_register(
   fidelity = c("clean", "messy"),
   na_rate = NULL,
   outlier_rate = NULL,
-  realistic = FALSE
+  constraints = character(0)
 )
 }
 \arguments{
@@ -40,21 +40,29 @@ estimands.}
 
 \item{na_rate, outlier_rate}{Optional fidelity rate overrides in \verb{[0, 1]}.}
 
-\item{realistic}{Default \code{FALSE}: structural noise only, uniform across
-valid codes (e.g. \code{kom} drawn evenly across municipalities). \code{TRUE}
-opts into a small set of real-world-shaped defaults: \code{kom} weighted by
-real municipality population; diagnosis codes (\code{icd10}/\code{icd10_sks})
-never assigned a chapter that's impossible for the patient's sex or age
-(e.g. a pregnancy code to a man); and LPR3's \code{lprindberetningssystem}
-weighted toward \code{"LPR3"} (a reasoned estimate, not measured from a real
-delivery — see \code{.LPRINDBERETNINGSSYSTEM_WEIGHTS}) instead of uniform
-across its four values. \code{kont_type}'s own SKS-admin-code vs. legacy
-pattype-digit format always follows \code{lprindberetningssystem}
-regardless of \verb{realistic=} — that's a structural-consistency fix
-between two columns on the same row, not a realism upgrade. None of
-this changes what any scenario/truth claims — see
-\code{?scenario_association} if you want a planted, documented relationship
-instead of realistic-looking background shape.}
+\item{constraints}{Character vector, default \code{character(0)}: structural
+noise only, uniform across valid codes (e.g. \code{kom} drawn evenly across
+municipalities). Opt into one or more named constraints instead:
+\itemize{
+\item \code{"valid_diagnosis_sex_age"} -- diagnosis codes
+(\code{icd10}/\code{icd10_sks}) never assigned a chapter impossible for the
+patient's sex or age (e.g. a pregnancy code to a man).
+\item \code{"weighted_municipality"} -- \code{kom} weighted by real
+municipality population instead of drawn evenly.
+\item \code{"weighted_lprindberetningssystem"} -- LPR3's
+\code{lprindberetningssystem} weighted toward \code{"LPR3"} (a reasoned
+estimate, not measured from a real delivery -- see
+\code{.LPRINDBERETNINGSSYSTEM_WEIGHTS}) instead of uniform across its
+four values.
+}
+An unknown name errors rather than being silently ignored.
+\code{kont_type}'s own SKS-admin-code vs. legacy pattype-digit format always
+follows \code{lprindberetningssystem} regardless of which constraints are
+set -- that's a structural-consistency fix between two columns on the
+same row, not something to opt into separately. None of this changes
+what any scenario/truth claims -- see \code{?scenario_association} if you
+want a planted, documented relationship instead of realistic-looking
+background shape.}
 }
 \value{
 A tibble whose columns are a subset of the schema column names

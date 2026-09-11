@@ -10,23 +10,45 @@ first_or_null <- function(x) {
   if (length(x)) x[[1]] else NULL
 }
 
-# Cross-cutting `realistic=` flag (kom population weighting, sex/age
-# diagnosis-chapter coherence). Default FALSE: uniform structural noise,
-# unchanged from before these features existed. A package-level flag rather
-# than a parameter threaded through every draw function, same idiom as
-# with_rng_seed() above -- generate_register()/generate_registers()/
-# generate_custom_register() are the only callers.
-.fiktive_realistic_state <- new.env(parent = emptyenv())
-.fiktive_realistic_state$enabled <- FALSE
+# Cross-cutting `constraints=` set. Default character(0): uniform structural
+# noise, unchanged from before these features existed. A package-level flag
+# rather than a parameter threaded through every draw function, same idiom
+# as with_rng_seed() above -- generate_register()/generate_registers() are
+# the only callers. Two naming families, by mechanism, not vibe:
+#   valid_*    -- never emit a definitionally impossible combination.
+#   weighted_* -- sample a categorical column by its real-world empirical
+#                 distribution instead of uniformly.
+# Only names actually wired to a feature belong here -- an unbuilt name that
+# validates but silently does nothing is worse than an error.
+.KNOWN_CONSTRAINTS <- c(
+  "valid_diagnosis_sex_age",
+  "weighted_municipality",
+  "weighted_lprindberetningssystem"
+)
 
-is_realistic <- function() {
-  isTRUE(.fiktive_realistic_state$enabled)
+.fiktive_constraints_state <- new.env(parent = emptyenv())
+.fiktive_constraints_state$active <- character(0)
+
+has_constraint <- function(name) {
+  isTRUE(name %in% .fiktive_constraints_state$active)
 }
 
-with_realistic <- function(realistic, expr) {
-  old <- .fiktive_realistic_state$enabled
-  on.exit(.fiktive_realistic_state$enabled <- old, add = TRUE)
-  .fiktive_realistic_state$enabled <- isTRUE(realistic)
+with_constraints <- function(constraints, expr) {
+  constraints <- as.character(constraints %||% character(0))
+  unknown <- setdiff(constraints, .KNOWN_CONSTRAINTS)
+  if (length(unknown)) {
+    stop(
+      sprintf(
+        "Unknown constraints: %s. Known constraints: %s.",
+        paste(unknown, collapse = ", "),
+        paste(.KNOWN_CONSTRAINTS, collapse = ", ")
+      ),
+      call. = FALSE
+    )
+  }
+  old <- .fiktive_constraints_state$active
+  on.exit(.fiktive_constraints_state$active <- old, add = TRUE)
+  .fiktive_constraints_state$active <- constraints
   force(expr)
 }
 

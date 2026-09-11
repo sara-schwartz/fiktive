@@ -163,18 +163,20 @@ fill_schema_column <- function(col, rows, schema, register_id = NULL, spec = NUL
   when <- if ("event_date" %in% names(rows)) rows$event_date else rows$referencetid
   values <- derived_column(id, rows, schema = schema)
   if (is.null(values)) {
-    # Sex/age diagnosis-chapter coherence is part of realistic=TRUE, not the
-    # uniform-noise default -- see with_realistic(). Skip the lookup/join
-    # work entirely when off.
-    koen <- if (is_realistic() && "koen" %in% names(rows)) rows$koen else NULL
-    age_years <- if (is_realistic() && "foed_dag" %in% names(rows) && n > 0L) {
+    # Sex/age diagnosis-chapter coherence is the "valid_diagnosis_sex_age"
+    # constraint, not the uniform-noise default -- see with_constraints().
+    # Skip the lookup/join work entirely when it's not requested.
+    valid_sex_age <- has_constraint("valid_diagnosis_sex_age")
+    koen <- if (valid_sex_age && "koen" %in% names(rows)) rows$koen else NULL
+    age_years <- if (valid_sex_age && "foed_dag" %in% names(rows) && n > 0L) {
       as.numeric(difftime(when, rows$foed_dag, units = "days")) / 365.25
     } else {
       NULL
     }
     # kont_type's format must match its own row's lprindberetningssystem
-    # regardless of realistic= -- a structural-consistency fix (two columns
-    # on the same row agreeing), not a realism upgrade, so always available
+    # regardless of which constraints are set -- a structural-consistency
+    # fix (two columns on the same row agreeing), not something to opt into
+    # separately, so always available
     # when the register has the column (see emit_schema_table's pre-pass).
     lprindberetningssystem <- if ("lprindberetningssystem" %in% names(rows)) {
       rows$lprindberetningssystem

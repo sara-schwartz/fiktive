@@ -129,7 +129,7 @@ resolve_code_system_ids <- function(col, n, when) {
 # (values_from.mixes_eras: true) and reused codes (707, 849) meant something
 # else before the reform. No verified pre-2007 mapping exists in the schema,
 # so a row dated before the reform gets NA rather than an anachronistic
-# current-day code. Always on, not gated behind realistic= -- this is
+# current-day code. Always on, not gated behind a constraint -- this is
 # avoiding an actively wrong value, not adding realism. Fiktive-side floor,
 # not sourced from the schema (kom.yaml has no `periods:` of its own).
 .KOM_REFORM_DATE <- as.Date("2007-01-01")
@@ -181,22 +181,23 @@ sample_kom_keys_era_aware <- function(keys, n, when) {
 
 # Draw from a resolved set of lookup keys. civst never emits "D" (dead) for
 # a living resident -- always on, a structural-validity fix, not "realism".
-# kom weighted by real municipality population, lprindberetningssystem by
-# the reasoned split above, instead of drawn uniformly -- both gated behind
-# realistic=TRUE (see with_realistic()); default is the original uniform
-# draw. Falls back to uniform if a key is missing from the weight table
-# (e.g. a future schema addition), rather than erroring.
+# kom weighted by real municipality population ("weighted_municipality"),
+# lprindberetningssystem by the reasoned split above
+# ("weighted_lprindberetningssystem"), instead of drawn uniformly -- both
+# opt-in constraints (see with_constraints()); default is the original
+# uniform draw. Falls back to uniform if a key is missing from the weight
+# table (e.g. a future schema addition), rather than erroring.
 sample_cs_keys <- function(keys, n, cs_id) {
   if (identical(cs_id, "civst")) {
     keys <- setdiff(keys, "D")
   }
-  if (identical(cs_id, "kom") && is_realistic()) {
+  if (identical(cs_id, "kom") && has_constraint("weighted_municipality")) {
     w <- .KOM_POPULATION_WEIGHTS[keys]
     if (!anyNA(w)) {
       return(sample(keys, n, replace = TRUE, prob = as.numeric(w)))
     }
   }
-  if (identical(cs_id, "lprindberetningssystem") && is_realistic()) {
+  if (identical(cs_id, "lprindberetningssystem") && has_constraint("weighted_lprindberetningssystem")) {
     w <- .LPRINDBERETNINGSSYSTEM_WEIGHTS[keys]
     if (!anyNA(w)) {
       return(sample(keys, n, replace = TRUE, prob = as.numeric(w)))

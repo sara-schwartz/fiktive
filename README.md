@@ -233,7 +233,7 @@ a gap in the schema itself, worth reporting upstream.
 The quickstart above gets you generating and joining fake data shaped
 like real registers. The
 **[full vignette](vignettes/fiktive.Rmd)** covers everything else: an
-opt-in `realistic = TRUE` mode, looking up what a column or code means
+opt-in `constraints=` for real-world-shaped defaults, looking up what a column or code means
 (`codebook()`), building your own custom register (including from a CSV of
 columns), and the whole scenario/truth system for testing whether your
 analysis code recovers a known answer (associations, confounding,
@@ -269,8 +269,8 @@ change registers between releases: run
 | id | Register | Grain | Notes |
 |---|---|---|---|
 | `akm` | Arbejdsklassifikationsmodulet (labour classification) | person_reference_date | Socioeconomic status per person per year (employed, unemployed, pensioner, …) |
-| `bef` | Befolkningen (population register) | person_reference_date | Quarterly population snapshot: demographics, municipality, marital status. `kom` (municipality) is uniform by default; pass `realistic = TRUE` to weight it by real 2026 municipality population instead (Copenhagen far more often than Læsø) |
-| `cancer` | Cancerregisteret | event_from_person | One row per incident cancer diagnosis. Under `realistic = TRUE`, never assigns a diagnosis chapter impossible for the patient's sex/age (same rule as `lpr_diag`) |
+| `bef` | Befolkningen (population register) | person_reference_date | Quarterly population snapshot: demographics, municipality, marital status. `kom` (municipality) is uniform by default; pass `constraints = "weighted_municipality"` to weight it by real 2026 municipality population instead (Copenhagen far more often than Læsø) |
+| `cancer` | Cancerregisteret | event_from_person | One row per incident cancer diagnosis. Under `constraints = "valid_diagnosis_sex_age"`, never assigns a diagnosis chapter impossible for the patient's sex/age (same rule as `lpr_diag`) |
 | `dod` | Døde i Danmark (deaths) | event_from_person | One row per death; date of death |
 | `dodsaars` | Dødsårssagsregistret | event_from_person | Cause of death 1970–2001. Closed |
 | `dodsaasg` | Dødsårsagsregister | event_from_person | Cause of death 2002–2022. Closed |
@@ -279,14 +279,14 @@ change registers between releases: run
 | `lab_dm_forsker` | Laboratoriedatabasens Forskertabel | event_from_person | Lab test results per request |
 | `lmdb` | Lægemiddeldatabasen (prescription register) | event_from_person | One row per dispensed prescription |
 | `lpr_adm` | Landspatientregistret (LPR2): admin/contact | event_from_person | Parent for `lpr_diag` / `lpr_sksopr` / `lpr_sksube` |
-| `lpr_diag` | LPR2: diagnoser | expand_from_parent | Child of `lpr_adm` (join on `recnum`). Under `realistic = TRUE`, diagnosis codes never assign a chapter that's impossible for the patient's sex or age (e.g. a pregnancy code to a man, a perinatal code to someone past infancy) |
+| `lpr_diag` | LPR2: diagnoser | expand_from_parent | Child of `lpr_adm` (join on `recnum`). Under `constraints = "valid_diagnosis_sex_age"`, diagnosis codes never assign a chapter that's impossible for the patient's sex or age (e.g. a pregnancy code to a man, a perinatal code to someone past infancy) |
 | `lpr_sksopr` | LPR2: operationer | expand_from_parent | Child of `lpr_adm` (join on `recnum`) |
 | `lpr_sksube` | LPR2: undersøgelser og behandlinger | expand_from_parent | Child of `lpr_adm` (join on `recnum`) |
 | `lpr_a_kontakt` | LPR3: kontaktoplysninger | event_from_person | Parent for `lpr_a_diagnose` / `lpr_a_procregistrering` |
-| `lpr_a_diagnose` | LPR3: diagnoseoplysning | expand_from_parent | Child of `lpr_a_kontakt` (join on `dw_ek_kontakt`). Under `realistic = TRUE`, never assigns a diagnosis chapter impossible for the patient's sex/age (same rule as `lpr_diag`) |
+| `lpr_a_diagnose` | LPR3: diagnoseoplysning | expand_from_parent | Child of `lpr_a_kontakt` (join on `dw_ek_kontakt`). Under `constraints = "valid_diagnosis_sex_age"`, never assigns a diagnosis chapter impossible for the patient's sex/age (same rule as `lpr_diag`) |
 | `lpr_a_procregistrering` | LPR3: procedureregistreringer | expand_from_parent | Child of `lpr_a_kontakt` (join on `dw_ek_kontakt`) |
 | `t_psyk_adm` | LPR psykiatri: administrative oplysninger | event_from_person | Parent for `t_psyk_diag`; separate from `lpr_adm` |
-| `t_psyk_diag` | LPR psykiatri: diagnoser | expand_from_parent | Child of `t_psyk_adm`. Under `realistic = TRUE`, never assigns a diagnosis chapter impossible for the patient's sex/age (same rule as `lpr_diag`) |
+| `t_psyk_diag` | LPR psykiatri: diagnoser | expand_from_parent | Child of `t_psyk_adm`. Under `constraints = "valid_diagnosis_sex_age"`, never assigns a diagnosis chapter impossible for the patient's sex/age (same rule as `lpr_diag`) |
 | `mfr` | MFR: levendefødte | event_from_person | One row per live birth (mother + child) |
 | `sysi` | Sygesikring (6-cifret) | event_from_person | Primary-care fee settlements |
 | `sssy` | Sygesikring (6-cifret) | event_from_person | Continuation of `sysi`; same shape |

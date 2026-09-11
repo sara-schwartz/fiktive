@@ -37,15 +37,22 @@ test_that("sample_icd10_coherent never leaves a row unfilled when a group's pool
   expect_false(any(is.na(drawn)))
 })
 
-test_that("is_realistic() defaults to FALSE and with_realistic() restores it on exit", {
-  expect_false(fiktive:::is_realistic())
-  fiktive:::with_realistic(TRUE, {
-    expect_true(fiktive:::is_realistic())
+test_that("has_constraint() defaults to unset and with_constraints() restores it on exit", {
+  expect_false(fiktive:::has_constraint("valid_diagnosis_sex_age"))
+  fiktive:::with_constraints("valid_diagnosis_sex_age", {
+    expect_true(fiktive:::has_constraint("valid_diagnosis_sex_age"))
   })
-  expect_false(fiktive:::is_realistic())
+  expect_false(fiktive:::has_constraint("valid_diagnosis_sex_age"))
 })
 
-test_that("generate_register default (realistic = FALSE) does not gate koen/age_years", {
+test_that("with_constraints() errors on an unknown constraint name", {
+  expect_error(
+    fiktive:::with_constraints("not_a_real_thing", NULL),
+    "Unknown constraints"
+  )
+})
+
+test_that("generate_register default (no constraints) does not gate koen/age_years", {
   schema <- fixture_schema()
   pop <- tiny_pop(schema, n = 50L, seed = 5)
   # Smoke test: default generation still runs end-to-end with the
@@ -58,17 +65,17 @@ test_that("generate_register default (realistic = FALSE) does not gate koen/age_
   expect_true(nrow(bef) > 0L)
 })
 
-test_that("lpr_diag never assigns a sex-incoherent icd10_sks chapter under realistic = TRUE", {
+test_that("lpr_diag never assigns a sex-incoherent icd10_sks chapter under valid_diagnosis_sex_age", {
   schema <- fixture_schema()
   pop <- tiny_pop(schema, n = 400L, seed = 21)
   win_from <- as.Date("2008-01-01")
   win_to <- as.Date("2012-12-31")
-  parent <- fiktive:::with_realistic(TRUE, {
+  parent <- fiktive:::with_constraints("valid_diagnosis_sex_age", {
     generate_parent_contacts(
       pop, schema, schema$registers[["lpr_adm"]], win_from, win_to, seed = 21
     )
   })
-  diag <- fiktive:::with_realistic(TRUE, {
+  diag <- fiktive:::with_constraints("valid_diagnosis_sex_age", {
     generate_expand_from_parent(
       pop, schema, schema$registers[["lpr_diag"]], win_from, win_to, seed = 21
     )

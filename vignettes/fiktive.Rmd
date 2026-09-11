@@ -33,30 +33,38 @@ is valid, but drawn uniformly, with no attempt to look like real Denmark.
 A municipality column is exactly as likely to say Læsø (pop. 1,655) as
 Copenhagen (pop. 670,389).
 
-Pass `realistic = TRUE` to `generate_register()` / `generate_registers()`
-to opt into a small set of real-world-shaped defaults instead:
+Pass `constraints=` to `generate_register()` / `generate_registers()` to
+opt into one or more real-world-shaped defaults instead. Two naming
+families, by mechanism: `valid_*` never emits a definitionally impossible
+combination; `weighted_*` samples a categorical column by its real-world
+empirical distribution instead of uniformly.
 
-```{r realistic}
+```{r constraints}
 tables <- generate_registers(
   registers = c("bef", "lpr_adm", "lpr_diag"),
   population = pop, schema = schema,
   from = as.Date("2008-01-01"), to = as.Date("2009-12-31"),
   seed = 1,
-  realistic = TRUE   # opt-in: off by default
+  constraints = c("valid_diagnosis_sex_age", "weighted_municipality")   # opt-in: none set by default
 )
 ```
 
-Right now that means: `kom` (municipality) weighted by real 2026
-population instead of drawn evenly; diagnosis codes (`icd10`/`icd10_sks`)
-that never assign a chapter impossible for the patient's sex or age (no
-pregnancy code on a man, no perinatal code on someone past infancy); and,
-for LPR3, `lprindberetningssystem` (which historical reporting system a
-contact came through: `LPR3`, `LPR2`, `MiniPAS`, or `LPR1`) weighted toward
-`LPR3` instead of drawn evenly across all four. `kont_type`'s own format
-(an SKS admin code for `LPR3` rows, a legacy LPR2 patient-type digit for
-the other three) always follows whatever `lprindberetningssystem` that row
-got, regardless of `realistic=` — two columns on the same row have to
-agree with each other no matter what.
+Right now three constraints exist: `"weighted_municipality"` (`kom`
+weighted by real 2026 population instead of drawn evenly);
+`"valid_diagnosis_sex_age"` (diagnosis codes, `icd10`/`icd10_sks`, never
+assign a chapter impossible for the patient's sex or age -- no pregnancy
+code on a man, no perinatal code on someone past infancy); and
+`"weighted_lprindberetningssystem"` (LPR3's `lprindberetningssystem` --
+which historical reporting system a contact came through: `LPR3`, `LPR2`,
+`MiniPAS`, or `LPR1` -- weighted toward `LPR3` instead of drawn evenly
+across all four). An unknown name in `constraints=` errors rather than
+being silently ignored.
+
+`kont_type`'s own format (an SKS admin code for `LPR3` rows, a legacy LPR2
+patient-type digit for the other three) always follows whatever
+`lprindberetningssystem` that row got, regardless of which constraints are
+set -- two columns on the same row have to agree with each other no matter
+what, so this isn't something to opt into separately.
 
 This is about **plausibility, not planted signal** — it never changes what
 any `scenario` claims or what `get_truth()` reports. If you want a

@@ -112,7 +112,7 @@ test_that("year is derived from referencetid and civst is not D", {
   expect_false(all(is.na(bef$foerste_indvandring)))
 })
 
-test_that("kom is drawn uniformly by default (realistic = FALSE)", {
+test_that("kom is drawn uniformly by default (no constraints)", {
   schema <- fixture_schema()
   pop <- tiny_pop(schema, n = 2000L, seed = 9)
   bef <- generate_register("bef", pop, schema, from, to, seed = 9)
@@ -145,10 +145,13 @@ test_that("kom raises no warning when the whole window is post-reform", {
   )
 })
 
-test_that("kom is drawn by real municipality population under realistic = TRUE", {
+test_that("kom is drawn by real municipality population under weighted_municipality", {
   schema <- fixture_schema()
   pop <- tiny_pop(schema, n = 2000L, seed = 9)
-  bef <- generate_register("bef", pop, schema, from, to, seed = 9, realistic = TRUE)
+  bef <- generate_register(
+    "bef", pop, schema, from, to, seed = 9,
+    constraints = "weighted_municipality"
+  )
   share <- prop.table(table(bef$kom))
   # Copenhagen (101) is ~53% of the fixture's 5-municipality population by
   # DST's real 2026Q3 figures; uniform sampling would give it ~20%.
