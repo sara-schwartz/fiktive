@@ -58,12 +58,14 @@ test_that("cancer column coverage blanks pre-1978 ICD and pre-2006 region", {
   skip_if_not_installed("codeCollection")
   schema <- fixture_schema()
   pop <- tiny_pop(schema, n = 30L, seed = 63)
-  # Window straddles 1978 ICD start and includes pre-2006 for region
-  out <- generate_register(
+  # Window straddles 1978 ICD start and includes pre-2006 for region. Also
+  # entirely pre-2007 (municipal reform) -- suppress the unrelated kom
+  # warning this test isn't about (see test-generate-bef.R for that).
+  out <- suppressWarnings(generate_register(
     "cancer", pop, schema,
     as.Date("1975-01-01"), as.Date("1977-12-31"),
     seed = 63
-  )
+  ))
   if (nrow(out)) {
     expect_true(all(is.na(out$c_icd10)))
     expect_true(all(is.na(out$c_orggr_idc10)))

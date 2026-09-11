@@ -121,17 +121,28 @@ test_that("kom is drawn uniformly by default (realistic = FALSE)", {
   expect_true(all(share > 0.15 & share < 0.25))
 })
 
-test_that("kom is NA before the 2007 municipal reform, present from 2007 on", {
+test_that("kom is NA before the 2007 municipal reform, present from 2007 on, with a warning", {
   schema <- fixture_schema()
   pop <- tiny_pop(schema, n = 30L, seed = 9)
-  bef <- generate_register(
-    "bef", pop, schema,
-    as.Date("2000-01-01"), as.Date("2012-12-31"),
-    seed = 9
+  expect_warning(
+    bef <- generate_register(
+      "bef", pop, schema,
+      as.Date("2000-01-01"), as.Date("2012-12-31"),
+      seed = 9
+    ),
+    "before the 2007-01-01 municipal reform"
   )
   year <- as.integer(format(bef$referencetid, "%Y"))
   expect_true(all(is.na(bef$kom[year < 2007L])))
   expect_false(any(is.na(bef$kom[year >= 2007L])))
+})
+
+test_that("kom raises no warning when the whole window is post-reform", {
+  schema <- fixture_schema()
+  pop <- tiny_pop(schema, n = 10L, seed = 9)
+  expect_no_warning(
+    generate_register("bef", pop, schema, from, to, seed = 9)
+  )
 })
 
 test_that("kom is drawn by real municipality population under realistic = TRUE", {

@@ -141,6 +141,20 @@ sample_kom_keys_era_aware <- function(keys, n, when) {
     when <- rep(when, n)
   }
   post_reform <- !is.na(when) & when >= .KOM_REFORM_DATE
+  n_pre <- sum(!post_reform)
+  if (n_pre > 0L) {
+    warning(
+      sprintf(
+        "kom is NA for %d row(s) dated before the 2007-01-01 municipal reform: ",
+        n_pre
+      ),
+      "no verified pre-reform municipality code list exists in the schema ",
+      "(the mixed-era source has no validity dates and reused codes meaning ",
+      "something else pre-reform). Filled with NA rather than guessed or ",
+      "backdated from the current 99-municipality list.",
+      call. = FALSE
+    )
+  }
   out <- rep(NA_character_, n)
   n_post <- sum(post_reform)
   if (n_post > 0L) {
