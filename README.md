@@ -1,6 +1,6 @@
 # fiktive
 
-Generate realistic **fake** Danish register data — so you can write, test,
+Generate realistic **fake** Danish register data, so you can write, test,
 and teach analysis code without needing real access to Statistics Denmark
 (DST).
 
@@ -44,7 +44,7 @@ remotes::install_github("sara-schwartz/fiktive")
 ```
 
 Everything fiktive needs (dplyr, tibble, sksr, codeCollection, etc.)
-installs automatically — no extra steps.
+installs automatically. No extra steps.
 
 ## The 5-minute quickstart
 
@@ -78,7 +78,7 @@ tables$bef    # not required -- just prints the tibble so you can see what you g
 tables$lmdb   # not required -- same, for fake dispensed prescriptions
 ```
 
-`tables$bef` and `tables$lmdb` are ordinary tibbles — inspect them, filter
+`tables$bef` and `tables$lmdb` are ordinary tibbles: inspect them, filter
 them, join them, just like any other data frame.
 
 `seed = 1` makes it reproducible: run this exact code again and you get
@@ -89,7 +89,7 @@ back the exact same fake data.
 fake people later). Want a specific age range instead of the default
 (roughly ages 19-86 as of today)? Pass `age_min`/`age_max` (whole years,
 optionally with `reference_date`) or `birth_from`/`birth_to` (actual
-dates) — see `?generate_background_population` for both styles.
+dates); see `?generate_background_population` for both styles.
 
 ## What registers can I generate?
 
@@ -103,7 +103,7 @@ A few common ones to get started:
 
 | id | What it is |
 |---|---|
-| `bef` | Population register — who's alive, where they live, marital status |
+| `bef` | Population register: who's alive, where they live, marital status |
 | `lmdb` | Prescriptions dispensed at pharmacies |
 | `lpr_adm` / `lpr_diag` | Hospital contacts and their diagnoses (see [below](#hospital-data-needs-two-tables)) |
 | `dod` | Deaths |
@@ -111,18 +111,18 @@ A few common ones to get started:
 | `akm` | Employment status |
 | `mfr` | Births |
 
-You ask for a register by putting its id in `registers = c(...)` — that's
+You ask for a register by putting its id in `registers = c(...)`: that's
 the whole interface, no matter which register it is.
 
 Column and code names are often short and cryptic (`civst`, `hfaudd`,
-`koen = 1`) — `codebook(schema, "bef")` looks up the real description for
-each, in Danish and English. See `vignette("fiktive")` for details.
+`koen = 1`). `codebook(schema, "bef")` looks up the real description for
+each, in Danish and English. See the [vignette](vignettes/fiktive.Rmd) for details.
 
 ## Saving your data to files
 
 `write_register()` saves **one** table. `write_all_registers()` saves **every**
 table in a named list (like `tables` from `generate_registers()`) in one
-call — it's just a shortcut for calling `write_register()` on each one
+call: it's just a shortcut for calling `write_register()` on each one
 yourself.
 
 ```r
@@ -156,7 +156,7 @@ joined <- dplyr::inner_join(
 ```
 
 `relationship = "many-to-many"` is there because `bef` has several
-snapshots per person and `lmdb` has several prescriptions per person — a
+snapshots per person and `lmdb` has several prescriptions per person: a
 genuinely many-rows-to-many-rows join, same as in real register data.
 
 ## Hospital data needs two tables
@@ -164,10 +164,18 @@ genuinely many-rows-to-many-rows join, same as in real register data.
 Hospital registers work a little differently: one table holds the
 **contact** (the hospital visit itself), and a separate table holds the
 **diagnoses** attached to that visit, because in real life one visit can
-have several diagnoses. So the diagnosis table has no `pnr` of its own — it
+have several diagnoses. So the diagnosis table has no `pnr` of its own. It
 only points back to its visit.
 
-Ask for both in the same call, and join them on `recnum` instead of `pnr`:
+The join key depends on which version of the register you're using:
+**LPR2** (`lpr_adm` / `lpr_diag` / `lpr_sksopr` / `lpr_sksube`) joins on
+`recnum`; **LPR3** (`lpr_a_kontakt` / `lpr_a_diagnose` /
+`lpr_a_procregistrering`) joins on `dw_ek_kontakt` instead. They're
+separate register families. Don't mix an LPR2 contact table with an LPR3
+diagnosis table or vice versa.
+
+Ask for both in the same call, and join them on `recnum` instead of `pnr`
+(LPR2 shown here; swap in the LPR3 ids and `dw_ek_kontakt` for LPR3):
 
 ```r
 lpr <- generate_registers(
@@ -183,12 +191,12 @@ diagnoses_with_visits <- dplyr::inner_join(lpr$lpr_diag, lpr$lpr_adm, by = "recn
 
 A couple of things worth knowing:
 
-- Order in `registers=` doesn't matter — just make sure both ids are in the
+- Order in `registers=` doesn't matter, just make sure both ids are in the
   list, or you won't get the one you left out back to join to.
 - `lpr`/`tables` came from two separate `generate_registers()` calls with
   different windows, but they share the same `pop`, so `tables$bef` and
   `lpr$lpr_adm` still join on `pnr` if you need both together.
-- Not every contact gets a diagnosis row, and some get several — real
+- Not every contact gets a diagnosis row, and some get several. Real
   hospital contacts work the same way (a coded diagnosis isn't
   guaranteed, and one visit can carry multiple). Decide deliberately
   between `inner_join()` (only contacts with a coded diagnosis) and
@@ -197,7 +205,7 @@ A couple of things worth knowing:
 
 ## Where the data model comes from
 
-fiktive doesn't invent what a Danish register looks like — it reads the
+fiktive doesn't invent what a Danish register looks like. It reads the
 column layouts live from
 [`steno-aarhus/registers-guide`](https://github.com/steno-aarhus/registers-guide),
 a project that documents the real DST register structures. That means:
@@ -206,7 +214,7 @@ a project that documents the real DST register structures. That means:
 - To work offline, pass a local copy instead of fetching live:
   `load_registers_schema(source = "path/to/local/registers-guide/schema")`.
 - If fiktive doesn't know how to fill in a value safely, it stops with a
-  clear error rather than guessing — see below.
+  clear error rather than guessing. See below.
 
 ### "SCHEMA GAP" errors
 
@@ -215,20 +223,24 @@ deliberately refused to make something up, rather than risk giving you
 subtly wrong fake data. This usually means either a column needs
 information the live schema doesn't have yet, or (for a few registers) the
 real-world code list mixes two eras of history with no way to tell them
-apart safely — for example, Danish municipality codes were reorganized in
+apart safely. For example, Danish municipality codes were reorganized in
 2007, and some old codes were reused for entirely different, unrelated
-municipalities. This isn't something to work around in your own code — it's
+municipalities. This isn't something to work around in your own code. It's
 a gap in the schema itself, worth reporting upstream.
 
 ## Learn more
 
-The quickstart above gets you generating and joining real registers. For
-everything else — an opt-in `realistic = TRUE` mode, looking up what a
-column or code means (`codebook()`), building your own custom register
-(including from a CSV of columns), and the whole scenario/truth system for
-testing whether your analysis code recovers a known answer (associations,
-confounding, missingness, misclassification, immortal time bias, left
-truncation bias) — see the vignette:
+The quickstart above gets you generating and joining fake data shaped
+like real registers. The
+**[full vignette](vignettes/fiktive.Rmd)** covers everything else: an
+opt-in `realistic = TRUE` mode, looking up what a column or code means
+(`codebook()`), building your own custom register (including from a CSV of
+columns), and the whole scenario/truth system for testing whether your
+analysis code recovers a known answer (associations, confounding,
+missingness, misclassification, immortal time bias, left truncation bias).
+
+Read it right here on GitHub via the link above, or from inside R once
+fiktive is installed:
 
 ```r
 vignette("fiktive", package = "fiktive")
@@ -245,13 +257,13 @@ Danish register.
 ## Available registers
 
 Pass any `id` below to `registers=` in `generate_register()` /
-`generate_registers()` — no `generate_custom_register()` step needed. That
-function is only for columns the guide doesn't define (see
-`vignette("fiktive")`).
+`generate_registers()`. No `generate_custom_register()` step needed. That
+function is only for columns the guide doesn't define (see the
+[vignette](vignettes/fiktive.Rmd)).
 
 This reflects the live schema at the time of writing (27 registers). Since
 fiktive loads the schema live rather than vendoring it, the guide can add or
-change registers between releases — run
+change registers between releases: run
 `names(load_registers_schema()$registers)` for the current, definitive set.
 
 | id | Register | Grain | Notes |
@@ -266,16 +278,16 @@ change registers between releases — run
 | `faik` | Familieindkomster (family income) | household_year | Household-level income, keyed on household not person |
 | `lab_dm_forsker` | Laboratoriedatabasens Forskertabel | event_from_person | Lab test results per request |
 | `lmdb` | Lægemiddeldatabasen (prescription register) | event_from_person | One row per dispensed prescription |
-| `lpr_adm` | Landspatientregistret (LPR2) — admin/contact | event_from_person | Parent for `lpr_diag` / `lpr_sksopr` / `lpr_sksube` |
-| `lpr_diag` | LPR2 — diagnoser | expand_from_parent | Child of `lpr_adm` (join on `recnum`). Under `realistic = TRUE`, diagnosis codes never assign a chapter that's impossible for the patient's sex or age (e.g. a pregnancy code to a man, a perinatal code to someone past infancy) |
-| `lpr_sksopr` | LPR2 — operationer | expand_from_parent | Child of `lpr_adm` (join on `recnum`) |
-| `lpr_sksube` | LPR2 — undersøgelser og behandlinger | expand_from_parent | Child of `lpr_adm` (join on `recnum`) |
-| `lpr_a_kontakt` | LPR3 — kontaktoplysninger | event_from_person | Parent for `lpr_a_diagnose` / `lpr_a_procregistrering` |
-| `lpr_a_diagnose` | LPR3 — diagnoseoplysning | expand_from_parent | Child of `lpr_a_kontakt` (join on `dw_ek_kontakt`). Under `realistic = TRUE`, never assigns a diagnosis chapter impossible for the patient's sex/age (same rule as `lpr_diag`) |
-| `lpr_a_procregistrering` | LPR3 — procedureregistreringer | expand_from_parent | Child of `lpr_a_kontakt` (join on `dw_ek_kontakt`) |
-| `t_psyk_adm` | LPR psykiatri — administrative oplysninger | event_from_person | Parent for `t_psyk_diag`; separate from `lpr_adm` |
-| `t_psyk_diag` | LPR psykiatri — diagnoser | expand_from_parent | Child of `t_psyk_adm`. Under `realistic = TRUE`, never assigns a diagnosis chapter impossible for the patient's sex/age (same rule as `lpr_diag`) |
-| `mfr` | MFR — levendefødte | event_from_person | One row per live birth (mother + child) |
+| `lpr_adm` | Landspatientregistret (LPR2): admin/contact | event_from_person | Parent for `lpr_diag` / `lpr_sksopr` / `lpr_sksube` |
+| `lpr_diag` | LPR2: diagnoser | expand_from_parent | Child of `lpr_adm` (join on `recnum`). Under `realistic = TRUE`, diagnosis codes never assign a chapter that's impossible for the patient's sex or age (e.g. a pregnancy code to a man, a perinatal code to someone past infancy) |
+| `lpr_sksopr` | LPR2: operationer | expand_from_parent | Child of `lpr_adm` (join on `recnum`) |
+| `lpr_sksube` | LPR2: undersøgelser og behandlinger | expand_from_parent | Child of `lpr_adm` (join on `recnum`) |
+| `lpr_a_kontakt` | LPR3: kontaktoplysninger | event_from_person | Parent for `lpr_a_diagnose` / `lpr_a_procregistrering` |
+| `lpr_a_diagnose` | LPR3: diagnoseoplysning | expand_from_parent | Child of `lpr_a_kontakt` (join on `dw_ek_kontakt`). Under `realistic = TRUE`, never assigns a diagnosis chapter impossible for the patient's sex/age (same rule as `lpr_diag`) |
+| `lpr_a_procregistrering` | LPR3: procedureregistreringer | expand_from_parent | Child of `lpr_a_kontakt` (join on `dw_ek_kontakt`) |
+| `t_psyk_adm` | LPR psykiatri: administrative oplysninger | event_from_person | Parent for `t_psyk_diag`; separate from `lpr_adm` |
+| `t_psyk_diag` | LPR psykiatri: diagnoser | expand_from_parent | Child of `t_psyk_adm`. Under `realistic = TRUE`, never assigns a diagnosis chapter impossible for the patient's sex/age (same rule as `lpr_diag`) |
+| `mfr` | MFR: levendefødte | event_from_person | One row per live birth (mother + child) |
 | `sysi` | Sygesikring (6-cifret) | event_from_person | Primary-care fee settlements |
 | `sssy` | Sygesikring (6-cifret) | event_from_person | Continuation of `sysi`; same shape |
 | `udda` | Uddannelser (BUE, education) | person_reference_date | Completed-education code per person per year |
@@ -285,5 +297,5 @@ change registers between releases — run
 | `vnds_ud` | Udvandringer (emigrations, 2005–) | event_from_person | One row per emigration |
 
 `expand_from_parent` registers need their parent generated in the same
-`registers=` call (or already generated) — see [Hospital data needs two
+`registers=` call (or already generated); see [Hospital data needs two
 tables](#hospital-data-needs-two-tables) above.
