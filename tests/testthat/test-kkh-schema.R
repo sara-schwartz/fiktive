@@ -22,7 +22,7 @@ test_that("kkh_journal/kkhng_lsq_general_final never disagree with pop koen/foed
   # and keeping them would mean a second, independently-drawn value for the
   # same real-world fact fiktive already has from the population (pnr's own
   # koen/foed_dag), silently disagreeing with bef for the same person. See
-  # data-raw/build_kkh_schema.R's .DROP_DUPLICATE_PERSON_COLS.
+  # kkh_register_ids() in R/schema.R.
   schema <- fixture_schema()
   pop <- tiny_pop(schema, n = 60L, seed = 6)
   kj <- generate_register(

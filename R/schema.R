@@ -89,10 +89,19 @@ merge_kkh_schema <- function(schema) {
 
 # Ids of the bundled KKH/KKHNG registers, read from the installed package's
 # own YAML directory rather than a hardcoded literal list -- these are
-# generated from a spreadsheet (data-raw/build_kkh_schema.R) and would
-# silently drift out of sync with a hand-maintained list otherwise. Used by
-# dispatch_generate_register() (R/generate.R) to extend the "implemented
-# person-grain snapshot registers" whitelist without touching DST ids.
+# generated from the KKH/KKHNG variable catalogues (variable name, type, and
+# Danish/English label only, per the KKH/DCH data coordinator's data-sharing
+# approval -- nothing else from the source catalogues, and no real data, is
+# in fiktive) and would silently drift out of sync with a hand-maintained
+# list otherwise. Two judgment calls made when these were derived, kept here
+# since the source catalogues aren't in this repo: KKHNG's 27 near-empty
+# `sca_v1`..`v27` dataset fragments were collapsed into one `kkhng_sca`
+# register (no SAS files were available to confirm whether they're really
+# distinct tables), and the "??" / "done_all" placeholder dataset values
+# were bundled into a new `kkhng_admin` register rather than attached to an
+# unrelated real table. Used by dispatch_generate_register() (R/generate.R)
+# to extend the "implemented person-grain snapshot registers" whitelist
+# without touching DST ids.
 kkh_register_ids <- function() {
   root <- system.file("extdata", "kkh-schema", "registers", package = "fiktive")
   if (!nzchar(root) || !dir.exists(root)) {
@@ -100,6 +109,17 @@ kkh_register_ids <- function() {
   }
   tools::file_path_sans_ext(list.files(root, pattern = "\\.ya?ml$"))
 }
+
+# kkh_journal's kqn/fsdato and kkhng_lsq_general_final's fsdato/fsdato_c are
+# dropped entirely from the bundled columns above: neither catalogue
+# documents a real code list or value range for them, and keeping them would
+# mean inventing a domain fiktive has no source for, while also generating a
+# second, independently-drawn value for a fact fiktive already has from the
+# shared population (silently disagreeing with bef for the same pnr).
+# kkhng_lsq_general_final's `koen`/`sex` are kept, not dropped, since both
+# are unambiguous: `koen` collides by name with the population's own column,
+# and `sex`'s label states DST's exact 1=Male/2=Female coding -- see the
+# `sex =` case in derived_column() (R/generate-columns.R).
 
 read_schema_root <- function(root, schema_commit, schema_source) {
   registers <- read_yaml_dir(file.path(root, "registers"))
