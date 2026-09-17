@@ -153,9 +153,17 @@ sample_sks_codes <- function(n, kind, cs, koen = NULL, age_years = NULL) {
 typed_noise <- function(type, n, role = NULL, name = NULL, code_system = NULL, cs = NULL,
                          analysiscode = NULL) {
   if (identical(type, "integer")) {
+    curated <- numeric_range_noise(name, n)
+    if (!is.null(curated)) {
+      return(as.integer(curated))
+    }
     return(sample.int(11L, n, replace = TRUE) - 1L)
   }
   if (identical(type, "numeric")) {
+    curated <- numeric_range_noise(name, n)
+    if (!is.null(curated)) {
+      return(curated)
+    }
     return(stats::runif(n, 0.5, 20))
   }
   if (identical(type, "logical")) {

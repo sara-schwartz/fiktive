@@ -93,3 +93,7 @@ columns:
     type: character
     role: code
     coverage: {from: 2004-12, to: 2026-06}
+  - id: antpersf
+    name: antpersf
+    type: numeric
+    role: value

@@ -18,3 +18,7 @@ columns:
     type: character
     role: code
     code_system: koen
+  - id: alderimp
+    name: alderimp
+    type: numeric
+    role: value

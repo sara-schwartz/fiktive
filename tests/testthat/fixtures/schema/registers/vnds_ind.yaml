@@ -29,3 +29,7 @@ columns:
     type: character
     role: code
     code_system: civst
+  - id: alder_ult
+    name: alder_ult
+    type: integer
+    role: value

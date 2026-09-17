@@ -91,6 +91,21 @@ columns:
     role: value
     key: true
     coverage: {from: 2003, to: 2018}
+  - id: apgarscore_efter5minutter
+    name: apgarscore_efter5minutter
+    type: numeric
+    role: value
+    coverage: {from: 1997, to: 2018}
+  - id: hovedomfang
+    name: hovedomfang
+    type: numeric
+    role: value
+    coverage: {from: 1997, to: 2018}
+  - id: paritet
+    name: paritet
+    type: numeric
+    role: value
+    coverage: {from: 1997, to: 2018}
   - id: amnioinfusion
     name: amnioinfusion
     type: character

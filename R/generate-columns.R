@@ -284,6 +284,18 @@ derived_column <- function(id, rows, schema = NULL) {
     aldr = age_years(rows$foed_dag, when),
     v_alder = age_years(rows$foed_dag, when),
     v_diagnosealder = age_years(rows$foed_dag, when),
+    # sssy's own name for age at contact -- same fact as v_alder/alder_haend
+    # above, just this register's own column name (map carefully).
+    alderimp = age_years(rows$foed_dag, when),
+    # vnds_ind/vnds_ud: age at the migration event.
+    alder_ult = age_years(rows$foed_dag, when),
+    # lpr_adm/t_psyk_adm: age in days/months at contact -- the same
+    # underlying fact as v_alder (age in years) elsewhere on this table,
+    # just a finer unit, so this must derive from the same birth/event
+    # dates rather than draw independently (which could contradict v_alder
+    # for the same row).
+    v_alddg = as.integer(round(as.numeric(difftime(when, rows$foed_dag, units = "days")))),
+    v_aldmdr = as.integer(round(as.numeric(difftime(when, rows$foed_dag, units = "days")) / 30.44)),
     v_diagaar = as.numeric(lubridate::year(when)),
     v_diagmd = as.numeric(lubridate::month(when)),
     fdato = rows$foed_dag,

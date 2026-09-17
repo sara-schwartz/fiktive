@@ -44,6 +44,26 @@ columns:
     name: v_alder
     type: integer
     role: value
+  - id: v_alddg
+    name: v_alddg
+    type: integer
+    role: value
+  - id: v_aldmdr
+    name: v_aldmdr
+    type: integer
+    role: value
+  - id: v_sengdage
+    name: v_sengdage
+    type: integer
+    role: value
+  - id: v_indminut
+    name: v_indminut
+    type: integer
+    role: value
+  - id: v_udtime
+    name: v_udtime
+    type: integer
+    role: value
   - id: year
     name: year
     type: integer
