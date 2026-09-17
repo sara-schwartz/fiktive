@@ -194,3 +194,20 @@ test_that("value/unit/reference interval are analyte-specific, not one shared dr
     }
   })
 })
+
+test_that("NORIP-sourced analyte ranges are tagged and match the cited Table I values", {
+  ranges <- fiktive:::.LABTERM_ANALYTE_RANGES
+  sources <- vapply(ranges, function(r) r$source %||% NA_character_, character(1))
+  expect_true(all(sources %in% c("NORIP", "clinical")))
+  norip_codes <- names(ranges)[sources == "NORIP"]
+  expect_equal(length(norip_codes), 25L)
+  # Spot-check against Rustad et al. 2004 Table I (doi:10.1080/00365510410006324),
+  # plasma column, so a future edit can't silently drift from the cited source.
+  expect_equal(ranges$NPU03230$ref, c(3.5, 4.4))   # Potassium (P)
+  expect_equal(ranges$NPU03429$ref, c(137, 144))   # Sodium (P)
+  expect_equal(ranges$NPU18016$ref, c(50, 100))    # Creatininium (P)
+  expect_equal(ranges$NPU04094$ref, c(0.45, 2.4))  # Triglyceride (P, fasting)
+  # Not-NORIP analytes are marked as such, not blended into the cited tier.
+  expect_equal(ranges$NPU01536$source, "clinical") # Chloride -- not one of NORIP's 25
+  expect_equal(ranges$NPU28309$source, "clinical") # Haemoglobin -- separate NORIP haematology paper, not drawn on here
+})
