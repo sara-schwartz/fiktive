@@ -1,0 +1,394 @@
+id: kkh_foods6ny
+name: foods6ny
+one_row_per: person
+join_keys:
+- pnr
+columns:
+- id: pnr
+  name: pnr
+  type: character
+  role: join_key
+- id: allfruit
+  name: allfruit
+  type: numeric
+  label:
+    da: All fruits (incl. juices)
+    en: All fruits (incl. juices)
+- id: allplant
+  name: allplant
+  type: numeric
+  label:
+    da: Allvegs,allfruit,allpotat,legumes
+    en: Allvegs,allfruit,allpotat,legumes
+- id: allpotat
+  name: allpotat
+  type: numeric
+  label:
+    da: All potatoes
+    en: All potatoes
+- id: allvegs
+  name: allvegs
+  type: numeric
+  label:
+    da: All vegetables (incl. juices)
+    en: All vegetables (incl. juices)
+- id: fatfoods
+  name: fatfoods
+  type: numeric
+  label:
+    da: Red and processed meat,dairy,eggs
+    en: Red and processed meat,dairy,eggs
+- id: fishfat
+  name: fishfat
+  type: numeric
+  label:
+    da: Fish, fat (fresh+processed)
+    en: Fish, fat (fresh+processed)
+- id: fishlean
+  name: fishlean
+  type: numeric
+  label:
+    da: Fish, lean (fresh+processed)
+    en: Fish, lean (fresh+processed)
+- id: fishmid
+  name: fishmid
+  type: numeric
+  label:
+    da: Fish, medium fat (fresh+processed)
+    en: Fish, medium fat (fresh+processed)
+- id: fishtot
+  name: fishtot
+  type: numeric
+  label:
+    da: Fish (all types)
+    en: Fish (all types)
+- id: fruit
+  name: fruit
+  type: numeric
+  label:
+    da: Fruits (ex juices)
+    en: Fruits (ex juices)
+- id: vegs
+  name: vegs
+  type: numeric
+  label:
+    da: Vegetables (ex juices)
+    en: Vegetables (ex juices)
+- id: juices
+  name: juices
+  type: numeric
+  label:
+    da: Juices (fruit and vegetable)
+    en: Juices (fruit and vegetable)
+- id: meattot
+  name: meattot
+  type: numeric
+  label:
+    da: Red meat,fish,poultry,processed
+    en: Red meat,fish,poultry,processed
+- id: meatwhit
+  name: meatwhit
+  type: numeric
+  label:
+    da: Fish,poultry
+    en: Fish,poultry
+- id: totcerea
+  name: totcerea
+  type: numeric
+  label:
+    da: Cereals (wholegrain + refined)
+    en: Cereals (wholegrain + refined)
+- id: totdiary
+  name: totdiary
+  type: numeric
+  label:
+    da: Dairy products (lean + fatty)
+    en: Dairy products (lean + fatty)
+- id: vaegtc
+  name: vaegtc
+  type: numeric
+  label:
+    da: 'Totalt indatag af mad: sum af vaegtc01-vaegt60)'
+    en: 'Totalt indatag af mad: sum af vaegtc01-vaegt60)'
+- id: vaegtc01
+  name: vaegtc01
+  type: numeric
+  label:
+    da: Leafy vegetables (gpd)
+    en: Leafy vegetables (gpd)
+- id: vaegtc02
+  name: vaegtc02
+  type: numeric
+  label:
+    da: Fruiting vegetables (gpd)
+    en: Fruiting vegetables (gpd)
+- id: vaegtc03
+  name: vaegtc03
+  type: numeric
+  label:
+    da: Potatoes (gpd)
+    en: Potatoes (gpd)
+- id: vaegtc04
+  name: vaegtc04
+  type: numeric
+  label:
+    da: Other root vegetables (gpd)
+    en: Other root vegetables (gpd)
+- id: vaegtc05
+  name: vaegtc05
+  type: numeric
+  label:
+    da: Cabbages (gpd)
+    en: Cabbages (gpd)
+- id: vaegtc06
+  name: vaegtc06
+  type: numeric
+  label:
+    da: Mushrooms (gpd)
+    en: Mushrooms (gpd)
+- id: vaegtc07
+  name: vaegtc07
+  type: numeric
+  label:
+    da: Onion, garlic (gpd)
+    en: Onion, garlic (gpd)
+- id: vaegtc08
+  name: vaegtc08
+  type: numeric
+  label:
+    da: Stalk vegetables, sprouts (gpd)
+    en: Stalk vegetables, sprouts (gpd)
+- id: vaegtc09
+  name: vaegtc09
+  type: numeric
+  label:
+    da: Legumes (gpd)
+    en: Legumes (gpd)
+- id: vaegtc10
+  name: vaegtc10
+  type: numeric
+  label:
+    da: Citrus fruits (gpd)
+    en: Citrus fruits (gpd)
+- id: vaegtc11
+  name: vaegtc11
+  type: numeric
+  label:
+    da: Other fruits (gpd)
+    en: Other fruits (gpd)
+- id: vaegtc13
+  name: vaegtc13
+  type: numeric
+  label:
+    da: Cereals, wholegrain (gpd)
+    en: Cereals, wholegrain (gpd)
+- id: vaegtc14
+  name: vaegtc14
+  type: numeric
+  label:
+    da: Cereals, refined (gpd)
+    en: Cereals, refined (gpd)
+- id: vaegtc15
+  name: vaegtc15
+  type: numeric
+  label:
+    da: Red meat (gpd)
+    en: Red meat (gpd)
+- id: vaegtc17
+  name: vaegtc17
+  type: numeric
+  label:
+    da: Poultry (gpd)
+    en: Poultry (gpd)
+- id: vaegtc18
+  name: vaegtc18
+  type: numeric
+  label:
+    da: Processed meat (gpd)
+    en: Processed meat (gpd)
+- id: vaegtc19
+  name: vaegtc19
+  type: numeric
+  label:
+    da: Eggs (gpd)
+    en: Eggs (gpd)
+- id: vaegtc20
+  name: vaegtc20
+  type: numeric
+  label:
+    da: Dairy products, lean (gpd)
+    en: Dairy products, lean (gpd)
+- id: vaegtc21
+  name: vaegtc21
+  type: numeric
+  label:
+    da: Dairy products, fatty (gpd)
+    en: Dairy products, fatty (gpd)
+- id: vaegtc23
+  name: vaegtc23
+  type: numeric
+  label:
+    da: Fruit juices (gpd)
+    en: Fruit juices (gpd)
+- id: vaegtc24
+  name: vaegtc24
+  type: numeric
+  label:
+    da: Vegetable juices (gpd)
+    en: Vegetable juices (gpd)
+- id: vaegtc25
+  name: vaegtc25
+  type: numeric
+  label:
+    da: Potatoes, fatty (gpd)
+    en: Potatoes, fatty (gpd)
+- id: vaegtc26
+  name: vaegtc26
+  type: numeric
+  label:
+    da: Nuts
+    en: Nuts
+- id: vaegtc27
+  name: vaegtc27
+  type: numeric
+  label:
+    da: Vegetable oils (gpd)
+    en: Vegetable oils (gpd)
+- id: vaegtc28
+  name: vaegtc28
+  type: numeric
+  label:
+    da: Butter (gpd)
+    en: Butter (gpd)
+- id: vaegtc29
+  name: vaegtc29
+  type: numeric
+  label:
+    da: Margarines
+    en: Margarines
+- id: vaegtc30
+  name: vaegtc30
+  type: numeric
+  label:
+    da: Other animal fat (gpd)
+    en: Other animal fat (gpd)
+- id: vaegtc31
+  name: vaegtc31
+  type: numeric
+  label:
+    da: Sugar, honey, jam and syrups (gpd)
+    en: Sugar, honey, jam and syrups (gpd)
+- id: vaegtc32
+  name: vaegtc32
+  type: numeric
+  label:
+    da: Chocolate, candy bars (gpd)
+    en: Chocolate, candy bars (gpd)
+- id: vaegtc33
+  name: vaegtc33
+  type: numeric
+  label:
+    da: Confectionary non chocolate (gpd)
+    en: Confectionary non chocolate (gpd)
+- id: vaegtc34
+  name: vaegtc34
+  type: numeric
+  label:
+    da: Soft drinks (gpd)
+    en: Soft drinks (gpd)
+- id: vaegtc35
+  name: vaegtc35
+  type: numeric
+  label:
+    da: Waters (gpd)
+    en: Waters (gpd)
+- id: vaegtc36
+  name: vaegtc36
+  type: numeric
+  label:
+    da: Coffee (gpd)
+    en: Coffee (gpd)
+- id: vaegtc37
+  name: vaegtc37
+  type: numeric
+  label:
+    da: Tea (gpd)
+    en: Tea (gpd)
+- id: vaegtc38
+  name: vaegtc38
+  type: numeric
+  label:
+    da: Wine (gpd)
+    en: Wine (gpd)
+- id: vaegtc39
+  name: vaegtc39
+  type: numeric
+  label:
+    da: Beer (gpd)
+    en: Beer (gpd)
+- id: vaegtc40
+  name: vaegtc40
+  type: numeric
+  label:
+    da: Spirits and brandy (gpd)
+    en: Spirits and brandy (gpd)
+- id: vaegtc41
+  name: vaegtc41
+  type: numeric
+  label:
+    da: Mayonnaises and similars (gpd)
+    en: Mayonnaises and similars (gpd)
+- id: vaegtc42
+  name: vaegtc42
+  type: numeric
+  label:
+    da: Soya (gpd)
+    en: Soya (gpd)
+- id: vaegtc43
+  name: vaegtc43
+  type: numeric
+  label:
+    da: Snacks (gpd)
+    en: Snacks (gpd)
+- id: vaegtc44
+  name: vaegtc44
+  type: numeric
+  label:
+    da: Fish,lean,fresh (gpd)
+    en: Fish,lean,fresh (gpd)
+- id: vaegtc45
+  name: vaegtc45
+  type: numeric
+  label:
+    da: Fish,lean,processed (gpd)
+    en: Fish,lean,processed (gpd)
+- id: vaegtc46
+  name: vaegtc46
+  type: numeric
+  label:
+    da: Fish,medium fat,fresh (gpd)
+    en: Fish,medium fat,fresh (gpd)
+- id: vaegtc47
+  name: vaegtc47
+  type: numeric
+  label:
+    da: Fish,medium fat,processed (gpd)
+    en: Fish,medium fat,processed (gpd)
+- id: vaegtc48
+  name: vaegtc48
+  type: numeric
+  label:
+    da: Fish,fatty,fresh (gpd)
+    en: Fish,fatty,fresh (gpd)
+- id: vaegtc49
+  name: vaegtc49
+  type: numeric
+  label:
+    da: Fish,fatty,processed (gpd)
+    en: Fish,fatty,processed (gpd)
+- id: vaegtc60
+  name: vaegtc60
+  type: numeric
+  label:
+    da: Non classified (gpd)
+    en: Non classified (gpd)

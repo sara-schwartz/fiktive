@@ -1,0 +1,340 @@
+id: kkh_nutri6ny
+name: nutri6ny
+one_row_per: person
+join_keys:
+- pnr
+columns:
+- id: pnr
+  name: pnr
+  type: character
+  role: join_key
+- id: alko
+  name: alko
+  type: numeric
+  label:
+    da: Alkohol (g/d)
+    en: Alcohol (g/d)
+- id: alkoe
+  name: alkoe
+  type: numeric
+  label:
+    da: Alkohol-energi (kJ/d)
+    en: Alcohol-energy (kJ/d)
+- id: alkoep
+  name: alkoep
+  type: numeric
+  label:
+    da: Alkohol (energi%)
+    en: Alcohol (energy%)
+- id: avit
+  name: avit
+  type: numeric
+  label:
+    da: Vitamin A (RE/d)
+    en: Vitamin A (RE/d)
+- id: b12vit
+  name: b12vit
+  type: numeric
+  label:
+    da: Vitamin B12 (mcg/d)
+    en: Vitamin B12 (mcg/d)
+- id: b6vit
+  name: b6vit
+  type: numeric
+  label:
+    da: Vitamin B6 (mg/d)
+    en: Vitamin B6 (mg/d)
+- id: betaca
+  name: betaca
+  type: numeric
+  label:
+    da: Betacaroten (mcg/d)
+    en: Betacaroten (mcg/d)
+- id: calciu
+  name: calciu
+  type: numeric
+  label:
+    da: Calcium (mg/d)
+    en: Calcium (mg/d)
+- id: cho
+  name: cho
+  type: numeric
+  label:
+    da: Tilgængeligt kulhydrat (for GL) (g/d)
+    en: Available carbohydrate (for GL) (g/d)
+- id: choles
+  name: choles
+  type: numeric
+  label:
+    da: Cholesterol (mg/d)
+    en: Cholesterol (mg/d)
+- id: cvit
+  name: cvit
+  type: numeric
+  label:
+    da: Vitamin C (mg/d)
+    en: Vitamin C (mg/d)
+- id: dvit
+  name: dvit
+  type: numeric
+  label:
+    da: Vitamin D (mcg/d)
+    en: Vitamin D (mcg/d)
+- id: energi
+  name: energi
+  type: numeric
+  label:
+    da: Energi,incl. alkohol (kJ/d)
+    en: Energy,incl. alcohol (kJ/d)
+- id: energx
+  name: energx
+  type: numeric
+  label:
+    da: Energi,ex.alkohol (kJ/d)
+    en: Energy,excl. alcohol (kJ/d)
+- id: evit
+  name: evit
+  type: numeric
+  label:
+    da: Vitamin E (alpha-TE/d)
+    en: Vitamin E (alpha-TE/d)
+- id: fedt
+  name: fedt
+  type: numeric
+  label:
+    da: Fedt (g/d)
+    en: Fats (g/d)
+- id: fedte
+  name: fedte
+  type: numeric
+  label:
+    da: Fedt-energi (kJ/d)
+    en: Fats-energy (kJ/d)
+- id: fedtep
+  name: fedtep
+  type: numeric
+  label:
+    da: Fedt (energi%,incl.alkohol)
+    en: Fats (energy%,incl. alcohol)
+- id: fedtexp
+  name: fedtexp
+  type: numeric
+  label:
+    da: Fedt (energi%,ekskl.alkohol)
+    en: Fats (energy%,excl. alcohol)
+- id: fedtms
+  name: fedtms
+  type: numeric
+  label:
+    da: Fedtsyrer,mættede (g/d)
+    en: Fatty acids,saturated (g/d)
+- id: fedtps
+  name: fedtps
+  type: numeric
+  label:
+    da: Fedtsyrer,polyumættede (g/d)
+    en: Fatty acids,polyunsaturated (g/d)
+- id: fedtus
+  name: fedtus
+  type: numeric
+  label:
+    da: Fedtsyrer,monoumættede (g/d)
+    en: Fatty acids,monounsaturated (g/d)
+- id: fiskn3
+  name: fiskn3
+  type: numeric
+  label:
+    da: Fedtsyrer, sum af marine n3 (g/d)
+    en: Fatty acids, sum of marine n3 (g/d)
+- id: folaci
+  name: folaci
+  type: numeric
+  label:
+    da: Folacin (mcg/d)
+    en: Folacin (mcg/d)
+- id: fosfor
+  name: fosfor
+  type: numeric
+  label:
+    da: Fosfor (mg/d)
+    en: Fosfor (mg/d)
+- id: frukto
+  name: frukto
+  type: numeric
+  label:
+    da: Fruktose (g/d)
+    en: Fructose (g/d)
+- id: glukos
+  name: glukos
+  type: numeric
+  label:
+    da: Glukose (g/d)
+    en: Glucose (g/d)
+- id: jern
+  name: jern
+  type: numeric
+  label:
+    da: Jern (mg/d)
+    en: Iron (mg/d)
+- id: jod
+  name: jod
+  type: numeric
+  label:
+    da: Jod (mcg/d)
+    en: Iodine (mcg/d)
+- id: kalium
+  name: kalium
+  type: numeric
+  label:
+    da: Kalium (mg/d)
+    en: Potassium(mg/d)
+- id: kfibre
+  name: kfibre
+  type: numeric
+  label:
+    da: Kostfibre (g/d)
+    en: Dietary fiber (g/d)
+- id: kobber
+  name: kobber
+  type: numeric
+  label:
+    da: Kobber (mg/d)
+    en: Copper (mg/d)
+- id: kulhy
+  name: kulhy
+  type: numeric
+  label:
+    da: Kulhydrat (g/d)
+    en: Carbohydrates (g/d)
+- id: kulhye
+  name: kulhye
+  type: numeric
+  label:
+    da: Kulhydrat-energi (kJ/d)
+    en: Carbohydrates -energy (kJ/d)
+- id: kulhyep
+  name: kulhyep
+  type: numeric
+  label:
+    da: Kulhydrat (energi%,incl.alkohol)
+    en: Carbohydrates (energy%,incl.alcohol)
+- id: kulhyexp
+  name: kulhyexp
+  type: numeric
+  label:
+    da: Kulhydrat (energi%,ekskl.alkohol)
+    en: Carbohydrates (energy%,excl.alcohol)
+- id: laktos
+  name: laktos
+  type: numeric
+  label:
+    da: Laktose (g/d)
+    en: Lactose (g/d)
+- id: magnes
+  name: magnes
+  type: numeric
+  label:
+    da: Magnesium (mg/d)
+    en: Magnesium (mg/d)
+- id: maltos
+  name: maltos
+  type: numeric
+  label:
+    da: Maltose (g/d)
+    en: Maltose (g/d)
+- id: mangan
+  name: mangan
+  type: numeric
+  label:
+    da: Mangan (mg/d)
+    en: Manganese (mg/d)
+- id: natriu
+  name: natriu
+  type: numeric
+  label:
+    da: Natrium (mg/d)
+    en: Sodium (mg/d)
+- id: niacin
+  name: niacin
+  type: numeric
+  label:
+    da: Niacin (mg/d)
+    en: Niacin (mg/d)
+- id: prot
+  name: prot
+  type: numeric
+  label:
+    da: Protein (g/d)
+    en: Protein (g/d)
+- id: prote
+  name: prote
+  type: numeric
+  label:
+    da: Protein-energi (kJ/d)
+    en: Protein-energy (kJ/d)
+- id: protep
+  name: protep
+  type: numeric
+  label:
+    da: Protein (energi%,incl.alkohol)
+    en: Protein (energy%,incl.alcohol)
+- id: protexp
+  name: protexp
+  type: numeric
+  label:
+    da: Protein (energi%, ekskl. alkohol)
+    en: Protein (energy%,excl.alcohol)
+- id: retino
+  name: retino
+  type: numeric
+  label:
+    da: Retinol (mcg/d)
+    en: Retinol (mcg/d)
+- id: ribofl
+  name: ribofl
+  type: numeric
+  label:
+    da: Riboflavin (mg/d)
+    en: Riboflavin (mg/d)
+- id: saccha
+  name: saccha
+  type: numeric
+  label:
+    da: Saccharose (g/d)
+    en: Sucrose (g/d)
+- id: selen
+  name: selen
+  type: numeric
+  label:
+    da: Selen (mcg/d)
+    en: Selenium (mcg/d)
+- id: stivel
+  name: stivel
+  type: numeric
+  label:
+    da: Stivelse (g/d)
+    en: Starch (g/d)
+- id: sukker
+  name: sukker
+  type: numeric
+  label:
+    da: Sukkerarter,total (g/d)
+    en: Sugars,total (g/d)
+- id: suktil
+  name: suktil
+  type: numeric
+  label:
+    da: Tilsat sukker (g/d)
+    en: Added sugar(g/d)
+- id: thiami
+  name: thiami
+  type: numeric
+  label:
+    da: Thiamin (mg/d)
+    en: Thiamine (mg/d)
+- id: zink
+  name: zink
+  type: numeric
+  label:
+    da: Zink (mg/d)
+    en: Zinc (mg/d)

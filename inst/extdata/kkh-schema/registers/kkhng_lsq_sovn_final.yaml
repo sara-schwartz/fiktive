@@ -1,0 +1,124 @@
+id: kkhng_lsq_sovn_final
+name: lsq_sovn_final
+one_row_per: person
+join_keys:
+- pnr
+columns:
+- id: pnr
+  name: pnr
+  type: character
+  role: join_key
+- id: sovn03
+  name: sovn03
+  type: numeric
+  label:
+    da: ~
+    en: On a typical weekday (working day), how long does it take until you fall asleep
+      from when you turn off the light?
+- id: sovn06
+  name: sovn06
+  type: numeric
+  label:
+    da: ~
+    en: When you have a day off, how long does it take until you fall asleep from
+      when you turn off the light?
+- id: sovn07_01
+  name: sovn07_01
+  type: numeric
+  label:
+    da: ~
+    en: 'If you think about your weekdays over the past year, how often: Do you feel
+      rested when you wake?'
+- id: sovn07_02
+  name: sovn07_02
+  type: numeric
+  label:
+    da: ~
+    en: 'If you think about your weekdays over the past year, how often: Are you satisfied
+      with the quality of your sleep?'
+- id: sovn07_03
+  name: sovn07_03
+  type: numeric
+  label:
+    da: ~
+    en: 'If you think about your weekdays over the past year, how often: Do you feel
+      tired and need a nap during the day?'
+- id: sovn07_04
+  name: sovn07_04
+  type: numeric
+  label:
+    da: ~
+    en: 'If you think about your weekdays over the past year, how often: Do you take
+      sleep-inducing medication to fall asleep?'
+- id: sovn07_05
+  name: sovn07_05
+  type: numeric
+  label:
+    da: ~
+    en: |-
+      If you think about your weekdays over the past year, how often: Do you use other remedies (e.g. alternative medicine or
+      alcohol) to fall asleep?
+- id: sovn07_06
+  name: sovn07_06
+  type: numeric
+  label:
+    da: ~
+    en: |-
+      If you think about your weekdays over the past year, how often: Is your sleep disturbed by medical problems (e.g. pain,
+      breathing problems or sleep apnea)?
+- id: sovn07_07
+  name: sovn07_07
+  type: numeric
+  label:
+    da: ~
+    en: |-
+      If you think about your weekdays over the past year, how often: Do stress, worries or negative thoughts prevent you from
+      sleeping/falling asleep?
+- id: sovn07_08
+  name: sovn07_08
+  type: numeric
+  label:
+    da: ~
+    en: 'If you think about your weekdays over the past year, how often: Is your sleep
+      interrupted by traffic or industrial noise?'
+- id: sovn07_09
+  name: sovn07_09
+  type: numeric
+  label:
+    da: ~
+    en: |-
+      If you think about your weekdays over the past year, how often: Is your sleep disturbed by the noise of children, a partner or
+      neighbors?
+- id: sovn07_10
+  name: sovn07_10
+  type: numeric
+  label:
+    da: ~
+    en: 'If you think about your weekdays over the past year, how often: Is your sleep
+      disturbed by other noise?'
+- id: sovn07_11
+  name: sovn07_11
+  type: numeric
+  label:
+    da: ~
+    en: 'If you think about your weekdays over the past year, how often: Is your sleep
+      disturbed by toilet visits?'
+- id: sovn08
+  name: sovn08
+  type: numeric
+  label:
+    da: ~
+    en: Would you describe yourself as a morning person, an evening person, or somewhere
+      in between?
+- id: sovn20
+  name: sovn20
+  type: numeric
+  label:
+    da: ~
+    en: Duration of sleep on workday(s) (hours)
+- id: sovn21
+  name: sovn21
+  type: numeric
+  label:
+    da: ~
+    en: Duration of sleep on non-workday(s) (hours)

@@ -216,6 +216,17 @@ a project that documents the real DST register structures. That means:
 - If fiktive doesn't know how to fill in a value safely, it stops with a
   clear error rather than guessing. See below.
 
+`load_registers_schema()` also always merges in fiktive's own bundled
+metadata for **KKH** (Danish Diet, Cancer and Health) and **KKHNG** (...and
+Next Generations) — variable name, type, and Danish/English label only, per
+KKH/DCH's data-sharing approval. This is fiktive's own data, separate from
+registers-guide (never fetched from or sent to that project), and is
+included automatically — not a second call to remember. Register ids are
+prefixed `kkh_`/`kkhng_` (e.g. `kkh_journal`, `kkhng_ffq_gpd`) and generate
+exactly like any DST register: `generate_register("kkh_journal", ...)`,
+or mixed into a batch `generate_registers()` call. See the
+[vignette](vignettes/fiktive.Rmd) for the full KKH/KKHNG register list.
+
 ### "SCHEMA GAP" errors
 
 If you see an error starting with `SCHEMA GAP:`, fiktive is telling you it

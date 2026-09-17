@@ -1,0 +1,502 @@
+id: kkh_vitmin6_v2
+name: vitmin6_v2
+one_row_per: person
+join_keys:
+- pnr
+columns:
+- id: pnr
+  name: pnr
+  type: character
+  role: join_key
+- id: avit_ffq
+  name: avit_ffq
+  type: numeric
+  label:
+    da: FFQ - Vitamin A (RE/d)
+    en: ~
+- id: retino_ffq
+  name: retino_ffq
+  type: numeric
+  label:
+    da: FFQ - Retinol (mcg/d)
+    en: ~
+- id: betaca_ffq
+  name: betaca_ffq
+  type: numeric
+  label:
+    da: FFQ - Betacaroten (mcg/d)
+    en: ~
+- id: cvit_ffq
+  name: cvit_ffq
+  type: numeric
+  label:
+    da: FFQ - Vitamin C (mg/d)
+    en: ~
+- id: evit_ffq
+  name: evit_ffq
+  type: numeric
+  label:
+    da: FFQ - Vitamin E (alpha-TE/d)
+    en: ~
+- id: alfato_ffq
+  name: alfato_ffq
+  type: numeric
+  label:
+    da: FFQ - Alpha-tocopherol (mg/d)
+    en: ~
+- id: dvit_ffq
+  name: dvit_ffq
+  type: numeric
+  label:
+    da: FFQ - Vitamin D (mcg/d)
+    en: ~
+- id: calciu_ffq
+  name: calciu_ffq
+  type: numeric
+  label:
+    da: FFQ - Calcium (mg/d)
+    en: ~
+- id: folaci_ffq
+  name: folaci_ffq
+  type: numeric
+  label:
+    da: FFQ - Folacin (mcg/d)
+    en: ~
+- id: thiami_ffq
+  name: thiami_ffq
+  type: numeric
+  label:
+    da: FFQ - Thiamin (mg/d)
+    en: ~
+- id: ribofl_ffq
+  name: ribofl_ffq
+  type: numeric
+  label:
+    da: FFQ - Riboflavin (mg/d)
+    en: ~
+- id: niacin_ffq
+  name: niacin_ffq
+  type: numeric
+  label:
+    da: FFQ - Niacin (mg/d)
+    en: ~
+- id: neniac_ffq
+  name: neniac_ffq
+  type: numeric
+  label:
+    da: FFQ - Niacin, Niacin ækvivalenter (NE, tilsvarer mg/d)
+    en: ~
+- id: b6vit_ffq
+  name: b6vit_ffq
+  type: numeric
+  label:
+    da: FFQ - Vitamin B6 (mg/d)
+    en: ~
+- id: b12vit_ffq
+  name: b12vit_ffq
+  type: numeric
+  label:
+    da: FFQ - Vitamin B12 (mcg/d)
+    en: ~
+- id: k1vit_ffq
+  name: k1vit_ffq
+  type: numeric
+  label:
+    da: FFQ - Vitamin K1 (mcg/d)
+    en: ~
+- id: pantot_ffq
+  name: pantot_ffq
+  type: numeric
+  label:
+    da: FFQ - Pantotensyre (mg/d)
+    en: ~
+- id: biotin_ffq
+  name: biotin_ffq
+  type: numeric
+  label:
+    da: FFQ - Biotin (mcg/d)
+    en: ~
+- id: jern_ffq
+  name: jern_ffq
+  type: numeric
+  label:
+    da: FFQ - Jern (mg/d)
+    en: ~
+- id: kobber_ffq
+  name: kobber_ffq
+  type: numeric
+  label:
+    da: FFQ - Kobber (mg/d)
+    en: ~
+- id: magnes_ffq
+  name: magnes_ffq
+  type: numeric
+  label:
+    da: FFQ - Magnesium (mg/d)
+    en: ~
+- id: selen_ffq
+  name: selen_ffq
+  type: numeric
+  label:
+    da: FFQ - Selen (mcg/d)
+    en: ~
+- id: zink_ffq
+  name: zink_ffq
+  type: numeric
+  label:
+    da: FFQ - Zink (mg/d)
+    en: ~
+- id: mangan_ffq
+  name: mangan_ffq
+  type: numeric
+  label:
+    da: FFQ - Mangan (mg/d)
+    en: ~
+- id: fosfor_ffq
+  name: fosfor_ffq
+  type: numeric
+  label:
+    da: FFQ - Fosfor (mg/d)
+    en: ~
+- id: kalium_ffq
+  name: kalium_ffq
+  type: numeric
+  label:
+    da: FFQ - Kalium (mg/d)
+    en: ~
+- id: natriu_ffq
+  name: natriu_ffq
+  type: numeric
+  label:
+    da: FFQ - Natrium (mg/d)
+    en: ~
+- id: jod_ffq
+  name: jod_ffq
+  type: numeric
+  label:
+    da: FFQ - Jod (mcg/d)
+    en: ~
+- id: chrom_ffq
+  name: chrom_ffq
+  type: numeric
+  label:
+    da: FFQ - Chrom (mcg/d)
+    en: ~
+- id: nikkel_ffq
+  name: nikkel_ffq
+  type: numeric
+  label:
+    da: FFQ - Nikkel (mcg/d)
+    en: ~
+- id: avit_ktsk
+  name: avit_ktsk
+  type: numeric
+  label:
+    da: Kosttilskud - Vitamin A (RE/d)
+    en: ~
+- id: betaca_ktsk
+  name: betaca_ktsk
+  type: numeric
+  label:
+    da: Kosttilskud - Betacaroten (mcg/d)
+    en: ~
+- id: cvit_ktsk
+  name: cvit_ktsk
+  type: numeric
+  label:
+    da: Kosttilskud - Vitamin C (mg/d)
+    en: ~
+- id: evit_ktsk
+  name: evit_ktsk
+  type: numeric
+  label:
+    da: Kosttilskud - Vitamin E (alpha-TE/d)
+    en: ~
+- id: dvit_ktsk
+  name: dvit_ktsk
+  type: numeric
+  label:
+    da: Kosttilskud - Vitamin D (mcg/d)
+    en: ~
+- id: calciu_ktsk
+  name: calciu_ktsk
+  type: numeric
+  label:
+    da: Kosttilskud - Calcium (mg/d)
+    en: ~
+- id: folaci_ktsk
+  name: folaci_ktsk
+  type: numeric
+  label:
+    da: Kosttilskud - Folacin (mcg/d)
+    en: ~
+- id: thiami_ktsk
+  name: thiami_ktsk
+  type: numeric
+  label:
+    da: Kosttilskud - Thiamin (mg/d)
+    en: ~
+- id: ribofl_ktsk
+  name: ribofl_ktsk
+  type: numeric
+  label:
+    da: Kosttilskud - Riboflavin (mg/d)
+    en: ~
+- id: niacin_ktsk
+  name: niacin_ktsk
+  type: numeric
+  label:
+    da: Kosttilskud - Niacin (mg/d)
+    en: ~
+- id: b6vit_ktsk
+  name: b6vit_ktsk
+  type: numeric
+  label:
+    da: Kosttilskud - Vitamin B6 (mg/d)
+    en: ~
+- id: b12vit_ktsk
+  name: b12vit_ktsk
+  type: numeric
+  label:
+    da: Kosttilskud - Vitamin B12 (mcg/d)
+    en: ~
+- id: k1vit_ktsk
+  name: k1vit_ktsk
+  type: numeric
+  label:
+    da: Kosttilskud - Vitamin K1 (mcg/d)
+    en: ~
+- id: pantot_ktsk
+  name: pantot_ktsk
+  type: numeric
+  label:
+    da: Kosttilskud - Pantotensyre (mg/d)
+    en: ~
+- id: biotin_ktsk
+  name: biotin_ktsk
+  type: numeric
+  label:
+    da: Kosttilskud - Biotin (mcg/d)
+    en: ~
+- id: jern_ktsk
+  name: jern_ktsk
+  type: numeric
+  label:
+    da: Kosttilskud - Jern (mg/d)
+    en: ~
+- id: kobber_ktsk
+  name: kobber_ktsk
+  type: numeric
+  label:
+    da: Kosttilskud - Kobber (mg/d)
+    en: ~
+- id: magnes_ktsk
+  name: magnes_ktsk
+  type: numeric
+  label:
+    da: Kosttilskud - Magnesium (mg/d)
+    en: ~
+- id: selen_ktsk
+  name: selen_ktsk
+  type: numeric
+  label:
+    da: Kosttilskud - Selen (mcg/d)
+    en: ~
+- id: zink_ktsk
+  name: zink_ktsk
+  type: numeric
+  label:
+    da: Kosttilskud - Zink (mg/d)
+    en: ~
+- id: mangan_ktsk
+  name: mangan_ktsk
+  type: numeric
+  label:
+    da: Kosttilskud - Mangan (mg/d)
+    en: ~
+- id: fosfor_ktsk
+  name: fosfor_ktsk
+  type: numeric
+  label:
+    da: Kosttilskud - Fosfor (mg/d)
+    en: ~
+- id: kalium_ktsk
+  name: kalium_ktsk
+  type: numeric
+  label:
+    da: Kosttilskud - Kalium (mg/d)
+    en: ~
+- id: natriu_ktsk
+  name: natriu_ktsk
+  type: numeric
+  label:
+    da: Kosttilskud - Natrium (mg/d)
+    en: ~
+- id: jod_ktsk
+  name: jod_ktsk
+  type: numeric
+  label:
+    da: Kosttilskud - Jod (mcg/d)
+    en: ~
+- id: chrom_ktsk
+  name: chrom_ktsk
+  type: numeric
+  label:
+    da: Kosttilskud - Chrom (mcg/d)
+    en: ~
+- id: k1vit_tot
+  name: k1vit_tot
+  type: numeric
+  label:
+    da: Total - Vitamin K1 (mcg/d)
+    en: ~
+- id: pantot_tot
+  name: pantot_tot
+  type: numeric
+  label:
+    da: Total - Pantotensyre (mg/d)
+    en: ~
+- id: avit_tot
+  name: avit_tot
+  type: numeric
+  label:
+    da: Total - Vitamin A (RE/d)
+    en: ~
+- id: betaca_tot
+  name: betaca_tot
+  type: numeric
+  label:
+    da: Total - Betacaroten (mcg/d)
+    en: ~
+- id: cvit_tot
+  name: cvit_tot
+  type: numeric
+  label:
+    da: Total - Vitamin C (mg/d)
+    en: ~
+- id: evit_tot
+  name: evit_tot
+  type: numeric
+  label:
+    da: Total - Vitamin E (alpha-TE/d)
+    en: ~
+- id: dvit_tot
+  name: dvit_tot
+  type: numeric
+  label:
+    da: Total - Vitamin D (mcg/d)
+    en: ~
+- id: calciu_tot
+  name: calciu_tot
+  type: numeric
+  label:
+    da: Total - Calcium (mg/d)
+    en: ~
+- id: folaci_tot
+  name: folaci_tot
+  type: numeric
+  label:
+    da: Total - Folacin (mcg/d)
+    en: ~
+- id: thiami_tot
+  name: thiami_tot
+  type: numeric
+  label:
+    da: Total - Thiamin (mg/d)
+    en: ~
+- id: ribofl_tot
+  name: ribofl_tot
+  type: numeric
+  label:
+    da: Total - Riboflavin (mg/d)
+    en: ~
+- id: niacin_tot
+  name: niacin_tot
+  type: numeric
+  label:
+    da: Total - Niacin (mg/d)
+    en: ~
+- id: b6vit_tot
+  name: b6vit_tot
+  type: numeric
+  label:
+    da: Total - Vitamin B6 (mg/d)
+    en: ~
+- id: b12vit_tot
+  name: b12vit_tot
+  type: numeric
+  label:
+    da: Total - Vitamin B12 (mcg/d)
+    en: ~
+- id: biotin_tot
+  name: biotin_tot
+  type: numeric
+  label:
+    da: Total - Biotin (mcg/d)
+    en: ~
+- id: jern_tot
+  name: jern_tot
+  type: numeric
+  label:
+    da: Total - Jern (mg/d)
+    en: ~
+- id: kobber_tot
+  name: kobber_tot
+  type: numeric
+  label:
+    da: Total - Kobber (mg/d)
+    en: ~
+- id: magnes_tot
+  name: magnes_tot
+  type: numeric
+  label:
+    da: Total - Magnesium (mg/d)
+    en: ~
+- id: selen_tot
+  name: selen_tot
+  type: numeric
+  label:
+    da: Total - Selen (mcg/d)
+    en: ~
+- id: zink_tot
+  name: zink_tot
+  type: numeric
+  label:
+    da: Total - Zink (mg/d)
+    en: ~
+- id: mangan_tot
+  name: mangan_tot
+  type: numeric
+  label:
+    da: Total - Mangan (mg/d)
+    en: ~
+- id: fosfor_tot
+  name: fosfor_tot
+  type: numeric
+  label:
+    da: Total - Fosfor (mg/d)
+    en: ~
+- id: kalium_tot
+  name: kalium_tot
+  type: numeric
+  label:
+    da: Total - Kalium (mg/d)
+    en: ~
+- id: natriu_tot
+  name: natriu_tot
+  type: numeric
+  label:
+    da: Total - Natrium (mg/d)
+    en: ~
+- id: jod_tot
+  name: jod_tot
+  type: numeric
+  label:
+    da: Total - Jod (mcg/d)
+    en: ~
+- id: chrom_tot
+  name: chrom_tot
+  type: numeric
+  label:
+    da: Total - Chrom (mcg/d)
+    en: ~

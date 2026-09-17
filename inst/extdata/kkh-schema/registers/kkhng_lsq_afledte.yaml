@@ -1,0 +1,229 @@
+id: kkhng_lsq_afledte
+name: lsq_afledte
+one_row_per: person
+join_keys:
+- pnr
+columns:
+- id: pnr
+  name: pnr
+  type: character
+  role: join_key
+- id: ryg01_bin
+  name: ryg01_bin
+  type: numeric
+  label:
+    da: ~
+    en: Baseline binary tobacco (cigarettes, cigars, pipe or cheroots) smoking status
+      (ever, never)
+- id: nic01_bin
+  name: nic01_bin
+  type: numeric
+  label:
+    da: ~
+    en: Baseline binary other nicotine (e-cigarettes, swedish snus or nicotine pouches)
+      use status (ever, never)
+- id: ryg01_cat
+  name: ryg01_cat
+  type: numeric
+  label:
+    da: ~
+    en: Baseline tobacco (cigarettes, cigars, pipe or cheroots) smoking status (former,
+      current, never)
+- id: nic01_cat
+  name: nic01_cat
+  type: numeric
+  label:
+    da: ~
+    en: Baseline other nicotine (e-cigarettes, swedish snus or nicotine pouches) use
+      status (former, current, never)
+- id: nic02_bin
+  name: nic02_bin
+  type: numeric
+  label:
+    da: ~
+    en: Baseline binary all nicotine products (cigarettes, cigars, pipe or cheroots,
+      e-cigarettes, swedish snus or nicotine pouches) use status (ever, never)
+- id: nic02_cat
+  name: nic02_cat
+  type: numeric
+  label:
+    da: ~
+    en: Baseline all nicotine products (cigarettes, cigars, pipe or cheroots, e-cigarettes,
+      swedish snus or nicotine pouches) use status (former, current, never)
+- id: hae01
+  name: hae01
+  type: numeric
+  label:
+    da: ~
+    en: HAE01 - Highest Attained Education 1 (3 levels, Based on correspondance to
+      DISCED-15 classification and KBF recommendations)
+- id: hae02
+  name: hae02
+  type: numeric
+  label:
+    da: ~
+    en: |-
+      HAE02 - Highest Attained Education 2 (5 levels, Based on correspondance to DISCED-15 classification and KBF recommendations,
+      with 3 levels for higher education)
+- id: fa14_01
+  name: fa14_01
+  type: numeric
+  label:
+    da: ~
+    en: Sport participation more than 0.5 hours per week (0 = No, 1 = Yes), all 22
+      LSQ categories of sport
+- id: fa14_02
+  name: fa14_02
+  type: numeric
+  label:
+    da: ~
+    en: Avg. total duration of sport participation per week (hours), all 22 LSQ categories
+      of sport
+- id: arbfa04_02_g
+  name: arbfa04_02_g
+  type: numeric
+  label:
+    da: ~
+    en: Bicycling to/from work (0 = No, 1 = Yes)
+- id: arbfa04_02_h
+  name: arbfa04_02_h
+  type: numeric
+  label:
+    da: ~
+    en: Avg. total duration of bicycling to/from work per week (hours)
+- id: fa20_01_c
+  name: fa20_01_c
+  type: numeric
+  label:
+    da: ~
+    en: Fitness (aerobics, cardio fitness class, cross-training or similar) avg. hours
+      per week
+- id: fa20_02_c
+  name: fa20_02_c
+  type: numeric
+  label:
+    da: ~
+    en: Weight lifting avg. hours per week
+- id: fa20_03_c
+  name: fa20_03_c
+  type: numeric
+  label:
+    da: ~
+    en: Jogging, running or orienteering avg. hours per week
+- id: fa20_04_c
+  name: fa20_04_c
+  type: numeric
+  label:
+    da: ~
+    en: Gymnastics avg. hours per week
+- id: fa20_05_c
+  name: fa20_05_c
+  type: numeric
+  label:
+    da: ~
+    en: Athletics (e.g. high jump, long jump or three-step) avg. hours per week
+- id: fa20_06_c
+  name: fa20_06_c
+  type: numeric
+  label:
+    da: ~
+    en: Spinning or cycling as exercise avg. hours per week
+- id: fa20_07_c
+  name: fa20_07_c
+  type: numeric
+  label:
+    da: ~
+    en: Swimming avg. hours per week
+- id: fa20_08_c
+  name: fa20_08_c
+  type: numeric
+  label:
+    da: ~
+    en: Ball sports (e.g. soccer, basketball, volley ball, handball) avg. hours per
+      week
+- id: fa20_09_c
+  name: fa20_09_c
+  type: numeric
+  label:
+    da: ~
+    en: Golf avg. hours per week
+- id: fa20_10_c
+  name: fa20_10_c
+  type: numeric
+  label:
+    da: ~
+    en: Dance class or competitive dancing (e.g. ballroom, ballet, jazz or street)
+      avg. hours per week
+- id: fa20_11_c
+  name: fa20_11_c
+  type: numeric
+  label:
+    da: ~
+    en: Horse riding avg. hours per week
+- id: fa20_12_c
+  name: fa20_12_c
+  type: numeric
+  label:
+    da: ~
+    en: Ice skating, ice hockey avg. hours per week
+- id: fa20_13_c
+  name: fa20_13_c
+  type: numeric
+  label:
+    da: ~
+    en: Martial arts (e.g. judo or karate) avg. hours per week
+- id: fa20_14_c
+  name: fa20_14_c
+  type: numeric
+  label:
+    da: ~
+    en: Boxing or wrestling avg. hours per week
+- id: fa20_15_c
+  name: fa20_15_c
+  type: numeric
+  label:
+    da: ~
+    en: Tennis, badminton or table tennis avg. hours per week
+- id: fa20_16_c
+  name: fa20_16_c
+  type: numeric
+  label:
+    da: ~
+    en: Squash avg. hours per week
+- id: fa20_17_c
+  name: fa20_17_c
+  type: numeric
+  label:
+    da: ~
+    en: Sailing, surfing, canoeing or rowing avg. hours per week
+- id: fa20_18_c
+  name: fa20_18_c
+  type: numeric
+  label:
+    da: ~
+    en: Motor sports (e.g. motocross) avg. hours per week
+- id: fa20_19_c
+  name: fa20_19_c
+  type: numeric
+  label:
+    da: ~
+    en: Rock or sports climbing avg. hours per week
+- id: fa20_20_c
+  name: fa20_20_c
+  type: numeric
+  label:
+    da: ~
+    en: Yoga, pilates or tai chi avg. hours per week
+- id: fa20_21_c
+  name: fa20_21_c
+  type: numeric
+  label:
+    da: ~
+    en: Skiing (cross-country, slalom, snowboard, roller skis) avg. hours per week
+- id: fa20_22_c
+  name: fa20_22_c
+  type: numeric
+  label:
+    da: ~
+    en: Other organized physical activity (ex. Bowling, petanque, sport shooting,
+      cue sports) avg. hours per week

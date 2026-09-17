@@ -20,26 +20,85 @@ schema_gap <- function(what, needed) {
 #' schema root). Does not vendor the YAML into the installed package as the
 #' source of truth. The git commit used is stamped as `schema_commit`.
 #'
-#' @param source Schema root. The default loads the live GitHub
-#'   `steno-aarhus/registers-guide` schema directory (`registers/`,
-#'   `code-systems/`, `families/`). Pass a local directory that contains
-#'   `registers/` for offline use.
+#' **Always also includes fiktive's own bundled KKH / KKHNG cohort
+#' metadata** (Danish Diet, Cancer and Health / ...and Next Generations),
+#' merged into the returned `registers` alongside the DST ones -- not a
+#' second call to remember, and not something `source=` controls (that
+#' argument only selects the DST/registers-guide half). This is fiktive's
+#' own data, not registers-guide's: variable name, type, and Danish/English
+#' label only (per KKH/DCH's data-sharing approval), shipped inside the
+#' installed package at `system.file("extdata/kkh-schema", package =
+#' "fiktive")`, never fetched from or written to
+#' `steno-aarhus/registers-guide`. Register ids are prefixed `kkh_`/`kkhng_`
+#' so they can never collide with a DST register id. See
+#' `vignette("fiktive")` for the full register list and
+#' [generate_register()] for how to generate them (same call as any DST
+#' register -- no separate function).
 #'
-#' @return A list with `registers` (named by id), `code_systems`, `families`,
-#'   `schema_commit` (40-character SHA), and `schema_source`.
+#' @param source Schema root for the DST/registers-guide half only. The
+#'   default loads the live GitHub `steno-aarhus/registers-guide` schema
+#'   directory (`registers/`, `code-systems/`, `families/`). Pass a local
+#'   directory that contains `registers/` for offline use. Either way, the
+#'   bundled KKH/KKHNG registers are still merged in.
+#'
+#' @return A list with `registers` (named by id -- DST and KKH/KKHNG
+#'   together), `code_systems`, `families`, `schema_commit` (40-character
+#'   SHA of the DST half; the bundled KKH/KKHNG metadata is versioned with
+#'   the installed fiktive package instead, not independently), and
+#'   `schema_source`.
 #' @export
 load_registers_schema <- function(source = NULL) {
-  if (!is.null(source) && dir.exists(source)) {
+  primary <- if (!is.null(source) && dir.exists(source)) {
     root <- normalizePath(source, winslash = "/", mustWork = TRUE)
     if (!dir.exists(file.path(root, "registers"))) {
       stop("`source` must be a schema root containing a `registers/` directory.", call. = FALSE)
     }
-    return(read_schema_root(root, schema_commit = local_schema_commit(root), schema_source = root))
-  }
-  if (!is.null(source) && !identical(source, "live")) {
+    read_schema_root(root, schema_commit = local_schema_commit(root), schema_source = root)
+  } else if (!is.null(source) && !identical(source, "live")) {
     stop("Unknown schema source: ", source, call. = FALSE)
+  } else {
+    load_live_schema()
   }
-  load_live_schema()
+  merge_kkh_schema(primary)
+}
+
+# Merges fiktive's own bundled KKH/KKHNG register metadata into an
+# already-resolved DST schema. kkh-schema has no code-systems/families of
+# its own (KKH columns carry no code_system -- structural noise only), so
+# only `registers` needs merging. `kkh_*`/`kkhng_*` prefixing makes a
+# collision with a future DST register id extremely unlikely, but this
+# still fails loudly rather than silently overwriting either side if one
+# ever occurs.
+merge_kkh_schema <- function(schema) {
+  kkh_root <- system.file("extdata", "kkh-schema", package = "fiktive")
+  if (!nzchar(kkh_root) || !dir.exists(file.path(kkh_root, "registers"))) {
+    return(schema)
+  }
+  kkh <- read_schema_root(kkh_root, schema_commit = NA_character_, schema_source = kkh_root)
+  collide <- intersect(names(schema$registers), names(kkh$registers))
+  if (length(collide)) {
+    stop(
+      "Bundled KKH/KKHNG register id(s) collide with the DST schema: ",
+      paste(collide, collapse = ", "),
+      call. = FALSE
+    )
+  }
+  schema$registers <- c(schema$registers, kkh$registers)
+  schema
+}
+
+# Ids of the bundled KKH/KKHNG registers, read from the installed package's
+# own YAML directory rather than a hardcoded literal list -- these are
+# generated from a spreadsheet (data-raw/build_kkh_schema.R) and would
+# silently drift out of sync with a hand-maintained list otherwise. Used by
+# dispatch_generate_register() (R/generate.R) to extend the "implemented
+# person-grain snapshot registers" whitelist without touching DST ids.
+kkh_register_ids <- function() {
+  root <- system.file("extdata", "kkh-schema", "registers", package = "fiktive")
+  if (!nzchar(root) || !dir.exists(root)) {
+    return(character())
+  }
+  tools::file_path_sans_ext(list.files(root, pattern = "\\.ya?ml$"))
 }
 
 read_schema_root <- function(root, schema_commit, schema_source) {

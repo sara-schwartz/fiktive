@@ -1,0 +1,244 @@
+id: kkh_bagskema
+name: bagskema
+one_row_per: person
+join_keys:
+- pnr
+columns:
+- id: pnr
+  name: pnr
+  type: character
+  role: join_key
+- id: s15x01n
+  name: s15x01n
+  type: numeric
+  label:
+    da: Hyppighed alkohol
+    en: Frequency, alcohol comsumption
+- id: s25a01n
+  name: s25a01n
+  type: numeric
+  label:
+    da: Blodprop i hjertet
+    en: Blood clot in the heart
+- id: s25a02n
+  name: s25a02n
+  type: numeric
+  label:
+    da: Alder blodprop i hjertet
+    en: Age, blood clot in the heart
+- id: s25a03n
+  name: s25a03n
+  type: numeric
+  label:
+    da: Medicin blodprop i hjertet
+    en: Medicine, blood clot in the heart
+- id: s25b01n
+  name: s25b01n
+  type: numeric
+  label:
+    da: Angina pectoris
+    en: Angina pectoris
+- id: s25b02n
+  name: s25b02n
+  type: numeric
+  label:
+    da: Alder angina pectoris
+    en: Age, angina pectoris
+- id: s25b03n
+  name: s25b03n
+  type: numeric
+  label:
+    da: Medicin angina pectoris
+    en: Medicine, angina pectoris
+- id: s25c01n
+  name: s25c01n
+  type: numeric
+  label:
+    da: Blodprop i hjernen
+    en: Blood clot in the brain
+- id: s25c02n
+  name: s25c02n
+  type: numeric
+  label:
+    da: Alder blodprop i hjernen
+    en: Age, blood clot in the brain
+- id: s25c03n
+  name: s25c03n
+  type: numeric
+  label:
+    da: Medicin blodprop i hjernen
+    en: Medicine, blood clot in the brain
+- id: s25d01n
+  name: s25d01n
+  type: numeric
+  label:
+    da: Forhøjet blodtryk
+    en: Hypertension
+- id: s25d02n
+  name: s25d02n
+  type: numeric
+  label:
+    da: Alder forhøjet blodtryk
+    en: Age, hypertension
+- id: s25d03n
+  name: s25d03n
+  type: numeric
+  label:
+    da: Medicin forhøjet blodtryk
+    en: Medicine, hypertension
+- id: s25e01n
+  name: s25e01n
+  type: numeric
+  label:
+    da: Forhøjet kolesterol
+    en: Elevated cholesterol
+- id: s25e02n
+  name: s25e02n
+  type: numeric
+  label:
+    da: Alder forhøjet kolesterol
+    en: Age, elevated cholesterol
+- id: s25e03n
+  name: s25e03n
+  type: numeric
+  label:
+    da: Medicin forhøjet kolesterol
+    en: Medicine, elevated cholesterol
+- id: s25f01n
+  name: s25f01n
+  type: numeric
+  label:
+    da: Sukkersyge
+    en: Diabetes
+- id: s25f02n
+  name: s25f02n
+  type: numeric
+  label:
+    da: Alder sukkersyge
+    en: Age, diabetes
+- id: s25f03n
+  name: s25f03n
+  type: numeric
+  label:
+    da: Medicin sukkersyge
+    en: Medicine, diabetes
+- id: s25g01n
+  name: s25g01n
+  type: numeric
+  label:
+    da: Galdesten
+    en: Gallstones
+- id: s25g02n
+  name: s25g02n
+  type: numeric
+  label:
+    da: Alder galdesten
+    en: Age, gallstones
+- id: s25g03n
+  name: s25g03n
+  type: numeric
+  label:
+    da: Medicin galdesten
+    en: Medicine, gallstones
+- id: s25h01n
+  name: s25h01n
+  type: numeric
+  label:
+    da: Polypper i tarmen
+    en: Polyps in the intestine
+- id: s25h02n
+  name: s25h02n
+  type: numeric
+  label:
+    da: Alder polypper i tarmen
+    en: Age, polyps in the intestine
+- id: s25h03n
+  name: s25h03n
+  type: numeric
+  label:
+    da: Medicin polypper i tarmen
+    en: Medicine, polyps in the intestine
+- id: s26x01n
+  name: s26x01n
+  type: numeric
+  label:
+    da: Fjernet knuder i brystet
+    en: Removed breast lumps
+- id: s26x02n
+  name: s26x02n
+  type: numeric
+  label:
+    da: Fjernet knuder i brystet, alder
+    en: Removed breast lumps, age
+- id: s27x01n
+  name: s27x01n
+  type: numeric
+  label:
+    da: Fjernet livmoderen
+    en: Removed uterus
+- id: s27x02n
+  name: s27x02n
+  type: numeric
+  label:
+    da: Fjernet livmoderen, alder
+    en: Removed uterus, age
+- id: s28x01n
+  name: s28x01n
+  type: numeric
+  label:
+    da: Fjernet en eller begge æggestokke
+    en: Removed one or both ovaries
+- id: s28x02n
+  name: s28x02n
+  type: numeric
+  label:
+    da: Fjernet en eller begge æggestokke, alder
+    en: Removed one or both ovaries, age
+- id: s32a01n
+  name: s32a01n
+  type: numeric
+  label:
+    da: Vægt som 20 årig
+    en: Weight at 20 years of age
+- id: s32b01n
+  name: s32b01n
+  type: numeric
+  label:
+    da: Vægt som 30 årig
+    en: Weight at 30 years of age
+- id: s32c01n
+  name: s32c01n
+  type: numeric
+  label:
+    da: Vægt som 40 årig
+    en: Weight at 40 years of age
+- id: s32d01n
+  name: s32d01n
+  type: numeric
+  label:
+    da: Vægt som 50 årig
+    en: Weight at 50 years of age
+- id: s33x01n
+  name: s33x01n
+  type: numeric
+  label:
+    da: Menstruation første gang, alder
+    en: Menstruation first time, age
+- id: s34x01n
+  name: s34x01n
+  type: numeric
+  label:
+    da: Menstruationscyklus 30-40 år
+    en: Menstrual cycle 30-40 year olds
+- id: s35x01n
+  name: s35x01n
+  type: numeric
+  label:
+    da: Antal menstruationer de seneste 12 mdr
+    en: Number of menstruations in the last 12 months
+- id: s37x01n
+  name: s37x01n
+  type: numeric
+  label:
+    da: Sidst menstruation, alder
+    en: Last menstruation, age

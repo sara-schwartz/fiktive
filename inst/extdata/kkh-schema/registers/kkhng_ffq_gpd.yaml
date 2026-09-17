@@ -1,0 +1,2208 @@
+id: kkhng_ffq_gpd
+name: ffq_gpd
+one_row_per: person
+join_keys:
+- pnr
+columns:
+- id: pnr
+  name: pnr
+  type: character
+  role: join_key
+- id: gsuf01001
+  name: gsuf01001
+  type: numeric
+  label:
+    da: Yoghurt, A38 eller tykmælk (g/dag)
+    en: ~
+- id: gsuf01003
+  name: gsuf01003
+  type: numeric
+  label:
+    da: Ylette, ymer eller cultura (g/dag)
+    en: ~
+- id: gsuf01005
+  name: gsuf01005
+  type: numeric
+  label:
+    da: Græsk yoghurt, skyr, fromage frais eller kvark (g/dag)
+    en: ~
+- id: gsmf01001
+  name: gsmf01001
+  type: numeric
+  label:
+    da: Frugtyoghurt eller A38 med frugt (g/dag)
+    en: ~
+- id: gsmf01003
+  name: gsmf01003
+  type: numeric
+  label:
+    da: Cultura med frugt (g/dag)
+    en: ~
+- id: gsmf01005
+  name: gsmf01005
+  type: numeric
+  label:
+    da: Skyr med frugt (g/dag)
+    en: ~
+- id: gkp01001
+  name: gkp01001
+  type: numeric
+  label:
+    da: Havregryn, speltflager, rugflager eller lignende (g/dag)
+    en: ~
+- id: gkp01002
+  name: gkp01002
+  type: numeric
+  label:
+    da: Havregrød eller anden fuldkornsgrød (g/dag)
+    en: ~
+- id: gkp01003
+  name: gkp01003
+  type: numeric
+  label:
+    da: Morgenmadsprodukter uden nøglehuls- eller fuldkornsmærket (f.eks. Choco Pops,
+      Guldkorn eller Frosties) (g/dag)
+    en: ~
+- id: gkp01004
+  name: gkp01004
+  type: numeric
+  label:
+    da: |-
+      Morgenmadsprodukter med fuldkorn – mærket med nøglehuls- eller fuldkornsmærket (f.eks. müsli, ymerdrys, havrefras eller
+      rugfras) (g/dag)
+    en: ~
+- id: gmorgmaelk
+  name: gmorgmaelk
+  type: numeric
+  label:
+    da: Mælk til kornprodukter (g/dag)
+    en: ~
+- id: gfpb01001
+  name: gfpb01001
+  type: numeric
+  label:
+    da: Rugbrød (g/dag)
+    en: ~
+- id: gfpb01005
+  name: gfpb01005
+  type: numeric
+  label:
+    da: Hvidt brød eller boller uden  fuldkorn (g/dag)
+    en: ~
+- id: gfpb01009
+  name: gfpb01009
+  type: numeric
+  label:
+    da: Grovbrød eller grovboller med fuldkorn f.eks. mærket med nøglehuls- eller
+      fuldkornsmærket (g/dag)
+    en: ~
+- id: gfpb01013
+  name: gfpb01013
+  type: numeric
+  label:
+    da: Knækbrød eller riskiks uden fuldkorn (g/dag)
+    en: ~
+- id: gfpb01017
+  name: gfpb01017
+  type: numeric
+  label:
+    da: Knækbrød eller riskiks med fuldkorn f.eks. mærket med nøglehuls- eller fuldkornsmærket
+      (g/dag)
+    en: ~
+- id: gfedtfpb01001
+  name: gfedtfpb01001
+  type: numeric
+  label:
+    da: Fedtstof på rugbrød (g/dag)
+    en: ~
+- id: gfedtfpb01005
+  name: gfedtfpb01005
+  type: numeric
+  label:
+    da: Fedtstof på hvidt brød eller boller uden fuldkorn (g/dag)
+    en: ~
+- id: gfedtfpb01009
+  name: gfedtfpb01009
+  type: numeric
+  label:
+    da: Fedtstof på grovbrød eller grovboller med fuldkorn f.eks. mærket med nøglehuls-
+      eller fuldkornsmærket (g/dag)
+    en: ~
+- id: gfedtfpb01013
+  name: gfedtfpb01013
+  type: numeric
+  label:
+    da: Fedtstof på knækbrød eller riskiks uden fuldkorn (g/dag)
+    en: ~
+- id: gfedtfpb01017
+  name: gfedtfpb01017
+  type: numeric
+  label:
+    da: Fedtstof på knækbrød eller riskiks med fuldkorn f.eks. mærket med nøglehuls-
+      eller fuldkornsmærket (g/dag)
+    en: ~
+- id: gpl01002
+  name: gpl01002
+  type: numeric
+  label:
+    da: Skæreost som pålæg (g/dag)
+    en: ~
+- id: gpl01004
+  name: gpl01004
+  type: numeric
+  label:
+    da: Brie, Camembert og lignende som pålæg (g/dag)
+    en: ~
+- id: gpl01005
+  name: gpl01005
+  type: numeric
+  label:
+    da: Danablue, Roquefort og lignende som pålæg (g/dag)
+    en: ~
+- id: gpl01006
+  name: gpl01006
+  type: numeric
+  label:
+    da: Hytteost og rygeost som pålæg (g/dag)
+    en: ~
+- id: gpl01007
+  name: gpl01007
+  type: numeric
+  label:
+    da: Smøreost eller smelteost som pålæg (g/dag)
+    en: ~
+- id: gpl01008
+  name: gpl01008
+  type: numeric
+  label:
+    da: Flødeost som pålæg (g/dag)
+    en: ~
+- id: gpl02002
+  name: gpl02002
+  type: numeric
+  label:
+    da: Leverpostej og paté som pålæg (g/dag)
+    en: ~
+- id: gpl02003
+  name: gpl02003
+  type: numeric
+  label:
+    da: Spegepølse og salami som pålæg (g/dag)
+    en: ~
+- id: gpl02004
+  name: gpl02004
+  type: numeric
+  label:
+    da: Kødpølse og rullepølse som pålæg (g/dag)
+    en: ~
+- id: gpl02005
+  name: gpl02005
+  type: numeric
+  label:
+    da: Skinke og hamburgerryg som pålæg (g/dag)
+    en: ~
+- id: gpl02006
+  name: gpl02006
+  type: numeric
+  label:
+    da: Roastbeef som pålæg (g/dag)
+    en: ~
+- id: gpl02007
+  name: gpl02007
+  type: numeric
+  label:
+    da: Svinefilet og saltkød som pålæg (g/dag)
+    en: ~
+- id: gpl02008
+  name: gpl02008
+  type: numeric
+  label:
+    da: Kylling- og kalkunpålæg (g/dag)
+    en: ~
+- id: gpl02009
+  name: gpl02009
+  type: numeric
+  label:
+    da: Flæskesteg som pålæg (g/dag)
+    en: ~
+- id: gpl02010
+  name: gpl02010
+  type: numeric
+  label:
+    da: Hakkebøf og frikadelle som pålæg (g/dag)
+    en: ~
+- id: gpl02011
+  name: gpl02011
+  type: numeric
+  label:
+    da: Carpaccio og tatar som pålæg (g/dag)
+    en: ~
+- id: gpl03002
+  name: gpl03002
+  type: numeric
+  label:
+    da: Røget sild og makrel som pålæg (g/dag)
+    en: ~
+- id: gpl03003
+  name: gpl03003
+  type: numeric
+  label:
+    da: Marineret sild og lignende som pålæg (g/dag)
+    en: ~
+- id: gpl03004
+  name: gpl03004
+  type: numeric
+  label:
+    da: Makrel i tomat, chilisovs og lignende som pålæg (g/dag)
+    en: ~
+- id: gpl03005
+  name: gpl03005
+  type: numeric
+  label:
+    da: Tun (i vand, olie eller tomat) som pålæg (g/dag)
+    en: ~
+- id: gpl03006
+  name: gpl03006
+  type: numeric
+  label:
+    da: Sardin i olie som pålæg (g/dag)
+    en: ~
+- id: gpl03007
+  name: gpl03007
+  type: numeric
+  label:
+    da: Torskerogn som pålæg (g/dag)
+    en: ~
+- id: gpl03008
+  name: gpl03008
+  type: numeric
+  label:
+    da: Fiskefrikadelle som pålæg (g/dag)
+    en: ~
+- id: gpl03009
+  name: gpl03009
+  type: numeric
+  label:
+    da: Fiskefilét som pålæg (g/dag)
+    en: ~
+- id: gpl03010
+  name: gpl03010
+  type: numeric
+  label:
+    da: Rejer som pålæg (g/dag)
+    en: ~
+- id: gpl03011
+  name: gpl03011
+  type: numeric
+  label:
+    da: Kaviar som pålæg (g/dag)
+    en: ~
+- id: gpl03012
+  name: gpl03012
+  type: numeric
+  label:
+    da: Røget laks, ørred og hellefisk som pålæg (g/dag)
+    en: ~
+- id: gpl03013
+  name: gpl03013
+  type: numeric
+  label:
+    da: Sildepostej som pålæg (g/dag)
+    en: ~
+- id: gpl04002
+  name: gpl04002
+  type: numeric
+  label:
+    da: Mayonnaise/pålægssalat med kød (g/dag)
+    en: ~
+- id: gpl04003
+  name: gpl04003
+  type: numeric
+  label:
+    da: Mayonnaise/pålægssalat med fisk/skaldyr (g/dag)
+    en: ~
+- id: gpl04004
+  name: gpl04004
+  type: numeric
+  label:
+    da: Mayonnaise/pålægssalat uden kød/fisk (g/dag)
+    en: ~
+- id: gpl04005
+  name: gpl04005
+  type: numeric
+  label:
+    da: Mayonnaise (som pynt/tilbehør) (g/dag)
+    en: ~
+- id: gpl04006
+  name: gpl04006
+  type: numeric
+  label:
+    da: Remoulade (pynt/tilbehør) (g/dag)
+    en: ~
+- id: gpl05002
+  name: gpl05002
+  type: numeric
+  label:
+    da: Kødfrie postejer, patéer etc. som pålæg (g/dag)
+    en: ~
+- id: gpl05003
+  name: gpl05003
+  type: numeric
+  label:
+    da: Hummus som pålæg (g/dag)
+    en: ~
+- id: gpl06002
+  name: gpl06002
+  type: numeric
+  label:
+    da: Marmelade og syltetøj (g/dag)
+    en: ~
+- id: gpl06003
+  name: gpl06003
+  type: numeric
+  label:
+    da: Honning (g/dag)
+    en: ~
+- id: gpl06004
+  name: gpl06004
+  type: numeric
+  label:
+    da: Figenpålæg (g/dag)
+    en: ~
+- id: gpl06005
+  name: gpl06005
+  type: numeric
+  label:
+    da: Pålægschokolade, Nutella og lignende (g/dag)
+    en: ~
+- id: gret01002
+  name: gret01002
+  type: numeric
+  label:
+    da: Frikadeller og kødboller (g/dag)
+    en: ~
+- id: gret01005
+  name: gret01005
+  type: numeric
+  label:
+    da: Hakkebøf (g/dag)
+    en: ~
+- id: gret01009
+  name: gret01009
+  type: numeric
+  label:
+    da: Karbonader/krebinetter (g/dag)
+    en: ~
+- id: gret01012
+  name: gret01012
+  type: numeric
+  label:
+    da: Medisterpølse (g/dag)
+    en: ~
+- id: gret01014
+  name: gret01014
+  type: numeric
+  label:
+    da: Wienerpølser eller lignende (også hotdogs) (g/dag)
+    en: ~
+- id: gret01016
+  name: gret01016
+  type: numeric
+  label:
+    da: Kødsovs (g/dag)
+    en: ~
+- id: gret01019
+  name: gret01019
+  type: numeric
+  label:
+    da: Forloren hare og farsbrød (g/dag)
+    en: ~
+- id: gret01022
+  name: gret01022
+  type: numeric
+  label:
+    da: Lasagne, moussaka eller lignende (g/dag)
+    en: ~
+- id: gret02002
+  name: gret02002
+  type: numeric
+  label:
+    da: Oksesteg og kalvesteg (g/dag)
+    en: ~
+- id: gret02003
+  name: gret02003
+  type: numeric
+  label:
+    da: Oksebøf (ikke hakkebøf) (g/dag)
+    en: ~
+- id: gret02004
+  name: gret02004
+  type: numeric
+  label:
+    da: Kalvekotelet og kalveschnitzel (g/dag)
+    en: ~
+- id: gret02005
+  name: gret02005
+  type: numeric
+  label:
+    da: Mørbradbøf (g/dag)
+    en: ~
+- id: gret02006
+  name: gret02006
+  type: numeric
+  label:
+    da: Sammenkogte retter med okse- og kalvekød (f.eks. gullasch) (g/dag)
+    en: ~
+- id: gret03002
+  name: gret03002
+  type: numeric
+  label:
+    da: Flæskesteg og ribbensteg (g/dag)
+    en: ~
+- id: gret03003
+  name: gret03003
+  type: numeric
+  label:
+    da: Hamburgerryg og skinke (g/dag)
+    en: ~
+- id: gret03004
+  name: gret03004
+  type: numeric
+  label:
+    da: Stegt flæsk/bacon (g/dag)
+    en: ~
+- id: gret03005
+  name: gret03005
+  type: numeric
+  label:
+    da: Mørbradbøf (g/dag)
+    en: ~
+- id: gret03006
+  name: gret03006
+  type: numeric
+  label:
+    da: Svinekotelet og skinkeschnitzel (g/dag)
+    en: ~
+- id: gret03007
+  name: gret03007
+  type: numeric
+  label:
+    da: Sammenkogte retter med svinekød (g/dag)
+    en: ~
+- id: gret04002
+  name: gret04002
+  type: numeric
+  label:
+    da: Lammesteg (f.eks. lammekølle) (g/dag)
+    en: ~
+- id: gret04003
+  name: gret04003
+  type: numeric
+  label:
+    da: Lammekotelet (g/dag)
+    en: ~
+- id: gret04004
+  name: gret04004
+  type: numeric
+  label:
+    da: Sammenkogte retter med lammekød (g/dag)
+    en: ~
+- id: gret05002
+  name: gret05002
+  type: numeric
+  label:
+    da: Kylling (g/dag)
+    en: ~
+- id: gret05003
+  name: gret05003
+  type: numeric
+  label:
+    da: Kyllingenuggets/kylletter (g/dag)
+    en: ~
+- id: gret05004
+  name: gret05004
+  type: numeric
+  label:
+    da: Kalkun (g/dag)
+    en: ~
+- id: gret05005
+  name: gret05005
+  type: numeric
+  label:
+    da: And og gås (g/dag)
+    en: ~
+- id: gret05006
+  name: gret05006
+  type: numeric
+  label:
+    da: Sammenkogte retter med fjerkræ (f.eks. wokretter) (g/dag)
+    en: ~
+- id: gret06002
+  name: gret06002
+  type: numeric
+  label:
+    da: Fiskefrikadeller (g/dag)
+    en: ~
+- id: gret06003
+  name: gret06003
+  type: numeric
+  label:
+    da: Fiskepinde (g/dag)
+    en: ~
+- id: gret06004
+  name: gret06004
+  type: numeric
+  label:
+    da: Rødspætte eller skrubbe (g/dag)
+    en: ~
+- id: gret06005
+  name: gret06005
+  type: numeric
+  label:
+    da: Torsk eller sej (g/dag)
+    en: ~
+- id: gret06006
+  name: gret06006
+  type: numeric
+  label:
+    da: Sild (g/dag)
+    en: ~
+- id: gret06007
+  name: gret06007
+  type: numeric
+  label:
+    da: Makrel (g/dag)
+    en: ~
+- id: gret06008
+  name: gret06008
+  type: numeric
+  label:
+    da: Laks (g/dag)
+    en: ~
+- id: gret06009
+  name: gret06009
+  type: numeric
+  label:
+    da: Tun (g/dag)
+    en: ~
+- id: gret06010
+  name: gret06010
+  type: numeric
+  label:
+    da: Ørred eller forel (g/dag)
+    en: ~
+- id: gret06011
+  name: gret06011
+  type: numeric
+  label:
+    da: Pangasius (g/dag)
+    en: ~
+- id: gret06012
+  name: gret06012
+  type: numeric
+  label:
+    da: Hornfisk (g/dag)
+    en: ~
+- id: gret06013
+  name: gret06013
+  type: numeric
+  label:
+    da: Hellefisk (g/dag)
+    en: ~
+- id: gret06014
+  name: gret06014
+  type: numeric
+  label:
+    da: Torskerogn (g/dag)
+    en: ~
+- id: gret06015
+  name: gret06015
+  type: numeric
+  label:
+    da: Skaldyr (f.eks. rejer eller krebs) (g/dag)
+    en: ~
+- id: gret06016
+  name: gret06016
+  type: numeric
+  label:
+    da: Sushi (g/dag)
+    en: ~
+- id: gret07002
+  name: gret07002
+  type: numeric
+  label:
+    da: Stegt indmad (f.eks. stegt lever) (g/dag)
+    en: ~
+- id: gret07003
+  name: gret07003
+  type: numeric
+  label:
+    da: Sammenkogte retter med indmad (g/dag)
+    en: ~
+- id: gret08002
+  name: gret08002
+  type: numeric
+  label:
+    da: Kogt æg (g/dag)
+    en: ~
+- id: gret08003
+  name: gret08003
+  type: numeric
+  label:
+    da: Røræg (g/dag)
+    en: ~
+- id: gret08004
+  name: gret08004
+  type: numeric
+  label:
+    da: Spejlæg (g/dag)
+    en: ~
+- id: gret08005
+  name: gret08005
+  type: numeric
+  label:
+    da: Æggekage og omelet (g/dag)
+    en: ~
+- id: gret08006
+  name: gret08006
+  type: numeric
+  label:
+    da: Gratin med skinke (g/dag)
+    en: ~
+- id: gnomeat01
+  name: gnomeat01
+  type: numeric
+  label:
+    da: Gratin uden skinke (g/dag)
+    en: ~
+- id: gret09002
+  name: gret09002
+  type: numeric
+  label:
+    da: Okse- og hønsekødssuppe (g/dag)
+    en: ~
+- id: gnomeat02
+  name: gnomeat02
+  type: numeric
+  label:
+    da: Hønsekødssuppe uden oksekød (g/dag)
+    en: ~
+- id: gret09003
+  name: gret09003
+  type: numeric
+  label:
+    da: Tomatsuppe (g/dag)
+    en: ~
+- id: gret09004
+  name: gret09004
+  type: numeric
+  label:
+    da: Suppe med rodfrugter (f.eks. kartoffel-, jordskokke- eller rødbedesuppe)(g/dag)
+    en: ~
+- id: gret09005
+  name: gret09005
+  type: numeric
+  label:
+    da: Anden grøntsagssuppe, minestrone og lignende (g/dag)
+    en: ~
+- id: gret09006
+  name: gret09006
+  type: numeric
+  label:
+    da: Mælke- eller flødebaseret suppe (f.eks. asparges- og karrysuppe) (g/dag)
+    en: ~
+- id: gret10002
+  name: gret10002
+  type: numeric
+  label:
+    da: Retter med bælgfrugter (f.eks. falafel eller bønnefrikadeller) (g/dag)
+    en: ~
+- id: gret10003
+  name: gret10003
+  type: numeric
+  label:
+    da: Grøntsagstærte og grøntsagsbøf (g/dag)
+    en: ~
+- id: gret10004
+  name: gret10004
+  type: numeric
+  label:
+    da: Sammenkogte grøntsagsretter (ikke tilbehør) (g/dag)
+    en: ~
+- id: gret10005
+  name: gret10005
+  type: numeric
+  label:
+    da: Risengrød (g/dag)
+    en: ~
+- id: gret10006
+  name: gret10006
+  type: numeric
+  label:
+    da: Pitabrød, madpandekager, wraps med kød (g/dag)
+    en: ~
+- id: gnomeat03
+  name: gnomeat03
+  type: numeric
+  label:
+    da: Pitabrød, Madpandekager, wraps uden kød (g/dag)
+    en: ~
+- id: gret10007
+  name: gret10007
+  type: numeric
+  label:
+    da: Pizza med kød(g/dag)
+    en: ~
+- id: gnomeat04
+  name: gnomeat04
+  type: numeric
+  label:
+    da: Pizza uden kød (g/dag)
+    en: ~
+- id: gret10008
+  name: gret10008
+  type: numeric
+  label:
+    da: Burger med kød (g/dag)
+    en: ~
+- id: gnomeat05
+  name: gnomeat05
+  type: numeric
+  label:
+    da: Burger uden kød (g/dag)
+    en: ~
+- id: gret10009
+  name: gret10009
+  type: numeric
+  label:
+    da: Forårsruller med kød (g/dag)
+    en: ~
+- id: gnomeat06
+  name: gnomeat06
+  type: numeric
+  label:
+    da: Forårsruller uden kød (g/dag)
+    en: ~
+- id: gtil01001
+  name: gtil01001
+  type: numeric
+  label:
+    da: Kogte kartofler (g/dag)
+    en: ~
+- id: gtil01002
+  name: gtil01002
+  type: numeric
+  label:
+    da: Ovnstegte kartofler (g/dag)
+    en: ~
+- id: gtil01003
+  name: gtil01003
+  type: numeric
+  label:
+    da: Pommes frites (g/dag)
+    en: ~
+- id: gtil01004
+  name: gtil01004
+  type: numeric
+  label:
+    da: Brasede og stegte kartofler (g/dag)
+    en: ~
+- id: gtil01005
+  name: gtil01005
+  type: numeric
+  label:
+    da: Kartoffelmos (g/dag)
+    en: ~
+- id: gtil01006
+  name: gtil01006
+  type: numeric
+  label:
+    da: Flødekartofler eller kartoffelsalat (g/dag)
+    en: ~
+- id: gtil01007
+  name: gtil01007
+  type: numeric
+  label:
+    da: Bagt kartoffel (g/dag)
+    en: ~
+- id: gtil01008
+  name: gtil01008
+  type: numeric
+  label:
+    da: Lys pasta og nudler (g/dag)
+    en: ~
+- id: gtil01009
+  name: gtil01009
+  type: numeric
+  label:
+    da: Fuldkornspasta (g/dag)
+    en: ~
+- id: gtil01010
+  name: gtil01010
+  type: numeric
+  label:
+    da: Hvide ris (parboiled, jasmin, basmati) (g/dag)
+    en: ~
+- id: gtil01011
+  name: gtil01011
+  type: numeric
+  label:
+    da: Brune/fuldkornsris (g/dag)
+    en: ~
+- id: gtil01012
+  name: gtil01012
+  type: numeric
+  label:
+    da: Bulgur og couscous (g/dag)
+    en: ~
+- id: gtil01013
+  name: gtil01013
+  type: numeric
+  label:
+    da: Kogte kerner, perlespelt, perlebyg eller quinoa (g/dag)
+    en: ~
+- id: gtil01014
+  name: gtil01014
+  type: numeric
+  label:
+    da: Sojabønner (inkl. tofu og miso) (g/dag)
+    en: ~
+- id: gtil01015
+  name: gtil01015
+  type: numeric
+  label:
+    da: Linser og bælgfrugter (f.eks. baked beans, kidneybønner eller kikærter) (g/dag)
+    en: ~
+- id: gtil01016
+  name: gtil01016
+  type: numeric
+  label:
+    da: Revet ost som tilbehør (f.eks. revet mozzarella eller cheddar) (g/dag)
+    en: ~
+- id: gtil01017
+  name: gtil01017
+  type: numeric
+  label:
+    da: Frisk mozzarella som tilbehør (g/dag)
+    en: ~
+- id: gtil01018
+  name: gtil01018
+  type: numeric
+  label:
+    da: Parmesan eller lignende oste som tilbehør (g/dag)
+    en: ~
+- id: gtil01019
+  name: gtil01019
+  type: numeric
+  label:
+    da: Salattern (Feta) som tilbehør (g/dag)
+    en: ~
+- id: gtil01020
+  name: gtil01020
+  type: numeric
+  label:
+    da: Gedeost som tilbehør (g/dag)
+    en: ~
+- id: gtil01021
+  name: gtil01021
+  type: numeric
+  label:
+    da: Anden type ost som tilbehør (g/dag)
+    en: ~
+- id: gsod01001
+  name: gsod01001
+  type: numeric
+  label:
+    da: Smeltet smør, margarine mm. (g/dag)
+    en: ~
+- id: gsod01002
+  name: gsod01002
+  type: numeric
+  label:
+    da: Bearnaise/hollandaise (g/dag)
+    en: ~
+- id: gsod01003
+  name: gsod01003
+  type: numeric
+  label:
+    da: Brun sovs (g/dag)
+    en: ~
+- id: gsod01004
+  name: gsod01004
+  type: numeric
+  label:
+    da: Hvid sovs/flødesovs (g/dag)
+    en: ~
+- id: gsod01005
+  name: gsod01005
+  type: numeric
+  label:
+    da: Tomatsovs (g/dag)
+    en: ~
+- id: gsod01006
+  name: gsod01006
+  type: numeric
+  label:
+    da: Ketchup (g/dag)
+    en: ~
+- id: gsod01007
+  name: gsod01007
+  type: numeric
+  label:
+    da: Sojasovs (g/dag)
+    en: ~
+- id: gsod01008
+  name: gsod01008
+  type: numeric
+  label:
+    da: Kold sovs med creme fraiche, A38 og lignende (f.eks. tzatziki) (g/dag)
+    en: ~
+- id: gsod01009
+  name: gsod01009
+  type: numeric
+  label:
+    da: Humus som dip(g/dag)
+    en: ~
+- id: gsod01010
+  name: gsod01010
+  type: numeric
+  label:
+    da: Pesto/tapenade (g/dag)
+    en: ~
+- id: ggrnt01002
+  name: ggrnt01002
+  type: numeric
+  label:
+    da: Blomkål, rå (g/dag)
+    en: ~
+- id: ggrnt01003
+  name: ggrnt01003
+  type: numeric
+  label:
+    da: Rosenkål, rå (g/dag)
+    en: ~
+- id: ggrnt01004
+  name: ggrnt01004
+  type: numeric
+  label:
+    da: Broccoli, rå (g/dag)
+    en: ~
+- id: ggrnt01005
+  name: ggrnt01005
+  type: numeric
+  label:
+    da: Hvidkål, savoykål eller spidskål, rå (g/dag)
+    en: ~
+- id: ggrnt01006
+  name: ggrnt01006
+  type: numeric
+  label:
+    da: Rødkål, rå (g/dag)
+    en: ~
+- id: ggrnt01007
+  name: ggrnt01007
+  type: numeric
+  label:
+    da: Grønkål, rå (g/dag)
+    en: ~
+- id: ggrnt01008
+  name: ggrnt01008
+  type: numeric
+  label:
+    da: Iceberg, hovedsalat, kinakål og lignende, rå (g/dag)
+    en: ~
+- id: ggrnt01009
+  name: ggrnt01009
+  type: numeric
+  label:
+    da: Rucola og salat mix, rå (g/dag)
+    en: ~
+- id: ggrnt01010
+  name: ggrnt01010
+  type: numeric
+  label:
+    da: Ærter, rå (g/dag)
+    en: ~
+- id: ggrnt01011
+  name: ggrnt01011
+  type: numeric
+  label:
+    da: Løg, rå (g/dag)
+    en: ~
+- id: ggrnt01012
+  name: ggrnt01012
+  type: numeric
+  label:
+    da: Champignoner, rå (g/dag)
+    en: ~
+- id: ggrnt01013
+  name: ggrnt01013
+  type: numeric
+  label:
+    da: Spinat, rå (g/dag)
+    en: ~
+- id: ggrnt01014
+  name: ggrnt01014
+  type: numeric
+  label:
+    da: Porre, forårsløg, rå (g/dag)
+    en: ~
+- id: ggrnt01015
+  name: ggrnt01015
+  type: numeric
+  label:
+    da: Courgette/squash, rå (g/dag)
+    en: ~
+- id: ggrnt01016
+  name: ggrnt01016
+  type: numeric
+  label:
+    da: Peberfrugt, rå (g/dag)
+    en: ~
+- id: ggrnt01017
+  name: ggrnt01017
+  type: numeric
+  label:
+    da: Agurk, rå (g/dag)
+    en: ~
+- id: ggrnt01018
+  name: ggrnt01018
+  type: numeric
+  label:
+    da: Bladselleri, rå (g/dag)
+    en: ~
+- id: ggrnt01019
+  name: ggrnt01019
+  type: numeric
+  label:
+    da: Tomat, rå (g/dag)
+    en: ~
+- id: ggrnt01020
+  name: ggrnt01020
+  type: numeric
+  label:
+    da: Avocado, rå (g/dag)
+    en: ~
+- id: ggrnt01021
+  name: ggrnt01021
+  type: numeric
+  label:
+    da: Asparges, rå (g/dag)
+    en: ~
+- id: ggrnt01022
+  name: ggrnt01022
+  type: numeric
+  label:
+    da: Oliven, rå (g/dag)
+    en: ~
+- id: ggrnt01023
+  name: ggrnt01023
+  type: numeric
+  label:
+    da: Tang, rå (g/dag)
+    en: ~
+- id: ggrnt01024
+  name: ggrnt01024
+  type: numeric
+  label:
+    da: Gulerødder, rå (g/dag)
+    en: ~
+- id: ggrnt01025
+  name: ggrnt01025
+  type: numeric
+  label:
+    da: Rødbede, rå (g/dag)
+    en: ~
+- id: ggrnt01026
+  name: ggrnt01026
+  type: numeric
+  label:
+    da: Jordskokker, rå (g/dag)
+    en: ~
+- id: ggrnt01027
+  name: ggrnt01027
+  type: numeric
+  label:
+    da: Pastinak eller persillerødder, rå (g/dag)
+    en: ~
+- id: ggrnt01028
+  name: ggrnt01028
+  type: numeric
+  label:
+    da: Kålrabi, majroer, glaskål, rå (g/dag)
+    en: ~
+- id: ggrnt01029
+  name: ggrnt01029
+  type: numeric
+  label:
+    da: Radise, kinaradise, ræddike, rå (g/dag)
+    en: ~
+- id: gtbg01002
+  name: gtbg01002
+  type: numeric
+  label:
+    da: Blomkål, tilberedt (g/dag)
+    en: ~
+- id: gtbg01003
+  name: gtbg01003
+  type: numeric
+  label:
+    da: Rosenkål, tilberedt (g/dag)
+    en: ~
+- id: gtbg01004
+  name: gtbg01004
+  type: numeric
+  label:
+    da: Broccoli, tilberedt (g/dag)
+    en: ~
+- id: gtbg01005
+  name: gtbg01005
+  type: numeric
+  label:
+    da: Hvidkål, savoykål eller spidskål, tilberedt (g/dag)
+    en: ~
+- id: gtbg01006
+  name: gtbg01006
+  type: numeric
+  label:
+    da: Rødkål, tilberedt (g/dag)
+    en: ~
+- id: gtbg01007
+  name: gtbg01007
+  type: numeric
+  label:
+    da: Grønkål, tilberedt (g/dag)
+    en: ~
+- id: gtbg01008
+  name: gtbg01008
+  type: numeric
+  label:
+    da: Ærter, tilberedt (g/dag)
+    en: ~
+- id: gtbg01009
+  name: gtbg01009
+  type: numeric
+  label:
+    da: Majs, tilberedt (g/dag)
+    en: ~
+- id: gtbg01010
+  name: gtbg01010
+  type: numeric
+  label:
+    da: Grønne bønner, tilberedt (g/dag)
+    en: ~
+- id: gtbg01011
+  name: gtbg01011
+  type: numeric
+  label:
+    da: Løg, tilberedt (g/dag)
+    en: ~
+- id: gtbg01012
+  name: gtbg01012
+  type: numeric
+  label:
+    da: Hvidløg, tilberedt (g/dag)
+    en: ~
+- id: gtbg01013
+  name: gtbg01013
+  type: numeric
+  label:
+    da: Champignoner, tilberedt (g/dag)
+    en: ~
+- id: gtbg01014
+  name: gtbg01014
+  type: numeric
+  label:
+    da: Andre svampe, tilberedt (g/dag)
+    en: ~
+- id: gtbg01015
+  name: gtbg01015
+  type: numeric
+  label:
+    da: Spinat, tilberedt (g/dag)
+    en: ~
+- id: gtbg01016
+  name: gtbg01016
+  type: numeric
+  label:
+    da: Porre, forårsløg, tilberedt (g/dag)
+    en: ~
+- id: gtbg01017
+  name: gtbg01017
+  type: numeric
+  label:
+    da: Aubergine, tilberedt (g/dag)
+    en: ~
+- id: gtbg01018
+  name: gtbg01018
+  type: numeric
+  label:
+    da: Courgette/squash, tilberedt (g/dag)
+    en: ~
+- id: gtbg01019
+  name: gtbg01019
+  type: numeric
+  label:
+    da: Peberfrugt, tilberedt (g/dag)
+    en: ~
+- id: gtbg01020
+  name: gtbg01020
+  type: numeric
+  label:
+    da: Tomat, tilberedt (g/dag)
+    en: ~
+- id: gtbg01021
+  name: gtbg01021
+  type: numeric
+  label:
+    da: Asparges, tilberedt (g/dag)
+    en: ~
+- id: gtbg01022
+  name: gtbg01022
+  type: numeric
+  label:
+    da: Oliven, tilberedt (g/dag)
+    en: ~
+- id: gtbg01023
+  name: gtbg01023
+  type: numeric
+  label:
+    da: Gulerødder, tilberedt (g/dag)
+    en: ~
+- id: gtbg01024
+  name: gtbg01024
+  type: numeric
+  label:
+    da: Knoldselleri, tilberedt (g/dag)
+    en: ~
+- id: gtbg01025
+  name: gtbg01025
+  type: numeric
+  label:
+    da: Rødbede, tilberedt (g/dag)
+    en: ~
+- id: gtbg01026
+  name: gtbg01026
+  type: numeric
+  label:
+    da: Jordskokker, tilberedt (g/dag)
+    en: ~
+- id: gtbg01027
+  name: gtbg01027
+  type: numeric
+  label:
+    da: Pastinak eller persillerødder, tilberedt (g/dag)
+    en: ~
+- id: gtbg01028
+  name: gtbg01028
+  type: numeric
+  label:
+    da: Kålrabi, majroer, glaskål, tilberedt (g/dag)
+    en: ~
+- id: gtbg01029
+  name: gtbg01029
+  type: numeric
+  label:
+    da: Radise, kinaradise, ræddike, tilberedt (g/dag)
+    en: ~
+- id: gdre01002
+  name: gdre01002
+  type: numeric
+  label:
+    da: Olie/eddike-dressing (g/dag)
+    en: ~
+- id: gdre01003
+  name: gdre01003
+  type: numeric
+  label:
+    da: Thousand Island dressing (g/dag)
+    en: ~
+- id: gdre01004
+  name: gdre01004
+  type: numeric
+  label:
+    da: Miracle Whip/mayonnaise (g/dag)
+    en: ~
+- id: gdre01005
+  name: gdre01005
+  type: numeric
+  label:
+    da: Yoghurt eller creme fraiche dressing (g/dag)
+    en: ~
+- id: gdre01006
+  name: gdre01006
+  type: numeric
+  label:
+    da: Light dressing (g/dag)
+    en: ~
+- id: gdre01007
+  name: gdre01007
+  type: numeric
+  label:
+    da: Sojasovs (g/dag)
+    en: ~
+- id: gdre01008
+  name: gdre01008
+  type: numeric
+  label:
+    da: Balsamico eller eddiker (g/dag)
+    en: ~
+- id: gdre01009
+  name: gdre01009
+  type: numeric
+  label:
+    da: Pesto (g/dag)
+    en: ~
+- id: gdre01010
+  name: gdre01010
+  type: numeric
+  label:
+    da: Citronsaft/juice (g/dag)
+    en: ~
+- id: gfru01002
+  name: gfru01002
+  type: numeric
+  label:
+    da: Æble (g/dag)
+    en: ~
+- id: gfru01003
+  name: gfru01003
+  type: numeric
+  label:
+    da: Pære (g/dag)
+    en: ~
+- id: gfru01005
+  name: gfru01005
+  type: numeric
+  label:
+    da: Appelsin og klementin (g/dag)
+    en: ~
+- id: gfru01006
+  name: gfru01006
+  type: numeric
+  label:
+    da: Grapefrugt, citron el. lime (g/dag)
+    en: ~
+- id: gfru01007
+  name: gfru01007
+  type: numeric
+  label:
+    da: Banan (g/dag)
+    en: ~
+- id: gfru01008
+  name: gfru01008
+  type: numeric
+  label:
+    da: Fersken og nektarin (g/dag)
+    en: ~
+- id: gfru01009
+  name: gfru01009
+  type: numeric
+  label:
+    da: Kiwifrugt (g/dag)
+    en: ~
+- id: gfru01010
+  name: gfru01010
+  type: numeric
+  label:
+    da: Blommer (g/dag)
+    en: ~
+- id: gfru01011
+  name: gfru01011
+  type: numeric
+  label:
+    da: Vandmelon (g/dag)
+    en: ~
+- id: gfru01012
+  name: gfru01012
+  type: numeric
+  label:
+    da: Anden type melon (g/dag)
+    en: ~
+- id: gfru01013
+  name: gfru01013
+  type: numeric
+  label:
+    da: Vindruer (g/dag)
+    en: ~
+- id: gfru01014
+  name: gfru01014
+  type: numeric
+  label:
+    da: Mango eller papaya (g/dag)
+    en: ~
+- id: gfru01015
+  name: gfru01015
+  type: numeric
+  label:
+    da: Ananas (g/dag)
+    en: ~
+- id: gfru01016
+  name: gfru01016
+  type: numeric
+  label:
+    da: Tropiske frugter (g/dag)
+    en: ~
+- id: gfru01017
+  name: gfru01017
+  type: numeric
+  label:
+    da: Bærblanding (g/dag)
+    en: ~
+- id: gfru01018
+  name: gfru01018
+  type: numeric
+  label:
+    da: Jordbær (g/dag)
+    en: ~
+- id: gfru01019
+  name: gfru01019
+  type: numeric
+  label:
+    da: Hindbær og brombær (g/dag)
+    en: ~
+- id: gfru01020
+  name: gfru01020
+  type: numeric
+  label:
+    da: Blåbær (g/dag)
+    en: ~
+- id: gfru01021
+  name: gfru01021
+  type: numeric
+  label:
+    da: Anden type bær (g/dag)
+    en: ~
+- id: gfru02002
+  name: gfru02002
+  type: numeric
+  label:
+    da: Fersken, henkogt (g/dag)
+    en: ~
+- id: gfru02003
+  name: gfru02003
+  type: numeric
+  label:
+    da: Ananas, henkogt (g/dag)
+    en: ~
+- id: gfru02004
+  name: gfru02004
+  type: numeric
+  label:
+    da: Pære, henkogt (g/dag)
+    en: ~
+- id: gfru02005
+  name: gfru02005
+  type: numeric
+  label:
+    da: Frugtcocktail, henkogt (g/dag)
+    en: ~
+- id: gfru03002
+  name: gfru03002
+  type: numeric
+  label:
+    da: Abrikoser, tørret (g/dag)
+    en: ~
+- id: gfru03003
+  name: gfru03003
+  type: numeric
+  label:
+    da: Svesker (g/dag)
+    en: ~
+- id: gfru03004
+  name: gfru03004
+  type: numeric
+  label:
+    da: Rosiner (g/dag)
+    en: ~
+- id: gfru03005
+  name: gfru03005
+  type: numeric
+  label:
+    da: Figenstænger (g/dag)
+    en: ~
+- id: gfru03006
+  name: gfru03006
+  type: numeric
+  label:
+    da: Hele figner og dadler (g/dag)
+    en: ~
+- id: gfru03007
+  name: gfru03007
+  type: numeric
+  label:
+    da: Tørrede bær (g/dag)
+    en: ~
+- id: gfru03008
+  name: gfru03008
+  type: numeric
+  label:
+    da: Andre tørrede frugter (g/dag)
+    en: ~
+- id: gnfk01001
+  name: gnfk01001
+  type: numeric
+  label:
+    da: Saltede nødder/mandler (g/dag)
+    en: ~
+- id: gnfk01002
+  name: gnfk01002
+  type: numeric
+  label:
+    da: Honningristede nødder/mandler (g/dag)
+    en: ~
+- id: gnfk01003
+  name: gnfk01003
+  type: numeric
+  label:
+    da: Chilinuts, wasabinødder og lignende (g/dag)
+    en: ~
+- id: gnfk01004
+  name: gnfk01004
+  type: numeric
+  label:
+    da: Mandler (g/dag)
+    en: ~
+- id: gnfk01005
+  name: gnfk01005
+  type: numeric
+  label:
+    da: Hasselnødder (g/dag)
+    en: ~
+- id: gnfk01006
+  name: gnfk01006
+  type: numeric
+  label:
+    da: Valnødder (g/dag)
+    en: ~
+- id: gnfk01007
+  name: gnfk01007
+  type: numeric
+  label:
+    da: Andre nødder (f.eks. pekan-, para-, jord-, pistacie-, cashew- eller macadamianødder)
+      (g/dag)
+    en: ~
+- id: gnfk01008
+  name: gnfk01008
+  type: numeric
+  label:
+    da: Græskarkerner (g/dag)
+    en: ~
+- id: gnfk01009
+  name: gnfk01009
+  type: numeric
+  label:
+    da: Pinjekerner (g/dag)
+    en: ~
+- id: gnfk01010
+  name: gnfk01010
+  type: numeric
+  label:
+    da: Solsikkekerner (g/dag)
+    en: ~
+- id: gnfk01011
+  name: gnfk01011
+  type: numeric
+  label:
+    da: Hørfrø (g/dag)
+    en: ~
+- id: gnfk01012
+  name: gnfk01012
+  type: numeric
+  label:
+    da: Sesamfrø (g/dag)
+    en: ~
+- id: gnfk01013
+  name: gnfk01013
+  type: numeric
+  label:
+    da: Andre typer kerner og frø (g/dag)
+    en: ~
+- id: gdes01002
+  name: gdes01002
+  type: numeric
+  label:
+    da: Mørk chokolade (g/dag)
+    en: ~
+- id: gdes01003
+  name: gdes01003
+  type: numeric
+  label:
+    da: Andet chokolade (g/dag)
+    en: ~
+- id: gdes01004
+  name: gdes01004
+  type: numeric
+  label:
+    da: Chokoladebarer (g/dag)
+    en: ~
+- id: gdes01005
+  name: gdes01005
+  type: numeric
+  label:
+    da: Blandet slik (g/dag)
+    en: ~
+- id: gdes01006
+  name: gdes01006
+  type: numeric
+  label:
+    da: Karameller (g/dag)
+    en: ~
+- id: gdes01007
+  name: gdes01007
+  type: numeric
+  label:
+    da: Bolsjer og slikkepinde (g/dag)
+    en: ~
+- id: gdes01008
+  name: gdes01008
+  type: numeric
+  label:
+    da: Lakrids (g/dag)
+    en: ~
+- id: gdes01009
+  name: gdes01009
+  type: numeric
+  label:
+    da: Vingummi (g/dag)
+    en: ~
+- id: gdes01010
+  name: gdes01010
+  type: numeric
+  label:
+    da: Marcipan og marcipanbrød (g/dag)
+    en: ~
+- id: gdes01011
+  name: gdes01011
+  type: numeric
+  label:
+    da: Skumslik (g/dag)
+    en: ~
+- id: gdes01012
+  name: gdes01012
+  type: numeric
+  label:
+    da: Flødeboller (g/dag)
+    en: ~
+- id: gdes01013
+  name: gdes01013
+  type: numeric
+  label:
+    da: Tyggegummi etc. u. sukker (g/dag)
+    en: ~
+- id: gdes01014
+  name: gdes01014
+  type: numeric
+  label:
+    da: Tyggegummi etc. m. sukker (g/dag)
+    en: ~
+- id: gdes02002
+  name: gdes02002
+  type: numeric
+  label:
+    da: Chips (g/dag)
+    en: ~
+- id: gdes02003
+  name: gdes02003
+  type: numeric
+  label:
+    da: Flæskesvær (g/dag)
+    en: ~
+- id: gdes02004
+  name: gdes02004
+  type: numeric
+  label:
+    da: Popcorn (g/dag)
+    en: ~
+- id: gdes02005
+  name: gdes02005
+  type: numeric
+  label:
+    da: Snackstænger (g/dag)
+    en: ~
+- id: gdes03002
+  name: gdes03002
+  type: numeric
+  label:
+    da: Müslibarer (g/dag)
+    en: ~
+- id: gdes03003
+  name: gdes03003
+  type: numeric
+  label:
+    da: Småkager og kiks (g/dag)
+    en: ~
+- id: gdes03004
+  name: gdes03004
+  type: numeric
+  label:
+    da: Trøfler/romkugler (g/dag)
+    en: ~
+- id: gdes03005
+  name: gdes03005
+  type: numeric
+  label:
+    da: Skærekage, tørkage ol. (g/dag)
+    en: ~
+- id: gdes03006
+  name: gdes03006
+  type: numeric
+  label:
+    da: Kransekage (g/dag)
+    en: ~
+- id: gdes03007
+  name: gdes03007
+  type: numeric
+  label:
+    da: Frugttærte (g/dag)
+    en: ~
+- id: gdes03008
+  name: gdes03008
+  type: numeric
+  label:
+    da: Wienerbrød (g/dag)
+    en: ~
+- id: gdes03009
+  name: gdes03009
+  type: numeric
+  label:
+    da: Flødeskumskage og lagkage (g/dag)
+    en: ~
+- id: gdes04002
+  name: gdes04002
+  type: numeric
+  label:
+    da: Ispinde (g/dag)
+    en: ~
+- id: gdes04003
+  name: gdes04003
+  type: numeric
+  label:
+    da: Vaffelis (g/dag)
+    en: ~
+- id: gdes04004
+  name: gdes04004
+  type: numeric
+  label:
+    da: Fløde- og mælkeis (g/dag)
+    en: ~
+- id: gdes04005
+  name: gdes04005
+  type: numeric
+  label:
+    da: Sorbet (g/dag)
+    en: ~
+- id: gdes05002
+  name: gdes05002
+  type: numeric
+  label:
+    da: Frugtgrød (g/dag)
+    en: ~
+- id: gdes05003
+  name: gdes05003
+  type: numeric
+  label:
+    da: Pandekager og æbleskiver (g/dag)
+    en: ~
+- id: gdes05004
+  name: gdes05004
+  type: numeric
+  label:
+    da: Kærnemælkskoldskål (g/dag)
+    en: ~
+- id: gdes05005
+  name: gdes05005
+  type: numeric
+  label:
+    da: Fromage eller mousse (g/dag)
+    en: ~
+- id: gttd01001
+  name: gttd01001
+  type: numeric
+  label:
+    da: Flødeskum (g/dag)
+    en: ~
+- id: gttd01002
+  name: gttd01002
+  type: numeric
+  label:
+    da: Råcreme (g/dag)
+    en: ~
+- id: gttd01003
+  name: gttd01003
+  type: numeric
+  label:
+    da: Creme fraiche (g/dag)
+    en: ~
+- id: gttd01004
+  name: gttd01004
+  type: numeric
+  label:
+    da: Græsk yoghurt (g/dag)
+    en: ~
+- id: gttd01005
+  name: gttd01005
+  type: numeric
+  label:
+    da: Skyr, fromage frais eller kvark (g/dag)
+    en: ~
+- id: gdri01001
+  name: gdri01001
+  type: numeric
+  label:
+    da: Skummetmælk (g/dag)
+    en: ~
+- id: gdri01002
+  name: gdri01002
+  type: numeric
+  label:
+    da: Minimælk og Jersey skummetmælk (0,5% fedt) (g/dag)
+    en: ~
+- id: gdri01003
+  name: gdri01003
+  type: numeric
+  label:
+    da: Letmælk (g/dag)
+    en: ~
+- id: gdri01004
+  name: gdri01004
+  type: numeric
+  label:
+    da: Sødmælk (g/dag)
+    en: ~
+- id: gdri01005
+  name: gdri01005
+  type: numeric
+  label:
+    da: Kærnemælk (g/dag)
+    en: ~
+- id: gdri01006
+  name: gdri01006
+  type: numeric
+  label:
+    da: Laktosefri mælk (g/dag)
+    en: ~
+- id: gdri01007
+  name: gdri01007
+  type: numeric
+  label:
+    da: Kakaomælk (g/dag)
+    en: ~
+- id: gdri01008
+  name: gdri01008
+  type: numeric
+  label:
+    da: Drikkeyoghurt (g/dag)
+    en: ~
+- id: gdri01009
+  name: gdri01009
+  type: numeric
+  label:
+    da: Drikkeyoghurt light (g/dag)
+    en: ~
+- id: gdri01010
+  name: gdri01010
+  type: numeric
+  label:
+    da: Sojadrik (g/dag)
+    en: ~
+- id: gdri01011
+  name: gdri01011
+  type: numeric
+  label:
+    da: Sojadrik tilsat calcium (g/dag)
+    en: ~
+- id: gdri01012
+  name: gdri01012
+  type: numeric
+  label:
+    da: Havredrik (g/dag)
+    en: ~
+- id: gdri01013
+  name: gdri01013
+  type: numeric
+  label:
+    da: Risdrik (g/dag)
+    en: ~
+- id: gdri01014
+  name: gdri01014
+  type: numeric
+  label:
+    da: Mandeldrik (g/dag)
+    en: ~
+- id: gdri01015
+  name: gdri01015
+  type: numeric
+  label:
+    da: Appelsin- og grapejuice (g/dag)
+    en: ~
+- id: gdri01016
+  name: gdri01016
+  type: numeric
+  label:
+    da: Multifrugtjuice (g/dag)
+    en: ~
+- id: gdri01017
+  name: gdri01017
+  type: numeric
+  label:
+    da: Æblejuice eller æblemost (g/dag)
+    en: ~
+- id: gdri01018
+  name: gdri01018
+  type: numeric
+  label:
+    da: Tomat- og grøntsagsjuice (g/dag)
+    en: ~
+- id: gdri01019
+  name: gdri01019
+  type: numeric
+  label:
+    da: Gulerodssaft (g/dag)
+    en: ~
+- id: gdri01020
+  name: gdri01020
+  type: numeric
+  label:
+    da: Saftevand og iste med sukker (g/dag)
+    en: ~
+- id: gdri01021
+  name: gdri01021
+  type: numeric
+  label:
+    da: Saftevand og iste, light uden sukker (g/dag)
+    en: ~
+- id: gdri01022
+  name: gdri01022
+  type: numeric
+  label:
+    da: Vand – ren postevand eller fra flaske (g/dag)
+    en: ~
+- id: gdri01023
+  name: gdri01023
+  type: numeric
+  label:
+    da: Mineralvand og danskvand med brus (g/dag)
+    en: ~
+- id: gdri01024
+  name: gdri01024
+  type: numeric
+  label:
+    da: Sodavand, light uden sukker (g/dag)
+    en: ~
+- id: gdri01025
+  name: gdri01025
+  type: numeric
+  label:
+    da: Sodavand med sukker (g/dag)
+    en: ~
+- id: gdri01026
+  name: gdri01026
+  type: numeric
+  label:
+    da: Lys øl (g/dag)
+    en: ~
+- id: gdri01027
+  name: gdri01027
+  type: numeric
+  label:
+    da: Almindelig øl (g/dag)
+    en: ~
+- id: gdri01028
+  name: gdri01028
+  type: numeric
+  label:
+    da: Stærk øl (g/dag)
+    en: ~
+- id: gdri01029
+  name: gdri01029
+  type: numeric
+  label:
+    da: Rødvin (g/dag)
+    en: ~
+- id: gdri01030
+  name: gdri01030
+  type: numeric
+  label:
+    da: Hvidvin og rosévin (g/dag)
+    en: ~
+- id: gdri01031
+  name: gdri01031
+  type: numeric
+  label:
+    da: Hedvin (f.eks. portvin) (g/dag)
+    en: ~
+- id: gdri01032
+  name: gdri01032
+  type: numeric
+  label:
+    da: Spiritus (f.eks. snaps og vodka) (g/dag)
+    en: ~
+- id: gdri01033
+  name: gdri01033
+  type: numeric
+  label:
+    da: Alcopops (f.eks. Bacardi Breezer og Sommersby) (g/dag)
+    en: ~
+- id: gdri01034
+  name: gdri01034
+  type: numeric
+  label:
+    da: Filterkaffe (g/dag)
+    en: ~
+- id: gdri01035
+  name: gdri01035
+  type: numeric
+  label:
+    da: Pulver/instant kaffe (g/dag)
+    en: ~
+- id: gdri01036
+  name: gdri01036
+  type: numeric
+  label:
+    da: Stempelkaffe (g/dag)
+    en: ~
+- id: gdri01037
+  name: gdri01037
+  type: numeric
+  label:
+    da: Koffeinfri kaffe eller kornkaffe (g/dag)
+    en: ~
+- id: gdri01038
+  name: gdri01038
+  type: numeric
+  label:
+    da: Espresso eller kaffekapsler (f.eks. Nespresso) (g/dag)
+    en: ~
+- id: gkaffemaelk
+  name: gkaffemaelk
+  type: numeric
+  label:
+    da: Mælk i kaffe (g/dag)
+    en: ~
+- id: gkaffeflode
+  name: gkaffeflode
+  type: numeric
+  label:
+    da: Fløde i kaffe (g/dag)
+    en: ~
+- id: gkaffesukker
+  name: gkaffesukker
+  type: numeric
+  label:
+    da: Sukker, sirup eller honning i kaffe (g/dag)
+    en: ~
+- id: gkaffesodest
+  name: gkaffesodest
+  type: numeric
+  label:
+    da: Kunstigt sødestof i kaffe (g/dag)
+    en: ~
+- id: gdri01043
+  name: gdri01043
+  type: numeric
+  label:
+    da: Cafe latte og cappuccino (g/dag)
+    en: ~
+- id: glattesukker
+  name: glattesukker
+  type: numeric
+  label:
+    da: Sukker, sirup eller honning i latte/cappuccino (g/dag)
+    en: ~
+- id: glattesodest
+  name: glattesodest
+  type: numeric
+  label:
+    da: Kunstigt sødestof i latte/cappuccino (g/dag)
+    en: ~
+- id: gdri01047
+  name: gdri01047
+  type: numeric
+  label:
+    da: Grøn te (g/dag)
+    en: ~
+- id: gdri01048
+  name: gdri01048
+  type: numeric
+  label:
+    da: Hvid te (g/dag)
+    en: ~
+- id: gdri01049
+  name: gdri01049
+  type: numeric
+  label:
+    da: Sort te (g/dag)
+    en: ~
+- id: gdri01050
+  name: gdri01050
+  type: numeric
+  label:
+    da: Rooiboste (g/dag)
+    en: ~
+- id: gdri01051
+  name: gdri01051
+  type: numeric
+  label:
+    da: Kamillete og urtete (g/dag)
+    en: ~
+- id: gtemaelk
+  name: gtemaelk
+  type: numeric
+  label:
+    da: Mælk i te (g/dag)
+    en: ~
+- id: gtesukker
+  name: gtesukker
+  type: numeric
+  label:
+    da: Sukker, sirup eller honning i te (g/dag)
+    en: ~
+- id: gtesodest
+  name: gtesodest
+  type: numeric
+  label:
+    da: Kunstigt sødestof i te (g/dag)
+    en: ~
+- id: gdri01055
+  name: gdri01055
+  type: numeric
+  label:
+    da: Chai latte (g/dag)
+    en: ~
+- id: gchaisukker
+  name: gchaisukker
+  type: numeric
+  label:
+    da: Sukker, sirup eller honning i chai latte (g/dag)
+    en: ~
+- id: gchaisodest
+  name: gchaisodest
+  type: numeric
+  label:
+    da: Kunstigt sødestof i chai latte (g/dag)
+    en: ~
+- id: gdri01059
+  name: gdri01059
+  type: numeric
+  label:
+    da: Proteindrik (g/dag)
+    en: ~
+- id: gdri01060
+  name: gdri01060
+  type: numeric
+  label:
+    da: Energidrik (f.eks. Red Bull) (g/dag)
+    en: ~
+- id: gdri01061
+  name: gdri01061
+  type: numeric
+  label:
+    da: Smoothies (ikke hjemmelavet) (g/dag)
+    en: ~
+- id: gdri01062
+  name: gdri01062
+  type: numeric
+  label:
+    da: Milkshake eller Iceblend (g/dag)
+    en: ~

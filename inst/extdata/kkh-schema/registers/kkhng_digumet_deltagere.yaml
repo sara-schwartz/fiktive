@@ -1,0 +1,16 @@
+id: kkhng_digumet_deltagere
+name: digumet_deltagere
+one_row_per: person
+join_keys:
+- pnr
+columns:
+- id: pnr
+  name: pnr
+  type: character
+  role: join_key
+- id: isdigumet
+  name: isdigumet
+  type: numeric
+  label:
+    da: Status variabel der indikerer om forsøgsperson er i DiGuMeT subpopulation
+    en: ~

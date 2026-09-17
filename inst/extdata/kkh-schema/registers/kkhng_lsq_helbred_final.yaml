@@ -1,0 +1,884 @@
+id: kkhng_lsq_helbred_final
+name: lsq_helbred_final
+one_row_per: person
+join_keys:
+- pnr
+columns:
+- id: pnr
+  name: pnr
+  type: character
+  role: join_key
+- id: syg01_a
+  name: syg01_a
+  type: numeric
+  label:
+    da: ~
+    en: 'Have you ever been diagnosed with: Myocardial infarction'
+- id: syg02_a
+  name: syg02_a
+  type: numeric
+  label:
+    da: ~
+    en: 'Has your mental health deteriorated because of the diagnosis: Myocardial
+      infarction'
+- id: syg03_a
+  name: syg03_a
+  type: numeric
+  label:
+    da: ~
+    en: 'Have you, due to the diagnosis, changed your habits: Myocardial infarction'
+- id: syg04_a_kost
+  name: syg04_a_kost
+  type: numeric
+  label:
+    da: ~
+    en: 'Changed my dietary habits because of: Myocardial infarction'
+- id: syg04_a_ryg
+  name: syg04_a_ryg
+  type: numeric
+  label:
+    da: ~
+    en: 'Changed my smoking habits because of: Myocardial infarction'
+- id: syg04_a_alk
+  name: syg04_a_alk
+  type: numeric
+  label:
+    da: ~
+    en: 'Changed my alcohol habits because of: Myocardial infarction'
+- id: syg04_a_fa
+  name: syg04_a_fa
+  type: numeric
+  label:
+    da: ~
+    en: 'Changed my physical activity level: Myocardial infarction'
+- id: syg04_a_arb
+  name: syg04_a_arb
+  type: numeric
+  label:
+    da: ~
+    en: 'Work performance (number of hours or tasks): Myocardial infarction'
+- id: syg04_a_andet
+  name: syg04_a_andet
+  type: numeric
+  label:
+    da: ~
+    en: 'Changed other habits because of: Myocardial infarction'
+- id: syg04_a_andettekst
+  name: syg04_a_andettekst
+  type: character
+  label:
+    da: ~
+    en: 'Changed other habits because of: Myocardial infarction (text)'
+- id: syg01_b
+  name: syg01_b
+  type: numeric
+  label:
+    da: ~
+    en: 'Have you ever been diagnosed with: Stroke'
+- id: syg02_b
+  name: syg02_b
+  type: numeric
+  label:
+    da: ~
+    en: 'Has your mental health deteriorated because of the diagnosis: Stroke'
+- id: syg03_b
+  name: syg03_b
+  type: numeric
+  label:
+    da: ~
+    en: 'Have you, due to the diagnosis, changed your habits: Stroke'
+- id: syg04_b_kost
+  name: syg04_b_kost
+  type: numeric
+  label:
+    da: ~
+    en: 'Changed my dietary habits because of: Stroke'
+- id: syg04_b_ryg
+  name: syg04_b_ryg
+  type: numeric
+  label:
+    da: ~
+    en: 'Changed my smoking habits because of: Stroke'
+- id: syg04_b_alk
+  name: syg04_b_alk
+  type: numeric
+  label:
+    da: ~
+    en: 'Changed my alcohol habits because of: Stroke'
+- id: syg04_b_fa
+  name: syg04_b_fa
+  type: numeric
+  label:
+    da: ~
+    en: 'Changed my physical activity level: Stroke'
+- id: syg04_b_arb
+  name: syg04_b_arb
+  type: numeric
+  label:
+    da: ~
+    en: 'Work performance (number of hours or tasks): Stroke'
+- id: syg04_b_andet
+  name: syg04_b_andet
+  type: numeric
+  label:
+    da: ~
+    en: 'Changed other habits because of: Stroke'
+- id: syg04_b_andettekst
+  name: syg04_b_andettekst
+  type: character
+  label:
+    da: ~
+    en: 'Changed other habits because of: Stroke (text)'
+- id: syg01_c
+  name: syg01_c
+  type: numeric
+  label:
+    da: ~
+    en: 'Have you ever been diagnosed with: Cancer (other than normal skin Cancer)'
+- id: syg02_c
+  name: syg02_c
+  type: numeric
+  label:
+    da: ~
+    en: 'Has your mental health deteriorated because of the diagnosis: Cancer'
+- id: syg03_c
+  name: syg03_c
+  type: numeric
+  label:
+    da: ~
+    en: 'Have you, due to the diagnosis, changed your habits: Cancer'
+- id: syg04_c_kost
+  name: syg04_c_kost
+  type: numeric
+  label:
+    da: ~
+    en: 'Changed my dietary habits because of: Cancer'
+- id: syg04_c_ryg
+  name: syg04_c_ryg
+  type: numeric
+  label:
+    da: ~
+    en: 'Changed my smoking habits because of: Cancer'
+- id: syg04_c_alk
+  name: syg04_c_alk
+  type: numeric
+  label:
+    da: ~
+    en: 'Changed my alcohol habits because of: Cancer'
+- id: syg04_c_fa
+  name: syg04_c_fa
+  type: numeric
+  label:
+    da: ~
+    en: 'Changed my physical activity level: Cancer'
+- id: syg04_c_arb
+  name: syg04_c_arb
+  type: numeric
+  label:
+    da: ~
+    en: 'Work performance (number of hours or tasks): Cancer'
+- id: syg04_c_sol
+  name: syg04_c_sol
+  type: numeric
+  label:
+    da: ~
+    en: 'Sun habits because of: Cancer'
+- id: syg04_c_andet
+  name: syg04_c_andet
+  type: numeric
+  label:
+    da: ~
+    en: 'Changed other habits because of: Cancer'
+- id: syg04_c_andettekst
+  name: syg04_c_andettekst
+  type: character
+  label:
+    da: ~
+    en: 'Changed other habits because of: Cancer (text)'
+- id: syg01_f
+  name: syg01_f
+  type: numeric
+  label:
+    da: ~
+    en: 'Have you ever been diagnosed with: Normal skin Cancer'
+- id: syg02_f
+  name: syg02_f
+  type: numeric
+  label:
+    da: ~
+    en: 'Has your mental health deteriorated because of the diagnosis: Normal skin
+      Cancer'
+- id: syg03_f
+  name: syg03_f
+  type: numeric
+  label:
+    da: ~
+    en: 'Have you, due to the diagnosis, changed your habits: Normal skin Cancer'
+- id: syg04_f_kost
+  name: syg04_f_kost
+  type: numeric
+  label:
+    da: ~
+    en: 'Changed my dietary habits because of: Normal skin Cancer'
+- id: syg04_f_ryg
+  name: syg04_f_ryg
+  type: numeric
+  label:
+    da: ~
+    en: 'Changed my smoking habits because of: Normal skin Cancer'
+- id: syg04_f_alk
+  name: syg04_f_alk
+  type: numeric
+  label:
+    da: ~
+    en: 'Changed my alcohol habits because of: Normal skin Cancer'
+- id: syg04_f_fa
+  name: syg04_f_fa
+  type: numeric
+  label:
+    da: ~
+    en: 'Changed my physical activity level: Normal skin Cancer'
+- id: syg04_f_arb
+  name: syg04_f_arb
+  type: numeric
+  label:
+    da: ~
+    en: 'Work performance (number of hours or tasks): Normal skin Cancer'
+- id: syg04_f_sol
+  name: syg04_f_sol
+  type: numeric
+  label:
+    da: ~
+    en: 'Sun habits because of: Normal skin Cancer'
+- id: syg04_f_andet
+  name: syg04_f_andet
+  type: numeric
+  label:
+    da: ~
+    en: 'Changed other habits because of: Normal skin Cancer'
+- id: syg04_f_andettekst
+  name: syg04_f_andettekst
+  type: character
+  label:
+    da: ~
+    en: 'Changed other habits because of: Normal skin Cancer (text)'
+- id: syg01_d
+  name: syg01_d
+  type: numeric
+  label:
+    da: ~
+    en: 'Have you ever been diagnosed with: Colon polyps'
+- id: syg02_d
+  name: syg02_d
+  type: numeric
+  label:
+    da: ~
+    en: 'Has your mental health deteriorated because of the diagnosis: Colon polyps'
+- id: syg03_d
+  name: syg03_d
+  type: numeric
+  label:
+    da: ~
+    en: 'Have you, due to the diagnosis, changed your habits: Colon polyps'
+- id: syg04_d_kost
+  name: syg04_d_kost
+  type: numeric
+  label:
+    da: ~
+    en: 'Changed my dietary habits because of: Colon polyps'
+- id: syg04_d_ryg
+  name: syg04_d_ryg
+  type: numeric
+  label:
+    da: ~
+    en: 'Changed my smoking habits because of: Colon polyps'
+- id: syg04_d_alk
+  name: syg04_d_alk
+  type: numeric
+  label:
+    da: ~
+    en: 'Changed my alcohol habits because of: Colon polyps'
+- id: syg04_d_fa
+  name: syg04_d_fa
+  type: numeric
+  label:
+    da: ~
+    en: 'Changed my physical activity level: Colon polyps'
+- id: syg04_d_arb
+  name: syg04_d_arb
+  type: numeric
+  label:
+    da: ~
+    en: 'Work performance (number of hours or tasks): Colon polyps'
+- id: syg04_d_andet
+  name: syg04_d_andet
+  type: numeric
+  label:
+    da: ~
+    en: 'Changed other habits because of: Colon polyps'
+- id: syg04_d_andettekst
+  name: syg04_d_andettekst
+  type: character
+  label:
+    da: ~
+    en: 'Changed other habits because of: Colon polyps (text)'
+- id: syg01_e
+  name: syg01_e
+  type: numeric
+  label:
+    da: ~
+    en: 'Have you ever been diagnosed with: Benign breast lump'
+- id: syg02_e
+  name: syg02_e
+  type: numeric
+  label:
+    da: ~
+    en: 'Has your mental health deteriorated because of the diagnosis: Benign breast
+      lump'
+- id: syg03_e
+  name: syg03_e
+  type: numeric
+  label:
+    da: ~
+    en: 'Have you, due to the diagnosis, changed your habits: Benign breast lump'
+- id: syg04_e_kost
+  name: syg04_e_kost
+  type: numeric
+  label:
+    da: ~
+    en: 'Changed my dietary habits because of: Benign breast lump'
+- id: syg04_e_ryg
+  name: syg04_e_ryg
+  type: numeric
+  label:
+    da: ~
+    en: 'Changed my smoking habits because of: Benign breast lump'
+- id: syg04_e_alk
+  name: syg04_e_alk
+  type: numeric
+  label:
+    da: ~
+    en: 'Changed my alcohol habits because of: Benign breast lump'
+- id: syg04_e_fa
+  name: syg04_e_fa
+  type: numeric
+  label:
+    da: ~
+    en: 'Changed my physical activity level: Benign breast lump'
+- id: syg04_e_arb
+  name: syg04_e_arb
+  type: numeric
+  label:
+    da: ~
+    en: 'Work performance (number of hours or tasks): Benign breast lump'
+- id: syg04_e_andet
+  name: syg04_e_andet
+  type: numeric
+  label:
+    da: ~
+    en: 'Changed other habits because of: Benign breast lump'
+- id: syg04_e_andettekst
+  name: syg04_e_andettekst
+  type: character
+  label:
+    da: ~
+    en: 'Changed other habits because of: Benign breast lump (text)'
+- id: syg01_g
+  name: syg01_g
+  type: numeric
+  label:
+    da: ~
+    en: 'Have you ever been diagnosed with: Diabetes or reduced insulin sensitivity'
+- id: syg02_g
+  name: syg02_g
+  type: numeric
+  label:
+    da: ~
+    en: 'Has your mental health deteriorated because of the diagnosis: Diabetes or
+      reduced insulin sensitivity'
+- id: syg03_g
+  name: syg03_g
+  type: numeric
+  label:
+    da: ~
+    en: 'Have you, due to the diagnosis, changed your habits: Diabetes or reduced
+      insulin sensitivity'
+- id: syg04_g_kost
+  name: syg04_g_kost
+  type: numeric
+  label:
+    da: ~
+    en: 'Changed my dietary habits because of: Diabetes or reduced insulin sensitivity'
+- id: syg04_g_ryg
+  name: syg04_g_ryg
+  type: numeric
+  label:
+    da: ~
+    en: 'Changed my smoking habits because of: Diabetes or reduced insulin sensitivity'
+- id: syg04_g_alk
+  name: syg04_g_alk
+  type: numeric
+  label:
+    da: ~
+    en: 'Changed my alcohol habits because of: Diabetes or reduced insulin sensitivity'
+- id: syg04_g_fa
+  name: syg04_g_fa
+  type: numeric
+  label:
+    da: ~
+    en: 'Changed my physical activity level: Diabetes or reduced insulin sensitivity'
+- id: syg04_g_arb
+  name: syg04_g_arb
+  type: numeric
+  label:
+    da: ~
+    en: 'Work performance (number of hours or tasks): Diabetes or reduced insulin
+      sensitivity'
+- id: syg04_g_andet
+  name: syg04_g_andet
+  type: numeric
+  label:
+    da: ~
+    en: 'Changed other habits because of: Diabetes or reduced insulin sensitivity'
+- id: syg04_g_andettekst
+  name: syg04_g_andettekst
+  type: character
+  label:
+    da: ~
+    en: 'Changed other habits because of: Diabetes or reduced insulin sensitivity
+      (text)'
+- id: syg01_h
+  name: syg01_h
+  type: numeric
+  label:
+    da: ~
+    en: 'Have you ever been diagnosed with: Increased blood pressure or cholesterol
+      levels'
+- id: syg02_h
+  name: syg02_h
+  type: numeric
+  label:
+    da: ~
+    en: 'Has your mental health deteriorated because of the diagnosis: Increased blood
+      pressure or cholesterol levels'
+- id: syg03_h
+  name: syg03_h
+  type: numeric
+  label:
+    da: ~
+    en: 'Have you, due to the diagnosis, changed your habits: Increased blood pressure
+      or cholesterol levels'
+- id: syg04_h_kost
+  name: syg04_h_kost
+  type: numeric
+  label:
+    da: ~
+    en: 'Changed my dietary habits because of: Increased blood pressure or cholesterol
+      levels'
+- id: syg04_h_ryg
+  name: syg04_h_ryg
+  type: numeric
+  label:
+    da: ~
+    en: 'Changed my smoking habits because of: Increased blood pressure or cholesterol
+      levels'
+- id: syg04_h_alk
+  name: syg04_h_alk
+  type: numeric
+  label:
+    da: ~
+    en: 'Changed my alcohol habits because of: Increased blood pressure or cholesterol
+      levels'
+- id: syg04_h_fa
+  name: syg04_h_fa
+  type: numeric
+  label:
+    da: ~
+    en: 'Changed my physical activity level: Increased blood pressure or cholesterol
+      levels'
+- id: syg04_h_arb
+  name: syg04_h_arb
+  type: numeric
+  label:
+    da: ~
+    en: 'Work performance (number of hours or tasks): Increased blood pressure or
+      cholesterol levels'
+- id: syg04_h_andet
+  name: syg04_h_andet
+  type: numeric
+  label:
+    da: ~
+    en: 'Changed other habits because of: Increased blood pressure or cholesterol
+      levels'
+- id: syg04_h_andettekst
+  name: syg04_h_andettekst
+  type: character
+  label:
+    da: ~
+    en: 'Changed other habits because of: Increased blood pressure or cholesterol
+      levels (text)'
+- id: syg01_i
+  name: syg01_i
+  type: numeric
+  label:
+    da: ~
+    en: 'Have you ever been diagnosed with: Respiratory diseases (asthma, COPD, pulmonary
+      emphysema)'
+- id: syg02_i
+  name: syg02_i
+  type: numeric
+  label:
+    da: ~
+    en: 'Has your mental health deteriorated because of the diagnosis: Respiratory
+      diseases'
+- id: syg03_i
+  name: syg03_i
+  type: numeric
+  label:
+    da: ~
+    en: 'Have you, due to the diagnosis, changed your habits: Respiratory diseases'
+- id: syg04_i_kost
+  name: syg04_i_kost
+  type: numeric
+  label:
+    da: ~
+    en: 'Changed my dietary habits because of: Respiratory diseases'
+- id: syg04_i_ryg
+  name: syg04_i_ryg
+  type: numeric
+  label:
+    da: ~
+    en: 'Changed my smoking habits because of: Respiratory diseases'
+- id: syg04_i_alk
+  name: syg04_i_alk
+  type: numeric
+  label:
+    da: ~
+    en: 'Changed my alcohol habits because of: Respiratory diseases'
+- id: syg04_i_fa
+  name: syg04_i_fa
+  type: numeric
+  label:
+    da: ~
+    en: 'Changed my physical activity level: Respiratory diseases'
+- id: syg04_i_arb
+  name: syg04_i_arb
+  type: numeric
+  label:
+    da: ~
+    en: 'Work performance (number of hours or tasks): Respiratory diseases'
+- id: syg04_i_andet
+  name: syg04_i_andet
+  type: numeric
+  label:
+    da: ~
+    en: 'Changed other habits because of: Respiratory diseases'
+- id: syg04_i_andettekst
+  name: syg04_i_andettekst
+  type: character
+  label:
+    da: ~
+    en: 'Changed other habits because of: Respiratory diseases (text)'
+- id: syg01_j
+  name: syg01_j
+  type: numeric
+  label:
+    da: ~
+    en: 'Have you ever been diagnosed with: Allergy or intolerance'
+- id: syg02_j
+  name: syg02_j
+  type: numeric
+  label:
+    da: ~
+    en: 'Has your mental health deteriorated because of the diagnosis: Allergy or
+      intolerance'
+- id: syg03_j
+  name: syg03_j
+  type: numeric
+  label:
+    da: ~
+    en: 'Have you, due to the diagnosis, changed your habits: Allergy or intolerance'
+- id: syg04_j_kost
+  name: syg04_j_kost
+  type: numeric
+  label:
+    da: ~
+    en: 'Changed my dietary habits because of: Allergy or intolerance'
+- id: syg04_j_ryg
+  name: syg04_j_ryg
+  type: numeric
+  label:
+    da: ~
+    en: 'Changed my smoking habits because of: Allergy or intolerance'
+- id: syg04_j_alk
+  name: syg04_j_alk
+  type: numeric
+  label:
+    da: ~
+    en: 'Changed my alcohol habits because of: Allergy or intolerance'
+- id: syg04_j_fa
+  name: syg04_j_fa
+  type: numeric
+  label:
+    da: ~
+    en: 'Changed my physical activity level: Allergy or intolerance'
+- id: syg04_j_arb
+  name: syg04_j_arb
+  type: numeric
+  label:
+    da: ~
+    en: 'Work performance (number of hours or tasks): Allergy or intolerance'
+- id: syg04_j_andet
+  name: syg04_j_andet
+  type: numeric
+  label:
+    da: ~
+    en: 'Changed other habits because of: Allergy or intolerance'
+- id: syg04_j_andettekst
+  name: syg04_j_andettekst
+  type: character
+  label:
+    da: ~
+    en: 'Changed other habits because of: Allergy or intolerance (text)'
+- id: syg01_k
+  name: syg01_k
+  type: numeric
+  label:
+    da: ~
+    en: 'Have you ever been diagnosed with: Migraine'
+- id: syg02_k
+  name: syg02_k
+  type: numeric
+  label:
+    da: ~
+    en: 'Has your mental health deteriorated because of the diagnosis: Migraine'
+- id: syg03_k
+  name: syg03_k
+  type: numeric
+  label:
+    da: ~
+    en: 'Have you, due to the diagnosis, changed your habits: Migraine'
+- id: syg04_k_kost
+  name: syg04_k_kost
+  type: numeric
+  label:
+    da: ~
+    en: 'Changed my dietary habits because of: Migraine'
+- id: syg04_k_ryg
+  name: syg04_k_ryg
+  type: numeric
+  label:
+    da: ~
+    en: 'Changed my smoking habits because of: Migraine'
+- id: syg04_k_alk
+  name: syg04_k_alk
+  type: numeric
+  label:
+    da: ~
+    en: 'Changed my alcohol habits because of: Migraine'
+- id: syg04_k_fa
+  name: syg04_k_fa
+  type: numeric
+  label:
+    da: ~
+    en: 'Changed my physical activity level: Migraine'
+- id: syg04_k_arb
+  name: syg04_k_arb
+  type: numeric
+  label:
+    da: ~
+    en: 'Work performance (number of hours or tasks): Migraine'
+- id: syg04_k_andet
+  name: syg04_k_andet
+  type: numeric
+  label:
+    da: ~
+    en: 'Changed other habits because of: Migraine'
+- id: syg04_k_andettekst
+  name: syg04_k_andettekst
+  type: character
+  label:
+    da: ~
+    en: 'Changed other habits because of: Migraine (text)'
+- id: syg01_l
+  name: syg01_l
+  type: numeric
+  label:
+    da: ~
+    en: 'Have you ever been diagnosed with: Epilepsy'
+- id: syg02_l
+  name: syg02_l
+  type: numeric
+  label:
+    da: ~
+    en: 'Has your mental health deteriorated because of the diagnosis: Epilepsy'
+- id: syg03_l
+  name: syg03_l
+  type: numeric
+  label:
+    da: ~
+    en: 'Have you, due to the diagnosis, changed your habits: Epilepsy'
+- id: syg04_l_kost
+  name: syg04_l_kost
+  type: numeric
+  label:
+    da: ~
+    en: 'Changed my dietary habits because of: Epilepsy'
+- id: syg04_l_ryg
+  name: syg04_l_ryg
+  type: numeric
+  label:
+    da: ~
+    en: 'Changed my smoking habits because of: Epilepsy'
+- id: syg04_l_alk
+  name: syg04_l_alk
+  type: numeric
+  label:
+    da: ~
+    en: 'Changed my alcohol habits because of: Epilepsy'
+- id: syg04_l_fa
+  name: syg04_l_fa
+  type: numeric
+  label:
+    da: ~
+    en: 'Changed my physical activity level: Epilepsy'
+- id: syg04_l_arb
+  name: syg04_l_arb
+  type: numeric
+  label:
+    da: ~
+    en: 'Work performance (number of hours or tasks): Epilepsy'
+- id: syg04_l_andet
+  name: syg04_l_andet
+  type: numeric
+  label:
+    da: ~
+    en: 'Changed other habits because of: Epilepsy'
+- id: syg04_l_andettekst
+  name: syg04_l_andettekst
+  type: character
+  label:
+    da: ~
+    en: 'Changed other habits because of: Epilepsy (text)'
+- id: syg01_m
+  name: syg01_m
+  type: numeric
+  label:
+    da: ~
+    en: 'Have you ever been diagnosed with: ADHD/ADD'
+- id: syg02_m
+  name: syg02_m
+  type: numeric
+  label:
+    da: ~
+    en: 'Has your mental health deteriorated because of the diagnosis: ADHD/ADD'
+- id: syg03_m
+  name: syg03_m
+  type: numeric
+  label:
+    da: ~
+    en: 'Have you, due to the diagnosis, changed your habits: ADHD/ADD'
+- id: syg04_m_kost
+  name: syg04_m_kost
+  type: numeric
+  label:
+    da: ~
+    en: 'Changed my dietary habits because of: ADHD/ADD'
+- id: syg04_m_ryg
+  name: syg04_m_ryg
+  type: numeric
+  label:
+    da: ~
+    en: 'Changed my smoking habits because of: ADHD/ADD'
+- id: syg04_m_alk
+  name: syg04_m_alk
+  type: numeric
+  label:
+    da: ~
+    en: 'Changed my alcohol habits because of: ADHD/ADD'
+- id: syg04_m_fa
+  name: syg04_m_fa
+  type: numeric
+  label:
+    da: ~
+    en: 'Changed my physical activity level: ADHD/ADD'
+- id: syg04_m_arb
+  name: syg04_m_arb
+  type: numeric
+  label:
+    da: ~
+    en: 'Work performance (number of hours or tasks): ADHD/ADD'
+- id: syg04_m_andet
+  name: syg04_m_andet
+  type: numeric
+  label:
+    da: ~
+    en: 'Changed other habits because of: ADHD/ADD'
+- id: syg04_m_andettekst
+  name: syg04_m_andettekst
+  type: character
+  label:
+    da: ~
+    en: 'Changed other habits because of: ADHD/ADD (text)'
+- id: syg01_n
+  name: syg01_n
+  type: numeric
+  label:
+    da: ~
+    en: 'Have you ever been diagnosed with: Polycystic ovary syndrome (PCO)'
+- id: syg02_n
+  name: syg02_n
+  type: numeric
+  label:
+    da: ~
+    en: 'Has your mental health deteriorated because of the diagnosis: Polycystic
+      ovary syndrome (PCO)'
+- id: syg03_n
+  name: syg03_n
+  type: numeric
+  label:
+    da: ~
+    en: 'Have you, due to the diagnosis, changed your habits: Polycystic ovary syndrome
+      (PCO)'
+- id: syg04_n_kost
+  name: syg04_n_kost
+  type: numeric
+  label:
+    da: ~
+    en: 'Changed my dietary habits because of: Polycystic ovary syndrome (PCO)'
+- id: syg04_n_ryg
+  name: syg04_n_ryg
+  type: numeric
+  label:
+    da: ~
+    en: 'Changed my smoking habits because of: Polycystic ovary syndrome (PCO)'
+- id: syg04_n_alk
+  name: syg04_n_alk
+  type: numeric
+  label:
+    da: ~
+    en: 'Changed my alcohol habits because of: Polycystic ovary syndrome (PCO)'
+- id: syg04_n_fa
+  name: syg04_n_fa
+  type: numeric
+  label:
+    da: ~
+    en: 'Changed my physical activity level: Polycystic ovary syndrome (PCO)'
+- id: syg04_n_arb
+  name: syg04_n_arb
+  type: numeric
+  label:
+    da: ~
+    en: 'Work performance (number of hours or tasks): Polycystic ovary syndrome (PCO)'
+- id: syg04_n_andet
+  name: syg04_n_andet
+  type: numeric
+  label:
+    da: ~
+    en: 'Changed other habits because of: Polycystic ovary syndrome (PCO)'
+- id: syg04_n_andettekst
+  name: syg04_n_andettekst
+  type: character
+  label:
+    da: ~
+    en: 'Changed other habits because of: Polycystic ovary syndrome (PCO) (text)'

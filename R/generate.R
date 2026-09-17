@@ -36,9 +36,14 @@ dispatch_generate_register <- function(register, spec, population, schema, from,
   }
 
   # Prefer one_row_per when present; else fall back to register-id lists (thin fixtures).
+  # Bundled KKH/KKHNG registers (all one_row_per: person) extend this
+  # whitelist dynamically, read from the installed package -- see
+  # kkh_register_ids() in R/schema.R. A DST register in the schema but not
+  # in either list still correctly errors below, unchanged.
+  implemented_snapshot <- c(.IMPLEMENTED_SNAPSHOT, kkh_register_ids())
   if (identical(grain, "person_reference_date") || identical(grain, "person") ||
-      (!nzchar(grain) && register %in% .IMPLEMENTED_SNAPSHOT)) {
-    if (!register %in% .IMPLEMENTED_SNAPSHOT) {
+      (!nzchar(grain) && register %in% implemented_snapshot)) {
+    if (!register %in% implemented_snapshot) {
       stop(
         sprintf("Register '%s' is in the schema but is not implemented yet.", register),
         call. = FALSE
@@ -91,6 +96,9 @@ snapshot_cadence_for <- function(register, spec) {
 }
 
 generate_snapshot <- function(population, schema, spec, from, to, seed, cadence) {
+  if (identical(spec$one_row_per, "person")) {
+    return(generate_person_snapshot(population, schema, spec, from, to, seed))
+  }
   pop <- validate_population(population)
   from <- as_date1(from)
   to <- as_date1(to)
@@ -108,6 +116,38 @@ generate_snapshot <- function(population, schema, spec, from, to, seed, cadence)
     )
     rows <- dplyr::left_join(grid, pop, by = "pnr")
     rows <- rows[rows$referencetid >= rows$foed_dag, , drop = FALSE]
+    emit_schema_table(spec, rows, schema)
+  })
+}
+
+# Schema-driven counterpart to generate_custom_person() (R/generate-custom.R)
+# -- same fix, same reason: one_row_per = "person" is a baseline cohort
+# table (one row per participant), not a repeated snapshot, so it must not
+# go through the person x snapshot-date grid above. cadence is silently
+# irrelevant here (unlike the custom-register path, generate_register()'s
+# public API has no cadence= argument to conflict with in the first place --
+# it's purely schema-derived via snapshot_cadence_for(), which the caller in
+# dispatch_generate_register() still computes but this branch never uses).
+generate_person_snapshot <- function(population, schema, spec, from, to, seed) {
+  pop <- validate_population(population)
+  from <- as_date1(from)
+  to <- as_date1(to)
+  if (is.na(from) || is.na(to) || to < from) {
+    stop("`from` must be a Date on or before `to`.", call. = FALSE)
+  }
+  with_rng_seed(seed, {
+    rows <- pop[pop$foed_dag <= to, , drop = FALSE]
+    if (!nrow(rows)) {
+      return(empty_from_spec(spec))
+    }
+    lo <- pmax(rows$foed_dag, from)
+    span <- as.integer(to - lo)
+    # One independent date per person within their own eligible window --
+    # not a shared as-of date like person_reference_date's snapshot dates.
+    # Faithful to staggered recruitment (e.g. KKH/KKHNG's baseline cohort
+    # enrolled over several years): referencetid means "this person's own
+    # date", a different meaning from the snapshot grain's.
+    rows$referencetid <- lo + floor(stats::runif(nrow(rows)) * (span + 1L))
     emit_schema_table(spec, rows, schema)
   })
 }

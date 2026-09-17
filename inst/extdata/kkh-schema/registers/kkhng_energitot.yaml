@@ -1,0 +1,16 @@
+id: kkhng_energitot
+name: energitot
+one_row_per: person
+join_keys:
+- pnr
+columns:
+- id: pnr
+  name: pnr
+  type: character
+  role: join_key
+- id: energitot
+  name: energitot
+  type: numeric
+  label:
+    da: ~
+    en: Energy total (kJ/day)

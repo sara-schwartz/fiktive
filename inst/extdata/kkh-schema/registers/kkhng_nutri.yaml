@@ -1,0 +1,941 @@
+id: kkhng_nutri
+name: nutri
+one_row_per: person
+join_keys:
+- pnr
+columns:
+- id: pnr
+  name: pnr
+  type: character
+  role: join_key
+- id: prot
+  name: prot
+  type: numeric
+  label:
+    da: Protein (g/dag)
+    en: ~
+- id: prote
+  name: prote
+  type: numeric
+  label:
+    da: Energi fra protein (kJ/dag)
+    en: ~
+- id: fedt
+  name: fedt
+  type: numeric
+  label:
+    da: Fedt (g/dag)
+    en: ~
+- id: fedte
+  name: fedte
+  type: numeric
+  label:
+    da: Energi fra fedt (kJ/dag)
+    en: ~
+- id: kulhtil
+  name: kulhtil
+  type: numeric
+  label:
+    da: Kulhydrat, tilgængelig (g/dag)
+    en: ~
+- id: kulhtile
+  name: kulhtile
+  type: numeric
+  label:
+    da: Energi fra kulhydrat, tilgængelig (kJ/dag)
+    en: ~
+- id: alko
+  name: alko
+  type: numeric
+  label:
+    da: Alkohol (g/dag)
+    en: ~
+- id: alkoe
+  name: alkoe
+  type: numeric
+  label:
+    da: Energi fra alkohol (kJ/dag)
+    en: ~
+- id: kulhy
+  name: kulhy
+  type: numeric
+  label:
+    da: Kulhydrat, difference (g/dag)
+    en: ~
+- id: suktil
+  name: suktil
+  type: numeric
+  label:
+    da: Tilsat sukker (g/dag)
+    en: ~
+- id: kfibre
+  name: kfibre
+  type: numeric
+  label:
+    da: Kostfibre (g/dag)
+    en: ~
+- id: kfibree
+  name: kfibree
+  type: numeric
+  label:
+    da: Energi fra kostfibre (kJ/dag)
+    en: ~
+- id: orgsyrertot
+  name: orgsyrertot
+  type: numeric
+  label:
+    da: Organiske syrer, total (g/dag)
+    en: ~
+- id: orgsyrere
+  name: orgsyrere
+  type: numeric
+  label:
+    da: Energi fra organiske syrer, total (kJ/dag)
+    en: ~
+- id: sukkeralko
+  name: sukkeralko
+  type: numeric
+  label:
+    da: Sukkeralkoholer, total (g/dag)
+    en: ~
+- id: sukkeralkoe
+  name: sukkeralkoe
+  type: numeric
+  label:
+    da: Energi fra sukkeralkoholer, total (kJ/dag)
+    en: ~
+- id: kulhtilx
+  name: kulhtilx
+  type: numeric
+  label:
+    da: Kulhydrat, tilgængelig uden organiske syrer og sukkeralkoholer (g/dag)
+    en: ~
+- id: kulhtilxe
+  name: kulhtilxe
+  type: numeric
+  label:
+    da: Energi fra kulhydrat, tilgængelig uden organiske syrer og sukkeralkoholer
+      (kJ/dag)
+    en: ~
+- id: kulhtote
+  name: kulhtote
+  type: numeric
+  label:
+    da: Energi fra kulhydrat, tilgængelig inkl. kostfibre (kJ/dag)
+    en: ~
+- id: energitotxalko
+  name: energitotxalko
+  type: numeric
+  label:
+    da: Energi total uden alkohol (kJ/dag)
+    en: ~
+- id: protep
+  name: protep
+  type: numeric
+  label:
+    da: Protein energiprocent
+    en: ~
+- id: fedtep
+  name: fedtep
+  type: numeric
+  label:
+    da: Fedt energiprocent
+    en: ~
+- id: kulhtilxep
+  name: kulhtilxep
+  type: numeric
+  label:
+    da: Kulhydrat, tilgængelig uden organiske syrer og sukkeralkoholer energiprocent
+    en: ~
+- id: kulhtotep
+  name: kulhtotep
+  type: numeric
+  label:
+    da: Energi fra kulhydrat, tilgængelig inkl. kostfibre energiprocent
+    en: ~
+- id: kfibreep
+  name: kfibreep
+  type: numeric
+  label:
+    da: Kostfibre energiprocent
+    en: ~
+- id: alkoep
+  name: alkoep
+  type: numeric
+  label:
+    da: Alkohol energiprocent
+    en: ~
+- id: orgsyrerep
+  name: orgsyrerep
+  type: numeric
+  label:
+    da: Organiske syrer, tot. energiprocent
+    en: ~
+- id: sukkeralkoep
+  name: sukkeralkoep
+  type: numeric
+  label:
+    da: Sukkeralkoholer, total energiprocent
+    en: ~
+- id: andresukker
+  name: andresukker
+  type: numeric
+  label:
+    da: Andre sukkerarter (g/dag)
+    en: ~
+- id: totsukker
+  name: totsukker
+  type: numeric
+  label:
+    da: Sukkerarter, ialt (g/dag)
+    en: ~
+- id: fructo
+  name: fructo
+  type: numeric
+  label:
+    da: Fruktose (g/dag)
+    en: ~
+- id: galacto
+  name: galacto
+  type: numeric
+  label:
+    da: Galaktose (g/dag)
+    en: ~
+- id: glucos
+  name: glucos
+  type: numeric
+  label:
+    da: Glukose (g/dag)
+    en: ~
+- id: monosaccha
+  name: monosaccha
+  type: numeric
+  label:
+    da: Monosaccharider, total (g/dag)
+    en: ~
+- id: lactos
+  name: lactos
+  type: numeric
+  label:
+    da: Laktose (g/dag)
+    en: ~
+- id: maltos
+  name: maltos
+  type: numeric
+  label:
+    da: Maltose (g/dag)
+    en: ~
+- id: sacchros
+  name: sacchros
+  type: numeric
+  label:
+    da: Sakkarose (g/dag)
+    en: ~
+- id: disacchar
+  name: disacchar
+  type: numeric
+  label:
+    da: Disaccharider, total (g/dag)
+    en: ~
+- id: raffinose
+  name: raffinose
+  type: numeric
+  label:
+    da: Raffinose (g/dag)
+    en: ~
+- id: stivelse
+  name: stivelse
+  type: numeric
+  label:
+    da: Stivelse (g/dag)
+    en: ~
+- id: aske
+  name: aske
+  type: numeric
+  label:
+    da: Aske (g/dag)
+    en: ~
+- id: vand
+  name: vand
+  type: numeric
+  label:
+    da: Vand (g/dag)
+    en: ~
+- id: avit
+  name: avit
+  type: numeric
+  label:
+    da: A-vitamin (RE)
+    en: ~
+- id: retinol
+  name: retinol
+  type: numeric
+  label:
+    da: Retinol (µg/dag)
+    en: ~
+- id: betaca
+  name: betaca
+  type: numeric
+  label:
+    da: Betacaroten (µg/dag)
+    en: ~
+- id: dvit
+  name: dvit
+  type: numeric
+  label:
+    da: D-vitamin (µg/dag)
+    en: ~
+- id: evit
+  name: evit
+  type: numeric
+  label:
+    da: E-vitamin (mg/dag)
+    en: ~
+- id: alfato
+  name: alfato
+  type: numeric
+  label:
+    da: Alfa-tokoferol (mg/dag)
+    en: ~
+- id: kvit
+  name: kvit
+  type: numeric
+  label:
+    da: K-vitamin (µg/dag)
+    en: ~
+- id: b1vit
+  name: b1vit
+  type: numeric
+  label:
+    da: B1-vitamin (mg/dag)
+    en: ~
+- id: thiamin
+  name: thiamin
+  type: numeric
+  label:
+    da: Thiamin (mg/dag)
+    en: ~
+- id: b2vit
+  name: b2vit
+  type: numeric
+  label:
+    da: B2-vitamin (mg/dag)
+    en: ~
+- id: niacin
+  name: niacin
+  type: numeric
+  label:
+    da: Niacin ækvivlent(NE)
+    en: ~
+- id: niacin2
+  name: niacin2
+  type: numeric
+  label:
+    da: Niacin (mg/dag)
+    en: ~
+- id: b6vit
+  name: b6vit
+  type: numeric
+  label:
+    da: B6-vitamin (mg/dag)
+    en: ~
+- id: pantothen
+  name: pantothen
+  type: numeric
+  label:
+    da: Pantothensyre (mg/dag)
+    en: ~
+- id: biotin
+  name: biotin
+  type: numeric
+  label:
+    da: Biotin (µg/dag)
+    en: ~
+- id: folat
+  name: folat
+  type: numeric
+  label:
+    da: Folat (µg/dag)
+    en: ~
+- id: frifolat
+  name: frifolat
+  type: numeric
+  label:
+    da: Frifolat (µg/dag)
+    en: ~
+- id: b12vit
+  name: b12vit
+  type: numeric
+  label:
+    da: B12-vitamin (µg/dag)
+    en: ~
+- id: cvit
+  name: cvit
+  type: numeric
+  label:
+    da: C-vitamin (mg/dag)
+    en: ~
+- id: na
+  name: na
+  type: numeric
+  label:
+    da: Natrium (mg/dag)
+    en: ~
+- id: ka
+  name: ka
+  type: numeric
+  label:
+    da: Kalium (mg/dag)
+    en: ~
+- id: ca
+  name: ca
+  type: numeric
+  label:
+    da: Calcium (mg/dag)
+    en: ~
+- id: mg
+  name: mg
+  type: numeric
+  label:
+    da: Magnesium (mg/dag)
+    en: ~
+- id: p
+  name: p
+  type: numeric
+  label:
+    da: Phosphor (mg/dag)
+    en: ~
+- id: fe
+  name: fe
+  type: numeric
+  label:
+    da: Jern (mg/dag)
+    en: ~
+- id: cu
+  name: cu
+  type: numeric
+  label:
+    da: Kobber (mg/dag)
+    en: ~
+- id: zn
+  name: zn
+  type: numeric
+  label:
+    da: Zink (mg/dag)
+    en: ~
+- id: i
+  name: i
+  type: numeric
+  label:
+    da: Jod (µg/dag)
+    en: ~
+- id: mn
+  name: mn
+  type: numeric
+  label:
+    da: Mangan (mg/dag)
+    en: ~
+- id: cr
+  name: cr
+  type: numeric
+  label:
+    da: Chrom (µg/dag)
+    en: ~
+- id: se
+  name: se
+  type: numeric
+  label:
+    da: Selen (µg/dag)
+    en: ~
+- id: ni
+  name: ni
+  type: numeric
+  label:
+    da: Nikkel (µg/dag)
+    en: ~
+- id: c4x0
+  name: c4x0
+  type: numeric
+  label:
+    da: C4:0 (g/dag)
+    en: ~
+- id: c6x0
+  name: c6x0
+  type: numeric
+  label:
+    da: C6:0 (g/dag)
+    en: ~
+- id: c8x0
+  name: c8x0
+  type: numeric
+  label:
+    da: C8:0 (g/dag)
+    en: ~
+- id: c10x0
+  name: c10x0
+  type: numeric
+  label:
+    da: C10:0 (g/dag)
+    en: ~
+- id: c12x0
+  name: c12x0
+  type: numeric
+  label:
+    da: C12:0 (g/dag)
+    en: ~
+- id: c13x0
+  name: c13x0
+  type: numeric
+  label:
+    da: C13:0 (g/dag)
+    en: ~
+- id: c14x0
+  name: c14x0
+  type: numeric
+  label:
+    da: C14:0 (g/dag)
+    en: ~
+- id: c15x0
+  name: c15x0
+  type: numeric
+  label:
+    da: C15:0 (g/dag)
+    en: ~
+- id: c16x0
+  name: c16x0
+  type: numeric
+  label:
+    da: C16:0 (g/dag)
+    en: ~
+- id: c17x0
+  name: c17x0
+  type: numeric
+  label:
+    da: C17:0 (g/dag)
+    en: ~
+- id: c18x0
+  name: c18x0
+  type: numeric
+  label:
+    da: C18:0 (g/dag)
+    en: ~
+- id: c20x0
+  name: c20x0
+  type: numeric
+  label:
+    da: C20:0 (g/dag)
+    en: ~
+- id: c21x0
+  name: c21x0
+  type: numeric
+  label:
+    da: C21:0 (g/dag)
+    en: ~
+- id: c22x0
+  name: c22x0
+  type: numeric
+  label:
+    da: C22:0 (g/dag)
+    en: ~
+- id: c23x0
+  name: c23x0
+  type: numeric
+  label:
+    da: C23:0 (g/dag)
+    en: ~
+- id: c24x0
+  name: c24x0
+  type: numeric
+  label:
+    da: C24:0 (g/dag)
+    en: ~
+- id: andre_sfa
+  name: andre_sfa
+  type: numeric
+  label:
+    da: Andre mættede festsyrer (g/dag)
+    en: ~
+- id: c12x1n1
+  name: c12x1n1
+  type: numeric
+  label:
+    da: C12:1,n-1 (g/dag)
+    en: ~
+- id: c14x1n5
+  name: c14x1n5
+  type: numeric
+  label:
+    da: C14:1,n-5 (g/dag)
+    en: ~
+- id: c15x1
+  name: c15x1
+  type: numeric
+  label:
+    da: C15:1 (g/dag)
+    en: ~
+- id: c16x1n7
+  name: c16x1n7
+  type: numeric
+  label:
+    da: C16:1,n-7 (g/dag)
+    en: ~
+- id: c17x1n7
+  name: c17x1n7
+  type: numeric
+  label:
+    da: C17:1,n-7 (g/dag)
+    en: ~
+- id: c18x1n9
+  name: c18x1n9
+  type: numeric
+  label:
+    da: C18:1,n-9 (g/dag)
+    en: ~
+- id: c18x1n7
+  name: c18x1n7
+  type: numeric
+  label:
+    da: C18:1,n-7 (g/dag)
+    en: ~
+- id: c20x1n9
+  name: c20x1n9
+  type: numeric
+  label:
+    da: C20:1,n-9 (g/dag)
+    en: ~
+- id: c20x1n11
+  name: c20x1n11
+  type: numeric
+  label:
+    da: C20:1,n-11 (g/dag)
+    en: ~
+- id: c22x1n9
+  name: c22x1n9
+  type: numeric
+  label:
+    da: C22:1,n-9 (g/dag)
+    en: ~
+- id: c22x1n11
+  name: c22x1n11
+  type: numeric
+  label:
+    da: C22:1,n-11 (g/dag)
+    en: ~
+- id: c24x1n9
+  name: c24x1n9
+  type: numeric
+  label:
+    da: C24:1,n-9 (g/dag)
+    en: ~
+- id: andre_mufa
+  name: andre_mufa
+  type: numeric
+  label:
+    da: Andre monoumættede fedtsyrer (g/dag)
+    en: ~
+- id: c18x2n6
+  name: c18x2n6
+  type: numeric
+  label:
+    da: C18:2,n-6 (g/dag)
+    en: ~
+- id: c18x2_conj
+  name: c18x2_conj
+  type: numeric
+  label:
+    da: C18:2,conjugerede (g/dag)
+    en: ~
+- id: c18x3n3
+  name: c18x3n3
+  type: numeric
+  label:
+    da: C18:3,n-3 (ALA) (g/dag)
+    en: ~
+- id: c18x3n6
+  name: c18x3n6
+  type: numeric
+  label:
+    da: C18:3,n-6 (g/dag)
+    en: ~
+- id: c18x4n3
+  name: c18x4n3
+  type: numeric
+  label:
+    da: C18:4,n-3 (g/dag)
+    en: ~
+- id: c20x2n6
+  name: c20x2n6
+  type: numeric
+  label:
+    da: C20:2,n-6 (g/dag)
+    en: ~
+- id: c22x2n6
+  name: c22x2n6
+  type: numeric
+  label:
+    da: C22:2,n-6 (g/dag)
+    en: ~
+- id: c22x4n6
+  name: c22x4n6
+  type: numeric
+  label:
+    da: C22:4,n-6 (g/dag)
+    en: ~
+- id: c22x5n6
+  name: c22x5n6
+  type: numeric
+  label:
+    da: C22:5,n-6 (g/dag)
+    en: ~
+- id: c20x3n3
+  name: c20x3n3
+  type: numeric
+  label:
+    da: C20:3,n-3 (g/dag)
+    en: ~
+- id: c20x4n3
+  name: c20x4n3
+  type: numeric
+  label:
+    da: C20:4,n-3 (g/dag)
+    en: ~
+- id: c20x3n6
+  name: c20x3n6
+  type: numeric
+  label:
+    da: C20:3,n-6 (g/dag)
+    en: ~
+- id: c20x4n6
+  name: c20x4n6
+  type: numeric
+  label:
+    da: C20:4,n-3 (g/dag)
+    en: ~
+- id: c20x5n3
+  name: c20x5n3
+  type: numeric
+  label:
+    da: C20:5,n-3 (EPA) (g/dag)
+    en: ~
+- id: c22x5n3
+  name: c22x5n3
+  type: numeric
+  label:
+    da: C22:5,n-3 (g/dag)
+    en: ~
+- id: c22x6n3
+  name: c22x6n3
+  type: numeric
+  label:
+    da: C22:6,n-3 (DHA) (g/dag)
+    en: ~
+- id: andr_pufa
+  name: andr_pufa
+  type: numeric
+  label:
+    da: Andre polyumættede fedtsyrer (g/dag)
+    en: ~
+- id: c14x1_tran
+  name: c14x1_tran
+  type: numeric
+  label:
+    da: C14:1,trans (g/dag)
+    en: ~
+- id: c16x1_tran
+  name: c16x1_tran
+  type: numeric
+  label:
+    da: C16:1,trans (g/dag)
+    en: ~
+- id: c18x1_tran
+  name: c18x1_tran
+  type: numeric
+  label:
+    da: C18:1,trans (g/dag)
+    en: ~
+- id: c20x1_tran
+  name: c20x1_tran
+  type: numeric
+  label:
+    da: C20:1,trans (g/dag)
+    en: ~
+- id: c22x1_tran
+  name: c22x1_tran
+  type: numeric
+  label:
+    da: C22:1,trans (g/dag)
+    en: ~
+- id: c18x2_tran
+  name: c18x2_tran
+  type: numeric
+  label:
+    da: C18:2,trans (g/dag)
+    en: ~
+- id: andre_fa
+  name: andre_fa
+  type: numeric
+  label:
+    da: Andre fedtsyrer (g/dag)
+    en: ~
+- id: sum_sfa
+  name: sum_sfa
+  type: numeric
+  label:
+    da: Sum mættede (g/dag)
+    en: ~
+- id: sum_mufa
+  name: sum_mufa
+  type: numeric
+  label:
+    da: Sum monoumættede (g/dag)
+    en: ~
+- id: sum_pufa
+  name: sum_pufa
+  type: numeric
+  label:
+    da: Sum polyumættede (g/dag)
+    en: ~
+- id: total_transfa
+  name: total_transfa
+  type: numeric
+  label:
+    da: Transfedtsyrer, total (g/dag)
+    en: ~
+- id: total_fa
+  name: total_fa
+  type: numeric
+  label:
+    da: Fedtsyrer (g/dag)
+    en: ~
+- id: sum_n3fa
+  name: sum_n3fa
+  type: numeric
+  label:
+    da: Sum n-3 fedtsyrer (g/dag)
+    en: ~
+- id: sum_n6fa
+  name: sum_n6fa
+  type: numeric
+  label:
+    da: Sum n-6 fedtsyrer (g/dag)
+    en: ~
+- id: choles
+  name: choles
+  type: numeric
+  label:
+    da: Cholesterol (mg/dag)
+    en: ~
+- id: isoleu
+  name: isoleu
+  type: numeric
+  label:
+    da: Isoleucin (mg/dag)
+    en: ~
+- id: leucin
+  name: leucin
+  type: numeric
+  label:
+    da: Leucin (mg/dag)
+    en: ~
+- id: lysin
+  name: lysin
+  type: numeric
+  label:
+    da: Lysin (mg/dag)
+    en: ~
+- id: methio
+  name: methio
+  type: numeric
+  label:
+    da: Methionin (mg/dag)
+    en: ~
+- id: cystin
+  name: cystin
+  type: numeric
+  label:
+    da: Cystin (mg/dag)
+    en: ~
+- id: phenyl
+  name: phenyl
+  type: numeric
+  label:
+    da: Phenylalanin (mg/dag)
+    en: ~
+- id: thyros
+  name: thyros
+  type: numeric
+  label:
+    da: Tyrosin (mg/dag)
+    en: ~
+- id: threon
+  name: threon
+  type: numeric
+  label:
+    da: Threonin (mg/dag)
+    en: ~
+- id: trypto
+  name: trypto
+  type: numeric
+  label:
+    da: Tryptofan (mg/dag)
+    en: ~
+- id: valin
+  name: valin
+  type: numeric
+  label:
+    da: Valin (mg/dag)
+    en: ~
+- id: argini
+  name: argini
+  type: numeric
+  label:
+    da: Arginin (mg/dag)
+    en: ~
+- id: histid
+  name: histid
+  type: numeric
+  label:
+    da: Histidin (mg/dag)
+    en: ~
+- id: alanin
+  name: alanin
+  type: numeric
+  label:
+    da: Alanin (mg/dag)
+    en: ~
+- id: aspara
+  name: aspara
+  type: numeric
+  label:
+    da: Asparaginsyre (mg/dag)
+    en: ~
+- id: glutam
+  name: glutam
+  type: numeric
+  label:
+    da: Glutaminsyre (mg/dag)
+    en: ~
+- id: glycin
+  name: glycin
+  type: numeric
+  label:
+    da: Glycin (mg/dag)
+    en: ~
+- id: prolin
+  name: prolin
+  type: numeric
+  label:
+    da: Prolin (mg/dag)
+    en: ~
+- id: hydprolin
+  name: hydprolin
+  type: numeric
+  label:
+    da: Hydroxyprolin (g/dag)
+    en: ~
+- id: serin
+  name: serin
+  type: numeric
+  label:
+    da: Serin (mg/dag)
+    en: ~

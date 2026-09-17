@@ -89,6 +89,46 @@ them apart. `NA` in `label_da`/`label_en`/`values` just means the schema
 doesn't document one for that column — same "don't invent it" rule as
 everywhere else in fiktive.
 
+## KKH and KKHNG
+
+Alongside the DST registers, `schema` always also includes fiktive's own
+bundled metadata for **KKH** (Danish Diet, Cancer and Health) and **KKHNG**
+(...and Next Generations) — variable name, type, and Danish/English label
+only, per KKH/DCH's data-sharing approval. This is fiktive's own data, kept
+separate from registers-guide (never fetched from or sent to that
+project), and it's included automatically the moment you call
+`load_registers_schema()` — not a second call to remember.
+
+```{r kkh-list}
+kkh_ids <- grep("^kkh", names(schema$registers), value = TRUE)
+length(kkh_ids)   # 27 registers: 8 from KKH, 19 from KKHNG
+head(kkh_ids)
+```
+
+They generate exactly like any DST register — no separate function:
+
+```{r kkh-generate}
+kkh <- generate_register(
+  "kkh_journal", pop, schema,
+  from = as.Date("1993-12-01"), to = as.Date("1997-05-31"),
+  seed = 1
+)
+nrow(kkh) == length(unique(kkh$pnr))   # TRUE: one row per person, like any baseline cohort
+
+# Mix a KKH id into a batch call with a real DST register, and join them --
+# both share the same population, so both join on pnr like any two fiktive tables
+out <- generate_registers(
+  c("kkh_journal", "bef"),
+  population = pop, schema = schema,
+  from = as.Date("2008-01-01"), to = as.Date("2009-12-31"),
+  seed = 1
+)
+joined <- dplyr::inner_join(out$kkh_journal, out$bef, by = "pnr", relationship = "many-to-many")
+```
+
+`codebook(schema, "kkh_journal")` works too, with no extra code — it reads
+the same `label`/`type` fields on any register, DST or KKH.
+
 ## Describing your own register (e.g. a study cohort)
 
 Sometimes you have a table that isn't a real DST register — a study

@@ -1,0 +1,310 @@
+id: kkhng_vaegtc
+name: vaegtc
+one_row_per: person
+join_keys:
+- pnr
+columns:
+- id: pnr
+  name: pnr
+  type: character
+  role: join_key
+- id: vaegtc
+  name: vaegtc
+  type: numeric
+  label:
+    da: ~
+    en: Sum of all food items (g/day)
+- id: vaegtc01
+  name: vaegtc01
+  type: numeric
+  label:
+    da: ~
+    en: Leafy vegs (g/day)
+- id: vaegtc02
+  name: vaegtc02
+  type: numeric
+  label:
+    da: ~
+    en: Fruiting vegs (g/day)
+- id: vaegtc03
+  name: vaegtc03
+  type: numeric
+  label:
+    da: ~
+    en: Potatoes (g/day)
+- id: vaegtc04
+  name: vaegtc04
+  type: numeric
+  label:
+    da: ~
+    en: Other root vegs (g/day)
+- id: vaegtc05
+  name: vaegtc05
+  type: numeric
+  label:
+    da: ~
+    en: Cabbages (g/day)
+- id: vaegtc06
+  name: vaegtc06
+  type: numeric
+  label:
+    da: ~
+    en: Mushrooms (g/day)
+- id: vaegtc07
+  name: vaegtc07
+  type: numeric
+  label:
+    da: ~
+    en: Onion, garlic (g/day)
+- id: vaegtc08
+  name: vaegtc08
+  type: numeric
+  label:
+    da: ~
+    en: Stalk vegs, sprouts (g/day)
+- id: vaegtc09
+  name: vaegtc09
+  type: numeric
+  label:
+    da: ~
+    en: Legumes (g/day)
+- id: vaegtc10
+  name: vaegtc10
+  type: numeric
+  label:
+    da: ~
+    en: Citrus fruits (g/day)
+- id: vaegtc11
+  name: vaegtc11
+  type: numeric
+  label:
+    da: ~
+    en: Other fruits (g/day)
+- id: vaegtc12
+  name: vaegtc12
+  type: numeric
+  label:
+    da: ~
+    en: Fruits dried (g/day)
+- id: vaegtc13
+  name: vaegtc13
+  type: numeric
+  label:
+    da: ~
+    en: Cereals, wholegrain (g/day)
+- id: vaegtc14
+  name: vaegtc14
+  type: numeric
+  label:
+    da: ~
+    en: Cereals, refined (g/day)
+- id: vaegtc15
+  name: vaegtc15
+  type: numeric
+  label:
+    da: ~
+    en: Red meat (g/day)
+- id: vaegtc17
+  name: vaegtc17
+  type: numeric
+  label:
+    da: ~
+    en: Poultry (g/day)
+- id: vaegtc18
+  name: vaegtc18
+  type: numeric
+  label:
+    da: ~
+    en: Processed meat (g/day)
+- id: vaegtc19
+  name: vaegtc19
+  type: numeric
+  label:
+    da: ~
+    en: Eggs (g/day)
+- id: vaegtc20
+  name: vaegtc20
+  type: numeric
+  label:
+    da: ~
+    en: Dairy products, lean (g/day)
+- id: vaegtc21
+  name: vaegtc21
+  type: numeric
+  label:
+    da: ~
+    en: Dairy products, fatty (g/day)
+- id: vaegtc22
+  name: vaegtc22
+  type: numeric
+  label:
+    da: ~
+    en: Milk substitutes (g/day)
+- id: vaegtc23
+  name: vaegtc23
+  type: numeric
+  label:
+    da: ~
+    en: Fruit juices (g/day)
+- id: vaegtc24
+  name: vaegtc24
+  type: numeric
+  label:
+    da: ~
+    en: Vegetable juices (g/day)
+- id: vaegtc25
+  name: vaegtc25
+  type: numeric
+  label:
+    da: ~
+    en: Potatoes, fatty (g/day)
+- id: vaegtc26
+  name: vaegtc26
+  type: numeric
+  label:
+    da: ~
+    en: Nuts and seeds (g/day)
+- id: vaegtc27
+  name: vaegtc27
+  type: numeric
+  label:
+    da: ~
+    en: Vegetable oils (g/day)
+- id: vaegtc28
+  name: vaegtc28
+  type: numeric
+  label:
+    da: ~
+    en: Butter (g/day)
+- id: vaegtc29
+  name: vaegtc29
+  type: numeric
+  label:
+    da: ~
+    en: Margarines (g/day)
+- id: vaegtc30
+  name: vaegtc30
+  type: numeric
+  label:
+    da: ~
+    en: Other animal fat (g/day)
+- id: vaegtc31
+  name: vaegtc31
+  type: numeric
+  label:
+    da: ~
+    en: Sugar, jam, syrups (g/day)
+- id: vaegtc32
+  name: vaegtc32
+  type: numeric
+  label:
+    da: ~
+    en: Chocolate, candy bars (g/day)
+- id: vaegtc33
+  name: vaegtc33
+  type: numeric
+  label:
+    da: ~
+    en: Confectionery non chocolate (g/day)
+- id: vaegtc34
+  name: vaegtc34
+  type: numeric
+  label:
+    da: ~
+    en: Soft drinks (g/day)
+- id: vaegtc35
+  name: vaegtc35
+  type: numeric
+  label:
+    da: ~
+    en: Waters (g/day)
+- id: vaegtc36
+  name: vaegtc36
+  type: numeric
+  label:
+    da: ~
+    en: Coffee (g/day)
+- id: vaegtc37
+  name: vaegtc37
+  type: numeric
+  label:
+    da: ~
+    en: Tea (g/day)
+- id: vaegtc38
+  name: vaegtc38
+  type: numeric
+  label:
+    da: ~
+    en: Wine (g/day)
+- id: vaegtc39
+  name: vaegtc39
+  type: numeric
+  label:
+    da: ~
+    en: Beer (g/day)
+- id: vaegtc40
+  name: vaegtc40
+  type: numeric
+  label:
+    da: ~
+    en: Spirits and brandy (g/day)
+- id: vaegtc41
+  name: vaegtc41
+  type: numeric
+  label:
+    da: ~
+    en: Mayonnaises and dressings (g/day)
+- id: vaegtc42
+  name: vaegtc42
+  type: numeric
+  label:
+    da: ~
+    en: Soya (g/day)
+- id: vaegtc43
+  name: vaegtc43
+  type: numeric
+  label:
+    da: ~
+    en: Snacks (g/day)
+- id: vaegtc44
+  name: vaegtc44
+  type: numeric
+  label:
+    da: ~
+    en: Fish, lean, fresh (g/day)
+- id: vaegtc45
+  name: vaegtc45
+  type: numeric
+  label:
+    da: ~
+    en: Fish, lean, processed (g/day)
+- id: vaegtc46
+  name: vaegtc46
+  type: numeric
+  label:
+    da: ~
+    en: Fish, middle fatty, fresh (g/day)
+- id: vaegtc47
+  name: vaegtc47
+  type: numeric
+  label:
+    da: ~
+    en: Fish, middle fatty, processed (g/day)
+- id: vaegtc48
+  name: vaegtc48
+  type: numeric
+  label:
+    da: ~
+    en: Fish, fatty, fresh (g/day)
+- id: vaegtc49
+  name: vaegtc49
+  type: numeric
+  label:
+    da: ~
+    en: Fish, fatty, processed (g/day)
+- id: vaegtc60
+  name: vaegtc60
+  type: numeric
+  label:
+    da: ~
+    en: Non classified (g/day)

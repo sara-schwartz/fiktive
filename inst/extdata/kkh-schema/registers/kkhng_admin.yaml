@@ -1,0 +1,53 @@
+id: kkhng_admin
+name: admin
+one_row_per: person
+join_keys:
+- pnr
+columns:
+- id: pnr
+  name: pnr
+  type: character
+  role: join_key
+- id: kkhngid
+  name: kkhngid
+  type: character
+  label:
+    da: KKHNGID
+    en: ~
+- id: inv_date
+  name: inv_date
+  type: date
+  label:
+    da: invitationsdato
+    en: ~
+- id: til_date
+  name: til_date
+  type: date
+  label:
+    da: tilsagn dato
+    en: ~
+- id: sc_date
+  name: sc_date
+  type: date
+  label:
+    da: ~
+    en: Official participation date in the DCH-NG Study - Study center visit completion
+      date
+- id: ffq_date
+  name: ffq_date
+  type: date
+  label:
+    da: ~
+    en: FFQ completion date
+- id: lsq_date
+  name: lsq_date
+  type: date
+  label:
+    da: ~
+    en: LSQ completion date
+- id: time_origin
+  name: time_origin
+  type: character
+  label:
+    da: ~
+    en: Baseline, Followup at 6 month or followup at 12 month (MAX and DiGuMeT participants)
