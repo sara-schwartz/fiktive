@@ -345,3 +345,9 @@ the data model comes from](#where-the-data-model-comes-from) for scope and
 cohort references, and the [vignette](vignettes/fiktive.Rmd) for the full
 list. Run `grep("^kkh", names(load_registers_schema()$registers), value =
 TRUE)` for the current, definitive set.
+
+**No RKKP (clinical quality database) registers are bundled here yet.**
+If you need one, you can add it yourself as an external register with
+[`generate_custom_register()`](vignettes/fiktive.Rmd) -- or open a
+[GitHub issue](https://github.com/sara-schwartz/fiktive/issues) or email
+saras@clin.au.dk with which one, and I'll work on adding it.
