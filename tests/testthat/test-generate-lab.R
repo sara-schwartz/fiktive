@@ -103,3 +103,56 @@ test_that("lab_dm_forsker is implemented in STEP 6c", {
   expect_true("mfr" %in% fiktive:::.IMPLEMENTED_EVENTS)
   expect_true("cancer" %in% fiktive:::.IMPLEMENTED_EVENTS)
 })
+
+test_that("labka is event_from_person on cpr with LabTerm NPU", {
+  with_labterm_fixture({
+    schema <- fixture_schema()
+    expect_identical(schema$registers$labka$one_row_per, "event_from_person")
+    expect_identical(schema$registers$labka$join_keys, "cpr")
+    expect_false("pnr" %in% schema_names(schema, "labka"))
+    pop <- tiny_pop(schema, n = 40L, seed = 91)
+    a <- generate_register("labka", pop, schema, lab_from, lab_to, seed = 91)
+    b <- generate_register("labka", pop, schema, lab_from, lab_to, seed = 91)
+    expect_equal(a, b)
+    expect_true(all(names(a) %in% schema_names(schema, "labka")))
+    expect_true(nrow(a) > 0L)
+    # join_keys: map carefully to population (BEF.pnr rehearsal), like patient_cpr.
+    expect_true(all(a$cpr %in% pop$pnr))
+    expect_false("pnr" %in% names(a))
+    expect_true(all(a$samplingdate >= lab_from & a$samplingdate <= lab_to))
+    birth <- pop$foed_dag[match(a$cpr, pop$pnr)]
+    expect_true(all(a$samplingdate >= birth))
+    # LabTerm / published NPU — never sprintf noise, same catalogue as lab_dm_forsker
+    expect_type(a$analysiscode, "character")
+    expect_true(all(grepl("^(NPU|DNK)[0-9]{5}$", a$analysiscode)))
+    expect_true(all(a$analysiscode %in% load_labterm_codes()))
+    expect_false(any(grepl("^[0-9]{3}$", a$analysiscode)))
+  })
+})
+
+test_that("labka analysiscode SCHEMA GAPs without LabTerm", {
+  schema <- fixture_schema()
+  pop <- tiny_pop(schema, n = 20L, seed = 92)
+  if (exists(".fiktive_labterm_cache", envir = asNamespace("fiktive"), inherits = FALSE)) {
+    env <- get(".fiktive_labterm_cache", envir = asNamespace("fiktive"))
+    env$catalogue <- NULL
+  }
+  err <- tryCatch(
+    withr::with_options(
+      list(fiktive.labterm = NULL, fiktive.labterm_disable = TRUE, fiktive.labterm_fetch_ifcc = FALSE),
+      {
+        Sys.unsetenv("FIKTIVE_LABTERM")
+        Sys.unsetenv("FIKTIVE_LABTERM_URL")
+        generate_register("labka", pop, schema, lab_from, lab_to, seed = 92)
+      }
+    ),
+    error = function(e) e
+  )
+  expect_s3_class(err, "error")
+  expect_match(err$message, "^SCHEMA GAP:")
+  expect_match(err$message, "LabTerm|NPU|analysiscode")
+})
+
+test_that("labka is implemented as an event_from_person register", {
+  expect_true("labka" %in% fiktive:::.IMPLEMENTED_EVENTS)
+})

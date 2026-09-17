@@ -227,6 +227,20 @@ exactly like any DST register: `generate_register("kkh_journal", ...)`,
 or mixed into a batch `generate_registers()` call. See the
 [vignette](vignettes/fiktive.Rmd) for the full KKH/KKHNG register list.
 
+Cohort references:
+
+- Tjønneland A, Olsen A, Boll K, Stripp C, Christensen J, Engholm G,
+  Overvad K. Study design, exposure variables, and socioeconomic
+  determinants of participation in Diet, Cancer and Health: a
+  population-based prospective cohort study of 57,053 men and women in
+  Denmark. *Scandinavian Journal of Public Health.* 2007;35(4):432–441.
+  [doi:10.1080/14034940601047986](https://doi.org/10.1080/14034940601047986)
+- Petersen KEN, Halkjær J, Loft S, Tjønneland A, Olsen A. Cohort profile
+  and representativeness of participants in the Diet, Cancer and
+  Health–Next Generations cohort study. *European Journal of
+  Epidemiology.* 2022;37(1):117–127.
+  [doi:10.1007/s10654-021-00832-7](https://doi.org/10.1007/s10654-021-00832-7)
+
 ### "SCHEMA GAP" errors
 
 If you see an error starting with `SCHEMA GAP:`, fiktive is telling you it
@@ -272,10 +286,13 @@ Pass any `id` below to `registers=` in `generate_register()` /
 function is only for columns the guide doesn't define (see the
 [vignette](vignettes/fiktive.Rmd)).
 
-This reflects the live schema at the time of writing (27 registers). Since
-fiktive loads the schema live rather than vendoring it, the guide can add or
-change registers between releases: run
-`names(load_registers_schema()$registers)` for the current, definitive set.
+This is the set of DST registers fiktive can currently generate -- not the
+full live schema. registers-guide's schema keeps growing (it now documents
+many more registers than fiktive implements yet); a register showing up in
+`names(load_registers_schema()$registers)` isn't automatically generatable
+here -- `generate_register()` errors with "is in the schema but is not
+implemented yet" for anything not in the table below, which is the
+definitive, up-to-date list of what actually works.
 
 | id | Register | Grain | Notes |
 |---|---|---|---|
@@ -287,7 +304,8 @@ change registers between releases: run
 | `dodsaasg` | Dødsårsagsregister | event_from_person | Cause of death 2002–2022. Closed |
 | `dodsaarsager` | Dødsårsagsregister | event_from_person | Cause of death 2022–. Current |
 | `faik` | Familieindkomster (family income) | household_year | Household-level income, keyed on household not person |
-| `lab_dm_forsker` | Laboratoriedatabasens Forskertabel | event_from_person | Lab test results per request |
+| `lab_dm_forsker` | Laboratoriedatabasens Forskertabel | event_from_person | Lab test results per request. `analysiscode` needs a LabTerm/IFCC NPU catalogue (`FIKTIVE_LABTERM`); errors with a `SCHEMA GAP` otherwise rather than inventing codes |
+| `labka` | LABKA-forskningsdatabasen | event_from_person | Regional lab register (Central/North Denmark regions only), held by Aarhus University Hospital, not DST/SDS. Same shape and `analysiscode` catalogue requirement as `lab_dm_forsker`; its own join key is `cpr`, mapped to `pnr` like `lab_dm_forsker`'s `patient_cpr` |
 | `lmdb` | Lægemiddeldatabasen (prescription register) | event_from_person | One row per dispensed prescription |
 | `lpr_adm` | Landspatientregistret (LPR2): admin/contact | event_from_person | Parent for `lpr_diag` / `lpr_sksopr` / `lpr_sksube` |
 | `lpr_diag` | LPR2: diagnoser | expand_from_parent | Child of `lpr_adm` (join on `recnum`). Under `constraints = "valid_diagnosis_sex_age"`, diagnosis codes never assign a chapter that's impossible for the patient's sex or age (e.g. a pregnancy code to a man, a perinatal code to someone past infancy) |
@@ -310,3 +328,20 @@ change registers between releases: run
 `expand_from_parent` registers need their parent generated in the same
 `registers=` call (or already generated); see [Hospital data needs two
 tables](#hospital-data-needs-two-tables) above.
+
+`labka` is external to DST/SDS -- registers-guide's own schema comment
+notes there's no published variable list to check column names against, so
+every column is sourced from the literature rather than a data dictionary:
+Arendt JFH, Hansen AT, Ladefoged SA, Sørensen HT, Pedersen L, Adelborg K.
+Existing Data Sources in Clinical Epidemiology: Laboratory Information
+System Databases in Denmark. *Clinical Epidemiology.* 2020;12:469-475.
+[doi:10.2147/CLEP.S245060](https://doi.org/10.2147/CLEP.S245060)
+
+Bundled separately: **27 KKH/KKHNG registers** (`kkh_*` / `kkhng_*` ids,
+e.g. `kkh_journal`, `kkhng_ffq_gpd`), all `one_row_per = person`, generated
+and joined the exact same way as the DST registers above -- no separate
+function. These are fiktive's own data, not registers-guide's; see [Where
+the data model comes from](#where-the-data-model-comes-from) for scope and
+cohort references, and the [vignette](vignettes/fiktive.Rmd) for the full
+list. Run `grep("^kkh", names(load_registers_schema()$registers), value =
+TRUE)` for the current, definitive set.

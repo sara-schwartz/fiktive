@@ -177,7 +177,7 @@ typed_noise <- function(type, n, role = NULL, name = NULL, code_system = NULL, c
   }
   if (identical(name, "analysiscode")) {
     schema_gap(
-      "lab_dm_forsker analysiscode without LabTerm / published NPU catalogue",
+      "analysiscode (lab_dm_forsker / labka) without LabTerm / published NPU catalogue",
       "FIKTIVE_LABTERM or IFCC C-NPU CSV; never sprintf NPU/DNK noise"
     )
   }

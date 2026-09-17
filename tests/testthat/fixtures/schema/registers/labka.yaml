@@ -1,0 +1,63 @@
+# TEST DOUBLE only — labka event_from_person; types from live
+# registers-guide labka.yaml. Regional lab register (Central/North Denmark
+# regions), own join key `cpr` (not `pnr`) -- map carefully like
+# patient_cpr/cpr_barn/k_cprnr above it in derived_column(). analysiscode
+# has NO code_system / values_from (HARD GAP) -- generator samples
+# LabTerm / IFCC NPU, same as lab_dm_forsker.
+id: labka
+name: "LABKA-forskningsdatabasen (test double)"
+scope: external
+reference_timing: event
+one_row_per: event_from_person
+coverage: {from: 2005, to: 2025}
+join_keys: [cpr]
+columns:
+  - id: cpr
+    name: cpr
+    type: character
+    role: join_key
+    key: true
+  - id: samplingdate
+    name: samplingdate
+    type: date
+    role: date
+    key: true
+  - id: samplingtime
+    name: samplingtime
+    type: character
+    role: value
+  - id: analysiscode
+    name: analysiscode
+    type: character
+    role: code
+    key: true
+  - id: biomarker_name
+    name: biomarker_name
+    type: character
+    role: value
+  - id: value
+    name: value
+    type: character
+    role: value
+    key: true
+  - id: unit
+    name: unit
+    type: character
+    role: code
+    key: true
+  - id: referenceinterval_lowerlimit
+    name: referenceinterval_lowerlimit
+    type: character
+    role: value
+  - id: referenceinterval_upperlimit
+    name: referenceinterval_upperlimit
+    type: character
+    role: value
+  - id: laboratorium_id
+    name: laboratorium_id
+    type: character
+    role: code
+  - id: rekvirent_id
+    name: rekvirent_id
+    type: character
+    role: code

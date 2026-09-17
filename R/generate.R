@@ -10,7 +10,7 @@
 )
 
 .IMPLEMENTED_SNAPSHOT <- c("bef", "udda", "akm")
-.IMPLEMENTED_EVENTS <- c("dod", "lmdb", "vnds", "cancer", "mfr", "lab_dm_forsker")
+.IMPLEMENTED_EVENTS <- c("dod", "lmdb", "vnds", "cancer", "mfr", "lab_dm_forsker", "labka")
 .IMPLEMENTED_PARENTS <- c("lpr_adm", "lpr_a_kontakt")
 .IMPLEMENTED_EXPAND <- c(
   "lpr_diag", "lpr_sksopr", "lpr_sksube",
@@ -254,6 +254,10 @@ event_counts <- function(register_id, n) {
   }
   if (identical(register_id, "lab_dm_forsker")) {
     # Lab results per person; empty tables remain valid.
+    return(stats::rpois(n, 2.0))
+  }
+  if (identical(register_id, "labka")) {
+    # Regional lab register, same shape as lab_dm_forsker; empty tables remain valid.
     return(stats::rpois(n, 2.0))
   }
   stats::rpois(n, 0.4)

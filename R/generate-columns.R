@@ -249,6 +249,9 @@ derived_column <- function(id, rows, schema = NULL) {
     cpr_barn = rows$pnr,
     # Lab_dm_forsker: join_keys patient_cpr ← pop pnr (map carefully).
     patient_cpr = rows$pnr,
+    # LABKA: join_keys is cpr ← pop pnr (map carefully, same pattern as the
+    # three cases above -- labka's own column is just named `cpr`, not `pnr`).
+    cpr = rows$pnr,
     samplingdate = when,
     foedselsdato = when,
     foedselsaar = as.character(lubridate::year(when)),

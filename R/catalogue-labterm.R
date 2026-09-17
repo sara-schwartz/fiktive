@@ -70,7 +70,7 @@ labterm_missing <- function(required) {
   }
   schema_gap(
     paste(
-      "LabTerm / NPU catalogue for lab_dm_forsker analysiscode.",
+      "LabTerm / NPU catalogue for analysiscode (lab_dm_forsker / labka).",
       "SDS LabTerm publication files require registration",
       "(https://www.labterm.dk/; labterm@sundhedsdata.dk).",
       "A public IFCC C-NPU CSV is also accepted",
