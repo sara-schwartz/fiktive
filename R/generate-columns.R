@@ -261,6 +261,13 @@ derived_column <- function(id, rows, schema = NULL) {
     # row's value instead of triggering a second, inconsistent draw.
     lprindberetningssystem = if ("lprindberetningssystem" %in% names(rows)) rows$lprindberetningssystem else NULL,
     koen = rows$koen,
+    # kkhng_lsq_general_final's own `sex` column: its label states the exact
+    # code values ("Sex (1=Male, 2=Female)"), which is DST's own koen.yaml
+    # coding -- map to pop$koen rather than draw independently, so it can't
+    # disagree with `koen`/bef for the same person (map carefully, like koen
+    # above; don't add this case for a column whose real coding isn't
+    # documented -- see data-raw/build_kkh_schema.R for those).
+    sex = as.integer(rows$koen),
     foed_dag = rows$foed_dag,
     referencetid = rows$referencetid,
     year = as.integer(lubridate::year(when)),

@@ -99,6 +99,32 @@ if (nrow(bad_type)) {
        paste(capture.output(print(bad_type)), collapse = "\n"))
 }
 
+# Drop KKH/KKHNG's own sex/birthdate columns where neither catalogue
+# documents a code list or value range for them (Type/Label only, per the
+# approved scope -- see header). Keeping them would mean generating a
+# second, independently-drawn value for the same real-world fact fiktive
+# already has from the shared background population (pnr's koen/foed_dag),
+# which would silently disagree with bef and every other DST register for
+# the same synthetic person. Matches the resolution already reached and
+# documented in a parallel generate_custom_register()-based build of these
+# same two catalogues (~/Desktop/kkh/fiktive/README.md, "Caveats" section):
+# kqn and fsdato/fsdato_c are dropped there for the identical reason.
+# KKHNG's `koen` is NOT dropped: it already collides by name with the
+# population's own `koen` column, so derived_column() (R/generate-columns.R)
+# fills it from pop$koen automatically -- correct and collision-free with no
+# column removal needed. KKHNG's `sex` is also kept, not dropped: its label
+# ("Sex (1=Male, 2=Female)") states the exact code values DST's own koen
+# code system uses (see code-systems/koen.yaml), so derived_column() maps it
+# straight to pop$koen too, rather than guessing a domain for it.
+.DROP_DUPLICATE_PERSON_COLS <- list(
+  kkh_journal = c("kqn", "fsdato"),
+  kkhng_lsq_general_final = c("fsdato", "fsdato_c")
+)
+for (rid in names(.DROP_DUPLICATE_PERSON_COLS)) {
+  drop_ids <- .DROP_DUPLICATE_PERSON_COLS[[rid]]
+  all_cols <- all_cols %>% filter(!(register_id == rid & id %in% drop_ids))
+}
+
 # One YAML per register_id, matching registers-guide's own column shape
 # (id/name/type/label) so codebook() and the generic column-fill machinery
 # work on these with no extra code.

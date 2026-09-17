@@ -20,18 +20,6 @@ columns:
   label:
     da: ~
     en: Sex (1=Male, 2=Female)
-- id: fsdato
-  name: fsdato
-  type: date
-  label:
-    da: ~
-    en: Birthdate (Date)
-- id: fsdato_c
-  name: fsdato_c
-  type: character
-  label:
-    da: ~
-    en: Birthdate (Character variable)
 - id: alder
   name: alder
   type: numeric

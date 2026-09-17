@@ -12,8 +12,38 @@ test_that("bundled KKH registers have pnr, one_row_per person, and labelled colu
   expect_equal(spec$one_row_per, "person")
   names_ <- vapply(spec$columns, function(c) c$name, character(1))
   expect_true("pnr" %in% names_)
-  koen_col <- spec$columns[[which(names_ == "kqn")]]
-  expect_equal(koen_col$label$en, "Gender")
+  mdato_col <- spec$columns[[which(names_ == "mdato")]]
+  expect_equal(mdato_col$label$en, "Date of participation")
+})
+
+test_that("kkh_journal/kkhng_lsq_general_final never disagree with pop koen/foed_dag", {
+  # kqn/fsdato (kkh_journal) and fsdato/fsdato_c (kkhng_lsq_general_final)
+  # are dropped entirely -- neither catalogue documents their real coding,
+  # and keeping them would mean a second, independently-drawn value for the
+  # same real-world fact fiktive already has from the population (pnr's own
+  # koen/foed_dag), silently disagreeing with bef for the same person. See
+  # data-raw/build_kkh_schema.R's .DROP_DUPLICATE_PERSON_COLS.
+  schema <- fixture_schema()
+  pop <- tiny_pop(schema, n = 60L, seed = 6)
+  kj <- generate_register(
+    "kkh_journal", pop, schema,
+    as.Date("1993-12-01"), as.Date("1997-05-31"),
+    seed = 6
+  )
+  expect_false(any(c("kqn", "fsdato") %in% names(kj)))
+
+  lg <- generate_register(
+    "kkhng_lsq_general_final", pop, schema,
+    as.Date("2015-03-01"), as.Date("2019-12-31"),
+    seed = 6
+  )
+  expect_false(any(c("fsdato", "fsdato_c") %in% names(lg)))
+  # koen (character) and sex (integer) are kept -- both documented well
+  # enough (koen collides by name with pop$koen; sex's label states DST's
+  # own 1=Male/2=Female coding) to map from pop$koen with no guessing.
+  truth <- pop$koen[match(lg$pnr, pop$pnr)]
+  expect_equal(as.integer(lg$koen), truth)
+  expect_equal(lg$sex, truth)
 })
 
 test_that("no KKH/KKHNG register id collides with a DST register id", {

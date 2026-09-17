@@ -26,18 +26,6 @@ columns:
   label:
     da: Center
     en: Study center
-- id: kqn
-  name: kqn
-  type: character
-  label:
-    da: Køn
-    en: Gender
-- id: fsdato
-  name: fsdato
-  type: date
-  label:
-    da: Fødselsdato
-    en: Date of birth
 - id: age
   name: age
   type: numeric
