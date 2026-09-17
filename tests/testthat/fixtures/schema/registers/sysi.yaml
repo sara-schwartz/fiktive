@@ -1,0 +1,22 @@
+# TEST DOUBLE only
+id: sysi
+name: "Sygesikring 6-cifret (test double)"
+one_row_per: event_from_person
+deprecated: true
+superseded_by: [sssy]
+coverage: {from: 1990, to: 2005}
+join_keys: [pnr]
+columns:
+  - id: pnr
+    name: pnr
+    type: character
+    role: join_key
+  - id: afrper
+    name: afrper
+    type: character
+    role: date
+  - id: sikrekom
+    name: sikrekom
+    type: character
+    role: code
+    code_system: kom

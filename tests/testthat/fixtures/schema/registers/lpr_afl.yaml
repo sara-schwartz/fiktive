@@ -1,0 +1,14 @@
+# TEST DOUBLE only -- genuinely not implemented in fiktive yet (unlike
+# t_psyk_diag/vnds_ind, which used to serve this negative-path test until
+# they were implemented). Used only to exercise "in the schema but not
+# implemented" -- do not add lpr_afl to .IMPLEMENTED_EXPAND to keep this
+# regression check meaningful.
+id: lpr_afl
+name: "LPR2: aflysninger (test double, not implemented)"
+one_row_per: expand_from_parent
+join_keys: [recnum]
+columns:
+  - id: recnum
+    name: recnum
+    type: character
+    role: join_key

@@ -68,14 +68,5 @@ test_that("vnds uses indud_kode lookup, not mixed with successors, empty is vali
   expect_equal(nrow(empty), 0L)
 })
 
-test_that("vnds_ind is not implemented (do not mix with vnds)", {
-  schema <- fixture_schema()
-  pop <- tiny_pop(schema)
-  err <- tryCatch(
-    generate_register("vnds_ind", pop, schema, from, to, seed = 1),
-    error = function(e) e
-  )
-  expect_s3_class(err, "error")
-  expect_match(err$message, "not implemented yet")
-  expect_false(grepl("^SCHEMA GAP:", err$message))
-})
+# vnds_ind is now implemented -- see test-generate-events-extra.R for its
+# happy-path coverage (it used to be a deliberately-unimplemented register).

@@ -10,11 +10,17 @@
 )
 
 .IMPLEMENTED_SNAPSHOT <- c("bef", "udda", "akm")
-.IMPLEMENTED_EVENTS <- c("dod", "lmdb", "vnds", "cancer", "mfr", "lab_dm_forsker", "labka")
-.IMPLEMENTED_PARENTS <- c("lpr_adm", "lpr_a_kontakt")
+.IMPLEMENTED_EVENTS <- c(
+  "dod", "lmdb", "vnds", "cancer", "mfr", "lab_dm_forsker", "labka",
+  "dodsaars", "dodsaasg", "dodsaarsager",
+  "sysi", "sssy",
+  "vnds_hist", "vnds_ind", "vnds_ud"
+)
+.IMPLEMENTED_PARENTS <- c("lpr_adm", "lpr_a_kontakt", "t_psyk_adm")
 .IMPLEMENTED_EXPAND <- c(
   "lpr_diag", "lpr_sksopr", "lpr_sksube",
-  "lpr_a_diagnose", "lpr_a_procregistrering"
+  "lpr_a_diagnose", "lpr_a_procregistrering",
+  "t_psyk_diag"
 )
 
 dispatch_generate_register <- function(register, spec, population, schema, from, to, seed) {
@@ -304,6 +310,7 @@ lpr_parent_id <- function(register_id) {
     lpr_sksube = "lpr_adm",
     lpr_a_diagnose = "lpr_a_kontakt",
     lpr_a_procregistrering = "lpr_a_kontakt",
+    t_psyk_diag = "t_psyk_adm",
     NULL
   )
 }

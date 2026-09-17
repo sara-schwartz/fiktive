@@ -277,9 +277,17 @@ derived_column <- function(id, rows, schema = NULL) {
     d_diagnosedato = when,
     d_statdato = when,
     doddato = when,
+    # dodsaars/dodsaasg/dodsaarsager: three different spellings of "date of
+    # death" across three schema revisions of the same real-world concept
+    # `dod` already maps as `doddato` (map carefully, do not invent one name).
+    d_dodsdto = when,
+    d_dodsdato = when,
+    doedsdato = when,
     eksd = when,
     haend_dato = when,
     d_inddto = when,
+    # sssy: date of treatment/contact (its own column name, not shared with sysi).
+    behandlingsdato = when,
     d_uddto = if (is.null(discharge)) NULL else pmax(as.Date(discharge), as.Date(when)),
     recnum = if ("recnum" %in% names(rows)) rows$recnum else rows$contact_id,
     dw_ek_kontakt = if ("dw_ek_kontakt" %in% names(rows)) rows$dw_ek_kontakt else rows$contact_id,

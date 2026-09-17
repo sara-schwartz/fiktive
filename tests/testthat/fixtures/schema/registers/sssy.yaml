@@ -1,0 +1,20 @@
+# TEST DOUBLE only
+id: sssy
+name: "Sygesikring 6-cifret, continuation of sysi (test double)"
+one_row_per: event_from_person
+coverage: {from: 2005, to: 2025}
+join_keys: [pnr]
+columns:
+  - id: pnr
+    name: pnr
+    type: character
+    role: join_key
+  - id: behandlingsdato
+    name: behandlingsdato
+    type: date
+    role: date
+  - id: koenimp
+    name: koenimp
+    type: character
+    role: code
+    code_system: koen

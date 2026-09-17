@@ -1,0 +1,21 @@
+# TEST DOUBLE only
+id: vnds_hist
+name: "Historiske vandringer 1973-2004 (test double)"
+one_row_per: event_from_person
+deprecated: true
+coverage: {from: 1973, to: 2004}
+join_keys: [pnr]
+columns:
+  - id: pnr
+    name: pnr
+    type: character
+    role: join_key
+  - id: haend_dato
+    name: haend_dato
+    type: date
+    role: date
+  - id: indud_kode
+    name: indud_kode
+    type: character
+    role: code
+    code_system: indud_kode

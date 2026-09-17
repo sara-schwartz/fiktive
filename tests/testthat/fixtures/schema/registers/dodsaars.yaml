@@ -1,0 +1,23 @@
+# TEST DOUBLE only
+id: dodsaars
+name: "Doedsaarssagsregistret (test double)"
+one_row_per: event_from_person
+deprecated: true
+superseded_by: [dodsaasg]
+coverage: {from: 1970, to: 2001}
+join_keys: [pnr]
+columns:
+  - id: pnr
+    name: pnr
+    type: character
+    role: join_key
+  - id: d_dodsdto
+    name: d_dodsdto
+    type: date
+    role: date
+  - id: c_dod1
+    name: c_dod1
+    type: character
+    role: code
+    code_system: icd10
+    previous_code_system: {id: icd8, until: 1993}

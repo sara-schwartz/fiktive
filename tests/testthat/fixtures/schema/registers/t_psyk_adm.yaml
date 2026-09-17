@@ -1,7 +1,16 @@
-# TEST DOUBLE only — psych LPR is not this step
+# TEST DOUBLE only
 id: t_psyk_adm
-name: "Psych LPR adm (test double)"
+name: "LPR psykiatri: administrative oplysninger (test double)"
+family: lpr2_psychiatric
 one_row_per: event_from_person
+deprecated: true
+superseded_by: [lpr_a_kontakt]
+coverage: {from: 1995, to: 2019}
+join_keys: [recnum]
+relationships:
+  - to: t_psyk_diag
+    key: recnum
+    cardinality: one_to_many
 columns:
   - id: recnum
     name: recnum
@@ -11,3 +20,21 @@ columns:
     name: pnr
     type: character
     role: identifier
+  - id: d_inddto
+    name: d_inddto
+    type: date
+    role: date
+  - id: d_uddto
+    name: d_uddto
+    type: date
+    role: date
+  - id: c_pattype
+    name: c_pattype
+    type: character
+    role: code
+    code_system: pattype
+  - id: c_adiag
+    name: c_adiag
+    type: character
+    role: code
+    code_system: icd10_sks

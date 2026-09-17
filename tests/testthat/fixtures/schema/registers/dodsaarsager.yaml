@@ -1,0 +1,21 @@
+# TEST DOUBLE only
+id: dodsaarsager
+name: "Doedsaarsagsregister 2022- (test double)"
+one_row_per: event_from_person
+deprecated: false
+coverage: {from: 2022, to: 2024}
+join_keys: [pnr]
+columns:
+  - id: pnr
+    name: pnr
+    type: character
+    role: join_key
+  - id: doedsdato
+    name: doedsdato
+    type: date
+    role: date
+  - id: doedsaarsag_tilgrundliggende
+    name: doedsaarsag_tilgrundliggende
+    type: character
+    role: code
+    code_system: icd10

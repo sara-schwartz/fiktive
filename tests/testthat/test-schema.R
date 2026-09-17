@@ -33,7 +33,7 @@ test_that("expand-from-parent register is not implemented yet", {
   schema <- fixture_schema()
   pop <- tiny_pop(schema)
   err <- tryCatch(
-    generate_register("vnds_ind", pop, schema, "2008-01-01", "2008-12-31", seed = 1),
+    generate_register("lpr_afl", pop, schema, "2008-01-01", "2008-12-31", seed = 1),
     error = function(e) e
   )
   expect_s3_class(err, "error")

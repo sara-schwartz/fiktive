@@ -96,23 +96,9 @@ test_that("missing sksr does not emit sprintf SKS codes", {
   expect_false(grepl("^SCHEMA GAP:", err$message))
 })
 
-test_that("t_psyk_adm is not implemented (not a SCHEMA GAP)", {
-  schema <- fixture_schema()
-  pop <- tiny_pop(schema)
-  err <- tryCatch(
-    generate_register("t_psyk_adm", pop, schema, lpr2_from, lpr2_to, seed = 1),
-    error = function(e) e
-  )
-  expect_s3_class(err, "error")
-  expect_match(err$message, "not implemented yet")
-  expect_false(grepl("^SCHEMA GAP:", err$message))
-  err2 <- tryCatch(
-    generate_register("t_psyk_diag", pop, schema, lpr2_from, lpr2_to, seed = 1),
-    error = function(e) e
-  )
-  expect_match(err2$message, "not implemented yet")
-  expect_false(grepl("^SCHEMA GAP:", err2$message))
-})
+# t_psyk_adm/t_psyk_diag are now implemented -- see
+# test-generate-events-extra.R for their happy-path coverage (they used to
+# be deliberately-unimplemented registers).
 
 test_that("faik household_year dispatches (implemented in test-generate-faik.R)", {
   schema <- fixture_schema()

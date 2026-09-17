@@ -1,6 +1,6 @@
 # TEST DOUBLE only
-id: vnds_ind
-name: "Indvandringer 2005- (test double)"
+id: vnds_ud
+name: "Udvandringer 2005- (test double)"
 one_row_per: event_from_person
 deprecated: false
 coverage: {from: 2005, to: 2025}

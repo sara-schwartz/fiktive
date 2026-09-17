@@ -1,0 +1,27 @@
+# TEST DOUBLE only
+id: dodsaasg
+name: "Doedsaarsagsregister 2002-2022 (test double)"
+one_row_per: event_from_person
+deprecated: true
+superseded_by: [dodsaarsager]
+coverage: {from: 2002, to: 2022}
+join_keys: [pnr]
+columns:
+  - id: pnr
+    name: pnr
+    type: character
+    role: join_key
+  - id: d_dodsdato
+    name: d_dodsdato
+    type: date
+    role: date
+  - id: c_dodtilgrundl_acme
+    name: c_dodtilgrundl_acme
+    type: character
+    role: code
+    code_system: icd10
+  - id: c_dodsmaade
+    name: c_dodsmaade
+    type: character
+    role: code
+    code_system: c_dodsmaade_2002
