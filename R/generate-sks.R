@@ -150,7 +150,8 @@ sample_sks_codes <- function(n, kind, cs, koen = NULL, age_years = NULL) {
   sample(codes, n, replace = TRUE)
 }
 
-typed_noise <- function(type, n, role = NULL, name = NULL, code_system = NULL, cs = NULL) {
+typed_noise <- function(type, n, role = NULL, name = NULL, code_system = NULL, cs = NULL,
+                         analysiscode = NULL) {
   if (identical(type, "integer")) {
     return(sample.int(11L, n, replace = TRUE) - 1L)
   }
@@ -180,6 +181,9 @@ typed_noise <- function(type, n, role = NULL, name = NULL, code_system = NULL, c
       "analysiscode (lab_dm_forsker / labka) without LabTerm / published NPU catalogue",
       "FIKTIVE_LABTERM or IFCC C-NPU CSV; never sprintf NPU/DNK noise"
     )
+  }
+  if (name %in% c("value", "unit", "referenceinterval_lowerlimit", "referenceinterval_upperlimit")) {
+    return(labterm_analyte_noise(name, n, analysiscode))
   }
   if (as.character(code_system %||% "") %in% c("icd10", "icd10_sks", "icd8", "sks", "kont_type")) {
     stop(

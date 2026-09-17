@@ -183,13 +183,19 @@ fill_schema_column <- function(col, rows, schema, register_id = NULL, spec = NUL
     } else {
       NULL
     }
+    # value/unit/reference-interval columns on lab_dm_forsker/labka must
+    # agree with their own row's analysiscode (potassium and sodium do not
+    # share a plausible range) -- same same-row-dependency pattern as
+    # lprindberetningssystem/kont_type above.
+    analysiscode <- if ("analysiscode" %in% names(rows)) rows$analysiscode else NULL
     values <- draw_independent_column(
       col, n, schema,
       register_id = register_id,
       when = when,
       koen = koen,
       age_years = age_years,
-      lprindberetningssystem = lprindberetningssystem
+      lprindberetningssystem = lprindberetningssystem,
+      analysiscode = analysiscode
     )
   }
   values <- coerce_schema_type(values, type)

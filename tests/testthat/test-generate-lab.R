@@ -156,3 +156,41 @@ test_that("labka analysiscode SCHEMA GAPs without LabTerm", {
 test_that("labka is implemented as an event_from_person register", {
   expect_true("labka" %in% fiktive:::.IMPLEMENTED_EVENTS)
 })
+
+test_that("value/unit/reference interval are analyte-specific, not one shared draw", {
+  # A catalogue of only the curated analytes (see
+  # R/catalogue-labterm-analytes.R) -- every row's analysiscode is one of
+  # them, so every row should get its analyte's own realistic range, unit
+  # and reference interval, not the generic 3-digit fallback.
+  path <- testthat::test_path("fixtures", "labterm", "npu-codes-analytes.csv")
+  if (exists(".fiktive_labterm_cache", envir = asNamespace("fiktive"), inherits = FALSE)) {
+    env <- get(".fiktive_labterm_cache", envir = asNamespace("fiktive"))
+    env$catalogue <- NULL
+  }
+  withr::with_options(list(fiktive.labterm = path, fiktive.labterm_disable = NULL), {
+    schema <- fixture_schema()
+    pop <- tiny_pop(schema, n = 60L, seed = 93)
+    a <- generate_register("labka", pop, schema, lab_from, lab_to, seed = 93)
+    expect_true(nrow(a) > 0L)
+    ranges <- fiktive:::.LABTERM_ANALYTE_RANGES
+    expect_true(all(a$analysiscode %in% names(ranges)))
+    for (code in unique(a$analysiscode)) {
+      rows <- a[a$analysiscode == code, ]
+      r <- ranges[[code]]
+      v <- as.numeric(rows$value)
+      expect_true(all(v >= r$draw[[1]] & v <= r$draw[[2]]))
+      expect_true(all(rows$unit == r$unit))
+      expect_true(all(as.numeric(rows$referenceinterval_lowerlimit) == r$ref[[1]]))
+      expect_true(all(as.numeric(rows$referenceinterval_upperlimit) == r$ref[[2]]))
+    }
+    # Potassium and sodium really do get different ranges/units, not a
+    # single shared draw -- the concrete case from the request that
+    # prompted this: "potassium has another range than sodium".
+    k <- a[a$analysiscode == "NPU03230", ]
+    na <- a[a$analysiscode == "NPU03429", ]
+    if (nrow(k) && nrow(na)) {
+      expect_true(all(as.numeric(k$value) <= 6.5))
+      expect_true(all(as.numeric(na$value) >= 100))
+    }
+  })
+})
