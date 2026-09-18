@@ -42,7 +42,7 @@ draw_independent_column <- function(col, n, schema, register_id = NULL, when = N
     return(na_of_type(type, n))
   }
   if (is.null(col$code_system) && is.null(col$previous_code_system)) {
-    return(typed_noise(type, n, role = role, name = name, analysiscode = analysiscode))
+    return(typed_noise(type, n, role = role, name = name, analysiscode = analysiscode, register_id = register_id))
   }
 
   # Per-row previous_code_system (e.g. icd8 until 1993 on lpr_diag / dodsaars).

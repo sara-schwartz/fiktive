@@ -227,6 +227,19 @@ exactly like any DST register: `generate_register("kkh_journal", ...)`,
 or mixed into a batch `generate_registers()` call. See the
 [vignette](vignettes/fiktive.Rmd) for the full KKH/KKHNG register list.
 
+Numeric columns (anthropometry, blood pressure, nutrients, food groups,
+biomarkers, ...) draw from plausible per-column ranges rather than generic
+noise; the headline anthropometric/energy/biomarker ones are anchored on
+the two cohort papers below, the rest (including all nutrient, food-group,
+amino-acid and fatty-acid columns) are reasonable adult ranges not
+individually cited the same way -- see `R/generate-kkh-values.R` and
+`R/generate-kkh-nutrients.R`. Categorical columns (smoking status, yes/no
+items, menopause, ...) draw from a small plausible set rather than
+meaningless noise, but neither catalogue documents a real code list for
+these, so the specific levels (e.g. whether `1` is "never" or "current"
+smoker) are **documented guesses, not confirmed codings** -- see the
+comments at the top of `R/generate-kkh-values.R`.
+
 Cohort references:
 
 - Tjønneland A, Olsen A, Boll K, Stripp C, Christensen J, Engholm G,
@@ -240,6 +253,19 @@ Cohort references:
   Health–Next Generations cohort study. *European Journal of
   Epidemiology.* 2022;37(1):117–127.
   [doi:10.1007/s10654-021-00832-7](https://doi.org/10.1007/s10654-021-00832-7)
+- Lacoppidan SA, Kyrø C, Loft S, Helnæs A, Christensen J, Hansen CP, Dahm
+  CC, Overvad K, Tjønneland A, Olsen A. Adherence to a Healthy Nordic Food
+  Index Is Associated with a Lower Risk of Type-2 Diabetes -- The Danish
+  Diet, Cancer and Health Cohort Study. *Nutrients.* 2015;7(10):8633–8644.
+  [doi:10.3390/nu7105418](https://doi.org/10.3390/nu7105418) (DCH
+  anthropometric/energy anchors: age, BMI, waist, energy intake)
+- Zhang J, Andersen C, Olsen A, Halkjær J, Petersen KE, Schaarup JFR,
+  Antoniussen CS, Witte DR, Dahm CC. Life-long body mass index
+  trajectories and cardiometabolic biomarkers -- the Danish diet, cancer,
+  and health-next generations cohort. *International Journal of Obesity.*
+  2025;49(11):2311–2319.
+  [doi:10.1038/s41366-025-01882-7](https://doi.org/10.1038/s41366-025-01882-7)
+  (DCH-NG anchors: age, BMI, blood pressure, cholesterol/LDL/HDL)
 
 ### "SCHEMA GAP" errors
 
