@@ -19,3 +19,7 @@ columns:
     type: character
     role: code
     code_system: icd10
+  - id: flag_valideret
+    name: flag_valideret
+    type: character
+    role: code

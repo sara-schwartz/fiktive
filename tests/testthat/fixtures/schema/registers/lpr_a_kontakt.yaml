@@ -51,6 +51,10 @@ columns:
     name: borger_alder_aar_ind
     type: integer
     role: value
+  - id: flag_kont_afsluttet
+    name: flag_kont_afsluttet
+    type: numeric
+    role: code
   - id: year
     name: year
     type: integer

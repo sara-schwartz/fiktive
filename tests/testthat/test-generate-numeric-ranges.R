@@ -43,6 +43,26 @@ test_that("v_alddg/v_aldmdr derive from the same birth/event dates as v_alder, n
   expect_equal(adm$v_aldmdr, as.integer(round(adm$v_alddg / 30.44)))
 })
 
+test_that("label-flagged binary columns draw 0/1, not an unlimited range", {
+  # flag_kont_afsluttet (numeric) and flag_valideret (character) have no
+  # code_system -- registers-guide found no published domain for either --
+  # but both are unambiguously binary from their own label ("... flag").
+  # See R/generate-numeric-ranges.R for why these get a documented 0/1
+  # guess while a real multi-category code (e.g. bef's opr_land, faik's
+  # famboligtype) does not.
+  schema <- fixture_schema()
+  pop <- tiny_pop(schema, n = 60L, seed = 45)
+  kon <- suppressWarnings(
+    generate_register("lpr_a_kontakt", pop, schema, as.Date("2019-01-01"), as.Date("2021-12-31"), seed = 45)
+  )
+  skip_if(!nrow(kon), "no rows generated at this seed")
+  expect_true(all(kon$flag_kont_afsluttet %in% c(0, 1)))
+
+  dd <- generate_register("dodsaarsager", pop, schema, as.Date("2022-01-01"), as.Date("2023-12-31"), seed = 45)
+  skip_if(!nrow(dd), "no rows generated at this seed")
+  expect_true(all(dd$flag_valideret %in% c("0", "1")))
+})
+
 test_that("sssy's alderimp and vnds_ind/vnds_ud's alder_ult are the row's real age, not independent noise", {
   schema <- fixture_schema()
   pop <- tiny_pop(schema, n = 60L, seed = 44)

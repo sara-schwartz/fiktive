@@ -62,7 +62,14 @@
   v_indtime  = list(min = 0, max = 23, integer = TRUE),   # hour of admission
   v_udtime   = list(min = 0, max = 23, integer = TRUE),   # hour of discharge
   v_ominut   = list(min = 0, max = 59, integer = TRUE),   # minute of procedure hour
-  v_otime    = list(min = 0, max = 23, integer = TRUE)    # hour of procedure
+  v_otime    = list(min = 0, max = 23, integer = TRUE),   # hour of procedure
+
+  # lpr_a_kontakt: unambiguously binary from its own label ("Contact closed
+  # flag"), unlike e.g. bef's opr_land/statsb or faik's famboligtype/
+  # famsociogrup (also role=code, no code_system, but a real DST
+  # classification of unknown cardinality -- guessing a range for those
+  # risks being confidently wrong in a way a 0/1 flag can't be).
+  flag_kont_afsluttet = list(min = 0, max = 1, integer = TRUE)
 )
 
 # Draws n values in a curated column's plausible range, or NULL if `name`
@@ -78,4 +85,23 @@ numeric_range_noise <- function(name, n) {
   }
   digits <- r$digits %||% 1L
   round(stats::runif(n, r$min, r$max), digits)
+}
+
+# Character columns whose own label says "flag" but declare no code_system
+# and no values_from -- registers-guide has checked and found no published
+# domain for these (see e.g. flag_valideret/flag_proc_uden_kont's own YAML
+# comments), the same "unpublished value set" situation as borger_koen.
+# Unlike borger_koen, though, the label leaves little doubt these are
+# binary -- so unlike that NA+warning treatment, draw a plausible 0/1 (as
+# a character, matching the column's declared type) rather than a bare
+# 3-digit code, clearly flagged as an unconfirmed guess at the real
+# encoding (could equally be J/N, Y/N, or something else in a real
+# delivery).
+.CHARACTER_FLAG_COLUMNS <- c("flag_valideret", "flag_proc_uden_kont")
+
+character_flag_noise <- function(name, n) {
+  if (n == 0L || !name %in% .CHARACTER_FLAG_COLUMNS) {
+    return(NULL)
+  }
+  sample(c("0", "1"), n, replace = TRUE)
 }

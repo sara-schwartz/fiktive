@@ -215,5 +215,9 @@ typed_noise <- function(type, n, role = NULL, name = NULL, code_system = NULL, c
   if (!is.null(kkh)) {
     return(kkh)
   }
+  flag <- character_flag_noise(name, n)
+  if (!is.null(flag)) {
+    return(flag)
+  }
   sprintf("%03d", sample.int(1000L, n, replace = TRUE) - 1L)
 }
