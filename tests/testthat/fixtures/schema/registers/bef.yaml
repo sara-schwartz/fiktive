@@ -18,6 +18,7 @@ columns:
     type: integer
     role: code
     code_system: koen
+    label: {da: "Køn", en: "Sex"}
   - id: foed_dag
     name: foed_dag
     type: date

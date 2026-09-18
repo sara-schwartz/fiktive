@@ -89,6 +89,24 @@ them apart. `NA` in `label_da`/`label_en`/`values` just means the schema
 doesn't document one for that column — same "don't invent it" rule as
 everywhere else in fiktive.
 
+`label_columns()` attaches that same label directly onto an already-generated
+table's columns (the same `"label"` attribute convention `haven`/`labelled`
+use, which RStudio's Data Viewer and `str()` pick up automatically) — useful
+in its own right, but especially for KKH/KKHNG, where a name like `g03011`
+means nothing without one (see below):
+
+```{r label-columns}
+bef_labelled <- label_columns(tables$bef, schema, "bef")
+attr(bef_labelled$koen, "label")
+```
+
+Column *names* never change — only this attribute is added. Rehearsed
+analysis code has to run unmodified against the real register's own column
+names later, so renaming stays something you'd do yourself, consistently,
+on both fake and real data, if you do it at all; `label_columns()` adds
+readability without that trade-off. Pass `lang = "da"` for the Danish label
+instead of the English default.
+
 ## KKH and KKHNG
 
 Alongside the DST registers, `schema` always also includes fiktive's own
@@ -127,7 +145,14 @@ joined <- dplyr::inner_join(out$kkh_journal, out$bef, by = "pnr", relationship =
 ```
 
 `codebook(schema, "kkh_journal")` works too, with no extra code — it reads
-the same `label`/`type` fields on any register, DST or KKH.
+the same `label`/`type` fields on any register, DST or KKH. So does
+`label_columns()` -- worth doing for KKH/KKHNG especially, since a name
+like `g03011` means nothing without one:
+
+```{r kkh-label-columns}
+kkh_labelled <- label_columns(kkh, schema, "kkh_journal")
+attr(kkh_labelled$mdato, "label")
+```
 
 ## Describing your own register (e.g. a study cohort)
 
