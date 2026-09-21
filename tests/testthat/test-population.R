@@ -1,13 +1,17 @@
-test_that("background population has stable pnr, foed_dag, koen", {
+test_that("background population has stable pnr, foed_dag, koen, familie_id", {
   schema <- fixture_schema()
   pop <- generate_background_population(12, seed = 7, schema = schema)
-  expect_named(pop, c("pnr", "foed_dag", "koen"))
+  expect_named(pop, c("pnr", "foed_dag", "koen", "familie_id"))
   expect_type(pop$pnr, "character")
   expect_s3_class(pop$foed_dag, "Date")
   expect_type(pop$koen, "integer")
   expect_true(all(pop$koen %in% c(1L, 2L, 9L)))
   expect_equal(length(unique(pop$pnr)), nrow(pop))
   expect_false(any(grepl("^[0-9]{6}-", pop$pnr)))
+  expect_type(pop$familie_id, "character")
+  expect_true(all(grepl("^H[0-9]{7}$", pop$familie_id)))
+  # A household can have more than one member -- the whole point.
+  expect_true(length(unique(pop$familie_id)) < nrow(pop))
 })
 
 test_that("same seed yields identical persons", {

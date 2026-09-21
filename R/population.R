@@ -1,9 +1,17 @@
 #' Generate a stable background population
 #'
-#' One row per person. The same `pnr` always has the same `foed_dag` and
-#' `koen`. People persist across time; this is not a yearly random sample.
-#' `pnr` is a joinable character code (zero-padded). It is not a CPR number
-#' and carries no checksum or validity claim.
+#' One row per person. The same `pnr` always has the same `foed_dag`,
+#' `koen`, and `familie_id`. People persist across time; this is not a
+#' yearly random sample. `pnr` is a joinable character code (zero-padded).
+#' It is not a CPR number and carries no checksum or validity claim.
+#'
+#' `familie_id` groups people into households (structural noise only --
+#' sizes are a fixed, undocumented, made-up distribution, not a real DST
+#' household-size statistic; who ends up together carries no family-graph
+#' meaning, e.g. no encoded "these two are spouses"). It exists so a
+#' household-grain register (`faik`) shares real, joinable household ids
+#' with person-grain registers (`bef`) generated from the same population,
+#' instead of each drawing its own independent, disconnected ids.
 #'
 #' @param n Number of people.
 #' @param seed Optional RNG seed. Restored on exit.
@@ -18,7 +26,7 @@
 #'   from. Default `Sys.Date()`. Ignored unless `age_min`/`age_max` is used.
 #' @param ... Unused; reserved.
 #'
-#' @return A tibble with `pnr`, `foed_dag`, and `koen`.
+#' @return A tibble with `pnr`, `foed_dag`, `koen`, and `familie_id`.
 #' @export
 generate_background_population <- function(n, seed = NULL, schema = NULL,
                                             birth_from = NULL, birth_to = NULL,
@@ -64,9 +72,38 @@ generate_background_population <- function(n, seed = NULL, schema = NULL,
     tibble::tibble(
       pnr = pnr,
       foed_dag = as.Date(foed_dag),
-      koen = koen
+      koen = koen,
+      familie_id = assign_familie_ids(n)
     )
   })
+}
+
+# Groups n people into households, structural noise only (see
+# generate_background_population()'s own doc for why sizes/membership carry
+# no real-world meaning). Sizes drawn from a small fixed, made-up
+# distribution (not a cited DST statistic) so most households have more
+# than one member -- the point is real, shared, joinable ids across
+# households, not realistic household composition.
+.FAMILIE_SIZE_VALUES <- 1:5
+.FAMILIE_SIZE_WEIGHTS <- c(0.35, 0.30, 0.15, 0.12, 0.08)
+
+assign_familie_ids <- function(n) {
+  sizes <- integer(0)
+  total <- 0L
+  while (total < n) {
+    batch <- sample(
+      .FAMILIE_SIZE_VALUES, max(10L, (n - total) %/% 2L + 5L),
+      replace = TRUE, prob = .FAMILIE_SIZE_WEIGHTS
+    )
+    sizes <- c(sizes, batch)
+    total <- sum(sizes)
+  }
+  cum <- cumsum(sizes)
+  n_hh <- which(cum >= n)[[1]]
+  sizes <- sizes[seq_len(n_hh)]
+  sizes[[n_hh]] <- sizes[[n_hh]] - (cum[[n_hh]] - n)
+  hh_ids <- sprintf("H%07d", sample.int(10000000L, n_hh, replace = FALSE) - 1L)
+  rep(hh_ids, times = sizes)
 }
 
 # koen.yaml's own reader_note: sex is derived deterministically from the CPR

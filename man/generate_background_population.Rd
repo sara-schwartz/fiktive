@@ -21,10 +21,18 @@ from. Default \code{Sys.Date()}. Ignored unless \code{age_min}/\code{age_max} is
 \item{...}{Unused; reserved.}
 }
 \value{
-A tibble with \code{pnr}, \code{foed_dag}, and \code{koen}.
+A tibble with \code{pnr}, \code{foed_dag}, \code{koen}, and \code{familie_id}.
 }
 \description{
-One row per person. The same \code{pnr} always has the same \code{foed_dag} and
-\code{koen}. \code{pnr} is a joinable character code, not a CPR number.
+One row per person. The same \code{pnr} always has the same \code{foed_dag},
+\code{koen}, and \code{familie_id}. \code{pnr} is a joinable character code, not a CPR number.
 \code{schema = NULL} is a SCHEMA GAP: sex codes come from \code{koen.yaml}.
+
+\code{familie_id} groups people into households (structural noise only --
+sizes are a fixed, undocumented, made-up distribution, not a real DST
+household-size statistic; membership carries no family-graph meaning). It
+exists so a household-grain register (\code{faik}) shares real, joinable
+household ids with person-grain registers (\code{bef}) generated from the
+same population, instead of each drawing its own independent,
+disconnected ids.
 }

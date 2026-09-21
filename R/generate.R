@@ -209,6 +209,21 @@ generate_household_year <- function(population, schema, spec, from, to, seed) {
   # Household × year on familie_id (not person-level). Structural noise only;
   # no family-graph truth. pnr is not a FAIK key — blank/NA when present.
   pop <- validate_population(population)
+  # familie_id must come from the population -- generate_background_population()
+  # provides it -- not be minted fresh here. Bef's snapshot generator picks
+  # up the same population-level familie_id via derived_column() (map
+  # carefully, exactly like pnr/koen/foed_dag); minting a second,
+  # independent set of ids here would make bef and faik's familie_id
+  # values disconnected, the actual reported bug.
+  if (!"familie_id" %in% names(pop)) {
+    stop(
+      "`population` must have a `familie_id` column for a household-grain ",
+      "register like '", spec$id %||% "this register", "' -- ",
+      "generate_background_population() provides one; a hand-built ",
+      "population needs to add one so it matches bef's.",
+      call. = FALSE
+    )
+  }
   from <- as_date1(from)
   to <- as_date1(to)
   if (is.na(from) || is.na(to) || to < from) {
@@ -229,9 +244,8 @@ generate_household_year <- function(population, schema, spec, from, to, seed) {
     if (!length(dates)) {
       return(empty_from_spec(spec))
     }
-    n_hh <- nrow(pop)
-    # Undocumented familie_id format — structural join_key noise (H#######).
-    familie_ids <- sprintf("H%07d", sample.int(10000000L, n_hh, replace = FALSE) - 1L)
+    familie_ids <- unique(pop$familie_id)
+    n_hh <- length(familie_ids)
     n_y <- length(dates)
     rows <- tibble::tibble(
       familie_id = rep(familie_ids, each = n_y),
