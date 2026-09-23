@@ -153,9 +153,9 @@ sample_sks_codes <- function(n, kind, cs, koen = NULL, age_years = NULL) {
 typed_noise <- function(type, n, role = NULL, name = NULL, code_system = NULL, cs = NULL,
                          analysiscode = NULL, register_id = NULL) {
   if (identical(type, "integer")) {
-    kkh <- kkh_value_noise(register_id, name, type, n)
-    if (!is.null(kkh)) {
-      return(as.integer(kkh))
+    dch <- dch_value_noise(register_id, name, type, n)
+    if (!is.null(dch)) {
+      return(as.integer(dch))
     }
     curated <- numeric_range_noise(name, n)
     if (!is.null(curated)) {
@@ -164,9 +164,9 @@ typed_noise <- function(type, n, role = NULL, name = NULL, code_system = NULL, c
     return(sample.int(11L, n, replace = TRUE) - 1L)
   }
   if (identical(type, "numeric")) {
-    kkh <- kkh_value_noise(register_id, name, type, n)
-    if (!is.null(kkh)) {
-      return(kkh)
+    dch <- dch_value_noise(register_id, name, type, n)
+    if (!is.null(dch)) {
+      return(dch)
     }
     curated <- numeric_range_noise(name, n)
     if (!is.null(curated)) {
@@ -211,9 +211,9 @@ typed_noise <- function(type, n, role = NULL, name = NULL, code_system = NULL, c
     prefix <- if (identical(role, "join_key")) "H" else "I"
     return(sprintf("%s%07d", prefix, sample.int(10000000L, n, replace = TRUE) - 1L))
   }
-  kkh <- kkh_value_noise(register_id, name, type, n)
-  if (!is.null(kkh)) {
-    return(kkh)
+  dch <- dch_value_noise(register_id, name, type, n)
+  if (!is.null(dch)) {
+    return(dch)
   }
   flag <- character_flag_noise(name, n)
   if (!is.null(flag)) {

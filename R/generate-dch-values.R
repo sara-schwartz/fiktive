@@ -1,12 +1,12 @@
-# Realistic value ranges/domains for KKH/KKHNG's numeric and categorical
-# columns. Without this, any KKH/KKHNG column with no code_system hits the
+# Realistic value ranges/domains for DCH/DCH-NG's numeric and categorical
+# columns. Without this, any DCH/DCH-NG column with no code_system hits the
 # same generic fallback as any other schema-driven register (runif(0.5, 20)
 # for numeric, a bare 3-digit string for character) -- fine as a structural
 # placeholder, but a BMI of 4.2 or a birth-cohort weight of 0.7 kg is not
 # just "unweighted", it's out of scale. Ported from a companion project's
 # already-reviewed build_columns.R/families.py (same author), which built
 # these for generate_custom_register() before this package's own bundled
-# KKH schema (R/schema.R) existed.
+# DCH schema (R/schema.R) existed.
 #
 # Two provenance tiers, as with the labka/lab_dm_forsker analyte ranges:
 #
@@ -36,20 +36,25 @@
 # percentile, wide enough not to be obviously wrong" philosophy as the rest
 # of fiktive), not individually literature-cited the way the anchors above
 # are. The nutrient/food-group/amino-acid/fatty-acid tables live in
-# R/generate-kkh-nutrients.R.
+# R/generate-dch-nutrients.R.
 #
 # Categorical `values` are plausible, DOCUMENTED GUESSES, not read off a
-# real code list: neither KKH catalogue publishes one (variable name, type
-# and label only were shared -- see R/schema.R). Getting the real codings
-# requires going back to KKH; until then these exist so a column at least
-# draws a small, structurally plausible set (e.g. smoking status as 1/2/3)
-# instead of meaningless noise. Do not treat a specific level as
-# confirmed -- e.g. `rygning`'s 1/2/3 order (never/former/current) is
-# unverified, `kqn`'s coding is unknown and was dropped rather than guessed
-# here (see R/schema.R) precisely because -- unlike these -- it would
-# contradict bef's koen if guessed wrong.
+# real code list: neither KKH/DCH catalogue publishes one (variable name,
+# type and label only were shared -- see R/schema.R). Getting the real
+# codings requires going back to KKH/DCH; until then these exist so a
+# column at least draws a small, structurally plausible set (e.g. smoking
+# status as 1/2/3) instead of meaningless noise. Do not treat a specific
+# level as confirmed -- e.g. `rygning`'s 1/2/3 order (never/former/current)
+# is unverified, `kqn`'s coding is unknown and was dropped rather than
+# guessed here (see R/schema.R) precisely because -- unlike these -- it
+# would contradict bef's koen if guessed wrong.
+#
+# Column ids below are unique within "dch" and within "dchng" (the two
+# collapsed registers -- see data-raw/collapse_dch_registers.R), so a flat
+# name-keyed lookup is safe: no id repeats across the ~8 (dch) or ~19
+# (dchng) real underlying datasets each is merged from.
 
-.KKH_NUMERIC_OVERRIDES <- list(
+.DCH_NUMERIC_OVERRIDES <- list(
   # --- journal: identifiers, visit, anthropometry, clinical ---
   id = c(1, 60000), age = c(50, 65), alderind = c(18250, 23750),
   stahqjde = c(148, 200), sidhqjde = c(75, 105), vaegt = c(42, 145),
@@ -74,7 +79,7 @@
   vaegtc = c(800, 6000), whg_tot_dq = c(0, 250), wheat_dq = c(0, 130),
   rye_dq = c(0, 150), oat_dq = c(0, 100), whg_othr_dq = c(0, 60),
 
-  # --- KKHNG: diet totals ---
+  # --- DCH-NG: diet totals ---
   alder = c(18, 75), energitot = c(3500, 19000), energitotxalko = c(3300, 18000),
   fuldkorn = c(0, 250),
   # --- lsq_fysakt/lsq_afledte: activity ---
@@ -99,14 +104,14 @@
   hscrp = c(0.1, 20), tg = c(0.3, 7.0), hba1cpc = c(4.0, 9.0), hba1cmm = c(20, 75)
 )
 
-.KKH_INTEGER_COLS <- c(
+.DCH_INTEGER_COLS <- c(
   "id", "alderind", "blodpklo", "rygestart", "rygestop", "ant_bqrn", "ant_fqds",
   "mdiets", "hnfi", "s33x01n", "s34x01n", "s35x01n", "s37x01n", "schrm03", "fsq00_02"
 )
 
 YESNO_01 <- c(0L, 1L)
 
-.KKH_CATEGORICAL_OVERRIDES <- list(
+.DCH_CATEGORICAL_OVERRIDES <- list(
   center = c("KBH", "AAR"),
   fedtbiop = YESNO_01, ualbumin = 0:3, usukker = 0:3, ublod = 0:3,
   rygning = 1:3, rygepause = YESNO_01, alk_stat = 0:2, outdoor = YESNO_01,
@@ -118,7 +123,7 @@ YESNO_01 <- c(0L, 1L)
 
   # Sub-cohort flags: MAX is 720 of ~39,554 participants (~2%); DiGuMeT's
   # size is unpublished, same order assumed (weighted via repetition -- see
-  # kkh_weighted_sample()).
+  # dch_value_noise()).
   ismax = c(rep(0L, 49), 1L), isdigumet = c(rep(0L, 49), 1L),
   ryg01_bin = YESNO_01, nic01_bin = YESNO_01, nic02_bin = YESNO_01,
   ryg01_cat = 0:2, nic01_cat = 0:2, nic02_cat = 0:2,
@@ -135,8 +140,9 @@ YESNO_01 <- c(0L, 1L)
   ldl_reagens = 1:2, hdl_reagens = 1:2
 )
 
-# 50 harmonised food groups shared by kkh_foods6ny and kkhng_vaegtc, g/day.
-.KKH_VAEGTC <- list(
+# 50 harmonised food groups shared by dch's own "foods6ny" dataset and
+# dchng's own "vaegtc" dataset (see each column's `dataset` field), g/day.
+.DCH_VAEGTC <- list(
   `1` = c(0, 200), `2` = c(0, 300), `3` = c(0, 500), `4` = c(0, 250), `5` = c(0, 250),
   `6` = c(0, 100), `7` = c(0, 100), `8` = c(0, 150), `9` = c(0, 150), `10` = c(0, 300),
   `11` = c(0, 600), `12` = c(0, 60), `13` = c(0, 350), `14` = c(0, 300), `15` = c(0, 250),
@@ -149,8 +155,8 @@ YESNO_01 <- c(0L, 1L)
   `47` = c(0, 150), `48` = c(0, 150), `49` = c(0, 150), `60` = c(0, 300)
 )
 
-# kkh_foods6ny summary totals, g/day.
-.KKH_FOOD_TOTALS <- list(
+# dch's "foods6ny" dataset summary totals, g/day.
+.DCH_FOOD_TOTALS <- list(
   allfruit = c(0, 800), allplant = c(0, 1500), allpotat = c(0, 500),
   allvegs = c(0, 800), fatfoods = c(0, 500), fishfat = c(0, 200),
   fishlean = c(0, 200), fishmid = c(0, 200), fishtot = c(0, 350),
@@ -159,42 +165,43 @@ YESNO_01 <- c(0L, 1L)
   totdiary = c(0, 1200)
 )
 
-kkh_food_group_range <- function(name) {
+dch_food_group_range <- function(name) {
   m <- regmatches(name, regexec("^vaegtc(\\d{2})$", name))[[1]]
   if (length(m) == 2) {
     n <- as.character(as.integer(m[[2]]))
-    if (!is.null(.KKH_VAEGTC[[n]])) {
-      return(.KKH_VAEGTC[[n]])
+    if (!is.null(.DCH_VAEGTC[[n]])) {
+      return(.DCH_VAEGTC[[n]])
     }
   }
-  .KKH_FOOD_TOTALS[[name]]
+  .DCH_FOOD_TOTALS[[name]]
 }
 
-# FFQ item-level columns (kkh_gpd6's g0300x-style ids, kkhng_ffq_gpd's
-# prefixed/suffixed ids) ranged by family from the id shape, since there are
-# hundreds of individual food items with no per-item catalogue range.
-kkh_ffq_item_range <- function(register_id, name) {
-  if (identical(register_id, "kkh_gpd6")) {
+# FFQ item-level columns (dch's own "gpd6" dataset has g0300x-style ids;
+# dchng's own "ffq_gpd" dataset has prefixed/suffixed ids -- see each
+# column's `dataset` field) ranged by id shape, since there are hundreds
+# of individual food items with no per-item catalogue range. The two id
+# shapes never overlap (confirmed directly against the source catalogues),
+# so this doesn't need to know which of the two collapsed registers (dch
+# vs. dchng) it's running on, only the column name.
+dch_ffq_item_range <- function(name) {
+  if (grepl("^g03\\d{3}$", name)) {
     return(if (startsWith(name, "g030")) c(0, 2500) else c(0, 300))
   }
-  if (identical(register_id, "kkhng_ffq_gpd")) {
-    if (endsWith(name, "sodest")) return(c(0, 12))
-    if (endsWith(name, "sukker")) return(c(0, 40))
-    if (endsWith(name, "maelk") || endsWith(name, "flode")) return(c(0, 250))
-    if (startsWith(name, "gdri")) return(c(0, 2000))
-    if (startsWith(name, "gfedtfpb") || startsWith(name, "gsod") ||
-          startsWith(name, "gdre") || startsWith(name, "gttd")) {
-      return(c(0, 60))
-    }
-    return(c(0, 300))
+  if (endsWith(name, "sodest")) return(c(0, 12))
+  if (endsWith(name, "sukker")) return(c(0, 40))
+  if (endsWith(name, "maelk") || endsWith(name, "flode")) return(c(0, 250))
+  if (startsWith(name, "gdri")) return(c(0, 2000))
+  if (startsWith(name, "gfedtfpb") || startsWith(name, "gsod") ||
+        startsWith(name, "gdre") || startsWith(name, "gttd")) {
+    return(c(0, 60))
   }
   NULL
 }
 
 # Misc regex-matched column families (tobacco/alcohol history by decade,
 # self-report questionnaire blocks, passive-smoking exposure, etc.) that
-# aren't individually worth naming in .KKH_NUMERIC_OVERRIDES.
-kkh_family_numeric_range <- function(name) {
+# aren't individually worth naming in .DCH_NUMERIC_OVERRIDES.
+dch_family_numeric_range <- function(name) {
   if (grepl("^forbrug\\d{2}$", name)) return(c(0, 60))              # tobacco g/day, a decade
   if (grepl("^c_forbrug\\d{2}$", name)) return(c(0, 250000))        # cumulative g, a decade
   if (grepl("^alk_pause\\d{2}$", name)) return(c(0, 10))            # years off alcohol
@@ -215,7 +222,7 @@ kkh_family_numeric_range <- function(name) {
   NULL
 }
 
-kkh_family_categorical <- function(name) {
+dch_family_categorical <- function(name) {
   if (grepl("^ktsk_grp_\\d{2}$", name)) return(YESNO_01)            # supplement taken
   if (name %in% c("gang", "cykel", "husarb", "gqrselv", "havearb", "sport")) return(YESNO_01)
   if (grepl("^sovn07_\\d{2}$", name)) return(1:5)                   # 5-point frequency
@@ -227,57 +234,57 @@ kkh_family_categorical <- function(name) {
   NULL
 }
 
-kkh_numeric_range <- function(register_id, name) {
-  if (!register_id %in% kkh_register_ids()) {
+dch_numeric_range <- function(register_id, name) {
+  if (!register_id %in% dch_register_ids()) {
     return(NULL)
   }
-  ov <- .KKH_NUMERIC_OVERRIDES[[name]]
+  ov <- .DCH_NUMERIC_OVERRIDES[[name]]
   if (!is.null(ov)) {
     return(ov)
   }
-  fg <- kkh_food_group_range(name)
+  fg <- dch_food_group_range(name)
   if (!is.null(fg)) {
     return(fg)
   }
-  ffq <- kkh_ffq_item_range(register_id, name)
+  ffq <- dch_ffq_item_range(name)
   if (!is.null(ffq)) {
     return(ffq)
   }
-  fam <- kkh_family_numeric_range(name)
+  fam <- dch_family_numeric_range(name)
   if (!is.null(fam)) {
     return(fam)
   }
-  kkh_nutrient_range(name)
+  dch_nutrient_range(name)
 }
 
-kkh_categorical_values <- function(register_id, name) {
-  if (!register_id %in% kkh_register_ids()) {
+dch_categorical_values <- function(register_id, name) {
+  if (!register_id %in% dch_register_ids()) {
     return(NULL)
   }
-  ov <- .KKH_CATEGORICAL_OVERRIDES[[name]]
+  ov <- .DCH_CATEGORICAL_OVERRIDES[[name]]
   if (!is.null(ov)) {
     return(ov)
   }
-  kkh_family_categorical(name)
+  dch_family_categorical(name)
 }
 
-# value/domain noise for a KKH/KKHNG column -- called from typed_noise()
+# value/domain noise for a DCH/DCH-NG column -- called from typed_noise()
 # before its generic numeric/character fallback. Returns NULL (caller keeps
 # its existing behaviour) for a column not covered above.
-kkh_value_noise <- function(register_id, name, type, n) {
+dch_value_noise <- function(register_id, name, type, n) {
   if (is.null(register_id) || !nzchar(register_id) || n == 0L) {
     return(NULL)
   }
-  cat_values <- kkh_categorical_values(register_id, name)
+  cat_values <- dch_categorical_values(register_id, name)
   if (!is.null(cat_values)) {
     drawn <- sample(cat_values, n, replace = TRUE)
     return(if (type %in% c("integer", "numeric")) as.numeric(drawn) else as.character(drawn))
   }
-  rng <- kkh_numeric_range(register_id, name)
+  rng <- dch_numeric_range(register_id, name)
   if (is.null(rng)) {
     return(NULL)
   }
-  if (name %in% .KKH_INTEGER_COLS || identical(type, "integer")) {
+  if (name %in% .DCH_INTEGER_COLS || identical(type, "integer")) {
     return(sample(rng[[1]]:rng[[2]], n, replace = TRUE))
   }
   stats::runif(n, rng[[1]], rng[[2]])

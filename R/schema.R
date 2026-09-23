@@ -20,18 +20,20 @@ schema_gap <- function(what, needed) {
 #' schema root). Does not vendor the YAML into the installed package as the
 #' source of truth. The git commit used is stamped as `schema_commit`.
 #'
-#' **Always also includes fiktive's own bundled KKH / KKHNG cohort
-#' metadata** (Danish Diet, Cancer and Health / ...and Next Generations),
+#' **Always also includes fiktive's own bundled DCH / DCH-NG cohort
+#' metadata** (Diet, Cancer and Health / ...and Next Generations),
 #' merged into the returned `registers` alongside the DST ones -- not a
 #' second call to remember, and not something `source=` controls (that
 #' argument only selects the DST/registers-guide half). This is fiktive's
 #' own data, not registers-guide's: variable name, type, and Danish/English
 #' label only (per KKH/DCH's data-sharing approval), shipped inside the
-#' installed package at `system.file("extdata/kkh-schema", package =
+#' installed package at `system.file("extdata/dch-schema", package =
 #' "fiktive")`, never fetched from or written to
-#' `steno-aarhus/registers-guide`. Register ids are prefixed `kkh_`/`kkhng_`
-#' so they can never collide with a DST register id. See
-#' `vignette("fiktive")` for the full register list and
+#' `steno-aarhus/registers-guide`. Register ids (`dch`, `dchng`) are
+#' distinct from any DST register id. Each column carries a `dataset`
+#' field recording which of the ~27 real underlying SAS datasets it came
+#' from (both cohorts were originally delivered as many separate tables,
+#' not one) -- see [codebook()]. See `vignette("fiktive")` for more, and
 #' [generate_register()] for how to generate them (same call as any DST
 #' register -- no separate function).
 #'
@@ -39,11 +41,11 @@ schema_gap <- function(what, needed) {
 #'   default loads the live GitHub `steno-aarhus/registers-guide` schema
 #'   directory (`registers/`, `code-systems/`, `families/`). Pass a local
 #'   directory that contains `registers/` for offline use. Either way, the
-#'   bundled KKH/KKHNG registers are still merged in.
+#'   bundled DCH/DCH-NG registers are still merged in.
 #'
-#' @return A list with `registers` (named by id -- DST and KKH/KKHNG
+#' @return A list with `registers` (named by id -- DST and DCH/DCH-NG
 #'   together), `code_systems`, `families`, `schema_commit` (40-character
-#'   SHA of the DST half; the bundled KKH/KKHNG metadata is versioned with
+#'   SHA of the DST half; the bundled DCH/DCH-NG metadata is versioned with
 #'   the installed fiktive package instead, not independently), and
 #'   `schema_source`.
 #' @export
@@ -59,67 +61,71 @@ load_registers_schema <- function(source = NULL) {
   } else {
     load_live_schema()
   }
-  merge_kkh_schema(primary)
+  merge_dch_schema(primary)
 }
 
-# Merges fiktive's own bundled KKH/KKHNG register metadata into an
-# already-resolved DST schema. kkh-schema has no code-systems/families of
-# its own (KKH columns carry no code_system -- structural noise only), so
-# only `registers` needs merging. `kkh_*`/`kkhng_*` prefixing makes a
-# collision with a future DST register id extremely unlikely, but this
-# still fails loudly rather than silently overwriting either side if one
-# ever occurs.
-merge_kkh_schema <- function(schema) {
-  kkh_root <- system.file("extdata", "kkh-schema", package = "fiktive")
-  if (!nzchar(kkh_root) || !dir.exists(file.path(kkh_root, "registers"))) {
+# Merges fiktive's own bundled DCH/DCH-NG register metadata into an
+# already-resolved DST schema. dch-schema has no code-systems/families of
+# its own (DCH columns carry no code_system -- structural noise only), so
+# only `registers` needs merging. This still fails loudly rather than
+# silently overwriting either side if a DST register id ever collides with
+# `dch`/`dchng`.
+merge_dch_schema <- function(schema) {
+  dch_root <- system.file("extdata", "dch-schema", package = "fiktive")
+  if (!nzchar(dch_root) || !dir.exists(file.path(dch_root, "registers"))) {
     return(schema)
   }
-  kkh <- read_schema_root(kkh_root, schema_commit = NA_character_, schema_source = kkh_root)
-  collide <- intersect(names(schema$registers), names(kkh$registers))
+  dch <- read_schema_root(dch_root, schema_commit = NA_character_, schema_source = dch_root)
+  collide <- intersect(names(schema$registers), names(dch$registers))
   if (length(collide)) {
     stop(
-      "Bundled KKH/KKHNG register id(s) collide with the DST schema: ",
+      "Bundled DCH/DCH-NG register id(s) collide with the DST schema: ",
       paste(collide, collapse = ", "),
       call. = FALSE
     )
   }
-  schema$registers <- c(schema$registers, kkh$registers)
+  schema$registers <- c(schema$registers, dch$registers)
   schema
 }
 
-# Ids of the bundled KKH/KKHNG registers, read from the installed package's
-# own YAML directory rather than a hardcoded literal list -- these are
-# generated from the KKH/KKHNG variable catalogues (variable name, type, and
-# Danish/English label only, per the KKH/DCH data coordinator's data-sharing
-# approval -- nothing else from the source catalogues, and no real data, is
-# in fiktive) and would silently drift out of sync with a hand-maintained
-# list otherwise. Two judgment calls made when these were derived, kept here
-# since the source catalogues aren't in this repo: KKHNG's 27 near-empty
-# `sca_v1`..`v27` dataset fragments were collapsed into one `kkhng_sca`
-# register (no SAS files were available to confirm whether they're really
-# distinct tables), and the "??" / "done_all" placeholder dataset values
-# were bundled into a new `kkhng_admin` register rather than attached to an
-# unrelated real table. Used by dispatch_generate_register() (R/generate.R)
-# to extend the "implemented person-grain snapshot registers" whitelist
-# without touching DST ids.
-kkh_register_ids <- function() {
-  root <- system.file("extdata", "kkh-schema", "registers", package = "fiktive")
+# Ids of the bundled DCH/DCH-NG registers ("dch", "dchng"), read from the
+# installed package's own YAML directory rather than hardcoded, so this
+# can't drift if the bundled schema is ever rebuilt. Used by
+# dispatch_generate_register() (R/generate.R) to extend the "implemented
+# person-grain snapshot registers" whitelist without touching DST ids.
+dch_register_ids <- function() {
+  root <- system.file("extdata", "dch-schema", "registers", package = "fiktive")
   if (!nzchar(root) || !dir.exists(root)) {
     return(character())
   }
   tools::file_path_sans_ext(list.files(root, pattern = "\\.ya?ml$"))
 }
 
-# kkh_journal's kqn/fsdato and kkhng_lsq_general_final's fsdato/fsdato_c are
-# dropped entirely from the bundled columns above: neither catalogue
-# documents a real code list or value range for them, and keeping them would
-# mean inventing a domain fiktive has no source for, while also generating a
-# second, independently-drawn value for a fact fiktive already has from the
-# shared population (silently disagreeing with bef for the same pnr).
-# kkhng_lsq_general_final's `koen`/`sex` are kept, not dropped, since both
-# are unambiguous: `koen` collides by name with the population's own column,
-# and `sex`'s label states DST's exact 1=Male/2=Female coding -- see the
-# `sex =` case in derived_column() (R/generate-columns.R).
+# Per the KKH/DCH data-sharing approval: variable name, type, and
+# Danish/English label only -- nothing else from the source catalogues,
+# and no real data, is in fiktive. See data-raw/collapse_dch_registers.R
+# for how the two bundled registers (dch, dchng) were built from the 27
+# original per-real-dataset YAMLs (each column's `dataset` field records
+# which one it came from).
+#
+# Two judgment calls made when those 27 were originally derived, kept here
+# since the source catalogues aren't in this repo: DCH-NG's 27 near-empty
+# `sca_v1`..`v27` dataset fragments were collapsed into one `sca` dataset
+# (no SAS files were available to confirm whether they're really distinct
+# tables), and the "??" / "done_all" placeholder dataset values were
+# bundled into a new `admin` dataset rather than attached to an unrelated
+# real table.
+#
+# dch's own kqn/fsdato and dchng's own fsdato/fsdato_c are dropped
+# entirely from the bundled columns: neither catalogue documents a real
+# code list or value range for them, and keeping them would mean inventing
+# a domain fiktive has no source for, while also generating a second,
+# independently-drawn value for a fact fiktive already has from the shared
+# population (silently disagreeing with bef for the same pnr). dchng's
+# `koen`/`sex` are kept, not dropped, since both are unambiguous: `koen`
+# collides by name with the population's own column, and `sex`'s label
+# states DST's exact 1=Male/2=Female coding -- see the `sex =` case in
+# derived_column() (R/generate-columns.R).
 
 read_schema_root <- function(root, schema_commit, schema_source) {
   registers <- read_yaml_dir(file.path(root, "registers"))

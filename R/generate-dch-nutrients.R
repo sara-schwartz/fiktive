@@ -1,4 +1,4 @@
-# Plausible daily-intake ranges for KKH/KKHNG nutrient columns, keyed on the
+# Plausible daily-intake ranges for DCH/DCH-NG nutrient columns, keyed on the
 # lowercased nutrient stem before any _ffq / _ktsk / _tot suffix. Ported from
 # a companion project's already-reviewed nutrient_ranges.py (same author),
 # which anchors these on Danish adult intakes: DANSDA (the national dietary
@@ -10,7 +10,7 @@
 #
 # stem -> c(diet_min, diet_max, supplement_max); supplement_max = NA means no
 # supplement (_ktsk) form exists for that nutrient.
-.KKH_NUTRIENTS <- list(
+.DCH_NUTRIENTS <- list(
   avit = c(200, 3000, 2500), retino = c(100, 1800, 2000), retinol = c(100, 1800, 2000),
   betaca = c(300, 9000, 15000), cvit = c(20, 300, 1500), evit = c(3, 25, 300),
   alfato = c(3, 25, 300), dvit = c(0.5, 20, 100), kvit = c(20, 350, NA),
@@ -32,7 +32,7 @@
 )
 
 # Carbohydrate/sugar fractions and other bulk components, g/d unless noted.
-.KKH_BULK <- list(
+.DCH_BULK <- list(
   cho = c(50, 500), kulhy = c(50, 500), kulhtil = c(50, 500), kulhtilx = c(50, 500),
   stivel = c(40, 350), stivelse = c(40, 350), sukker = c(30, 250), totsukker = c(30, 250),
   andresukker = c(0, 15), saccha = c(10, 130), sacchros = c(10, 130), glukos = c(3, 50),
@@ -44,7 +44,7 @@
 )
 
 # Amino acids, mg/d.
-.KKH_AMINO <- list(
+.DCH_AMINO <- list(
   isoleu = c(1500, 6000), leucin = c(2500, 10000), lysin = c(2000, 9000),
   methio = c(600, 3000), cystin = c(400, 2200), phenyl = c(1500, 6000),
   thyros = c(1200, 5000), threon = c(1500, 5500), trypto = c(400, 1800),
@@ -54,13 +54,13 @@
 )
 
 # Fatty-acid sums and the individually large ones, g/d.
-.KKH_FA_SUMS <- list(
+.DCH_FA_SUMS <- list(
   total_fa = c(20, 170), sum_sfa = c(8, 70), sum_mufa = c(7, 60), sum_pufa = c(3, 35),
   total_transfa = c(0.2, 6), sum_n3fa = c(0.5, 8), sum_n6fa = c(3, 30),
   fedtms = c(8, 70), fedtus = c(7, 60), fedtps = c(3, 35), fiskn3 = c(0, 6)
 )
 
-.KKH_FA_INDIVIDUAL <- list(
+.DCH_FA_INDIVIDUAL <- list(
   c4x0 = c(0, 2), c6x0 = c(0, 1.2), c8x0 = c(0, 1), c10x0 = c(0, 1.5),
   c12x0 = c(0, 3), c14x0 = c(0.3, 8), c15x0 = c(0, 1),
   c16x0 = c(4, 35), c17x0 = c(0, 0.8), c18x0 = c(1.5, 15),
@@ -73,17 +73,17 @@
   c18x1_tran = c(0.1, 4), c18x2_tran = c(0, 1), c16x1_tran = c(0, 0.5),
   andre_sfa = c(0, 2), andre_mufa = c(0, 2), andr_pufa = c(0, 2), andre_fa = c(0, 3)
 )
-.KKH_FA_TRACE <- c(0, 0.4)
+.DCH_FA_TRACE <- c(0, 0.4)
 
 # Energy contributed by a macronutrient, kJ/day.
-.KKH_ENERGY_FROM <- list(
+.DCH_ENERGY_FROM <- list(
   prote = c(400, 3500), fedte = c(700, 8000), kulhye = c(800, 8000),
   kulhtile = c(800, 8000), kulhtilxe = c(800, 8000), kulhtote = c(900, 8500),
   alkoe = c(0, 4000), kfibree = c(50, 800), orgsyrere = c(5, 350), sukkeralkoe = c(0, 400)
 )
 
 # Share of total energy, %.
-.KKH_ENERGY_PCT <- list(
+.DCH_ENERGY_PCT <- list(
   protep = c(8, 25), protexp = c(8, 26), fedtep = c(15, 55), fedtexp = c(15, 57),
   kulhyep = c(25, 65), kulhyexp = c(25, 67), kulhtilxep = c(25, 65), kulhtotep = c(28, 68),
   kfibreep = c(0.5, 6), alkoep = c(0, 30), orgsyrerep = c(0, 3), sukkeralkoep = c(0, 3)
@@ -91,7 +91,7 @@
 
 # Range for a nutrient column, honouring _ffq / _ktsk / _tot suffixes. Returns
 # NULL if `name` isn't a recognised nutrient stem.
-kkh_nutrient_range <- function(name) {
+dch_nutrient_range <- function(name) {
   stem <- name
   suffix <- ""
   for (suf in c("_ffq", "_ktsk", "_tot")) {
@@ -101,8 +101,8 @@ kkh_nutrient_range <- function(name) {
       break
     }
   }
-  if (!is.null(.KKH_NUTRIENTS[[stem]])) {
-    v <- .KKH_NUTRIENTS[[stem]]
+  if (!is.null(.DCH_NUTRIENTS[[stem]])) {
+    v <- .DCH_NUTRIENTS[[stem]]
     lo <- v[[1]]; hi <- v[[2]]; supp <- v[[3]]
     if (identical(suffix, "_ktsk")) {
       return(c(0, if (is.na(supp)) hi else supp))
@@ -112,20 +112,20 @@ kkh_nutrient_range <- function(name) {
     }
     return(c(lo, hi))
   }
-  for (tbl in list(.KKH_BULK, .KKH_AMINO, .KKH_FA_SUMS, .KKH_FA_INDIVIDUAL)) {
+  for (tbl in list(.DCH_BULK, .DCH_AMINO, .DCH_FA_SUMS, .DCH_FA_INDIVIDUAL)) {
     if (!is.null(tbl[[stem]])) {
       return(tbl[[stem]])
     }
   }
   # Any remaining C<n>x<m> fatty acid is a trace component.
   if (grepl("^c\\d{1,2}x\\d(_(tran|conj))?(n\\d{1,2})?$", stem)) {
-    return(.KKH_FA_TRACE)
+    return(.DCH_FA_TRACE)
   }
-  if (!is.null(.KKH_ENERGY_FROM[[stem]])) {
-    return(.KKH_ENERGY_FROM[[stem]])
+  if (!is.null(.DCH_ENERGY_FROM[[stem]])) {
+    return(.DCH_ENERGY_FROM[[stem]])
   }
-  if (!is.null(.KKH_ENERGY_PCT[[stem]])) {
-    return(.KKH_ENERGY_PCT[[stem]])
+  if (!is.null(.DCH_ENERGY_PCT[[stem]])) {
+    return(.DCH_ENERGY_PCT[[stem]])
   }
   NULL
 }

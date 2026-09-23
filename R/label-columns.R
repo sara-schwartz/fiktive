@@ -9,7 +9,7 @@
 
 #' Attach human-readable labels to a generated table's columns
 #'
-#' Danish register columns have real names like `civst`, `hfaudd`, or KKH's
+#' Danish register columns have real names like `civst`, `hfaudd`, or DCH's
 #' `g03011` — the second kind meaningless without a codebook. [codebook()]
 #' already surfaces registers-guide's/fiktive's own label metadata as a
 #' lookup table; `label_columns()` attaches that same text as a `"label"`
@@ -28,7 +28,7 @@
 #'   or [generate_custom_register()].
 #' @param schema Schema from [load_registers_schema()].
 #' @param register The schema register id `data` came from, e.g. `"bef"`
-#'   or `"kkh_journal"`.
+#'   or `"dch"`.
 #' @param lang `"en"` (default) or `"da"` -- which label to prefer. Falls
 #'   back to the other language for a column that only has one.
 #'

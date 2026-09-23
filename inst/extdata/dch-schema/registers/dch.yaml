@@ -1,0 +1,3979 @@
+id: dch
+name: Diet, Cancer and Health (DCH)
+one_row_per: person
+join_keys:
+- pnr
+columns:
+- id: pnr
+  name: pnr
+  type: character
+  role: join_key
+- id: ffm
+  name: ffm
+  type: numeric
+  label:
+    da: Fedtfri masse
+    en: Fat Free Mass (FFM). Equation by Heitmann et al., 1990, Model 2. kg.
+  dataset: afledte
+- id: bfm
+  name: bfm
+  type: numeric
+  label:
+    da: Fedtvægt
+    en: Body Fat Mass (BFM). Weight - FFM. kg.
+  dataset: afledte
+- id: fat_pct
+  name: fat_pct
+  type: numeric
+  label:
+    da: Fedtprocent
+    en: Body Fat Percentage. Body Fat Mass of Total Body Weight in. %.
+  dataset: afledte
+- id: alderind
+  name: alderind
+  type: numeric
+  label:
+    da: Alder ved indgang (antal dage)
+    en: Age at entry (number of days)
+  dataset: afledte
+- id: lav_sko
+  name: lav_sko
+  type: numeric
+  label:
+    da: Lav skolegang (ja/nej)
+    en: Lower education (yes/no)
+  dataset: afledte
+- id: mel_sko
+  name: mel_sko
+  type: numeric
+  label:
+    da: Mellem skolegang (ja/nej)
+    en: Medium education (yes/no)
+  dataset: afledte
+- id: hqj_sko
+  name: hqj_sko
+  type: numeric
+  label:
+    da: Høj skolegang (ja/nej)
+    en: Higher education (yes/no)
+  dataset: afledte
+- id: rygning
+  name: rygning
+  type: numeric
+  label:
+    da: Rygestatus
+    en: Smoking status
+  dataset: afledte
+- id: rygestart
+  name: rygestart
+  type: numeric
+  label:
+    da: Alder ved rygestart
+    en: Age at start of smoking
+  dataset: afledte
+- id: rygestop
+  name: rygestop
+  type: numeric
+  label:
+    da: Alder ved rygestop
+    en: Age at quitting smoking
+  dataset: afledte
+- id: rygepause
+  name: rygepause
+  type: numeric
+  label:
+    da: Perioder uden rygning (ja/nej)
+    en: Periods without smoking (yes/no)
+  dataset: afledte
+- id: varighed
+  name: varighed
+  type: numeric
+  label:
+    da: Rygevarighed i år
+    en: Smoking duration in years
+  dataset: afledte
+- id: tidophqr
+  name: tidophqr
+  type: numeric
+  label:
+    da: 'Rygning: tid siden ophør i år'
+    en: 'Smoking: time since quitting in years'
+  dataset: afledte
+- id: forbrug
+  name: forbrug
+  type: numeric
+  label:
+    da: Total dagligt forbrug i gram tobak
+    en: Total daily use of tobacco in grams
+  dataset: afledte
+- id: forbrug20
+  name: forbrug20
+  type: numeric
+  label:
+    da: Tobaksforbrug (g/dag) fra 20-29
+    en: ~
+  dataset: afledte
+- id: forbrug30
+  name: forbrug30
+  type: numeric
+  label:
+    da: Tobaksforbrug (g/dag) fra 30-39
+    en: ~
+  dataset: afledte
+- id: forbrug40
+  name: forbrug40
+  type: numeric
+  label:
+    da: Tobaksforbrug (g/dag) fra 40-49
+    en: ~
+  dataset: afledte
+- id: forbrug50
+  name: forbrug50
+  type: numeric
+  label:
+    da: Tobaksforbrug (g/dag) fra 50-deltagelse
+    en: ~
+  dataset: afledte
+- id: c_forbrug
+  name: c_forbrug
+  type: numeric
+  label:
+    da: Kumuleret tobaksforbrug minus pauser
+    en: ~
+  dataset: afledte
+- id: c_forbrug20
+  name: c_forbrug20
+  type: numeric
+  label:
+    da: Samlet tobaksforbrug (g) fra 20-29
+    en: ~
+  dataset: afledte
+- id: c_forbrug30
+  name: c_forbrug30
+  type: numeric
+  label:
+    da: Samlet tobaksforbrug (g) fra 30-39
+    en: ~
+  dataset: afledte
+- id: c_forbrug40
+  name: c_forbrug40
+  type: numeric
+  label:
+    da: Samlet tobaksforbrug (g) fra 40-49
+    en: ~
+  dataset: afledte
+- id: c_forbrug50
+  name: c_forbrug50
+  type: numeric
+  label:
+    da: Samlet tobaksforbrug (g) fra 50-deltagelse
+    en: ~
+  dataset: afledte
+- id: packyear
+  name: packyear
+  type: numeric
+  label:
+    da: ~
+    en: Smoking packyears
+  dataset: afledte
+- id: alk_stat
+  name: alk_stat
+  type: numeric
+  label:
+    da: Alkohol status
+    en: ~
+  dataset: afledte
+- id: alk_pause20
+  name: alk_pause20
+  type: numeric
+  label:
+    da: Antal år pause fra alkohol i 20erne
+    en: ~
+  dataset: afledte
+- id: alk_pause30
+  name: alk_pause30
+  type: numeric
+  label:
+    da: Antal år pause fra alkohol i 30erne
+    en: ~
+  dataset: afledte
+- id: alk_pause40
+  name: alk_pause40
+  type: numeric
+  label:
+    da: Antal år pause fra alkohol i 40erne
+    en: ~
+  dataset: afledte
+- id: alk_pause50
+  name: alk_pause50
+  type: numeric
+  label:
+    da: Antal år pause fra alkohol i 50erne
+    en: ~
+  dataset: afledte
+- id: alk_ol20
+  name: alk_ol20
+  type: numeric
+  label:
+    da: Ethanol fra øl(gr/dag) i 20erne
+    en: ~
+  dataset: afledte
+- id: alk_vin20
+  name: alk_vin20
+  type: numeric
+  label:
+    da: Ethanol fra vin(gr/dag) i 20erne
+    en: ~
+  dataset: afledte
+- id: alk_hedvin20
+  name: alk_hedvin20
+  type: numeric
+  label:
+    da: Ethanol fra hedvin(gr/dag) i 20erne
+    en: ~
+  dataset: afledte
+- id: alk_spir20
+  name: alk_spir20
+  type: numeric
+  label:
+    da: Ethanol fra spir(gr/dag) i 20erne
+    en: ~
+  dataset: afledte
+- id: alk_ol30
+  name: alk_ol30
+  type: numeric
+  label:
+    da: Ethanol fra øl(gr/dag) i 30erne
+    en: ~
+  dataset: afledte
+- id: alk_vin30
+  name: alk_vin30
+  type: numeric
+  label:
+    da: Ethanol fra vin(gr/dag) i 30erne
+    en: ~
+  dataset: afledte
+- id: alk_hedvin30
+  name: alk_hedvin30
+  type: numeric
+  label:
+    da: Ethanol fra hedvin(gr/dag) i 30erne
+    en: ~
+  dataset: afledte
+- id: alk_spir30
+  name: alk_spir30
+  type: numeric
+  label:
+    da: Ethanol fra spir(gr/dag) i 30erne
+    en: ~
+  dataset: afledte
+- id: alk_ol40
+  name: alk_ol40
+  type: numeric
+  label:
+    da: Ethanol fra øl(gr/dag) i 40erne
+    en: ~
+  dataset: afledte
+- id: alk_vin40
+  name: alk_vin40
+  type: numeric
+  label:
+    da: Ethanol fra vin(gr/dag) i 40erne
+    en: ~
+  dataset: afledte
+- id: alk_hedvin40
+  name: alk_hedvin40
+  type: numeric
+  label:
+    da: Ethanol fra hedvin(gr/dag) i 40erne
+    en: ~
+  dataset: afledte
+- id: alk_spir40
+  name: alk_spir40
+  type: numeric
+  label:
+    da: Ethanol fra spir(gr/dag) i 40erne
+    en: ~
+  dataset: afledte
+- id: alk_ol50
+  name: alk_ol50
+  type: numeric
+  label:
+    da: Ethanol fra øl(gr/dag) i 50erne
+    en: ~
+  dataset: afledte
+- id: alk_vin50
+  name: alk_vin50
+  type: numeric
+  label:
+    da: Ethanol fra vin(gr/dag) i 50erne
+    en: ~
+  dataset: afledte
+- id: alk_hedvin50
+  name: alk_hedvin50
+  type: numeric
+  label:
+    da: Ethanol fra hedvin(gr/dag) i 50erne
+    en: ~
+  dataset: afledte
+- id: alk_spir50
+  name: alk_spir50
+  type: numeric
+  label:
+    da: Ethanol fra spir(gr/dag) i 50erne
+    en: ~
+  dataset: afledte
+- id: alk_total20
+  name: alk_total20
+  type: numeric
+  label:
+    da: Ethanol i 20erne(gr/dag)
+    en: ~
+  dataset: afledte
+- id: alk_total30
+  name: alk_total30
+  type: numeric
+  label:
+    da: Ethanol i 30erne(gr/dag)
+    en: ~
+  dataset: afledte
+- id: alk_total40
+  name: alk_total40
+  type: numeric
+  label:
+    da: Ethanol i 40erne(gr/dag)
+    en: ~
+  dataset: afledte
+- id: alk_total50
+  name: alk_total50
+  type: numeric
+  label:
+    da: Ethanol i 50erne(gr/dag)
+    en: ~
+  dataset: afledte
+- id: alk_alksum20
+  name: alk_alksum20
+  type: numeric
+  label:
+    da: Alkohol i 20erne, genstande/uge
+    en: ~
+  dataset: afledte
+- id: alk_alksum30
+  name: alk_alksum30
+  type: numeric
+  label:
+    da: Alkohol i 30erne, genstande/uge
+    en: ~
+  dataset: afledte
+- id: alk_alksum40
+  name: alk_alksum40
+  type: numeric
+  label:
+    da: Alkohol i 40erne, genstande/uge
+    en: ~
+  dataset: afledte
+- id: alk_alksum50
+  name: alk_alksum50
+  type: numeric
+  label:
+    da: Alkohol i 50erne og 60erne, genstande/uge
+    en: ~
+  dataset: afledte
+- id: alk_alko20
+  name: alk_alko20
+  type: numeric
+  label:
+    da: Alkohol i 20erne, gens/uge, minus pauser
+    en: ~
+  dataset: afledte
+- id: alk_alko30
+  name: alk_alko30
+  type: numeric
+  label:
+    da: Alkohol i 30erne, gens/uge, minus pauser
+    en: ~
+  dataset: afledte
+- id: alk_alko40
+  name: alk_alko40
+  type: numeric
+  label:
+    da: Alkohol i 40erne, gens/uge, minus pauser
+    en: ~
+  dataset: afledte
+- id: alk_alko50
+  name: alk_alko50
+  type: numeric
+  label:
+    da: Alkohol i 50erne og 60erne, gens/uge, minus pauser
+    en: ~
+  dataset: afledte
+- id: alk_cu_alko
+  name: alk_cu_alko
+  type: numeric
+  label:
+    da: Kumuleret alkohol total, minus pauser
+    en: ~
+  dataset: afledte
+- id: alk_c_alko
+  name: alk_c_alko
+  type: numeric
+  label:
+    da: Kum. alk total, minus pauser, pr. alk.år
+    en: ~
+  dataset: afledte
+- id: gang
+  name: gang
+  type: numeric
+  label:
+    da: Indikator for gang
+    en: Indicator for walking
+  dataset: afledte
+- id: cykel
+  name: cykel
+  type: numeric
+  label:
+    da: Indikator for cykling
+    en: Indicator for biking
+  dataset: afledte
+- id: husarb
+  name: husarb
+  type: numeric
+  label:
+    da: Indikator for husarbejde
+    en: Indicator for domestic work
+  dataset: afledte
+- id: gqrselv
+  name: gqrselv
+  type: numeric
+  label:
+    da: Indikator for gør det selv
+    en: Indicator for "do it yourself" work (DIY)
+  dataset: afledte
+- id: havearb
+  name: havearb
+  type: numeric
+  label:
+    da: Indikator for havearbejde
+    en: Indicator for gardening
+  dataset: afledte
+- id: sport
+  name: sport
+  type: numeric
+  label:
+    da: Indikator for sport
+    en: Indicator for sports activities
+  dataset: afledte
+- id: sommer
+  name: sommer
+  type: numeric
+  label:
+    da: Antal timer pr uge om sommeren
+    en: Number of hours per week in the summer
+  dataset: afledte
+- id: vinter
+  name: vinter
+  type: numeric
+  label:
+    da: Antal timer pr uge om vinteren
+    en: Number of hours per week in the winter
+  dataset: afledte
+- id: tgang
+  name: tgang
+  type: numeric
+  label:
+    da: Antal timers gang pr uge
+    en: Hours of walking per week
+  dataset: afledte
+- id: tcykel
+  name: tcykel
+  type: numeric
+  label:
+    da: Antal timers cykling pr uge
+    en: Hours of biking per week
+  dataset: afledte
+- id: thusarb
+  name: thusarb
+  type: numeric
+  label:
+    da: Antal timers husarbejde pr uge
+    en: Hours of domestic work per week
+  dataset: afledte
+- id: tgqrselv
+  name: tgqrselv
+  type: numeric
+  label:
+    da: Antal timers gør det selv pr uge
+    en: Hours of do it yourself (DIY) per week
+  dataset: afledte
+- id: thavearb
+  name: thavearb
+  type: numeric
+  label:
+    da: Antal timers havearbejde pr uge
+    en: Hours of gardening per week
+  dataset: afledte
+- id: tsport
+  name: tsport
+  type: numeric
+  label:
+    da: Antal timers sport pr uge
+    en: Hours of sports activities per week
+  dataset: afledte
+- id: met
+  name: met
+  type: numeric
+  label:
+    da: MET-score, timer/uge
+    en: MET-score, hours/week
+  dataset: afledte
+- id: nsaid
+  name: nsaid
+  type: numeric
+  label:
+    da: Indtager NSAID incl. Aspirin
+    en: Consumes nsaid incl. Aspirin
+  dataset: afledte
+- id: nsaid_exclasp
+  name: nsaid_exclasp
+  type: numeric
+  label:
+    da: Indtager NSAID Excl. Aspirin
+    en: ~
+  dataset: afledte
+- id: nsaid_onlyasp
+  name: nsaid_onlyasp
+  type: numeric
+  label:
+    da: 'Indtager den specifikke NSAID: Aspirin (Acetylsalicylsyre)'
+    en: ~
+  dataset: afledte
+- id: menopaus
+  name: menopaus
+  type: character
+  label:
+    da: Menopausestatus
+    en: Menopause status
+  dataset: afledte
+- id: menstruation
+  name: menstruation
+  type: numeric
+  label:
+    da: Menstruation inden for de seneste 12 måneder (ja/nej)
+    en: Menstruations the last 12 months (yes/no)
+  dataset: afledte
+- id: menstr_dato
+  name: menstr_dato
+  type: date
+  label:
+    da: Hvis ja, dato for sidste menstruation
+    en: If yes, date of last menstruation
+  dataset: afledte
+- id: hrt
+  name: hrt
+  type: character
+  label:
+    da: HRT status
+    en: HRT status
+  dataset: afledte
+- id: aar_hrt
+  name: aar_hrt
+  type: numeric
+  label:
+    da: Antal år HRT
+    en: Number of years HRT
+  dataset: afledte
+- id: al_1barn
+  name: al_1barn
+  type: numeric
+  label:
+    da: Alder ved 1. barn
+    en: Age at 1st child
+  dataset: afledte
+- id: al_2barn
+  name: al_2barn
+  type: numeric
+  label:
+    da: Alder ved 2. barn
+    en: Age at 2nd child
+  dataset: afledte
+- id: al_3barn
+  name: al_3barn
+  type: numeric
+  label:
+    da: Alder ved 3. barn
+    en: Age at 3rd child
+  dataset: afledte
+- id: al_4barn
+  name: al_4barn
+  type: numeric
+  label:
+    da: Alder ved 4. barn
+    en: Age at 4th child
+  dataset: afledte
+- id: al_5barn
+  name: al_5barn
+  type: numeric
+  label:
+    da: Alder ved 5. barn
+    en: Age at 5th child
+  dataset: afledte
+- id: al_6barn
+  name: al_6barn
+  type: numeric
+  label:
+    da: Alder ved 6. barn
+    en: Age at 6th child
+  dataset: afledte
+- id: al_7barn
+  name: al_7barn
+  type: numeric
+  label:
+    da: Alder ved 7. barn
+    en: Age at 7th child
+  dataset: afledte
+- id: al_8barn
+  name: al_8barn
+  type: numeric
+  label:
+    da: Alder ved 8. barn
+    en: Age at 8th child
+  dataset: afledte
+- id: ant_bqrn
+  name: ant_bqrn
+  type: numeric
+  label:
+    da: Antal børn
+    en: Number of children
+  dataset: afledte
+- id: ant_fqds
+  name: ant_fqds
+  type: numeric
+  label:
+    da: Antal fødsler
+    en: Number of births
+  dataset: afledte
+- id: bmi
+  name: bmi
+  type: numeric
+  label:
+    da: Body Mass Index
+    en: Body Mass Index
+  dataset: afledte
+- id: ratio
+  name: ratio
+  type: numeric
+  label:
+    da: 'Ratio: Livvidde/Hoftevidde'
+    en: 'Ratio: waist circumference/hip circumference'
+  dataset: afledte
+- id: fasting
+  name: fasting
+  type: character
+  label:
+    da: Fastestatus (ved klinikbesøg)
+    en: Fasting status (at clinic visit)
+  dataset: afledte
+- id: outdoor
+  name: outdoor
+  type: numeric
+  label:
+    da: Udendørs arbejde (ja/nej)
+    en: Outdoor work (yes/no)
+  dataset: afledte
+- id: mdiets
+  name: mdiets
+  type: numeric
+  label:
+    da: ~
+    en: Mediterranean Diet Score
+  dataset: afledte
+- id: hnfi
+  name: hnfi
+  type: numeric
+  label:
+    da: ~
+    en: Healthy Nordic Food Index
+  dataset: afledte
+- id: ktsk_grp_01
+  name: ktsk_grp_01
+  type: numeric
+  label:
+    da: 'Indtaget kosttilskud: Multivitamin(mineral)'
+    en: ~
+  dataset: afledte
+- id: ktsk_grp_02
+  name: ktsk_grp_02
+  type: numeric
+  label:
+    da: 'Indtaget kosttilskud: Antioxidant'
+    en: ~
+  dataset: afledte
+- id: ktsk_grp_03
+  name: ktsk_grp_03
+  type: numeric
+  label:
+    da: 'Indtaget kosttilskud: A vitamin-præp.'
+    en: ~
+  dataset: afledte
+- id: ktsk_grp_04
+  name: ktsk_grp_04
+  type: numeric
+  label:
+    da: 'Indtaget kosttilskud: B vitamin-præp.'
+    en: ~
+  dataset: afledte
+- id: ktsk_grp_05
+  name: ktsk_grp_05
+  type: numeric
+  label:
+    da: 'Indtaget kosttilskud: C vitamin-præp.'
+    en: ~
+  dataset: afledte
+- id: ktsk_grp_06
+  name: ktsk_grp_06
+  type: numeric
+  label:
+    da: 'Indtaget kosttilskud: D vitamin-præp.'
+    en: ~
+  dataset: afledte
+- id: ktsk_grp_07
+  name: ktsk_grp_07
+  type: numeric
+  label:
+    da: 'Indtaget kosttilskud: E vitamin-præp.'
+    en: ~
+  dataset: afledte
+- id: ktsk_grp_08
+  name: ktsk_grp_08
+  type: numeric
+  label:
+    da: 'Indtaget kosttilskud: Coenzym Q10'
+    en: ~
+  dataset: afledte
+- id: ktsk_grp_09
+  name: ktsk_grp_09
+  type: numeric
+  label:
+    da: 'Indtaget kosttilskud: Selen'
+    en: ~
+  dataset: afledte
+- id: ktsk_grp_10
+  name: ktsk_grp_10
+  type: numeric
+  label:
+    da: 'Indtaget kosttilskud: Folinsyre'
+    en: ~
+  dataset: afledte
+- id: ktsk_grp_11
+  name: ktsk_grp_11
+  type: numeric
+  label:
+    da: 'Indtaget kosttilskud: Betacaroten (decideret)'
+    en: ~
+  dataset: afledte
+- id: ktsk_grp_12
+  name: ktsk_grp_12
+  type: numeric
+  label:
+    da: 'Indtaget kosttilskud: C vitamin + andet'
+    en: ~
+  dataset: afledte
+- id: ktsk_grp_13
+  name: ktsk_grp_13
+  type: numeric
+  label:
+    da: 'Indtaget kosttilskud: Calcium'
+    en: ~
+  dataset: afledte
+- id: ktsk_grp_14
+  name: ktsk_grp_14
+  type: numeric
+  label:
+    da: 'Indtaget kosttilskud: Calcium + andet (undtagen D vitamin)'
+    en: ~
+  dataset: afledte
+- id: ktsk_grp_15
+  name: ktsk_grp_15
+  type: numeric
+  label:
+    da: 'Indtaget kosttilskud: Calcium + D vitamin'
+    en: ~
+  dataset: afledte
+- id: ktsk_grp_16
+  name: ktsk_grp_16
+  type: numeric
+  label:
+    da: 'Indtaget kosttilskud: Fiskeolie/levertran'
+    en: ~
+  dataset: afledte
+- id: ktsk_grp_17
+  name: ktsk_grp_17
+  type: numeric
+  label:
+    da: 'Indtaget kosttilskud: A vitamin + andet'
+    en: ~
+  dataset: afledte
+- id: ktsk_grp_18
+  name: ktsk_grp_18
+  type: numeric
+  label:
+    da: 'Indtaget kosttilskud: Jern'
+    en: ~
+  dataset: afledte
+- id: ktsk_grp_19
+  name: ktsk_grp_19
+  type: numeric
+  label:
+    da: 'Indtaget kosttilskud: Zink'
+    en: ~
+  dataset: afledte
+- id: ktsk_grp_20
+  name: ktsk_grp_20
+  type: numeric
+  label:
+    da: 'Indtaget kosttilskud: Naturpræparat'
+    en: ~
+  dataset: afledte
+- id: ktsk_grp_21
+  name: ktsk_grp_21
+  type: numeric
+  label:
+    da: 'Indtaget kosttilskud: Magnesium'
+    en: ~
+  dataset: afledte
+- id: ktsk_grp_22
+  name: ktsk_grp_22
+  type: numeric
+  label:
+    da: 'Indtaget kosttilskud: Multimineral'
+    en: ~
+  dataset: afledte
+- id: ktsk_grp_23
+  name: ktsk_grp_23
+  type: numeric
+  label:
+    da: 'Indtaget kosttilskud: Fiskeolie med Q10'
+    en: ~
+  dataset: afledte
+- id: ktsk_grp_24
+  name: ktsk_grp_24
+  type: numeric
+  label:
+    da: 'Indtaget kosttilskud: Chrom'
+    en: ~
+  dataset: afledte
+- id: ktsk_grp_25
+  name: ktsk_grp_25
+  type: numeric
+  label:
+    da: 'Indtaget kosttilskud: Jern med C vitamin'
+    en: ~
+  dataset: afledte
+- id: ktsk_grp_26
+  name: ktsk_grp_26
+  type: numeric
+  label:
+    da: 'Indtaget kosttilskud: Iod'
+    en: ~
+  dataset: afledte
+- id: ktsk_grp_27
+  name: ktsk_grp_27
+  type: numeric
+  label:
+    da: 'Indtaget kosttilskud: Ukendt'
+    en: ~
+  dataset: afledte
+- id: ktsk_grp_28
+  name: ktsk_grp_28
+  type: numeric
+  label:
+    da: 'Indtaget kosttilskud: Naturpræp. tilsat vitamin/mineral'
+    en: ~
+  dataset: afledte
+- id: ktsk_grp_29
+  name: ktsk_grp_29
+  type: numeric
+  label:
+    da: 'Indtaget kosttilskud: Gerimax uspec.'
+    en: ~
+  dataset: afledte
+- id: ktsk_grp_30
+  name: ktsk_grp_30
+  type: numeric
+  label:
+    da: 'Indtaget kosttilskud: Kobber'
+    en: ~
+  dataset: afledte
+- id: ktsk_grp_31
+  name: ktsk_grp_31
+  type: numeric
+  label:
+    da: 'Indtaget kosttilskud: Mangan'
+    en: ~
+  dataset: afledte
+- id: ktsk_grp_32
+  name: ktsk_grp_32
+  type: numeric
+  label:
+    da: 'Indtaget kosttilskud: Kalium'
+    en: ~
+  dataset: afledte
+- id: ktsk_grp_33
+  name: ktsk_grp_33
+  type: numeric
+  label:
+    da: 'Indtaget kosttilskud: Silicium'
+    en: ~
+  dataset: afledte
+- id: s15x01n
+  name: s15x01n
+  type: numeric
+  label:
+    da: Hyppighed alkohol
+    en: Frequency, alcohol comsumption
+  dataset: bagskema
+- id: s25a01n
+  name: s25a01n
+  type: numeric
+  label:
+    da: Blodprop i hjertet
+    en: Blood clot in the heart
+  dataset: bagskema
+- id: s25a02n
+  name: s25a02n
+  type: numeric
+  label:
+    da: Alder blodprop i hjertet
+    en: Age, blood clot in the heart
+  dataset: bagskema
+- id: s25a03n
+  name: s25a03n
+  type: numeric
+  label:
+    da: Medicin blodprop i hjertet
+    en: Medicine, blood clot in the heart
+  dataset: bagskema
+- id: s25b01n
+  name: s25b01n
+  type: numeric
+  label:
+    da: Angina pectoris
+    en: Angina pectoris
+  dataset: bagskema
+- id: s25b02n
+  name: s25b02n
+  type: numeric
+  label:
+    da: Alder angina pectoris
+    en: Age, angina pectoris
+  dataset: bagskema
+- id: s25b03n
+  name: s25b03n
+  type: numeric
+  label:
+    da: Medicin angina pectoris
+    en: Medicine, angina pectoris
+  dataset: bagskema
+- id: s25c01n
+  name: s25c01n
+  type: numeric
+  label:
+    da: Blodprop i hjernen
+    en: Blood clot in the brain
+  dataset: bagskema
+- id: s25c02n
+  name: s25c02n
+  type: numeric
+  label:
+    da: Alder blodprop i hjernen
+    en: Age, blood clot in the brain
+  dataset: bagskema
+- id: s25c03n
+  name: s25c03n
+  type: numeric
+  label:
+    da: Medicin blodprop i hjernen
+    en: Medicine, blood clot in the brain
+  dataset: bagskema
+- id: s25d01n
+  name: s25d01n
+  type: numeric
+  label:
+    da: Forhøjet blodtryk
+    en: Hypertension
+  dataset: bagskema
+- id: s25d02n
+  name: s25d02n
+  type: numeric
+  label:
+    da: Alder forhøjet blodtryk
+    en: Age, hypertension
+  dataset: bagskema
+- id: s25d03n
+  name: s25d03n
+  type: numeric
+  label:
+    da: Medicin forhøjet blodtryk
+    en: Medicine, hypertension
+  dataset: bagskema
+- id: s25e01n
+  name: s25e01n
+  type: numeric
+  label:
+    da: Forhøjet kolesterol
+    en: Elevated cholesterol
+  dataset: bagskema
+- id: s25e02n
+  name: s25e02n
+  type: numeric
+  label:
+    da: Alder forhøjet kolesterol
+    en: Age, elevated cholesterol
+  dataset: bagskema
+- id: s25e03n
+  name: s25e03n
+  type: numeric
+  label:
+    da: Medicin forhøjet kolesterol
+    en: Medicine, elevated cholesterol
+  dataset: bagskema
+- id: s25f01n
+  name: s25f01n
+  type: numeric
+  label:
+    da: Sukkersyge
+    en: Diabetes
+  dataset: bagskema
+- id: s25f02n
+  name: s25f02n
+  type: numeric
+  label:
+    da: Alder sukkersyge
+    en: Age, diabetes
+  dataset: bagskema
+- id: s25f03n
+  name: s25f03n
+  type: numeric
+  label:
+    da: Medicin sukkersyge
+    en: Medicine, diabetes
+  dataset: bagskema
+- id: s25g01n
+  name: s25g01n
+  type: numeric
+  label:
+    da: Galdesten
+    en: Gallstones
+  dataset: bagskema
+- id: s25g02n
+  name: s25g02n
+  type: numeric
+  label:
+    da: Alder galdesten
+    en: Age, gallstones
+  dataset: bagskema
+- id: s25g03n
+  name: s25g03n
+  type: numeric
+  label:
+    da: Medicin galdesten
+    en: Medicine, gallstones
+  dataset: bagskema
+- id: s25h01n
+  name: s25h01n
+  type: numeric
+  label:
+    da: Polypper i tarmen
+    en: Polyps in the intestine
+  dataset: bagskema
+- id: s25h02n
+  name: s25h02n
+  type: numeric
+  label:
+    da: Alder polypper i tarmen
+    en: Age, polyps in the intestine
+  dataset: bagskema
+- id: s25h03n
+  name: s25h03n
+  type: numeric
+  label:
+    da: Medicin polypper i tarmen
+    en: Medicine, polyps in the intestine
+  dataset: bagskema
+- id: s26x01n
+  name: s26x01n
+  type: numeric
+  label:
+    da: Fjernet knuder i brystet
+    en: Removed breast lumps
+  dataset: bagskema
+- id: s26x02n
+  name: s26x02n
+  type: numeric
+  label:
+    da: Fjernet knuder i brystet, alder
+    en: Removed breast lumps, age
+  dataset: bagskema
+- id: s27x01n
+  name: s27x01n
+  type: numeric
+  label:
+    da: Fjernet livmoderen
+    en: Removed uterus
+  dataset: bagskema
+- id: s27x02n
+  name: s27x02n
+  type: numeric
+  label:
+    da: Fjernet livmoderen, alder
+    en: Removed uterus, age
+  dataset: bagskema
+- id: s28x01n
+  name: s28x01n
+  type: numeric
+  label:
+    da: Fjernet en eller begge æggestokke
+    en: Removed one or both ovaries
+  dataset: bagskema
+- id: s28x02n
+  name: s28x02n
+  type: numeric
+  label:
+    da: Fjernet en eller begge æggestokke, alder
+    en: Removed one or both ovaries, age
+  dataset: bagskema
+- id: s32a01n
+  name: s32a01n
+  type: numeric
+  label:
+    da: Vægt som 20 årig
+    en: Weight at 20 years of age
+  dataset: bagskema
+- id: s32b01n
+  name: s32b01n
+  type: numeric
+  label:
+    da: Vægt som 30 årig
+    en: Weight at 30 years of age
+  dataset: bagskema
+- id: s32c01n
+  name: s32c01n
+  type: numeric
+  label:
+    da: Vægt som 40 årig
+    en: Weight at 40 years of age
+  dataset: bagskema
+- id: s32d01n
+  name: s32d01n
+  type: numeric
+  label:
+    da: Vægt som 50 årig
+    en: Weight at 50 years of age
+  dataset: bagskema
+- id: s33x01n
+  name: s33x01n
+  type: numeric
+  label:
+    da: Menstruation første gang, alder
+    en: Menstruation first time, age
+  dataset: bagskema
+- id: s34x01n
+  name: s34x01n
+  type: numeric
+  label:
+    da: Menstruationscyklus 30-40 år
+    en: Menstrual cycle 30-40 year olds
+  dataset: bagskema
+- id: s35x01n
+  name: s35x01n
+  type: numeric
+  label:
+    da: Antal menstruationer de seneste 12 mdr
+    en: Number of menstruations in the last 12 months
+  dataset: bagskema
+- id: s37x01n
+  name: s37x01n
+  type: numeric
+  label:
+    da: Sidst menstruation, alder
+    en: Last menstruation, age
+  dataset: bagskema
+- id: whg_tot_dq
+  name: whg_tot_dq
+  type: numeric
+  label:
+    da: ~
+    en: Total whole grain cereal DQ (g)
+  dataset: dtqst_wholegrain_dk
+- id: wheat_dq
+  name: wheat_dq
+  type: numeric
+  label:
+    da: ~
+    en: Whole wheat cereal DQ (g)
+  dataset: dtqst_wholegrain_dk
+- id: rye_dq
+  name: rye_dq
+  type: numeric
+  label:
+    da: ~
+    en: Whole rye cereal DQ (g)
+  dataset: dtqst_wholegrain_dk
+- id: oat_dq
+  name: oat_dq
+  type: numeric
+  label:
+    da: ~
+    en: Whole oat cereal DQ (g)
+  dataset: dtqst_wholegrain_dk
+- id: whg_othr_dq
+  name: whg_othr_dq
+  type: numeric
+  label:
+    da: ~
+    en: Whole grain cereal, other DQ (g)
+  dataset: dtqst_wholegrain_dk
+- id: allfruit
+  name: allfruit
+  type: numeric
+  label:
+    da: All fruits (incl. juices)
+    en: All fruits (incl. juices)
+  dataset: foods6ny
+- id: allplant
+  name: allplant
+  type: numeric
+  label:
+    da: Allvegs,allfruit,allpotat,legumes
+    en: Allvegs,allfruit,allpotat,legumes
+  dataset: foods6ny
+- id: allpotat
+  name: allpotat
+  type: numeric
+  label:
+    da: All potatoes
+    en: All potatoes
+  dataset: foods6ny
+- id: allvegs
+  name: allvegs
+  type: numeric
+  label:
+    da: All vegetables (incl. juices)
+    en: All vegetables (incl. juices)
+  dataset: foods6ny
+- id: fatfoods
+  name: fatfoods
+  type: numeric
+  label:
+    da: Red and processed meat,dairy,eggs
+    en: Red and processed meat,dairy,eggs
+  dataset: foods6ny
+- id: fishfat
+  name: fishfat
+  type: numeric
+  label:
+    da: Fish, fat (fresh+processed)
+    en: Fish, fat (fresh+processed)
+  dataset: foods6ny
+- id: fishlean
+  name: fishlean
+  type: numeric
+  label:
+    da: Fish, lean (fresh+processed)
+    en: Fish, lean (fresh+processed)
+  dataset: foods6ny
+- id: fishmid
+  name: fishmid
+  type: numeric
+  label:
+    da: Fish, medium fat (fresh+processed)
+    en: Fish, medium fat (fresh+processed)
+  dataset: foods6ny
+- id: fishtot
+  name: fishtot
+  type: numeric
+  label:
+    da: Fish (all types)
+    en: Fish (all types)
+  dataset: foods6ny
+- id: fruit
+  name: fruit
+  type: numeric
+  label:
+    da: Fruits (ex juices)
+    en: Fruits (ex juices)
+  dataset: foods6ny
+- id: vegs
+  name: vegs
+  type: numeric
+  label:
+    da: Vegetables (ex juices)
+    en: Vegetables (ex juices)
+  dataset: foods6ny
+- id: juices
+  name: juices
+  type: numeric
+  label:
+    da: Juices (fruit and vegetable)
+    en: Juices (fruit and vegetable)
+  dataset: foods6ny
+- id: meattot
+  name: meattot
+  type: numeric
+  label:
+    da: Red meat,fish,poultry,processed
+    en: Red meat,fish,poultry,processed
+  dataset: foods6ny
+- id: meatwhit
+  name: meatwhit
+  type: numeric
+  label:
+    da: Fish,poultry
+    en: Fish,poultry
+  dataset: foods6ny
+- id: totcerea
+  name: totcerea
+  type: numeric
+  label:
+    da: Cereals (wholegrain + refined)
+    en: Cereals (wholegrain + refined)
+  dataset: foods6ny
+- id: totdiary
+  name: totdiary
+  type: numeric
+  label:
+    da: Dairy products (lean + fatty)
+    en: Dairy products (lean + fatty)
+  dataset: foods6ny
+- id: vaegtc
+  name: vaegtc
+  type: numeric
+  label:
+    da: 'Totalt indatag af mad: sum af vaegtc01-vaegt60)'
+    en: 'Totalt indatag af mad: sum af vaegtc01-vaegt60)'
+  dataset: foods6ny
+- id: vaegtc01
+  name: vaegtc01
+  type: numeric
+  label:
+    da: Leafy vegetables (gpd)
+    en: Leafy vegetables (gpd)
+  dataset: foods6ny
+- id: vaegtc02
+  name: vaegtc02
+  type: numeric
+  label:
+    da: Fruiting vegetables (gpd)
+    en: Fruiting vegetables (gpd)
+  dataset: foods6ny
+- id: vaegtc03
+  name: vaegtc03
+  type: numeric
+  label:
+    da: Potatoes (gpd)
+    en: Potatoes (gpd)
+  dataset: foods6ny
+- id: vaegtc04
+  name: vaegtc04
+  type: numeric
+  label:
+    da: Other root vegetables (gpd)
+    en: Other root vegetables (gpd)
+  dataset: foods6ny
+- id: vaegtc05
+  name: vaegtc05
+  type: numeric
+  label:
+    da: Cabbages (gpd)
+    en: Cabbages (gpd)
+  dataset: foods6ny
+- id: vaegtc06
+  name: vaegtc06
+  type: numeric
+  label:
+    da: Mushrooms (gpd)
+    en: Mushrooms (gpd)
+  dataset: foods6ny
+- id: vaegtc07
+  name: vaegtc07
+  type: numeric
+  label:
+    da: Onion, garlic (gpd)
+    en: Onion, garlic (gpd)
+  dataset: foods6ny
+- id: vaegtc08
+  name: vaegtc08
+  type: numeric
+  label:
+    da: Stalk vegetables, sprouts (gpd)
+    en: Stalk vegetables, sprouts (gpd)
+  dataset: foods6ny
+- id: vaegtc09
+  name: vaegtc09
+  type: numeric
+  label:
+    da: Legumes (gpd)
+    en: Legumes (gpd)
+  dataset: foods6ny
+- id: vaegtc10
+  name: vaegtc10
+  type: numeric
+  label:
+    da: Citrus fruits (gpd)
+    en: Citrus fruits (gpd)
+  dataset: foods6ny
+- id: vaegtc11
+  name: vaegtc11
+  type: numeric
+  label:
+    da: Other fruits (gpd)
+    en: Other fruits (gpd)
+  dataset: foods6ny
+- id: vaegtc13
+  name: vaegtc13
+  type: numeric
+  label:
+    da: Cereals, wholegrain (gpd)
+    en: Cereals, wholegrain (gpd)
+  dataset: foods6ny
+- id: vaegtc14
+  name: vaegtc14
+  type: numeric
+  label:
+    da: Cereals, refined (gpd)
+    en: Cereals, refined (gpd)
+  dataset: foods6ny
+- id: vaegtc15
+  name: vaegtc15
+  type: numeric
+  label:
+    da: Red meat (gpd)
+    en: Red meat (gpd)
+  dataset: foods6ny
+- id: vaegtc17
+  name: vaegtc17
+  type: numeric
+  label:
+    da: Poultry (gpd)
+    en: Poultry (gpd)
+  dataset: foods6ny
+- id: vaegtc18
+  name: vaegtc18
+  type: numeric
+  label:
+    da: Processed meat (gpd)
+    en: Processed meat (gpd)
+  dataset: foods6ny
+- id: vaegtc19
+  name: vaegtc19
+  type: numeric
+  label:
+    da: Eggs (gpd)
+    en: Eggs (gpd)
+  dataset: foods6ny
+- id: vaegtc20
+  name: vaegtc20
+  type: numeric
+  label:
+    da: Dairy products, lean (gpd)
+    en: Dairy products, lean (gpd)
+  dataset: foods6ny
+- id: vaegtc21
+  name: vaegtc21
+  type: numeric
+  label:
+    da: Dairy products, fatty (gpd)
+    en: Dairy products, fatty (gpd)
+  dataset: foods6ny
+- id: vaegtc23
+  name: vaegtc23
+  type: numeric
+  label:
+    da: Fruit juices (gpd)
+    en: Fruit juices (gpd)
+  dataset: foods6ny
+- id: vaegtc24
+  name: vaegtc24
+  type: numeric
+  label:
+    da: Vegetable juices (gpd)
+    en: Vegetable juices (gpd)
+  dataset: foods6ny
+- id: vaegtc25
+  name: vaegtc25
+  type: numeric
+  label:
+    da: Potatoes, fatty (gpd)
+    en: Potatoes, fatty (gpd)
+  dataset: foods6ny
+- id: vaegtc26
+  name: vaegtc26
+  type: numeric
+  label:
+    da: Nuts
+    en: Nuts
+  dataset: foods6ny
+- id: vaegtc27
+  name: vaegtc27
+  type: numeric
+  label:
+    da: Vegetable oils (gpd)
+    en: Vegetable oils (gpd)
+  dataset: foods6ny
+- id: vaegtc28
+  name: vaegtc28
+  type: numeric
+  label:
+    da: Butter (gpd)
+    en: Butter (gpd)
+  dataset: foods6ny
+- id: vaegtc29
+  name: vaegtc29
+  type: numeric
+  label:
+    da: Margarines
+    en: Margarines
+  dataset: foods6ny
+- id: vaegtc30
+  name: vaegtc30
+  type: numeric
+  label:
+    da: Other animal fat (gpd)
+    en: Other animal fat (gpd)
+  dataset: foods6ny
+- id: vaegtc31
+  name: vaegtc31
+  type: numeric
+  label:
+    da: Sugar, honey, jam and syrups (gpd)
+    en: Sugar, honey, jam and syrups (gpd)
+  dataset: foods6ny
+- id: vaegtc32
+  name: vaegtc32
+  type: numeric
+  label:
+    da: Chocolate, candy bars (gpd)
+    en: Chocolate, candy bars (gpd)
+  dataset: foods6ny
+- id: vaegtc33
+  name: vaegtc33
+  type: numeric
+  label:
+    da: Confectionary non chocolate (gpd)
+    en: Confectionary non chocolate (gpd)
+  dataset: foods6ny
+- id: vaegtc34
+  name: vaegtc34
+  type: numeric
+  label:
+    da: Soft drinks (gpd)
+    en: Soft drinks (gpd)
+  dataset: foods6ny
+- id: vaegtc35
+  name: vaegtc35
+  type: numeric
+  label:
+    da: Waters (gpd)
+    en: Waters (gpd)
+  dataset: foods6ny
+- id: vaegtc36
+  name: vaegtc36
+  type: numeric
+  label:
+    da: Coffee (gpd)
+    en: Coffee (gpd)
+  dataset: foods6ny
+- id: vaegtc37
+  name: vaegtc37
+  type: numeric
+  label:
+    da: Tea (gpd)
+    en: Tea (gpd)
+  dataset: foods6ny
+- id: vaegtc38
+  name: vaegtc38
+  type: numeric
+  label:
+    da: Wine (gpd)
+    en: Wine (gpd)
+  dataset: foods6ny
+- id: vaegtc39
+  name: vaegtc39
+  type: numeric
+  label:
+    da: Beer (gpd)
+    en: Beer (gpd)
+  dataset: foods6ny
+- id: vaegtc40
+  name: vaegtc40
+  type: numeric
+  label:
+    da: Spirits and brandy (gpd)
+    en: Spirits and brandy (gpd)
+  dataset: foods6ny
+- id: vaegtc41
+  name: vaegtc41
+  type: numeric
+  label:
+    da: Mayonnaises and similars (gpd)
+    en: Mayonnaises and similars (gpd)
+  dataset: foods6ny
+- id: vaegtc42
+  name: vaegtc42
+  type: numeric
+  label:
+    da: Soya (gpd)
+    en: Soya (gpd)
+  dataset: foods6ny
+- id: vaegtc43
+  name: vaegtc43
+  type: numeric
+  label:
+    da: Snacks (gpd)
+    en: Snacks (gpd)
+  dataset: foods6ny
+- id: vaegtc44
+  name: vaegtc44
+  type: numeric
+  label:
+    da: Fish,lean,fresh (gpd)
+    en: Fish,lean,fresh (gpd)
+  dataset: foods6ny
+- id: vaegtc45
+  name: vaegtc45
+  type: numeric
+  label:
+    da: Fish,lean,processed (gpd)
+    en: Fish,lean,processed (gpd)
+  dataset: foods6ny
+- id: vaegtc46
+  name: vaegtc46
+  type: numeric
+  label:
+    da: Fish,medium fat,fresh (gpd)
+    en: Fish,medium fat,fresh (gpd)
+  dataset: foods6ny
+- id: vaegtc47
+  name: vaegtc47
+  type: numeric
+  label:
+    da: Fish,medium fat,processed (gpd)
+    en: Fish,medium fat,processed (gpd)
+  dataset: foods6ny
+- id: vaegtc48
+  name: vaegtc48
+  type: numeric
+  label:
+    da: Fish,fatty,fresh (gpd)
+    en: Fish,fatty,fresh (gpd)
+  dataset: foods6ny
+- id: vaegtc49
+  name: vaegtc49
+  type: numeric
+  label:
+    da: Fish,fatty,processed (gpd)
+    en: Fish,fatty,processed (gpd)
+  dataset: foods6ny
+- id: vaegtc60
+  name: vaegtc60
+  type: numeric
+  label:
+    da: Non classified (gpd)
+    en: Non classified (gpd)
+  dataset: foods6ny
+- id: g03001
+  name: g03001
+  type: numeric
+  label:
+    da: Vand gram/dag
+    en: Water gram/day
+  dataset: gpd6
+- id: g03002
+  name: g03002
+  type: numeric
+  label:
+    da: Sødmælk gram/dag
+    en: Whole milk gram/day
+  dataset: gpd6
+- id: g03003
+  name: g03003
+  type: numeric
+  label:
+    da: Letmælk gram/dag
+    en: Semi skimmed milk gram/day
+  dataset: gpd6
+- id: g03004
+  name: g03004
+  type: numeric
+  label:
+    da: Skummetmælk gram/dag
+    en: Skimmed milk gram/day
+  dataset: gpd6
+- id: g03005
+  name: g03005
+  type: numeric
+  label:
+    da: Kærnemælk gram/dag
+    en: Buttermilk gram/day
+  dataset: gpd6
+- id: g03006
+  name: g03006
+  type: numeric
+  label:
+    da: Appelsinjuice gram/dag
+    en: Orange juice gram/day
+  dataset: gpd6
+- id: g03007
+  name: g03007
+  type: numeric
+  label:
+    da: Gulerodssaft gram/dag
+    en: Carrot juice gram/day
+  dataset: gpd6
+- id: g03008
+  name: g03008
+  type: numeric
+  label:
+    da: Tomatjuice gram/dag
+    en: Tomato juice gram/day
+  dataset: gpd6
+- id: g03009
+  name: g03009
+  type: numeric
+  label:
+    da: Saftevand gram/dag
+    en: Fruit syrup with water gram/day
+  dataset: gpd6
+- id: g03010
+  name: g03010
+  type: numeric
+  label:
+    da: Sodvand og cola gram/dag
+    en: Cola and other soft drinks gram/day
+  dataset: gpd6
+- id: g03011
+  name: g03011
+  type: numeric
+  label:
+    da: Sodavand og cola light gram/dag
+    en: Cola and other soft drinks light gram/day
+  dataset: gpd6
+- id: g03012
+  name: g03012
+  type: numeric
+  label:
+    da: Mineralvand gram/dag
+    en: Mineral water gram/day
+  dataset: gpd6
+- id: g03013
+  name: g03013
+  type: numeric
+  label:
+    da: Lys øl gram/dag
+    en: Light beer gram/day
+  dataset: gpd6
+- id: g03014
+  name: g03014
+  type: numeric
+  label:
+    da: Alm.øl gram/dag
+    en: Ordinary beer gram/day
+  dataset: gpd6
+- id: g03015
+  name: g03015
+  type: numeric
+  label:
+    da: Stærk øl gram/dag
+    en: Strong beer gram/day
+  dataset: gpd6
+- id: g03016
+  name: g03016
+  type: numeric
+  label:
+    da: Vin gram/dag
+    en: Wine gram/day
+  dataset: gpd6
+- id: g03017
+  name: g03017
+  type: numeric
+  label:
+    da: Hedvin gram/dag
+    en: Fortified wine  gram/day
+  dataset: gpd6
+- id: g03018
+  name: g03018
+  type: numeric
+  label:
+    da: Spiritus gram/dag
+    en: Strong spirits gram/day
+  dataset: gpd6
+- id: g03019
+  name: g03019
+  type: numeric
+  label:
+    da: Kaffe gram/dag
+    en: Coffee gram/day
+  dataset: gpd6
+- id: g03020
+  name: g03020
+  type: numeric
+  label:
+    da: The gram/dag
+    en: Tea gram/day
+  dataset: gpd6
+- id: g03021
+  name: g03021
+  type: numeric
+  label:
+    da: Saftevand light gram/dag
+    en: Fruit syrup with water light gram/day
+  dataset: gpd6
+- id: g04001
+  name: g04001
+  type: numeric
+  label:
+    da: Havregryn og mysli gram/dag
+    en: Oats & müsli gram/day
+  dataset: gpd6
+- id: g04002
+  name: g04002
+  type: numeric
+  label:
+    da: Surmælk 3.5 gram/dag
+    en: Sourmælk 3.5 gram/day
+  dataset: gpd6
+- id: g04003
+  name: g04003
+  type: numeric
+  label:
+    da: Surmælk 1.5 gram/dag
+    en: Sourmælk 1.5 gram/day
+  dataset: gpd6
+- id: g04004
+  name: g04004
+  type: numeric
+  label:
+    da: Yoghurt med frugt 3.5 gram/dag
+    en: Yogurt w. fruits 3.5 gram/day
+  dataset: gpd6
+- id: g04005
+  name: g04005
+  type: numeric
+  label:
+    da: Yoghurt med frugt 1.5 gram/dag
+    en: Yogurt w. fruit 1.5 gram/day
+  dataset: gpd6
+- id: g04006
+  name: g04006
+  type: numeric
+  label:
+    da: Æg, kogt el.spejlet gram/dag
+    en: Egg, boiled or fried gram/day
+  dataset: gpd6
+- id: g05001
+  name: g05001
+  type: numeric
+  label:
+    da: Rugbrød gram/dag
+    en: Ryebread gram/day
+  dataset: gpd6
+- id: g05002
+  name: g05002
+  type: numeric
+  label:
+    da: Lyst brød gram/dag
+    en: White bread gram/day
+  dataset: gpd6
+- id: g05003
+  name: g05003
+  type: numeric
+  label:
+    da: Groft brød gram/dag
+    en: Wholegrain bread gram/day
+  dataset: gpd6
+- id: g05004
+  name: g05004
+  type: numeric
+  label:
+    da: Knækbrød gram/dag
+    en: Crispbread gram/day
+  dataset: gpd6
+- id: g05101
+  name: g05101
+  type: numeric
+  label:
+    da: Fedtstof på rugbrød gram/dag
+    en: Fat on ryebread gram/day
+  dataset: gpd6
+- id: g05102
+  name: g05102
+  type: numeric
+  label:
+    da: Fedtstof på lyst brød gram/dag
+    en: Fat on white bread gram/day
+  dataset: gpd6
+- id: g05103
+  name: g05103
+  type: numeric
+  label:
+    da: Fedtstof på groft brød gram/dag
+    en: Fat on wholegrain bread gram/day
+  dataset: gpd6
+- id: g05104
+  name: g05104
+  type: numeric
+  label:
+    da: Fedtstof på knækbrød gram/dag
+    en: Fat on crispbread gram/day
+  dataset: gpd6
+- id: g07001
+  name: g07001
+  type: numeric
+  label:
+    da: Leverpostej gram/dag
+    en: Liver pate gram/day
+  dataset: gpd6
+- id: g07002
+  name: g07002
+  type: numeric
+  label:
+    da: Spegepølse gram/dag
+    en: Salami gram/day
+  dataset: gpd6
+- id: g07003
+  name: g07003
+  type: numeric
+  label:
+    da: Kødpølse gram/dag
+    en: Saveloy gram/day
+  dataset: gpd6
+- id: g07004
+  name: g07004
+  type: numeric
+  label:
+    da: Rullepølse gram/dag
+    en: Rolled meat sausage gram/day
+  dataset: gpd6
+- id: g07005
+  name: g07005
+  type: numeric
+  label:
+    da: Skinke (pålæg) gram/dag
+    en: Ham (cold cuts) gram/day
+  dataset: gpd6
+- id: g07006
+  name: g07006
+  type: numeric
+  label:
+    da: Roastbeef (pålæg) gram/dag
+    en: Roastbeef (cold cuts) gram/day
+  dataset: gpd6
+- id: g07007
+  name: g07007
+  type: numeric
+  label:
+    da: Svinefilet gram/dag
+    en: Filet of pork gram/day
+  dataset: gpd6
+- id: g07008
+  name: g07008
+  type: numeric
+  label:
+    da: Kylling (pålæg) gram/dag
+    en: Chicken (cold cuts) gram/day
+  dataset: gpd6
+- id: g07009
+  name: g07009
+  type: numeric
+  label:
+    da: Flæskesteg (pålæg) gram/dag
+    en: Roast pork (cold cuts) gram/day
+  dataset: gpd6
+- id: g07010
+  name: g07010
+  type: numeric
+  label:
+    da: Stegt lever (pålæg) gram/dag
+    en: Fried liver (cold cuts) gram/day
+  dataset: gpd6
+- id: g07011
+  name: g07011
+  type: numeric
+  label:
+    da: Hakkebøf etc. (pålæg) gram/dag
+    en: Minced beef patty etc. (cold cuts) gram/day
+  dataset: gpd6
+- id: g07012
+  name: g07012
+  type: numeric
+  label:
+    da: Pålægssalat med kød gram/dag
+    en: Meat salad as a spread gram/day
+  dataset: gpd6
+- id: g07101
+  name: g07101
+  type: numeric
+  label:
+    da: Skæreost gram/dag
+    en: Firm cheese gram/day
+  dataset: gpd6
+- id: g07102
+  name: g07102
+  type: numeric
+  label:
+    da: Brie gram/dag
+    en: Brie cheese gram/day
+  dataset: gpd6
+- id: g07103
+  name: g07103
+  type: numeric
+  label:
+    da: Danablu gram/dag
+    en: Blue cheese gram/day
+  dataset: gpd6
+- id: g07104
+  name: g07104
+  type: numeric
+  label:
+    da: Hytteost gram/dag
+    en: Cottage cheese gram/day
+  dataset: gpd6
+- id: g07105
+  name: g07105
+  type: numeric
+  label:
+    da: Smørreost og flødeost gram/dag
+    en: Cream cheese  gram/day
+  dataset: gpd6
+- id: g08001
+  name: g08001
+  type: numeric
+  label:
+    da: Røget sild gram/dag
+    en: Smoked herring gram/day
+  dataset: gpd6
+- id: g08002
+  name: g08002
+  type: numeric
+  label:
+    da: Marineret sild gram/dag
+    en: Marinated herring gram/day
+  dataset: gpd6
+- id: g08003
+  name: g08003
+  type: numeric
+  label:
+    da: Makrel i tomat gram/dag
+    en: Mackerel in tomato sauce gram/day
+  dataset: gpd6
+- id: g08004
+  name: g08004
+  type: numeric
+  label:
+    da: Tun (pålæg) gram/dag
+    en: Tuna (spread) gram/day
+  dataset: gpd6
+- id: g08005
+  name: g08005
+  type: numeric
+  label:
+    da: Sardin i olie gram/dag
+    en: Sardines in oil gram/day
+  dataset: gpd6
+- id: g08006
+  name: g08006
+  type: numeric
+  label:
+    da: Torskerogn (pålæg) gram/dag
+    en: Cod roe (spread) gram/day
+  dataset: gpd6
+- id: g08007
+  name: g08007
+  type: numeric
+  label:
+    da: Fiskefrikadelle (pålæg) gram/dag
+    en: Fish cake (cold cuts) gram/day
+  dataset: gpd6
+- id: g08008
+  name: g08008
+  type: numeric
+  label:
+    da: Fiskefilet (pålæg) gram/dag
+    en: Fish fillet (cold cuts) gram/day
+  dataset: gpd6
+- id: g08009
+  name: g08009
+  type: numeric
+  label:
+    da: Rejer gram/dag
+    en: Shrimps gram/day
+  dataset: gpd6
+- id: g08010
+  name: g08010
+  type: numeric
+  label:
+    da: Kaviar gram/dag
+    en: Caviar gram/day
+  dataset: gpd6
+- id: g08011
+  name: g08011
+  type: numeric
+  label:
+    da: Pålægssalat med fisk gram/dag
+    en: Fish salad for bread gram/day
+  dataset: gpd6
+- id: g08101
+  name: g08101
+  type: numeric
+  label:
+    da: Æg (pålæg) gram/dag
+    en: Egg (sliced for bread) gram/day
+  dataset: gpd6
+- id: g08102
+  name: g08102
+  type: numeric
+  label:
+    da: Tomat (pålæg) gram/dag
+    en: Tomato  gram/day
+  dataset: gpd6
+- id: g08103
+  name: g08103
+  type: numeric
+  label:
+    da: Kogt kartoffel (pålæg) gram/dag
+    en: Boiled potato gram/day
+  dataset: gpd6
+- id: g08104
+  name: g08104
+  type: numeric
+  label:
+    da: Avocado gram/dag
+    en: Avocado gram/day
+  dataset: gpd6
+- id: g08105
+  name: g08105
+  type: numeric
+  label:
+    da: Marmelade gram/dag
+    en: Jam gram/day
+  dataset: gpd6
+- id: g08106
+  name: g08106
+  type: numeric
+  label:
+    da: Honning gram/dag
+    en: Honey gram/day
+  dataset: gpd6
+- id: g08107
+  name: g08107
+  type: numeric
+  label:
+    da: Mayonnaise og remoulade gram/dag
+    en: Mayonnaise and remoulade gram/day
+  dataset: gpd6
+- id: g09007
+  name: g09007
+  type: numeric
+  label:
+    da: Grød (gram/dag)
+    en: Porridge (gram/day)
+  dataset: gpd6
+- id: g10001
+  name: g10001
+  type: numeric
+  label:
+    da: Flæskesteg gram/dag
+    en: Roast pork gram/day
+  dataset: gpd6
+- id: g10002
+  name: g10002
+  type: numeric
+  label:
+    da: Hamburgerryg gram/dag
+    en: Smoked saddle of pork gram/day
+  dataset: gpd6
+- id: g10003
+  name: g10003
+  type: numeric
+  label:
+    da: Stegt flæsk gram/dag
+    en: Fried pork belly gram/day
+  dataset: gpd6
+- id: g10004
+  name: g10004
+  type: numeric
+  label:
+    da: Mørbradbøf gram/dag
+    en: Fillet steak gram/day
+  dataset: gpd6
+- id: g10005
+  name: g10005
+  type: numeric
+  label:
+    da: Svinekotelet gram/dag
+    en: Pork chop gram/day
+  dataset: gpd6
+- id: g10006
+  name: g10006
+  type: numeric
+  label:
+    da: Skinkeschnitzel gram/dag
+    en: Pork schnitzel gram/day
+  dataset: gpd6
+- id: g10007
+  name: g10007
+  type: numeric
+  label:
+    da: Sammenkogt med svinekød gram/dag
+    en: Mixed stew with pork gram/day
+  dataset: gpd6
+- id: g10101
+  name: g10101
+  type: numeric
+  label:
+    da: Oksesteg gram/dag
+    en: Beef roast gram/day
+  dataset: gpd6
+- id: g10102
+  name: g10102
+  type: numeric
+  label:
+    da: Oksebøf gram/dag
+    en: Beef steak gram/day
+  dataset: gpd6
+- id: g10103
+  name: g10103
+  type: numeric
+  label:
+    da: Kalvekotelet gram/dag
+    en: Veal chop gram/day
+  dataset: gpd6
+- id: g10104
+  name: g10104
+  type: numeric
+  label:
+    da: Sammenkogt med oksekød gram/dag
+    en: Mixed stew with beef gram/day
+  dataset: gpd6
+- id: g10201
+  name: g10201
+  type: numeric
+  label:
+    da: Lammesteg gram/dag
+    en: Lamb roast gram/day
+  dataset: gpd6
+- id: g10202
+  name: g10202
+  type: numeric
+  label:
+    da: Lammekotelet gram/dag
+    en: Lamb chop gram/day
+  dataset: gpd6
+- id: g10203
+  name: g10203
+  type: numeric
+  label:
+    da: Sammenkogt med lam gram/dag
+    en: Mixed stew with lamb gram/day
+  dataset: gpd6
+- id: g11001
+  name: g11001
+  type: numeric
+  label:
+    da: Kylling gram/dag
+    en: Chicken gram/day
+  dataset: gpd6
+- id: g11002
+  name: g11002
+  type: numeric
+  label:
+    da: Kalkunschnitzel gram/dag
+    en: Turkey schnitzel gram/day
+  dataset: gpd6
+- id: g11003
+  name: g11003
+  type: numeric
+  label:
+    da: Sammenkogt med kylling gram/dag
+    en: Mixed stew with chicken gram/day
+  dataset: gpd6
+- id: g11101
+  name: g11101
+  type: numeric
+  label:
+    da: Frikadelle gram/dag
+    en: Meatball gram/day
+  dataset: gpd6
+- id: g11102
+  name: g11102
+  type: numeric
+  label:
+    da: Hakkebøf gram/dag
+    en: Beef patty gram/day
+  dataset: gpd6
+- id: g11103
+  name: g11103
+  type: numeric
+  label:
+    da: Karbonade gram/dag
+    en: Breaded pork patties gram/day
+  dataset: gpd6
+- id: g11104
+  name: g11104
+  type: numeric
+  label:
+    da: Medisterpølse gram/dag
+    en: Danish pork sausage gram/day
+  dataset: gpd6
+- id: g11105
+  name: g11105
+  type: numeric
+  label:
+    da: Anden pølse gram/dag
+    en: Other type of sausage gram/day
+  dataset: gpd6
+- id: g11106
+  name: g11106
+  type: numeric
+  label:
+    da: Sammenkogt med hakket kød gram/dag
+    en: Mixed stew with minced meat gram/day
+  dataset: gpd6
+- id: g11107
+  name: g11107
+  type: numeric
+  label:
+    da: Forloren hare gram/dag
+    en: Meatloaf gram/day
+  dataset: gpd6
+- id: g11201
+  name: g11201
+  type: numeric
+  label:
+    da: Stegt lever gram/dag
+    en: Fried liver gram/day
+  dataset: gpd6
+- id: g11202
+  name: g11202
+  type: numeric
+  label:
+    da: Sammenkogt med lever gram/dag
+    en: Mixed stew with liver gram/day
+  dataset: gpd6
+- id: g11203
+  name: g11203
+  type: numeric
+  label:
+    da: Sammenkogt med hjerte gram/dag
+    en: Mixed stew with heart gram/dag
+  dataset: gpd6
+- id: g12001
+  name: g12001
+  type: numeric
+  label:
+    da: Stegt rødspætte gram/dag
+    en: Fried flounder fish gram/day
+  dataset: gpd6
+- id: g12002
+  name: g12002
+  type: numeric
+  label:
+    da: Stegt sild gram/dag
+    en: Fried herring gram/day
+  dataset: gpd6
+- id: g12003
+  name: g12003
+  type: numeric
+  label:
+    da: Stegt makrel gram/dag
+    en: Fried mackerel gram/day
+  dataset: gpd6
+- id: g12004
+  name: g12004
+  type: numeric
+  label:
+    da: Stegt torsk gram/dag
+    en: Fried cod gram/day
+  dataset: gpd6
+- id: g12005
+  name: g12005
+  type: numeric
+  label:
+    da: Stegt hornfisk gram/dag
+    en: Fried garfish gram/day
+  dataset: gpd6
+- id: g12006
+  name: g12006
+  type: numeric
+  label:
+    da: Stegt laks gram/dag
+    en: Fried salmon gram/day
+  dataset: gpd6
+- id: g12007
+  name: g12007
+  type: numeric
+  label:
+    da: Stegt torskerogn gram/dag
+    en: Fried cod roe gram/day
+  dataset: gpd6
+- id: g12008
+  name: g12008
+  type: numeric
+  label:
+    da: Fiskefrikadelle gram/dag
+    en: Fish cake gram/day
+  dataset: gpd6
+- id: g12101
+  name: g12101
+  type: numeric
+  label:
+    da: Kogt rødspætte gram/dag
+    en: Boiled flounder fish gram/day
+  dataset: gpd6
+- id: g12102
+  name: g12102
+  type: numeric
+  label:
+    da: Kogt torsk gram/dag
+    en: Boiled cod gram/day
+  dataset: gpd6
+- id: g12103
+  name: g12103
+  type: numeric
+  label:
+    da: Kogt laks gram/dag
+    en: Boiled salmon gram/day
+  dataset: gpd6
+- id: g12104
+  name: g12104
+  type: numeric
+  label:
+    da: Kogt makrel gram/dag
+    en: Boiled mackerel gram/day
+  dataset: gpd6
+- id: g12105
+  name: g12105
+  type: numeric
+  label:
+    da: Kogt torskerogn gram/dag
+    en: Boiled cod roe gram/day
+  dataset: gpd6
+- id: g12201
+  name: g12201
+  type: numeric
+  label:
+    da: Æggekage gram/dag
+    en: Egg-Omelette gram/day
+  dataset: gpd6
+- id: g12202
+  name: g12202
+  type: numeric
+  label:
+    da: Gratin gram/dag
+    en: Gratin gram/day
+  dataset: gpd6
+- id: g12203
+  name: g12203
+  type: numeric
+  label:
+    da: Grøntsagsbøf gram/dag
+    en: Patty made of vegetables gram/day
+  dataset: gpd6
+- id: g12204
+  name: g12204
+  type: numeric
+  label:
+    da: Grøntsagstærte gram/dag
+    en: Vegetable pie gram/day
+  dataset: gpd6
+- id: g12205
+  name: g12205
+  type: numeric
+  label:
+    da: Sammenkogte grøntsager gram/dag
+    en: Mixed stew with vegetables gram/day
+  dataset: gpd6
+- id: g12206
+  name: g12206
+  type: numeric
+  label:
+    da: Pizza gram/dag
+    en: Pizza gram/day
+  dataset: gpd6
+- id: g13002
+  name: g13002
+  type: numeric
+  label:
+    da: Ris gram/dag
+    en: Rice gram/day
+  dataset: gpd6
+- id: g13003
+  name: g13003
+  type: numeric
+  label:
+    da: Pasta gram/dag
+    en: Pasta gram/day
+  dataset: gpd6
+- id: g14001
+  name: g14001
+  type: numeric
+  label:
+    da: kogte kartofler gram/dag
+    en: Boiled potato gram/day
+  dataset: gpd6
+- id: g14002
+  name: g14002
+  type: numeric
+  label:
+    da: Bagt kartoffel gram/dag
+    en: Baked potato gram/day
+  dataset: gpd6
+- id: g14003
+  name: g14003
+  type: numeric
+  label:
+    da: Brasede kartofler gram/dag
+    en: Fried potatoes gram/day
+  dataset: gpd6
+- id: g14004
+  name: g14004
+  type: numeric
+  label:
+    da: Kartoffelmos gram/dag
+    en: Mashed potatoes gram/day
+  dataset: gpd6
+- id: g14005
+  name: g14005
+  type: numeric
+  label:
+    da: Stuvede kartofler gram/dag
+    en: Stew potatoes gram/day
+  dataset: gpd6
+- id: g14006
+  name: g14006
+  type: numeric
+  label:
+    da: Kartoffelsalat gram/dag
+    en: Potato salad gram/day
+  dataset: gpd6
+- id: g14007
+  name: g14007
+  type: numeric
+  label:
+    da: Pommes frites gram/dag
+    en: French fries gram/day
+  dataset: gpd6
+- id: g14101
+  name: g14101
+  type: numeric
+  label:
+    da: Salat gram/dag
+    en: Salad gram/day
+  dataset: gpd6
+- id: g14102
+  name: g14102
+  type: numeric
+  label:
+    da: Råkost gram/dag
+    en: Raw vegetables gram/day
+  dataset: gpd6
+- id: g14103
+  name: g14103
+  type: numeric
+  label:
+    da: Rå gulerod gram/dag
+    en: Raw carrot gram/day
+  dataset: gpd6
+- id: g14104
+  name: g14104
+  type: numeric
+  label:
+    da: Dressing gram/dag
+    en: Dressing gram/day
+  dataset: gpd6
+- id: g15001
+  name: g15001
+  type: numeric
+  label:
+    da: Grøntsagsbland gram/dag
+    en: Mixed vegetables gram/day
+  dataset: gpd6
+- id: g15002
+  name: g15002
+  type: numeric
+  label:
+    da: Blomkål gram/dag
+    en: Cauliflower gram/day
+  dataset: gpd6
+- id: g15003
+  name: g15003
+  type: numeric
+  label:
+    da: Rosenkål gram/dag
+    en: Brussel sprouts gram/day
+  dataset: gpd6
+- id: g15004
+  name: g15004
+  type: numeric
+  label:
+    da: Broccoli gram/dag
+    en: Broccoli gram/dag
+  dataset: gpd6
+- id: g15005
+  name: g15005
+  type: numeric
+  label:
+    da: Grønkål gram/dag
+    en: Green cabbage gram/day
+  dataset: gpd6
+- id: g15006
+  name: g15006
+  type: numeric
+  label:
+    da: Hvidkål gram/dag
+    en: White cabbage gram/day
+  dataset: gpd6
+- id: g15007
+  name: g15007
+  type: numeric
+  label:
+    da: Rødkål gram/dag
+    en: Red cabbage gram/day
+  dataset: gpd6
+- id: g15008
+  name: g15008
+  type: numeric
+  label:
+    da: Gulerødder gram/dag
+    en: Carrots gram/day
+  dataset: gpd6
+- id: g15009
+  name: g15009
+  type: numeric
+  label:
+    da: Aerter gram/dag
+    en: Peas gram/day
+  dataset: gpd6
+- id: g15010
+  name: g15010
+  type: numeric
+  label:
+    da: Bønner gram/dag
+    en: Beans gram/day
+  dataset: gpd6
+- id: g15011
+  name: g15011
+  type: numeric
+  label:
+    da: Majs gram/dag
+    en: Corn gram/day
+  dataset: gpd6
+- id: g15012
+  name: g15012
+  type: numeric
+  label:
+    da: Porre gram/dag
+    en: Leek gram/day
+  dataset: gpd6
+- id: g15013
+  name: g15013
+  type: numeric
+  label:
+    da: Spinat gram/dag
+    en: Spinach gram/day
+  dataset: gpd6
+- id: g15014
+  name: g15014
+  type: numeric
+  label:
+    da: Løg gram/dag
+    en: Onion gram/day
+  dataset: gpd6
+- id: g15015
+  name: g15015
+  type: numeric
+  label:
+    da: Hvidløg gram/dag
+    en: Garlic gram/day
+  dataset: gpd6
+- id: g15016
+  name: g15016
+  type: numeric
+  label:
+    da: Champignon gram/dag
+    en: Mushroom gram/day
+  dataset: gpd6
+- id: g15017
+  name: g15017
+  type: numeric
+  label:
+    da: Andre svampe gram/dag
+    en: Other kinds of mushroom gram/day
+  dataset: gpd6
+- id: g17001
+  name: g17001
+  type: numeric
+  label:
+    da: Æble gram/dag
+    en: Apple gram/day
+  dataset: gpd6
+- id: g17002
+  name: g17002
+  type: numeric
+  label:
+    da: Pære gram/dag
+    en: Pear gram/day
+  dataset: gpd6
+- id: g17003
+  name: g17003
+  type: numeric
+  label:
+    da: Appelsin gram/dag
+    en: Orange gram/day
+  dataset: gpd6
+- id: g17004
+  name: g17004
+  type: numeric
+  label:
+    da: Grapefrugt gram/dag
+    en: Grapefruit gram/day
+  dataset: gpd6
+- id: g17005
+  name: g17005
+  type: numeric
+  label:
+    da: Banan gram/dag
+    en: Banana gram/day
+  dataset: gpd6
+- id: g17006
+  name: g17006
+  type: numeric
+  label:
+    da: Fersken gram/dag
+    en: Peach gram/day
+  dataset: gpd6
+- id: g17007
+  name: g17007
+  type: numeric
+  label:
+    da: Jordbær gram/dag
+    en: Strawberry gram/day
+  dataset: gpd6
+- id: g17008
+  name: g17008
+  type: numeric
+  label:
+    da: Kiwifrugt gram/dag
+    en: Kiwi fruit gram/day
+  dataset: gpd6
+- id: g17009
+  name: g17009
+  type: numeric
+  label:
+    da: Vandmelon gram/dag
+    en: Watermelon gram/day
+  dataset: gpd6
+- id: g17010
+  name: g17010
+  type: numeric
+  label:
+    da: Anden melon gram/dag
+    en: Other melons gram/day
+  dataset: gpd6
+- id: g17101
+  name: g17101
+  type: numeric
+  label:
+    da: Frugtgrød gram/dag
+    en: Stewed fruit gram/day
+  dataset: gpd6
+- id: g17102
+  name: g17102
+  type: numeric
+  label:
+    da: Syltede frugter gram/dag
+    en: Pickled fruits gram/day
+  dataset: gpd6
+- id: g17103
+  name: g17103
+  type: numeric
+  label:
+    da: Kærnemælkskoldskål gram/dag
+    en: Cold buttermilk soup gram/day
+  dataset: gpd6
+- id: g17104
+  name: g17104
+  type: numeric
+  label:
+    da: Is gram/dag
+    en: Icecream gram/day
+  dataset: gpd6
+- id: g17201
+  name: g17201
+  type: numeric
+  label:
+    da: Sandkage gram/dag
+    en: Spongecake gram/day
+  dataset: gpd6
+- id: g17202
+  name: g17202
+  type: numeric
+  label:
+    da: Wienerbrød gram/dag
+    en: Danish pastry gram/day
+  dataset: gpd6
+- id: g17203
+  name: g17203
+  type: numeric
+  label:
+    da: Flødeskumskage gram/dag
+    en: Cream cake gram/day
+  dataset: gpd6
+- id: g17204
+  name: g17204
+  type: numeric
+  label:
+    da: Småkager og kiks gram/dag
+    en: Cookies and biscuits gram/day
+  dataset: gpd6
+- id: g18001
+  name: g18001
+  type: numeric
+  label:
+    da: Chokolade gram/dag
+    en: Chocolate gram/day
+  dataset: gpd6
+- id: g18002
+  name: g18002
+  type: numeric
+  label:
+    da: Karameller gram/dag
+    en: Caramels gram/day
+  dataset: gpd6
+- id: g18003
+  name: g18003
+  type: numeric
+  label:
+    da: Bolcher gram/dag
+    en: Hard candy gram/day
+  dataset: gpd6
+- id: g18004
+  name: g18004
+  type: numeric
+  label:
+    da: Lakrids gram/dag
+    en: Liquorice gram/day
+  dataset: gpd6
+- id: g18005
+  name: g18005
+  type: numeric
+  label:
+    da: Lakridskonfekt gram/dag
+    en: Liquorice all sorts gram/day
+  dataset: gpd6
+- id: g18006
+  name: g18006
+  type: numeric
+  label:
+    da: Vingummi gram/dag
+    en: Wine gums gram/day
+  dataset: gpd6
+- id: g18101
+  name: g18101
+  type: numeric
+  label:
+    da: Peanuts gram/dag
+    en: Peanuts gram/day
+  dataset: gpd6
+- id: g18102
+  name: g18102
+  type: numeric
+  label:
+    da: Chips gram/dag
+    en: Potato chips gram/day
+  dataset: gpd6
+- id: g18103
+  name: g18103
+  type: numeric
+  label:
+    da: Flæskesvær gram/dag
+    en: Pork crackling gram/day
+  dataset: gpd6
+- id: id
+  name: id
+  type: numeric
+  label:
+    da: KKH ID nummer
+    en: KKH ID number
+  dataset: journal
+- id: mdato
+  name: mdato
+  type: date
+  label:
+    da: Mødedato
+    en: Date of participation
+  dataset: journal
+- id: center
+  name: center
+  type: character
+  label:
+    da: Center
+    en: Study center
+  dataset: journal
+- id: age
+  name: age
+  type: numeric
+  label:
+    da: Alder ved klinikbesøg
+    en: Age at visit to the clinic
+  dataset: journal
+- id: stahqjde
+  name: stahqjde
+  type: numeric
+  label:
+    da: Stående højde i cm
+    en: Standing height (cm)
+  dataset: journal
+- id: sidhqjde
+  name: sidhqjde
+  type: numeric
+  label:
+    da: Siddende højde i cm
+    en: Sitting height (cm)
+  dataset: journal
+- id: vaegt
+  name: vaegt
+  type: numeric
+  label:
+    da: Vægt i kg
+    en: Weight (kg)
+  dataset: journal
+- id: livvidde
+  name: livvidde
+  type: numeric
+  label:
+    da: Livvidde i cm
+    en: Waist circumference (cm)
+  dataset: journal
+- id: hofvidde
+  name: hofvidde
+  type: numeric
+  label:
+    da: Hoftevidde i cm
+    en: Hip circumference (cm)
+  dataset: journal
+- id: blodtsys
+  name: blodtsys
+  type: numeric
+  label:
+    da: Blodtryk, systolisk
+    en: Blood pressure, systolic
+  dataset: journal
+- id: blodtdia
+  name: blodtdia
+  type: numeric
+  label:
+    da: Blodtryk, diastolisk
+    en: Blood pressure, diastolic
+  dataset: journal
+- id: fedtbiop
+  name: fedtbiop
+  type: numeric
+  label:
+    da: Fedtbiopsi (ja/nej)
+    en: Fat biopsy taken (yes/no)
+  dataset: journal
+- id: blodpklo
+  name: blodpklo
+  type: numeric
+  label:
+    da: Blodprøve udført, klokkeslet
+    en: Blood sample taken, time
+  dataset: journal
+- id: blodprqv
+  name: blodprqv
+  type: numeric
+  label:
+    da: Blodprøve, serum kolesterol
+    en: Blood sample, serum cholesterol
+  dataset: journal
+- id: ualbumin
+  name: ualbumin
+  type: numeric
+  label:
+    da: Urinprøve, albumin (stix)
+    en: Urine sample, albumin (stix)
+  dataset: journal
+- id: usukker
+  name: usukker
+  type: numeric
+  label:
+    da: Urinprøve, sukker (stix)
+    en: Urine sample, sugar (stix)
+  dataset: journal
+- id: ublod
+  name: ublod
+  type: numeric
+  label:
+    da: Urinprøve, blod (stix)
+    en: Urine sample, blood (stix)
+  dataset: journal
+- id: alko
+  name: alko
+  type: numeric
+  label:
+    da: Alkohol (g/d)
+    en: Alcohol (g/d)
+  dataset: nutri6ny
+- id: alkoe
+  name: alkoe
+  type: numeric
+  label:
+    da: Alkohol-energi (kJ/d)
+    en: Alcohol-energy (kJ/d)
+  dataset: nutri6ny
+- id: alkoep
+  name: alkoep
+  type: numeric
+  label:
+    da: Alkohol (energi%)
+    en: Alcohol (energy%)
+  dataset: nutri6ny
+- id: avit
+  name: avit
+  type: numeric
+  label:
+    da: Vitamin A (RE/d)
+    en: Vitamin A (RE/d)
+  dataset: nutri6ny
+- id: b12vit
+  name: b12vit
+  type: numeric
+  label:
+    da: Vitamin B12 (mcg/d)
+    en: Vitamin B12 (mcg/d)
+  dataset: nutri6ny
+- id: b6vit
+  name: b6vit
+  type: numeric
+  label:
+    da: Vitamin B6 (mg/d)
+    en: Vitamin B6 (mg/d)
+  dataset: nutri6ny
+- id: betaca
+  name: betaca
+  type: numeric
+  label:
+    da: Betacaroten (mcg/d)
+    en: Betacaroten (mcg/d)
+  dataset: nutri6ny
+- id: calciu
+  name: calciu
+  type: numeric
+  label:
+    da: Calcium (mg/d)
+    en: Calcium (mg/d)
+  dataset: nutri6ny
+- id: cho
+  name: cho
+  type: numeric
+  label:
+    da: Tilgængeligt kulhydrat (for GL) (g/d)
+    en: Available carbohydrate (for GL) (g/d)
+  dataset: nutri6ny
+- id: choles
+  name: choles
+  type: numeric
+  label:
+    da: Cholesterol (mg/d)
+    en: Cholesterol (mg/d)
+  dataset: nutri6ny
+- id: cvit
+  name: cvit
+  type: numeric
+  label:
+    da: Vitamin C (mg/d)
+    en: Vitamin C (mg/d)
+  dataset: nutri6ny
+- id: dvit
+  name: dvit
+  type: numeric
+  label:
+    da: Vitamin D (mcg/d)
+    en: Vitamin D (mcg/d)
+  dataset: nutri6ny
+- id: energi
+  name: energi
+  type: numeric
+  label:
+    da: Energi,incl. alkohol (kJ/d)
+    en: Energy,incl. alcohol (kJ/d)
+  dataset: nutri6ny
+- id: energx
+  name: energx
+  type: numeric
+  label:
+    da: Energi,ex.alkohol (kJ/d)
+    en: Energy,excl. alcohol (kJ/d)
+  dataset: nutri6ny
+- id: evit
+  name: evit
+  type: numeric
+  label:
+    da: Vitamin E (alpha-TE/d)
+    en: Vitamin E (alpha-TE/d)
+  dataset: nutri6ny
+- id: fedt
+  name: fedt
+  type: numeric
+  label:
+    da: Fedt (g/d)
+    en: Fats (g/d)
+  dataset: nutri6ny
+- id: fedte
+  name: fedte
+  type: numeric
+  label:
+    da: Fedt-energi (kJ/d)
+    en: Fats-energy (kJ/d)
+  dataset: nutri6ny
+- id: fedtep
+  name: fedtep
+  type: numeric
+  label:
+    da: Fedt (energi%,incl.alkohol)
+    en: Fats (energy%,incl. alcohol)
+  dataset: nutri6ny
+- id: fedtexp
+  name: fedtexp
+  type: numeric
+  label:
+    da: Fedt (energi%,ekskl.alkohol)
+    en: Fats (energy%,excl. alcohol)
+  dataset: nutri6ny
+- id: fedtms
+  name: fedtms
+  type: numeric
+  label:
+    da: Fedtsyrer,mættede (g/d)
+    en: Fatty acids,saturated (g/d)
+  dataset: nutri6ny
+- id: fedtps
+  name: fedtps
+  type: numeric
+  label:
+    da: Fedtsyrer,polyumættede (g/d)
+    en: Fatty acids,polyunsaturated (g/d)
+  dataset: nutri6ny
+- id: fedtus
+  name: fedtus
+  type: numeric
+  label:
+    da: Fedtsyrer,monoumættede (g/d)
+    en: Fatty acids,monounsaturated (g/d)
+  dataset: nutri6ny
+- id: fiskn3
+  name: fiskn3
+  type: numeric
+  label:
+    da: Fedtsyrer, sum af marine n3 (g/d)
+    en: Fatty acids, sum of marine n3 (g/d)
+  dataset: nutri6ny
+- id: folaci
+  name: folaci
+  type: numeric
+  label:
+    da: Folacin (mcg/d)
+    en: Folacin (mcg/d)
+  dataset: nutri6ny
+- id: fosfor
+  name: fosfor
+  type: numeric
+  label:
+    da: Fosfor (mg/d)
+    en: Fosfor (mg/d)
+  dataset: nutri6ny
+- id: frukto
+  name: frukto
+  type: numeric
+  label:
+    da: Fruktose (g/d)
+    en: Fructose (g/d)
+  dataset: nutri6ny
+- id: glukos
+  name: glukos
+  type: numeric
+  label:
+    da: Glukose (g/d)
+    en: Glucose (g/d)
+  dataset: nutri6ny
+- id: jern
+  name: jern
+  type: numeric
+  label:
+    da: Jern (mg/d)
+    en: Iron (mg/d)
+  dataset: nutri6ny
+- id: jod
+  name: jod
+  type: numeric
+  label:
+    da: Jod (mcg/d)
+    en: Iodine (mcg/d)
+  dataset: nutri6ny
+- id: kalium
+  name: kalium
+  type: numeric
+  label:
+    da: Kalium (mg/d)
+    en: Potassium(mg/d)
+  dataset: nutri6ny
+- id: kfibre
+  name: kfibre
+  type: numeric
+  label:
+    da: Kostfibre (g/d)
+    en: Dietary fiber (g/d)
+  dataset: nutri6ny
+- id: kobber
+  name: kobber
+  type: numeric
+  label:
+    da: Kobber (mg/d)
+    en: Copper (mg/d)
+  dataset: nutri6ny
+- id: kulhy
+  name: kulhy
+  type: numeric
+  label:
+    da: Kulhydrat (g/d)
+    en: Carbohydrates (g/d)
+  dataset: nutri6ny
+- id: kulhye
+  name: kulhye
+  type: numeric
+  label:
+    da: Kulhydrat-energi (kJ/d)
+    en: Carbohydrates -energy (kJ/d)
+  dataset: nutri6ny
+- id: kulhyep
+  name: kulhyep
+  type: numeric
+  label:
+    da: Kulhydrat (energi%,incl.alkohol)
+    en: Carbohydrates (energy%,incl.alcohol)
+  dataset: nutri6ny
+- id: kulhyexp
+  name: kulhyexp
+  type: numeric
+  label:
+    da: Kulhydrat (energi%,ekskl.alkohol)
+    en: Carbohydrates (energy%,excl.alcohol)
+  dataset: nutri6ny
+- id: laktos
+  name: laktos
+  type: numeric
+  label:
+    da: Laktose (g/d)
+    en: Lactose (g/d)
+  dataset: nutri6ny
+- id: magnes
+  name: magnes
+  type: numeric
+  label:
+    da: Magnesium (mg/d)
+    en: Magnesium (mg/d)
+  dataset: nutri6ny
+- id: maltos
+  name: maltos
+  type: numeric
+  label:
+    da: Maltose (g/d)
+    en: Maltose (g/d)
+  dataset: nutri6ny
+- id: mangan
+  name: mangan
+  type: numeric
+  label:
+    da: Mangan (mg/d)
+    en: Manganese (mg/d)
+  dataset: nutri6ny
+- id: natriu
+  name: natriu
+  type: numeric
+  label:
+    da: Natrium (mg/d)
+    en: Sodium (mg/d)
+  dataset: nutri6ny
+- id: niacin
+  name: niacin
+  type: numeric
+  label:
+    da: Niacin (mg/d)
+    en: Niacin (mg/d)
+  dataset: nutri6ny
+- id: prot
+  name: prot
+  type: numeric
+  label:
+    da: Protein (g/d)
+    en: Protein (g/d)
+  dataset: nutri6ny
+- id: prote
+  name: prote
+  type: numeric
+  label:
+    da: Protein-energi (kJ/d)
+    en: Protein-energy (kJ/d)
+  dataset: nutri6ny
+- id: protep
+  name: protep
+  type: numeric
+  label:
+    da: Protein (energi%,incl.alkohol)
+    en: Protein (energy%,incl.alcohol)
+  dataset: nutri6ny
+- id: protexp
+  name: protexp
+  type: numeric
+  label:
+    da: Protein (energi%, ekskl. alkohol)
+    en: Protein (energy%,excl.alcohol)
+  dataset: nutri6ny
+- id: retino
+  name: retino
+  type: numeric
+  label:
+    da: Retinol (mcg/d)
+    en: Retinol (mcg/d)
+  dataset: nutri6ny
+- id: ribofl
+  name: ribofl
+  type: numeric
+  label:
+    da: Riboflavin (mg/d)
+    en: Riboflavin (mg/d)
+  dataset: nutri6ny
+- id: saccha
+  name: saccha
+  type: numeric
+  label:
+    da: Saccharose (g/d)
+    en: Sucrose (g/d)
+  dataset: nutri6ny
+- id: selen
+  name: selen
+  type: numeric
+  label:
+    da: Selen (mcg/d)
+    en: Selenium (mcg/d)
+  dataset: nutri6ny
+- id: stivel
+  name: stivel
+  type: numeric
+  label:
+    da: Stivelse (g/d)
+    en: Starch (g/d)
+  dataset: nutri6ny
+- id: sukker
+  name: sukker
+  type: numeric
+  label:
+    da: Sukkerarter,total (g/d)
+    en: Sugars,total (g/d)
+  dataset: nutri6ny
+- id: suktil
+  name: suktil
+  type: numeric
+  label:
+    da: Tilsat sukker (g/d)
+    en: Added sugar(g/d)
+  dataset: nutri6ny
+- id: thiami
+  name: thiami
+  type: numeric
+  label:
+    da: Thiamin (mg/d)
+    en: Thiamine (mg/d)
+  dataset: nutri6ny
+- id: zink
+  name: zink
+  type: numeric
+  label:
+    da: Zink (mg/d)
+    en: Zinc (mg/d)
+  dataset: nutri6ny
+- id: avit_ffq
+  name: avit_ffq
+  type: numeric
+  label:
+    da: FFQ - Vitamin A (RE/d)
+    en: ~
+  dataset: vitmin6_v2
+- id: retino_ffq
+  name: retino_ffq
+  type: numeric
+  label:
+    da: FFQ - Retinol (mcg/d)
+    en: ~
+  dataset: vitmin6_v2
+- id: betaca_ffq
+  name: betaca_ffq
+  type: numeric
+  label:
+    da: FFQ - Betacaroten (mcg/d)
+    en: ~
+  dataset: vitmin6_v2
+- id: cvit_ffq
+  name: cvit_ffq
+  type: numeric
+  label:
+    da: FFQ - Vitamin C (mg/d)
+    en: ~
+  dataset: vitmin6_v2
+- id: evit_ffq
+  name: evit_ffq
+  type: numeric
+  label:
+    da: FFQ - Vitamin E (alpha-TE/d)
+    en: ~
+  dataset: vitmin6_v2
+- id: alfato_ffq
+  name: alfato_ffq
+  type: numeric
+  label:
+    da: FFQ - Alpha-tocopherol (mg/d)
+    en: ~
+  dataset: vitmin6_v2
+- id: dvit_ffq
+  name: dvit_ffq
+  type: numeric
+  label:
+    da: FFQ - Vitamin D (mcg/d)
+    en: ~
+  dataset: vitmin6_v2
+- id: calciu_ffq
+  name: calciu_ffq
+  type: numeric
+  label:
+    da: FFQ - Calcium (mg/d)
+    en: ~
+  dataset: vitmin6_v2
+- id: folaci_ffq
+  name: folaci_ffq
+  type: numeric
+  label:
+    da: FFQ - Folacin (mcg/d)
+    en: ~
+  dataset: vitmin6_v2
+- id: thiami_ffq
+  name: thiami_ffq
+  type: numeric
+  label:
+    da: FFQ - Thiamin (mg/d)
+    en: ~
+  dataset: vitmin6_v2
+- id: ribofl_ffq
+  name: ribofl_ffq
+  type: numeric
+  label:
+    da: FFQ - Riboflavin (mg/d)
+    en: ~
+  dataset: vitmin6_v2
+- id: niacin_ffq
+  name: niacin_ffq
+  type: numeric
+  label:
+    da: FFQ - Niacin (mg/d)
+    en: ~
+  dataset: vitmin6_v2
+- id: neniac_ffq
+  name: neniac_ffq
+  type: numeric
+  label:
+    da: FFQ - Niacin, Niacin ækvivalenter (NE, tilsvarer mg/d)
+    en: ~
+  dataset: vitmin6_v2
+- id: b6vit_ffq
+  name: b6vit_ffq
+  type: numeric
+  label:
+    da: FFQ - Vitamin B6 (mg/d)
+    en: ~
+  dataset: vitmin6_v2
+- id: b12vit_ffq
+  name: b12vit_ffq
+  type: numeric
+  label:
+    da: FFQ - Vitamin B12 (mcg/d)
+    en: ~
+  dataset: vitmin6_v2
+- id: k1vit_ffq
+  name: k1vit_ffq
+  type: numeric
+  label:
+    da: FFQ - Vitamin K1 (mcg/d)
+    en: ~
+  dataset: vitmin6_v2
+- id: pantot_ffq
+  name: pantot_ffq
+  type: numeric
+  label:
+    da: FFQ - Pantotensyre (mg/d)
+    en: ~
+  dataset: vitmin6_v2
+- id: biotin_ffq
+  name: biotin_ffq
+  type: numeric
+  label:
+    da: FFQ - Biotin (mcg/d)
+    en: ~
+  dataset: vitmin6_v2
+- id: jern_ffq
+  name: jern_ffq
+  type: numeric
+  label:
+    da: FFQ - Jern (mg/d)
+    en: ~
+  dataset: vitmin6_v2
+- id: kobber_ffq
+  name: kobber_ffq
+  type: numeric
+  label:
+    da: FFQ - Kobber (mg/d)
+    en: ~
+  dataset: vitmin6_v2
+- id: magnes_ffq
+  name: magnes_ffq
+  type: numeric
+  label:
+    da: FFQ - Magnesium (mg/d)
+    en: ~
+  dataset: vitmin6_v2
+- id: selen_ffq
+  name: selen_ffq
+  type: numeric
+  label:
+    da: FFQ - Selen (mcg/d)
+    en: ~
+  dataset: vitmin6_v2
+- id: zink_ffq
+  name: zink_ffq
+  type: numeric
+  label:
+    da: FFQ - Zink (mg/d)
+    en: ~
+  dataset: vitmin6_v2
+- id: mangan_ffq
+  name: mangan_ffq
+  type: numeric
+  label:
+    da: FFQ - Mangan (mg/d)
+    en: ~
+  dataset: vitmin6_v2
+- id: fosfor_ffq
+  name: fosfor_ffq
+  type: numeric
+  label:
+    da: FFQ - Fosfor (mg/d)
+    en: ~
+  dataset: vitmin6_v2
+- id: kalium_ffq
+  name: kalium_ffq
+  type: numeric
+  label:
+    da: FFQ - Kalium (mg/d)
+    en: ~
+  dataset: vitmin6_v2
+- id: natriu_ffq
+  name: natriu_ffq
+  type: numeric
+  label:
+    da: FFQ - Natrium (mg/d)
+    en: ~
+  dataset: vitmin6_v2
+- id: jod_ffq
+  name: jod_ffq
+  type: numeric
+  label:
+    da: FFQ - Jod (mcg/d)
+    en: ~
+  dataset: vitmin6_v2
+- id: chrom_ffq
+  name: chrom_ffq
+  type: numeric
+  label:
+    da: FFQ - Chrom (mcg/d)
+    en: ~
+  dataset: vitmin6_v2
+- id: nikkel_ffq
+  name: nikkel_ffq
+  type: numeric
+  label:
+    da: FFQ - Nikkel (mcg/d)
+    en: ~
+  dataset: vitmin6_v2
+- id: avit_ktsk
+  name: avit_ktsk
+  type: numeric
+  label:
+    da: Kosttilskud - Vitamin A (RE/d)
+    en: ~
+  dataset: vitmin6_v2
+- id: betaca_ktsk
+  name: betaca_ktsk
+  type: numeric
+  label:
+    da: Kosttilskud - Betacaroten (mcg/d)
+    en: ~
+  dataset: vitmin6_v2
+- id: cvit_ktsk
+  name: cvit_ktsk
+  type: numeric
+  label:
+    da: Kosttilskud - Vitamin C (mg/d)
+    en: ~
+  dataset: vitmin6_v2
+- id: evit_ktsk
+  name: evit_ktsk
+  type: numeric
+  label:
+    da: Kosttilskud - Vitamin E (alpha-TE/d)
+    en: ~
+  dataset: vitmin6_v2
+- id: dvit_ktsk
+  name: dvit_ktsk
+  type: numeric
+  label:
+    da: Kosttilskud - Vitamin D (mcg/d)
+    en: ~
+  dataset: vitmin6_v2
+- id: calciu_ktsk
+  name: calciu_ktsk
+  type: numeric
+  label:
+    da: Kosttilskud - Calcium (mg/d)
+    en: ~
+  dataset: vitmin6_v2
+- id: folaci_ktsk
+  name: folaci_ktsk
+  type: numeric
+  label:
+    da: Kosttilskud - Folacin (mcg/d)
+    en: ~
+  dataset: vitmin6_v2
+- id: thiami_ktsk
+  name: thiami_ktsk
+  type: numeric
+  label:
+    da: Kosttilskud - Thiamin (mg/d)
+    en: ~
+  dataset: vitmin6_v2
+- id: ribofl_ktsk
+  name: ribofl_ktsk
+  type: numeric
+  label:
+    da: Kosttilskud - Riboflavin (mg/d)
+    en: ~
+  dataset: vitmin6_v2
+- id: niacin_ktsk
+  name: niacin_ktsk
+  type: numeric
+  label:
+    da: Kosttilskud - Niacin (mg/d)
+    en: ~
+  dataset: vitmin6_v2
+- id: b6vit_ktsk
+  name: b6vit_ktsk
+  type: numeric
+  label:
+    da: Kosttilskud - Vitamin B6 (mg/d)
+    en: ~
+  dataset: vitmin6_v2
+- id: b12vit_ktsk
+  name: b12vit_ktsk
+  type: numeric
+  label:
+    da: Kosttilskud - Vitamin B12 (mcg/d)
+    en: ~
+  dataset: vitmin6_v2
+- id: k1vit_ktsk
+  name: k1vit_ktsk
+  type: numeric
+  label:
+    da: Kosttilskud - Vitamin K1 (mcg/d)
+    en: ~
+  dataset: vitmin6_v2
+- id: pantot_ktsk
+  name: pantot_ktsk
+  type: numeric
+  label:
+    da: Kosttilskud - Pantotensyre (mg/d)
+    en: ~
+  dataset: vitmin6_v2
+- id: biotin_ktsk
+  name: biotin_ktsk
+  type: numeric
+  label:
+    da: Kosttilskud - Biotin (mcg/d)
+    en: ~
+  dataset: vitmin6_v2
+- id: jern_ktsk
+  name: jern_ktsk
+  type: numeric
+  label:
+    da: Kosttilskud - Jern (mg/d)
+    en: ~
+  dataset: vitmin6_v2
+- id: kobber_ktsk
+  name: kobber_ktsk
+  type: numeric
+  label:
+    da: Kosttilskud - Kobber (mg/d)
+    en: ~
+  dataset: vitmin6_v2
+- id: magnes_ktsk
+  name: magnes_ktsk
+  type: numeric
+  label:
+    da: Kosttilskud - Magnesium (mg/d)
+    en: ~
+  dataset: vitmin6_v2
+- id: selen_ktsk
+  name: selen_ktsk
+  type: numeric
+  label:
+    da: Kosttilskud - Selen (mcg/d)
+    en: ~
+  dataset: vitmin6_v2
+- id: zink_ktsk
+  name: zink_ktsk
+  type: numeric
+  label:
+    da: Kosttilskud - Zink (mg/d)
+    en: ~
+  dataset: vitmin6_v2
+- id: mangan_ktsk
+  name: mangan_ktsk
+  type: numeric
+  label:
+    da: Kosttilskud - Mangan (mg/d)
+    en: ~
+  dataset: vitmin6_v2
+- id: fosfor_ktsk
+  name: fosfor_ktsk
+  type: numeric
+  label:
+    da: Kosttilskud - Fosfor (mg/d)
+    en: ~
+  dataset: vitmin6_v2
+- id: kalium_ktsk
+  name: kalium_ktsk
+  type: numeric
+  label:
+    da: Kosttilskud - Kalium (mg/d)
+    en: ~
+  dataset: vitmin6_v2
+- id: natriu_ktsk
+  name: natriu_ktsk
+  type: numeric
+  label:
+    da: Kosttilskud - Natrium (mg/d)
+    en: ~
+  dataset: vitmin6_v2
+- id: jod_ktsk
+  name: jod_ktsk
+  type: numeric
+  label:
+    da: Kosttilskud - Jod (mcg/d)
+    en: ~
+  dataset: vitmin6_v2
+- id: chrom_ktsk
+  name: chrom_ktsk
+  type: numeric
+  label:
+    da: Kosttilskud - Chrom (mcg/d)
+    en: ~
+  dataset: vitmin6_v2
+- id: k1vit_tot
+  name: k1vit_tot
+  type: numeric
+  label:
+    da: Total - Vitamin K1 (mcg/d)
+    en: ~
+  dataset: vitmin6_v2
+- id: pantot_tot
+  name: pantot_tot
+  type: numeric
+  label:
+    da: Total - Pantotensyre (mg/d)
+    en: ~
+  dataset: vitmin6_v2
+- id: avit_tot
+  name: avit_tot
+  type: numeric
+  label:
+    da: Total - Vitamin A (RE/d)
+    en: ~
+  dataset: vitmin6_v2
+- id: betaca_tot
+  name: betaca_tot
+  type: numeric
+  label:
+    da: Total - Betacaroten (mcg/d)
+    en: ~
+  dataset: vitmin6_v2
+- id: cvit_tot
+  name: cvit_tot
+  type: numeric
+  label:
+    da: Total - Vitamin C (mg/d)
+    en: ~
+  dataset: vitmin6_v2
+- id: evit_tot
+  name: evit_tot
+  type: numeric
+  label:
+    da: Total - Vitamin E (alpha-TE/d)
+    en: ~
+  dataset: vitmin6_v2
+- id: dvit_tot
+  name: dvit_tot
+  type: numeric
+  label:
+    da: Total - Vitamin D (mcg/d)
+    en: ~
+  dataset: vitmin6_v2
+- id: calciu_tot
+  name: calciu_tot
+  type: numeric
+  label:
+    da: Total - Calcium (mg/d)
+    en: ~
+  dataset: vitmin6_v2
+- id: folaci_tot
+  name: folaci_tot
+  type: numeric
+  label:
+    da: Total - Folacin (mcg/d)
+    en: ~
+  dataset: vitmin6_v2
+- id: thiami_tot
+  name: thiami_tot
+  type: numeric
+  label:
+    da: Total - Thiamin (mg/d)
+    en: ~
+  dataset: vitmin6_v2
+- id: ribofl_tot
+  name: ribofl_tot
+  type: numeric
+  label:
+    da: Total - Riboflavin (mg/d)
+    en: ~
+  dataset: vitmin6_v2
+- id: niacin_tot
+  name: niacin_tot
+  type: numeric
+  label:
+    da: Total - Niacin (mg/d)
+    en: ~
+  dataset: vitmin6_v2
+- id: b6vit_tot
+  name: b6vit_tot
+  type: numeric
+  label:
+    da: Total - Vitamin B6 (mg/d)
+    en: ~
+  dataset: vitmin6_v2
+- id: b12vit_tot
+  name: b12vit_tot
+  type: numeric
+  label:
+    da: Total - Vitamin B12 (mcg/d)
+    en: ~
+  dataset: vitmin6_v2
+- id: biotin_tot
+  name: biotin_tot
+  type: numeric
+  label:
+    da: Total - Biotin (mcg/d)
+    en: ~
+  dataset: vitmin6_v2
+- id: jern_tot
+  name: jern_tot
+  type: numeric
+  label:
+    da: Total - Jern (mg/d)
+    en: ~
+  dataset: vitmin6_v2
+- id: kobber_tot
+  name: kobber_tot
+  type: numeric
+  label:
+    da: Total - Kobber (mg/d)
+    en: ~
+  dataset: vitmin6_v2
+- id: magnes_tot
+  name: magnes_tot
+  type: numeric
+  label:
+    da: Total - Magnesium (mg/d)
+    en: ~
+  dataset: vitmin6_v2
+- id: selen_tot
+  name: selen_tot
+  type: numeric
+  label:
+    da: Total - Selen (mcg/d)
+    en: ~
+  dataset: vitmin6_v2
+- id: zink_tot
+  name: zink_tot
+  type: numeric
+  label:
+    da: Total - Zink (mg/d)
+    en: ~
+  dataset: vitmin6_v2
+- id: mangan_tot
+  name: mangan_tot
+  type: numeric
+  label:
+    da: Total - Mangan (mg/d)
+    en: ~
+  dataset: vitmin6_v2
+- id: fosfor_tot
+  name: fosfor_tot
+  type: numeric
+  label:
+    da: Total - Fosfor (mg/d)
+    en: ~
+  dataset: vitmin6_v2
+- id: kalium_tot
+  name: kalium_tot
+  type: numeric
+  label:
+    da: Total - Kalium (mg/d)
+    en: ~
+  dataset: vitmin6_v2
+- id: natriu_tot
+  name: natriu_tot
+  type: numeric
+  label:
+    da: Total - Natrium (mg/d)
+    en: ~
+  dataset: vitmin6_v2
+- id: jod_tot
+  name: jod_tot
+  type: numeric
+  label:
+    da: Total - Jod (mcg/d)
+    en: ~
+  dataset: vitmin6_v2
+- id: chrom_tot
+  name: chrom_tot
+  type: numeric
+  label:
+    da: Total - Chrom (mcg/d)
+    en: ~
+  dataset: vitmin6_v2

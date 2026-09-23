@@ -1,0 +1,6893 @@
+id: dchng
+name: Diet, Cancer and Health - Next Generations (DCH-NG)
+one_row_per: person
+join_keys:
+- pnr
+columns:
+- id: pnr
+  name: pnr
+  type: character
+  role: join_key
+- id: kkhngid
+  name: kkhngid
+  type: character
+  label:
+    da: KKHNGID
+    en: ~
+  dataset: admin
+- id: inv_date
+  name: inv_date
+  type: date
+  label:
+    da: invitationsdato
+    en: ~
+  dataset: admin
+- id: til_date
+  name: til_date
+  type: date
+  label:
+    da: tilsagn dato
+    en: ~
+  dataset: admin
+- id: sc_date
+  name: sc_date
+  type: date
+  label:
+    da: ~
+    en: Official participation date in the DCH-NG Study - Study center visit completion
+      date
+  dataset: admin
+- id: ffq_date
+  name: ffq_date
+  type: date
+  label:
+    da: ~
+    en: FFQ completion date
+  dataset: admin
+- id: lsq_date
+  name: lsq_date
+  type: date
+  label:
+    da: ~
+    en: LSQ completion date
+  dataset: admin
+- id: time_origin
+  name: time_origin
+  type: character
+  label:
+    da: ~
+    en: Baseline, Followup at 6 month or followup at 12 month (MAX and DiGuMeT participants)
+  dataset: admin
+- id: isdigumet
+  name: isdigumet
+  type: numeric
+  label:
+    da: Status variabel der indikerer om forsøgsperson er i DiGuMeT subpopulation
+    en: ~
+  dataset: digumet_deltagere
+- id: energitot
+  name: energitot
+  type: numeric
+  label:
+    da: ~
+    en: Energy total (kJ/day)
+  dataset: energitot
+- id: gsuf01001
+  name: gsuf01001
+  type: numeric
+  label:
+    da: Yoghurt, A38 eller tykmælk (g/dag)
+    en: ~
+  dataset: ffq_gpd
+- id: gsuf01003
+  name: gsuf01003
+  type: numeric
+  label:
+    da: Ylette, ymer eller cultura (g/dag)
+    en: ~
+  dataset: ffq_gpd
+- id: gsuf01005
+  name: gsuf01005
+  type: numeric
+  label:
+    da: Græsk yoghurt, skyr, fromage frais eller kvark (g/dag)
+    en: ~
+  dataset: ffq_gpd
+- id: gsmf01001
+  name: gsmf01001
+  type: numeric
+  label:
+    da: Frugtyoghurt eller A38 med frugt (g/dag)
+    en: ~
+  dataset: ffq_gpd
+- id: gsmf01003
+  name: gsmf01003
+  type: numeric
+  label:
+    da: Cultura med frugt (g/dag)
+    en: ~
+  dataset: ffq_gpd
+- id: gsmf01005
+  name: gsmf01005
+  type: numeric
+  label:
+    da: Skyr med frugt (g/dag)
+    en: ~
+  dataset: ffq_gpd
+- id: gkp01001
+  name: gkp01001
+  type: numeric
+  label:
+    da: Havregryn, speltflager, rugflager eller lignende (g/dag)
+    en: ~
+  dataset: ffq_gpd
+- id: gkp01002
+  name: gkp01002
+  type: numeric
+  label:
+    da: Havregrød eller anden fuldkornsgrød (g/dag)
+    en: ~
+  dataset: ffq_gpd
+- id: gkp01003
+  name: gkp01003
+  type: numeric
+  label:
+    da: Morgenmadsprodukter uden nøglehuls- eller fuldkornsmærket (f.eks. Choco Pops,
+      Guldkorn eller Frosties) (g/dag)
+    en: ~
+  dataset: ffq_gpd
+- id: gkp01004
+  name: gkp01004
+  type: numeric
+  label:
+    da: |-
+      Morgenmadsprodukter med fuldkorn – mærket med nøglehuls- eller fuldkornsmærket (f.eks. müsli, ymerdrys, havrefras eller
+      rugfras) (g/dag)
+    en: ~
+  dataset: ffq_gpd
+- id: gmorgmaelk
+  name: gmorgmaelk
+  type: numeric
+  label:
+    da: Mælk til kornprodukter (g/dag)
+    en: ~
+  dataset: ffq_gpd
+- id: gfpb01001
+  name: gfpb01001
+  type: numeric
+  label:
+    da: Rugbrød (g/dag)
+    en: ~
+  dataset: ffq_gpd
+- id: gfpb01005
+  name: gfpb01005
+  type: numeric
+  label:
+    da: Hvidt brød eller boller uden  fuldkorn (g/dag)
+    en: ~
+  dataset: ffq_gpd
+- id: gfpb01009
+  name: gfpb01009
+  type: numeric
+  label:
+    da: Grovbrød eller grovboller med fuldkorn f.eks. mærket med nøglehuls- eller
+      fuldkornsmærket (g/dag)
+    en: ~
+  dataset: ffq_gpd
+- id: gfpb01013
+  name: gfpb01013
+  type: numeric
+  label:
+    da: Knækbrød eller riskiks uden fuldkorn (g/dag)
+    en: ~
+  dataset: ffq_gpd
+- id: gfpb01017
+  name: gfpb01017
+  type: numeric
+  label:
+    da: Knækbrød eller riskiks med fuldkorn f.eks. mærket med nøglehuls- eller fuldkornsmærket
+      (g/dag)
+    en: ~
+  dataset: ffq_gpd
+- id: gfedtfpb01001
+  name: gfedtfpb01001
+  type: numeric
+  label:
+    da: Fedtstof på rugbrød (g/dag)
+    en: ~
+  dataset: ffq_gpd
+- id: gfedtfpb01005
+  name: gfedtfpb01005
+  type: numeric
+  label:
+    da: Fedtstof på hvidt brød eller boller uden fuldkorn (g/dag)
+    en: ~
+  dataset: ffq_gpd
+- id: gfedtfpb01009
+  name: gfedtfpb01009
+  type: numeric
+  label:
+    da: Fedtstof på grovbrød eller grovboller med fuldkorn f.eks. mærket med nøglehuls-
+      eller fuldkornsmærket (g/dag)
+    en: ~
+  dataset: ffq_gpd
+- id: gfedtfpb01013
+  name: gfedtfpb01013
+  type: numeric
+  label:
+    da: Fedtstof på knækbrød eller riskiks uden fuldkorn (g/dag)
+    en: ~
+  dataset: ffq_gpd
+- id: gfedtfpb01017
+  name: gfedtfpb01017
+  type: numeric
+  label:
+    da: Fedtstof på knækbrød eller riskiks med fuldkorn f.eks. mærket med nøglehuls-
+      eller fuldkornsmærket (g/dag)
+    en: ~
+  dataset: ffq_gpd
+- id: gpl01002
+  name: gpl01002
+  type: numeric
+  label:
+    da: Skæreost som pålæg (g/dag)
+    en: ~
+  dataset: ffq_gpd
+- id: gpl01004
+  name: gpl01004
+  type: numeric
+  label:
+    da: Brie, Camembert og lignende som pålæg (g/dag)
+    en: ~
+  dataset: ffq_gpd
+- id: gpl01005
+  name: gpl01005
+  type: numeric
+  label:
+    da: Danablue, Roquefort og lignende som pålæg (g/dag)
+    en: ~
+  dataset: ffq_gpd
+- id: gpl01006
+  name: gpl01006
+  type: numeric
+  label:
+    da: Hytteost og rygeost som pålæg (g/dag)
+    en: ~
+  dataset: ffq_gpd
+- id: gpl01007
+  name: gpl01007
+  type: numeric
+  label:
+    da: Smøreost eller smelteost som pålæg (g/dag)
+    en: ~
+  dataset: ffq_gpd
+- id: gpl01008
+  name: gpl01008
+  type: numeric
+  label:
+    da: Flødeost som pålæg (g/dag)
+    en: ~
+  dataset: ffq_gpd
+- id: gpl02002
+  name: gpl02002
+  type: numeric
+  label:
+    da: Leverpostej og paté som pålæg (g/dag)
+    en: ~
+  dataset: ffq_gpd
+- id: gpl02003
+  name: gpl02003
+  type: numeric
+  label:
+    da: Spegepølse og salami som pålæg (g/dag)
+    en: ~
+  dataset: ffq_gpd
+- id: gpl02004
+  name: gpl02004
+  type: numeric
+  label:
+    da: Kødpølse og rullepølse som pålæg (g/dag)
+    en: ~
+  dataset: ffq_gpd
+- id: gpl02005
+  name: gpl02005
+  type: numeric
+  label:
+    da: Skinke og hamburgerryg som pålæg (g/dag)
+    en: ~
+  dataset: ffq_gpd
+- id: gpl02006
+  name: gpl02006
+  type: numeric
+  label:
+    da: Roastbeef som pålæg (g/dag)
+    en: ~
+  dataset: ffq_gpd
+- id: gpl02007
+  name: gpl02007
+  type: numeric
+  label:
+    da: Svinefilet og saltkød som pålæg (g/dag)
+    en: ~
+  dataset: ffq_gpd
+- id: gpl02008
+  name: gpl02008
+  type: numeric
+  label:
+    da: Kylling- og kalkunpålæg (g/dag)
+    en: ~
+  dataset: ffq_gpd
+- id: gpl02009
+  name: gpl02009
+  type: numeric
+  label:
+    da: Flæskesteg som pålæg (g/dag)
+    en: ~
+  dataset: ffq_gpd
+- id: gpl02010
+  name: gpl02010
+  type: numeric
+  label:
+    da: Hakkebøf og frikadelle som pålæg (g/dag)
+    en: ~
+  dataset: ffq_gpd
+- id: gpl02011
+  name: gpl02011
+  type: numeric
+  label:
+    da: Carpaccio og tatar som pålæg (g/dag)
+    en: ~
+  dataset: ffq_gpd
+- id: gpl03002
+  name: gpl03002
+  type: numeric
+  label:
+    da: Røget sild og makrel som pålæg (g/dag)
+    en: ~
+  dataset: ffq_gpd
+- id: gpl03003
+  name: gpl03003
+  type: numeric
+  label:
+    da: Marineret sild og lignende som pålæg (g/dag)
+    en: ~
+  dataset: ffq_gpd
+- id: gpl03004
+  name: gpl03004
+  type: numeric
+  label:
+    da: Makrel i tomat, chilisovs og lignende som pålæg (g/dag)
+    en: ~
+  dataset: ffq_gpd
+- id: gpl03005
+  name: gpl03005
+  type: numeric
+  label:
+    da: Tun (i vand, olie eller tomat) som pålæg (g/dag)
+    en: ~
+  dataset: ffq_gpd
+- id: gpl03006
+  name: gpl03006
+  type: numeric
+  label:
+    da: Sardin i olie som pålæg (g/dag)
+    en: ~
+  dataset: ffq_gpd
+- id: gpl03007
+  name: gpl03007
+  type: numeric
+  label:
+    da: Torskerogn som pålæg (g/dag)
+    en: ~
+  dataset: ffq_gpd
+- id: gpl03008
+  name: gpl03008
+  type: numeric
+  label:
+    da: Fiskefrikadelle som pålæg (g/dag)
+    en: ~
+  dataset: ffq_gpd
+- id: gpl03009
+  name: gpl03009
+  type: numeric
+  label:
+    da: Fiskefilét som pålæg (g/dag)
+    en: ~
+  dataset: ffq_gpd
+- id: gpl03010
+  name: gpl03010
+  type: numeric
+  label:
+    da: Rejer som pålæg (g/dag)
+    en: ~
+  dataset: ffq_gpd
+- id: gpl03011
+  name: gpl03011
+  type: numeric
+  label:
+    da: Kaviar som pålæg (g/dag)
+    en: ~
+  dataset: ffq_gpd
+- id: gpl03012
+  name: gpl03012
+  type: numeric
+  label:
+    da: Røget laks, ørred og hellefisk som pålæg (g/dag)
+    en: ~
+  dataset: ffq_gpd
+- id: gpl03013
+  name: gpl03013
+  type: numeric
+  label:
+    da: Sildepostej som pålæg (g/dag)
+    en: ~
+  dataset: ffq_gpd
+- id: gpl04002
+  name: gpl04002
+  type: numeric
+  label:
+    da: Mayonnaise/pålægssalat med kød (g/dag)
+    en: ~
+  dataset: ffq_gpd
+- id: gpl04003
+  name: gpl04003
+  type: numeric
+  label:
+    da: Mayonnaise/pålægssalat med fisk/skaldyr (g/dag)
+    en: ~
+  dataset: ffq_gpd
+- id: gpl04004
+  name: gpl04004
+  type: numeric
+  label:
+    da: Mayonnaise/pålægssalat uden kød/fisk (g/dag)
+    en: ~
+  dataset: ffq_gpd
+- id: gpl04005
+  name: gpl04005
+  type: numeric
+  label:
+    da: Mayonnaise (som pynt/tilbehør) (g/dag)
+    en: ~
+  dataset: ffq_gpd
+- id: gpl04006
+  name: gpl04006
+  type: numeric
+  label:
+    da: Remoulade (pynt/tilbehør) (g/dag)
+    en: ~
+  dataset: ffq_gpd
+- id: gpl05002
+  name: gpl05002
+  type: numeric
+  label:
+    da: Kødfrie postejer, patéer etc. som pålæg (g/dag)
+    en: ~
+  dataset: ffq_gpd
+- id: gpl05003
+  name: gpl05003
+  type: numeric
+  label:
+    da: Hummus som pålæg (g/dag)
+    en: ~
+  dataset: ffq_gpd
+- id: gpl06002
+  name: gpl06002
+  type: numeric
+  label:
+    da: Marmelade og syltetøj (g/dag)
+    en: ~
+  dataset: ffq_gpd
+- id: gpl06003
+  name: gpl06003
+  type: numeric
+  label:
+    da: Honning (g/dag)
+    en: ~
+  dataset: ffq_gpd
+- id: gpl06004
+  name: gpl06004
+  type: numeric
+  label:
+    da: Figenpålæg (g/dag)
+    en: ~
+  dataset: ffq_gpd
+- id: gpl06005
+  name: gpl06005
+  type: numeric
+  label:
+    da: Pålægschokolade, Nutella og lignende (g/dag)
+    en: ~
+  dataset: ffq_gpd
+- id: gret01002
+  name: gret01002
+  type: numeric
+  label:
+    da: Frikadeller og kødboller (g/dag)
+    en: ~
+  dataset: ffq_gpd
+- id: gret01005
+  name: gret01005
+  type: numeric
+  label:
+    da: Hakkebøf (g/dag)
+    en: ~
+  dataset: ffq_gpd
+- id: gret01009
+  name: gret01009
+  type: numeric
+  label:
+    da: Karbonader/krebinetter (g/dag)
+    en: ~
+  dataset: ffq_gpd
+- id: gret01012
+  name: gret01012
+  type: numeric
+  label:
+    da: Medisterpølse (g/dag)
+    en: ~
+  dataset: ffq_gpd
+- id: gret01014
+  name: gret01014
+  type: numeric
+  label:
+    da: Wienerpølser eller lignende (også hotdogs) (g/dag)
+    en: ~
+  dataset: ffq_gpd
+- id: gret01016
+  name: gret01016
+  type: numeric
+  label:
+    da: Kødsovs (g/dag)
+    en: ~
+  dataset: ffq_gpd
+- id: gret01019
+  name: gret01019
+  type: numeric
+  label:
+    da: Forloren hare og farsbrød (g/dag)
+    en: ~
+  dataset: ffq_gpd
+- id: gret01022
+  name: gret01022
+  type: numeric
+  label:
+    da: Lasagne, moussaka eller lignende (g/dag)
+    en: ~
+  dataset: ffq_gpd
+- id: gret02002
+  name: gret02002
+  type: numeric
+  label:
+    da: Oksesteg og kalvesteg (g/dag)
+    en: ~
+  dataset: ffq_gpd
+- id: gret02003
+  name: gret02003
+  type: numeric
+  label:
+    da: Oksebøf (ikke hakkebøf) (g/dag)
+    en: ~
+  dataset: ffq_gpd
+- id: gret02004
+  name: gret02004
+  type: numeric
+  label:
+    da: Kalvekotelet og kalveschnitzel (g/dag)
+    en: ~
+  dataset: ffq_gpd
+- id: gret02005
+  name: gret02005
+  type: numeric
+  label:
+    da: Mørbradbøf (g/dag)
+    en: ~
+  dataset: ffq_gpd
+- id: gret02006
+  name: gret02006
+  type: numeric
+  label:
+    da: Sammenkogte retter med okse- og kalvekød (f.eks. gullasch) (g/dag)
+    en: ~
+  dataset: ffq_gpd
+- id: gret03002
+  name: gret03002
+  type: numeric
+  label:
+    da: Flæskesteg og ribbensteg (g/dag)
+    en: ~
+  dataset: ffq_gpd
+- id: gret03003
+  name: gret03003
+  type: numeric
+  label:
+    da: Hamburgerryg og skinke (g/dag)
+    en: ~
+  dataset: ffq_gpd
+- id: gret03004
+  name: gret03004
+  type: numeric
+  label:
+    da: Stegt flæsk/bacon (g/dag)
+    en: ~
+  dataset: ffq_gpd
+- id: gret03005
+  name: gret03005
+  type: numeric
+  label:
+    da: Mørbradbøf (g/dag)
+    en: ~
+  dataset: ffq_gpd
+- id: gret03006
+  name: gret03006
+  type: numeric
+  label:
+    da: Svinekotelet og skinkeschnitzel (g/dag)
+    en: ~
+  dataset: ffq_gpd
+- id: gret03007
+  name: gret03007
+  type: numeric
+  label:
+    da: Sammenkogte retter med svinekød (g/dag)
+    en: ~
+  dataset: ffq_gpd
+- id: gret04002
+  name: gret04002
+  type: numeric
+  label:
+    da: Lammesteg (f.eks. lammekølle) (g/dag)
+    en: ~
+  dataset: ffq_gpd
+- id: gret04003
+  name: gret04003
+  type: numeric
+  label:
+    da: Lammekotelet (g/dag)
+    en: ~
+  dataset: ffq_gpd
+- id: gret04004
+  name: gret04004
+  type: numeric
+  label:
+    da: Sammenkogte retter med lammekød (g/dag)
+    en: ~
+  dataset: ffq_gpd
+- id: gret05002
+  name: gret05002
+  type: numeric
+  label:
+    da: Kylling (g/dag)
+    en: ~
+  dataset: ffq_gpd
+- id: gret05003
+  name: gret05003
+  type: numeric
+  label:
+    da: Kyllingenuggets/kylletter (g/dag)
+    en: ~
+  dataset: ffq_gpd
+- id: gret05004
+  name: gret05004
+  type: numeric
+  label:
+    da: Kalkun (g/dag)
+    en: ~
+  dataset: ffq_gpd
+- id: gret05005
+  name: gret05005
+  type: numeric
+  label:
+    da: And og gås (g/dag)
+    en: ~
+  dataset: ffq_gpd
+- id: gret05006
+  name: gret05006
+  type: numeric
+  label:
+    da: Sammenkogte retter med fjerkræ (f.eks. wokretter) (g/dag)
+    en: ~
+  dataset: ffq_gpd
+- id: gret06002
+  name: gret06002
+  type: numeric
+  label:
+    da: Fiskefrikadeller (g/dag)
+    en: ~
+  dataset: ffq_gpd
+- id: gret06003
+  name: gret06003
+  type: numeric
+  label:
+    da: Fiskepinde (g/dag)
+    en: ~
+  dataset: ffq_gpd
+- id: gret06004
+  name: gret06004
+  type: numeric
+  label:
+    da: Rødspætte eller skrubbe (g/dag)
+    en: ~
+  dataset: ffq_gpd
+- id: gret06005
+  name: gret06005
+  type: numeric
+  label:
+    da: Torsk eller sej (g/dag)
+    en: ~
+  dataset: ffq_gpd
+- id: gret06006
+  name: gret06006
+  type: numeric
+  label:
+    da: Sild (g/dag)
+    en: ~
+  dataset: ffq_gpd
+- id: gret06007
+  name: gret06007
+  type: numeric
+  label:
+    da: Makrel (g/dag)
+    en: ~
+  dataset: ffq_gpd
+- id: gret06008
+  name: gret06008
+  type: numeric
+  label:
+    da: Laks (g/dag)
+    en: ~
+  dataset: ffq_gpd
+- id: gret06009
+  name: gret06009
+  type: numeric
+  label:
+    da: Tun (g/dag)
+    en: ~
+  dataset: ffq_gpd
+- id: gret06010
+  name: gret06010
+  type: numeric
+  label:
+    da: Ørred eller forel (g/dag)
+    en: ~
+  dataset: ffq_gpd
+- id: gret06011
+  name: gret06011
+  type: numeric
+  label:
+    da: Pangasius (g/dag)
+    en: ~
+  dataset: ffq_gpd
+- id: gret06012
+  name: gret06012
+  type: numeric
+  label:
+    da: Hornfisk (g/dag)
+    en: ~
+  dataset: ffq_gpd
+- id: gret06013
+  name: gret06013
+  type: numeric
+  label:
+    da: Hellefisk (g/dag)
+    en: ~
+  dataset: ffq_gpd
+- id: gret06014
+  name: gret06014
+  type: numeric
+  label:
+    da: Torskerogn (g/dag)
+    en: ~
+  dataset: ffq_gpd
+- id: gret06015
+  name: gret06015
+  type: numeric
+  label:
+    da: Skaldyr (f.eks. rejer eller krebs) (g/dag)
+    en: ~
+  dataset: ffq_gpd
+- id: gret06016
+  name: gret06016
+  type: numeric
+  label:
+    da: Sushi (g/dag)
+    en: ~
+  dataset: ffq_gpd
+- id: gret07002
+  name: gret07002
+  type: numeric
+  label:
+    da: Stegt indmad (f.eks. stegt lever) (g/dag)
+    en: ~
+  dataset: ffq_gpd
+- id: gret07003
+  name: gret07003
+  type: numeric
+  label:
+    da: Sammenkogte retter med indmad (g/dag)
+    en: ~
+  dataset: ffq_gpd
+- id: gret08002
+  name: gret08002
+  type: numeric
+  label:
+    da: Kogt æg (g/dag)
+    en: ~
+  dataset: ffq_gpd
+- id: gret08003
+  name: gret08003
+  type: numeric
+  label:
+    da: Røræg (g/dag)
+    en: ~
+  dataset: ffq_gpd
+- id: gret08004
+  name: gret08004
+  type: numeric
+  label:
+    da: Spejlæg (g/dag)
+    en: ~
+  dataset: ffq_gpd
+- id: gret08005
+  name: gret08005
+  type: numeric
+  label:
+    da: Æggekage og omelet (g/dag)
+    en: ~
+  dataset: ffq_gpd
+- id: gret08006
+  name: gret08006
+  type: numeric
+  label:
+    da: Gratin med skinke (g/dag)
+    en: ~
+  dataset: ffq_gpd
+- id: gnomeat01
+  name: gnomeat01
+  type: numeric
+  label:
+    da: Gratin uden skinke (g/dag)
+    en: ~
+  dataset: ffq_gpd
+- id: gret09002
+  name: gret09002
+  type: numeric
+  label:
+    da: Okse- og hønsekødssuppe (g/dag)
+    en: ~
+  dataset: ffq_gpd
+- id: gnomeat02
+  name: gnomeat02
+  type: numeric
+  label:
+    da: Hønsekødssuppe uden oksekød (g/dag)
+    en: ~
+  dataset: ffq_gpd
+- id: gret09003
+  name: gret09003
+  type: numeric
+  label:
+    da: Tomatsuppe (g/dag)
+    en: ~
+  dataset: ffq_gpd
+- id: gret09004
+  name: gret09004
+  type: numeric
+  label:
+    da: Suppe med rodfrugter (f.eks. kartoffel-, jordskokke- eller rødbedesuppe)(g/dag)
+    en: ~
+  dataset: ffq_gpd
+- id: gret09005
+  name: gret09005
+  type: numeric
+  label:
+    da: Anden grøntsagssuppe, minestrone og lignende (g/dag)
+    en: ~
+  dataset: ffq_gpd
+- id: gret09006
+  name: gret09006
+  type: numeric
+  label:
+    da: Mælke- eller flødebaseret suppe (f.eks. asparges- og karrysuppe) (g/dag)
+    en: ~
+  dataset: ffq_gpd
+- id: gret10002
+  name: gret10002
+  type: numeric
+  label:
+    da: Retter med bælgfrugter (f.eks. falafel eller bønnefrikadeller) (g/dag)
+    en: ~
+  dataset: ffq_gpd
+- id: gret10003
+  name: gret10003
+  type: numeric
+  label:
+    da: Grøntsagstærte og grøntsagsbøf (g/dag)
+    en: ~
+  dataset: ffq_gpd
+- id: gret10004
+  name: gret10004
+  type: numeric
+  label:
+    da: Sammenkogte grøntsagsretter (ikke tilbehør) (g/dag)
+    en: ~
+  dataset: ffq_gpd
+- id: gret10005
+  name: gret10005
+  type: numeric
+  label:
+    da: Risengrød (g/dag)
+    en: ~
+  dataset: ffq_gpd
+- id: gret10006
+  name: gret10006
+  type: numeric
+  label:
+    da: Pitabrød, madpandekager, wraps med kød (g/dag)
+    en: ~
+  dataset: ffq_gpd
+- id: gnomeat03
+  name: gnomeat03
+  type: numeric
+  label:
+    da: Pitabrød, Madpandekager, wraps uden kød (g/dag)
+    en: ~
+  dataset: ffq_gpd
+- id: gret10007
+  name: gret10007
+  type: numeric
+  label:
+    da: Pizza med kød(g/dag)
+    en: ~
+  dataset: ffq_gpd
+- id: gnomeat04
+  name: gnomeat04
+  type: numeric
+  label:
+    da: Pizza uden kød (g/dag)
+    en: ~
+  dataset: ffq_gpd
+- id: gret10008
+  name: gret10008
+  type: numeric
+  label:
+    da: Burger med kød (g/dag)
+    en: ~
+  dataset: ffq_gpd
+- id: gnomeat05
+  name: gnomeat05
+  type: numeric
+  label:
+    da: Burger uden kød (g/dag)
+    en: ~
+  dataset: ffq_gpd
+- id: gret10009
+  name: gret10009
+  type: numeric
+  label:
+    da: Forårsruller med kød (g/dag)
+    en: ~
+  dataset: ffq_gpd
+- id: gnomeat06
+  name: gnomeat06
+  type: numeric
+  label:
+    da: Forårsruller uden kød (g/dag)
+    en: ~
+  dataset: ffq_gpd
+- id: gtil01001
+  name: gtil01001
+  type: numeric
+  label:
+    da: Kogte kartofler (g/dag)
+    en: ~
+  dataset: ffq_gpd
+- id: gtil01002
+  name: gtil01002
+  type: numeric
+  label:
+    da: Ovnstegte kartofler (g/dag)
+    en: ~
+  dataset: ffq_gpd
+- id: gtil01003
+  name: gtil01003
+  type: numeric
+  label:
+    da: Pommes frites (g/dag)
+    en: ~
+  dataset: ffq_gpd
+- id: gtil01004
+  name: gtil01004
+  type: numeric
+  label:
+    da: Brasede og stegte kartofler (g/dag)
+    en: ~
+  dataset: ffq_gpd
+- id: gtil01005
+  name: gtil01005
+  type: numeric
+  label:
+    da: Kartoffelmos (g/dag)
+    en: ~
+  dataset: ffq_gpd
+- id: gtil01006
+  name: gtil01006
+  type: numeric
+  label:
+    da: Flødekartofler eller kartoffelsalat (g/dag)
+    en: ~
+  dataset: ffq_gpd
+- id: gtil01007
+  name: gtil01007
+  type: numeric
+  label:
+    da: Bagt kartoffel (g/dag)
+    en: ~
+  dataset: ffq_gpd
+- id: gtil01008
+  name: gtil01008
+  type: numeric
+  label:
+    da: Lys pasta og nudler (g/dag)
+    en: ~
+  dataset: ffq_gpd
+- id: gtil01009
+  name: gtil01009
+  type: numeric
+  label:
+    da: Fuldkornspasta (g/dag)
+    en: ~
+  dataset: ffq_gpd
+- id: gtil01010
+  name: gtil01010
+  type: numeric
+  label:
+    da: Hvide ris (parboiled, jasmin, basmati) (g/dag)
+    en: ~
+  dataset: ffq_gpd
+- id: gtil01011
+  name: gtil01011
+  type: numeric
+  label:
+    da: Brune/fuldkornsris (g/dag)
+    en: ~
+  dataset: ffq_gpd
+- id: gtil01012
+  name: gtil01012
+  type: numeric
+  label:
+    da: Bulgur og couscous (g/dag)
+    en: ~
+  dataset: ffq_gpd
+- id: gtil01013
+  name: gtil01013
+  type: numeric
+  label:
+    da: Kogte kerner, perlespelt, perlebyg eller quinoa (g/dag)
+    en: ~
+  dataset: ffq_gpd
+- id: gtil01014
+  name: gtil01014
+  type: numeric
+  label:
+    da: Sojabønner (inkl. tofu og miso) (g/dag)
+    en: ~
+  dataset: ffq_gpd
+- id: gtil01015
+  name: gtil01015
+  type: numeric
+  label:
+    da: Linser og bælgfrugter (f.eks. baked beans, kidneybønner eller kikærter) (g/dag)
+    en: ~
+  dataset: ffq_gpd
+- id: gtil01016
+  name: gtil01016
+  type: numeric
+  label:
+    da: Revet ost som tilbehør (f.eks. revet mozzarella eller cheddar) (g/dag)
+    en: ~
+  dataset: ffq_gpd
+- id: gtil01017
+  name: gtil01017
+  type: numeric
+  label:
+    da: Frisk mozzarella som tilbehør (g/dag)
+    en: ~
+  dataset: ffq_gpd
+- id: gtil01018
+  name: gtil01018
+  type: numeric
+  label:
+    da: Parmesan eller lignende oste som tilbehør (g/dag)
+    en: ~
+  dataset: ffq_gpd
+- id: gtil01019
+  name: gtil01019
+  type: numeric
+  label:
+    da: Salattern (Feta) som tilbehør (g/dag)
+    en: ~
+  dataset: ffq_gpd
+- id: gtil01020
+  name: gtil01020
+  type: numeric
+  label:
+    da: Gedeost som tilbehør (g/dag)
+    en: ~
+  dataset: ffq_gpd
+- id: gtil01021
+  name: gtil01021
+  type: numeric
+  label:
+    da: Anden type ost som tilbehør (g/dag)
+    en: ~
+  dataset: ffq_gpd
+- id: gsod01001
+  name: gsod01001
+  type: numeric
+  label:
+    da: Smeltet smør, margarine mm. (g/dag)
+    en: ~
+  dataset: ffq_gpd
+- id: gsod01002
+  name: gsod01002
+  type: numeric
+  label:
+    da: Bearnaise/hollandaise (g/dag)
+    en: ~
+  dataset: ffq_gpd
+- id: gsod01003
+  name: gsod01003
+  type: numeric
+  label:
+    da: Brun sovs (g/dag)
+    en: ~
+  dataset: ffq_gpd
+- id: gsod01004
+  name: gsod01004
+  type: numeric
+  label:
+    da: Hvid sovs/flødesovs (g/dag)
+    en: ~
+  dataset: ffq_gpd
+- id: gsod01005
+  name: gsod01005
+  type: numeric
+  label:
+    da: Tomatsovs (g/dag)
+    en: ~
+  dataset: ffq_gpd
+- id: gsod01006
+  name: gsod01006
+  type: numeric
+  label:
+    da: Ketchup (g/dag)
+    en: ~
+  dataset: ffq_gpd
+- id: gsod01007
+  name: gsod01007
+  type: numeric
+  label:
+    da: Sojasovs (g/dag)
+    en: ~
+  dataset: ffq_gpd
+- id: gsod01008
+  name: gsod01008
+  type: numeric
+  label:
+    da: Kold sovs med creme fraiche, A38 og lignende (f.eks. tzatziki) (g/dag)
+    en: ~
+  dataset: ffq_gpd
+- id: gsod01009
+  name: gsod01009
+  type: numeric
+  label:
+    da: Humus som dip(g/dag)
+    en: ~
+  dataset: ffq_gpd
+- id: gsod01010
+  name: gsod01010
+  type: numeric
+  label:
+    da: Pesto/tapenade (g/dag)
+    en: ~
+  dataset: ffq_gpd
+- id: ggrnt01002
+  name: ggrnt01002
+  type: numeric
+  label:
+    da: Blomkål, rå (g/dag)
+    en: ~
+  dataset: ffq_gpd
+- id: ggrnt01003
+  name: ggrnt01003
+  type: numeric
+  label:
+    da: Rosenkål, rå (g/dag)
+    en: ~
+  dataset: ffq_gpd
+- id: ggrnt01004
+  name: ggrnt01004
+  type: numeric
+  label:
+    da: Broccoli, rå (g/dag)
+    en: ~
+  dataset: ffq_gpd
+- id: ggrnt01005
+  name: ggrnt01005
+  type: numeric
+  label:
+    da: Hvidkål, savoykål eller spidskål, rå (g/dag)
+    en: ~
+  dataset: ffq_gpd
+- id: ggrnt01006
+  name: ggrnt01006
+  type: numeric
+  label:
+    da: Rødkål, rå (g/dag)
+    en: ~
+  dataset: ffq_gpd
+- id: ggrnt01007
+  name: ggrnt01007
+  type: numeric
+  label:
+    da: Grønkål, rå (g/dag)
+    en: ~
+  dataset: ffq_gpd
+- id: ggrnt01008
+  name: ggrnt01008
+  type: numeric
+  label:
+    da: Iceberg, hovedsalat, kinakål og lignende, rå (g/dag)
+    en: ~
+  dataset: ffq_gpd
+- id: ggrnt01009
+  name: ggrnt01009
+  type: numeric
+  label:
+    da: Rucola og salat mix, rå (g/dag)
+    en: ~
+  dataset: ffq_gpd
+- id: ggrnt01010
+  name: ggrnt01010
+  type: numeric
+  label:
+    da: Ærter, rå (g/dag)
+    en: ~
+  dataset: ffq_gpd
+- id: ggrnt01011
+  name: ggrnt01011
+  type: numeric
+  label:
+    da: Løg, rå (g/dag)
+    en: ~
+  dataset: ffq_gpd
+- id: ggrnt01012
+  name: ggrnt01012
+  type: numeric
+  label:
+    da: Champignoner, rå (g/dag)
+    en: ~
+  dataset: ffq_gpd
+- id: ggrnt01013
+  name: ggrnt01013
+  type: numeric
+  label:
+    da: Spinat, rå (g/dag)
+    en: ~
+  dataset: ffq_gpd
+- id: ggrnt01014
+  name: ggrnt01014
+  type: numeric
+  label:
+    da: Porre, forårsløg, rå (g/dag)
+    en: ~
+  dataset: ffq_gpd
+- id: ggrnt01015
+  name: ggrnt01015
+  type: numeric
+  label:
+    da: Courgette/squash, rå (g/dag)
+    en: ~
+  dataset: ffq_gpd
+- id: ggrnt01016
+  name: ggrnt01016
+  type: numeric
+  label:
+    da: Peberfrugt, rå (g/dag)
+    en: ~
+  dataset: ffq_gpd
+- id: ggrnt01017
+  name: ggrnt01017
+  type: numeric
+  label:
+    da: Agurk, rå (g/dag)
+    en: ~
+  dataset: ffq_gpd
+- id: ggrnt01018
+  name: ggrnt01018
+  type: numeric
+  label:
+    da: Bladselleri, rå (g/dag)
+    en: ~
+  dataset: ffq_gpd
+- id: ggrnt01019
+  name: ggrnt01019
+  type: numeric
+  label:
+    da: Tomat, rå (g/dag)
+    en: ~
+  dataset: ffq_gpd
+- id: ggrnt01020
+  name: ggrnt01020
+  type: numeric
+  label:
+    da: Avocado, rå (g/dag)
+    en: ~
+  dataset: ffq_gpd
+- id: ggrnt01021
+  name: ggrnt01021
+  type: numeric
+  label:
+    da: Asparges, rå (g/dag)
+    en: ~
+  dataset: ffq_gpd
+- id: ggrnt01022
+  name: ggrnt01022
+  type: numeric
+  label:
+    da: Oliven, rå (g/dag)
+    en: ~
+  dataset: ffq_gpd
+- id: ggrnt01023
+  name: ggrnt01023
+  type: numeric
+  label:
+    da: Tang, rå (g/dag)
+    en: ~
+  dataset: ffq_gpd
+- id: ggrnt01024
+  name: ggrnt01024
+  type: numeric
+  label:
+    da: Gulerødder, rå (g/dag)
+    en: ~
+  dataset: ffq_gpd
+- id: ggrnt01025
+  name: ggrnt01025
+  type: numeric
+  label:
+    da: Rødbede, rå (g/dag)
+    en: ~
+  dataset: ffq_gpd
+- id: ggrnt01026
+  name: ggrnt01026
+  type: numeric
+  label:
+    da: Jordskokker, rå (g/dag)
+    en: ~
+  dataset: ffq_gpd
+- id: ggrnt01027
+  name: ggrnt01027
+  type: numeric
+  label:
+    da: Pastinak eller persillerødder, rå (g/dag)
+    en: ~
+  dataset: ffq_gpd
+- id: ggrnt01028
+  name: ggrnt01028
+  type: numeric
+  label:
+    da: Kålrabi, majroer, glaskål, rå (g/dag)
+    en: ~
+  dataset: ffq_gpd
+- id: ggrnt01029
+  name: ggrnt01029
+  type: numeric
+  label:
+    da: Radise, kinaradise, ræddike, rå (g/dag)
+    en: ~
+  dataset: ffq_gpd
+- id: gtbg01002
+  name: gtbg01002
+  type: numeric
+  label:
+    da: Blomkål, tilberedt (g/dag)
+    en: ~
+  dataset: ffq_gpd
+- id: gtbg01003
+  name: gtbg01003
+  type: numeric
+  label:
+    da: Rosenkål, tilberedt (g/dag)
+    en: ~
+  dataset: ffq_gpd
+- id: gtbg01004
+  name: gtbg01004
+  type: numeric
+  label:
+    da: Broccoli, tilberedt (g/dag)
+    en: ~
+  dataset: ffq_gpd
+- id: gtbg01005
+  name: gtbg01005
+  type: numeric
+  label:
+    da: Hvidkål, savoykål eller spidskål, tilberedt (g/dag)
+    en: ~
+  dataset: ffq_gpd
+- id: gtbg01006
+  name: gtbg01006
+  type: numeric
+  label:
+    da: Rødkål, tilberedt (g/dag)
+    en: ~
+  dataset: ffq_gpd
+- id: gtbg01007
+  name: gtbg01007
+  type: numeric
+  label:
+    da: Grønkål, tilberedt (g/dag)
+    en: ~
+  dataset: ffq_gpd
+- id: gtbg01008
+  name: gtbg01008
+  type: numeric
+  label:
+    da: Ærter, tilberedt (g/dag)
+    en: ~
+  dataset: ffq_gpd
+- id: gtbg01009
+  name: gtbg01009
+  type: numeric
+  label:
+    da: Majs, tilberedt (g/dag)
+    en: ~
+  dataset: ffq_gpd
+- id: gtbg01010
+  name: gtbg01010
+  type: numeric
+  label:
+    da: Grønne bønner, tilberedt (g/dag)
+    en: ~
+  dataset: ffq_gpd
+- id: gtbg01011
+  name: gtbg01011
+  type: numeric
+  label:
+    da: Løg, tilberedt (g/dag)
+    en: ~
+  dataset: ffq_gpd
+- id: gtbg01012
+  name: gtbg01012
+  type: numeric
+  label:
+    da: Hvidløg, tilberedt (g/dag)
+    en: ~
+  dataset: ffq_gpd
+- id: gtbg01013
+  name: gtbg01013
+  type: numeric
+  label:
+    da: Champignoner, tilberedt (g/dag)
+    en: ~
+  dataset: ffq_gpd
+- id: gtbg01014
+  name: gtbg01014
+  type: numeric
+  label:
+    da: Andre svampe, tilberedt (g/dag)
+    en: ~
+  dataset: ffq_gpd
+- id: gtbg01015
+  name: gtbg01015
+  type: numeric
+  label:
+    da: Spinat, tilberedt (g/dag)
+    en: ~
+  dataset: ffq_gpd
+- id: gtbg01016
+  name: gtbg01016
+  type: numeric
+  label:
+    da: Porre, forårsløg, tilberedt (g/dag)
+    en: ~
+  dataset: ffq_gpd
+- id: gtbg01017
+  name: gtbg01017
+  type: numeric
+  label:
+    da: Aubergine, tilberedt (g/dag)
+    en: ~
+  dataset: ffq_gpd
+- id: gtbg01018
+  name: gtbg01018
+  type: numeric
+  label:
+    da: Courgette/squash, tilberedt (g/dag)
+    en: ~
+  dataset: ffq_gpd
+- id: gtbg01019
+  name: gtbg01019
+  type: numeric
+  label:
+    da: Peberfrugt, tilberedt (g/dag)
+    en: ~
+  dataset: ffq_gpd
+- id: gtbg01020
+  name: gtbg01020
+  type: numeric
+  label:
+    da: Tomat, tilberedt (g/dag)
+    en: ~
+  dataset: ffq_gpd
+- id: gtbg01021
+  name: gtbg01021
+  type: numeric
+  label:
+    da: Asparges, tilberedt (g/dag)
+    en: ~
+  dataset: ffq_gpd
+- id: gtbg01022
+  name: gtbg01022
+  type: numeric
+  label:
+    da: Oliven, tilberedt (g/dag)
+    en: ~
+  dataset: ffq_gpd
+- id: gtbg01023
+  name: gtbg01023
+  type: numeric
+  label:
+    da: Gulerødder, tilberedt (g/dag)
+    en: ~
+  dataset: ffq_gpd
+- id: gtbg01024
+  name: gtbg01024
+  type: numeric
+  label:
+    da: Knoldselleri, tilberedt (g/dag)
+    en: ~
+  dataset: ffq_gpd
+- id: gtbg01025
+  name: gtbg01025
+  type: numeric
+  label:
+    da: Rødbede, tilberedt (g/dag)
+    en: ~
+  dataset: ffq_gpd
+- id: gtbg01026
+  name: gtbg01026
+  type: numeric
+  label:
+    da: Jordskokker, tilberedt (g/dag)
+    en: ~
+  dataset: ffq_gpd
+- id: gtbg01027
+  name: gtbg01027
+  type: numeric
+  label:
+    da: Pastinak eller persillerødder, tilberedt (g/dag)
+    en: ~
+  dataset: ffq_gpd
+- id: gtbg01028
+  name: gtbg01028
+  type: numeric
+  label:
+    da: Kålrabi, majroer, glaskål, tilberedt (g/dag)
+    en: ~
+  dataset: ffq_gpd
+- id: gtbg01029
+  name: gtbg01029
+  type: numeric
+  label:
+    da: Radise, kinaradise, ræddike, tilberedt (g/dag)
+    en: ~
+  dataset: ffq_gpd
+- id: gdre01002
+  name: gdre01002
+  type: numeric
+  label:
+    da: Olie/eddike-dressing (g/dag)
+    en: ~
+  dataset: ffq_gpd
+- id: gdre01003
+  name: gdre01003
+  type: numeric
+  label:
+    da: Thousand Island dressing (g/dag)
+    en: ~
+  dataset: ffq_gpd
+- id: gdre01004
+  name: gdre01004
+  type: numeric
+  label:
+    da: Miracle Whip/mayonnaise (g/dag)
+    en: ~
+  dataset: ffq_gpd
+- id: gdre01005
+  name: gdre01005
+  type: numeric
+  label:
+    da: Yoghurt eller creme fraiche dressing (g/dag)
+    en: ~
+  dataset: ffq_gpd
+- id: gdre01006
+  name: gdre01006
+  type: numeric
+  label:
+    da: Light dressing (g/dag)
+    en: ~
+  dataset: ffq_gpd
+- id: gdre01007
+  name: gdre01007
+  type: numeric
+  label:
+    da: Sojasovs (g/dag)
+    en: ~
+  dataset: ffq_gpd
+- id: gdre01008
+  name: gdre01008
+  type: numeric
+  label:
+    da: Balsamico eller eddiker (g/dag)
+    en: ~
+  dataset: ffq_gpd
+- id: gdre01009
+  name: gdre01009
+  type: numeric
+  label:
+    da: Pesto (g/dag)
+    en: ~
+  dataset: ffq_gpd
+- id: gdre01010
+  name: gdre01010
+  type: numeric
+  label:
+    da: Citronsaft/juice (g/dag)
+    en: ~
+  dataset: ffq_gpd
+- id: gfru01002
+  name: gfru01002
+  type: numeric
+  label:
+    da: Æble (g/dag)
+    en: ~
+  dataset: ffq_gpd
+- id: gfru01003
+  name: gfru01003
+  type: numeric
+  label:
+    da: Pære (g/dag)
+    en: ~
+  dataset: ffq_gpd
+- id: gfru01005
+  name: gfru01005
+  type: numeric
+  label:
+    da: Appelsin og klementin (g/dag)
+    en: ~
+  dataset: ffq_gpd
+- id: gfru01006
+  name: gfru01006
+  type: numeric
+  label:
+    da: Grapefrugt, citron el. lime (g/dag)
+    en: ~
+  dataset: ffq_gpd
+- id: gfru01007
+  name: gfru01007
+  type: numeric
+  label:
+    da: Banan (g/dag)
+    en: ~
+  dataset: ffq_gpd
+- id: gfru01008
+  name: gfru01008
+  type: numeric
+  label:
+    da: Fersken og nektarin (g/dag)
+    en: ~
+  dataset: ffq_gpd
+- id: gfru01009
+  name: gfru01009
+  type: numeric
+  label:
+    da: Kiwifrugt (g/dag)
+    en: ~
+  dataset: ffq_gpd
+- id: gfru01010
+  name: gfru01010
+  type: numeric
+  label:
+    da: Blommer (g/dag)
+    en: ~
+  dataset: ffq_gpd
+- id: gfru01011
+  name: gfru01011
+  type: numeric
+  label:
+    da: Vandmelon (g/dag)
+    en: ~
+  dataset: ffq_gpd
+- id: gfru01012
+  name: gfru01012
+  type: numeric
+  label:
+    da: Anden type melon (g/dag)
+    en: ~
+  dataset: ffq_gpd
+- id: gfru01013
+  name: gfru01013
+  type: numeric
+  label:
+    da: Vindruer (g/dag)
+    en: ~
+  dataset: ffq_gpd
+- id: gfru01014
+  name: gfru01014
+  type: numeric
+  label:
+    da: Mango eller papaya (g/dag)
+    en: ~
+  dataset: ffq_gpd
+- id: gfru01015
+  name: gfru01015
+  type: numeric
+  label:
+    da: Ananas (g/dag)
+    en: ~
+  dataset: ffq_gpd
+- id: gfru01016
+  name: gfru01016
+  type: numeric
+  label:
+    da: Tropiske frugter (g/dag)
+    en: ~
+  dataset: ffq_gpd
+- id: gfru01017
+  name: gfru01017
+  type: numeric
+  label:
+    da: Bærblanding (g/dag)
+    en: ~
+  dataset: ffq_gpd
+- id: gfru01018
+  name: gfru01018
+  type: numeric
+  label:
+    da: Jordbær (g/dag)
+    en: ~
+  dataset: ffq_gpd
+- id: gfru01019
+  name: gfru01019
+  type: numeric
+  label:
+    da: Hindbær og brombær (g/dag)
+    en: ~
+  dataset: ffq_gpd
+- id: gfru01020
+  name: gfru01020
+  type: numeric
+  label:
+    da: Blåbær (g/dag)
+    en: ~
+  dataset: ffq_gpd
+- id: gfru01021
+  name: gfru01021
+  type: numeric
+  label:
+    da: Anden type bær (g/dag)
+    en: ~
+  dataset: ffq_gpd
+- id: gfru02002
+  name: gfru02002
+  type: numeric
+  label:
+    da: Fersken, henkogt (g/dag)
+    en: ~
+  dataset: ffq_gpd
+- id: gfru02003
+  name: gfru02003
+  type: numeric
+  label:
+    da: Ananas, henkogt (g/dag)
+    en: ~
+  dataset: ffq_gpd
+- id: gfru02004
+  name: gfru02004
+  type: numeric
+  label:
+    da: Pære, henkogt (g/dag)
+    en: ~
+  dataset: ffq_gpd
+- id: gfru02005
+  name: gfru02005
+  type: numeric
+  label:
+    da: Frugtcocktail, henkogt (g/dag)
+    en: ~
+  dataset: ffq_gpd
+- id: gfru03002
+  name: gfru03002
+  type: numeric
+  label:
+    da: Abrikoser, tørret (g/dag)
+    en: ~
+  dataset: ffq_gpd
+- id: gfru03003
+  name: gfru03003
+  type: numeric
+  label:
+    da: Svesker (g/dag)
+    en: ~
+  dataset: ffq_gpd
+- id: gfru03004
+  name: gfru03004
+  type: numeric
+  label:
+    da: Rosiner (g/dag)
+    en: ~
+  dataset: ffq_gpd
+- id: gfru03005
+  name: gfru03005
+  type: numeric
+  label:
+    da: Figenstænger (g/dag)
+    en: ~
+  dataset: ffq_gpd
+- id: gfru03006
+  name: gfru03006
+  type: numeric
+  label:
+    da: Hele figner og dadler (g/dag)
+    en: ~
+  dataset: ffq_gpd
+- id: gfru03007
+  name: gfru03007
+  type: numeric
+  label:
+    da: Tørrede bær (g/dag)
+    en: ~
+  dataset: ffq_gpd
+- id: gfru03008
+  name: gfru03008
+  type: numeric
+  label:
+    da: Andre tørrede frugter (g/dag)
+    en: ~
+  dataset: ffq_gpd
+- id: gnfk01001
+  name: gnfk01001
+  type: numeric
+  label:
+    da: Saltede nødder/mandler (g/dag)
+    en: ~
+  dataset: ffq_gpd
+- id: gnfk01002
+  name: gnfk01002
+  type: numeric
+  label:
+    da: Honningristede nødder/mandler (g/dag)
+    en: ~
+  dataset: ffq_gpd
+- id: gnfk01003
+  name: gnfk01003
+  type: numeric
+  label:
+    da: Chilinuts, wasabinødder og lignende (g/dag)
+    en: ~
+  dataset: ffq_gpd
+- id: gnfk01004
+  name: gnfk01004
+  type: numeric
+  label:
+    da: Mandler (g/dag)
+    en: ~
+  dataset: ffq_gpd
+- id: gnfk01005
+  name: gnfk01005
+  type: numeric
+  label:
+    da: Hasselnødder (g/dag)
+    en: ~
+  dataset: ffq_gpd
+- id: gnfk01006
+  name: gnfk01006
+  type: numeric
+  label:
+    da: Valnødder (g/dag)
+    en: ~
+  dataset: ffq_gpd
+- id: gnfk01007
+  name: gnfk01007
+  type: numeric
+  label:
+    da: Andre nødder (f.eks. pekan-, para-, jord-, pistacie-, cashew- eller macadamianødder)
+      (g/dag)
+    en: ~
+  dataset: ffq_gpd
+- id: gnfk01008
+  name: gnfk01008
+  type: numeric
+  label:
+    da: Græskarkerner (g/dag)
+    en: ~
+  dataset: ffq_gpd
+- id: gnfk01009
+  name: gnfk01009
+  type: numeric
+  label:
+    da: Pinjekerner (g/dag)
+    en: ~
+  dataset: ffq_gpd
+- id: gnfk01010
+  name: gnfk01010
+  type: numeric
+  label:
+    da: Solsikkekerner (g/dag)
+    en: ~
+  dataset: ffq_gpd
+- id: gnfk01011
+  name: gnfk01011
+  type: numeric
+  label:
+    da: Hørfrø (g/dag)
+    en: ~
+  dataset: ffq_gpd
+- id: gnfk01012
+  name: gnfk01012
+  type: numeric
+  label:
+    da: Sesamfrø (g/dag)
+    en: ~
+  dataset: ffq_gpd
+- id: gnfk01013
+  name: gnfk01013
+  type: numeric
+  label:
+    da: Andre typer kerner og frø (g/dag)
+    en: ~
+  dataset: ffq_gpd
+- id: gdes01002
+  name: gdes01002
+  type: numeric
+  label:
+    da: Mørk chokolade (g/dag)
+    en: ~
+  dataset: ffq_gpd
+- id: gdes01003
+  name: gdes01003
+  type: numeric
+  label:
+    da: Andet chokolade (g/dag)
+    en: ~
+  dataset: ffq_gpd
+- id: gdes01004
+  name: gdes01004
+  type: numeric
+  label:
+    da: Chokoladebarer (g/dag)
+    en: ~
+  dataset: ffq_gpd
+- id: gdes01005
+  name: gdes01005
+  type: numeric
+  label:
+    da: Blandet slik (g/dag)
+    en: ~
+  dataset: ffq_gpd
+- id: gdes01006
+  name: gdes01006
+  type: numeric
+  label:
+    da: Karameller (g/dag)
+    en: ~
+  dataset: ffq_gpd
+- id: gdes01007
+  name: gdes01007
+  type: numeric
+  label:
+    da: Bolsjer og slikkepinde (g/dag)
+    en: ~
+  dataset: ffq_gpd
+- id: gdes01008
+  name: gdes01008
+  type: numeric
+  label:
+    da: Lakrids (g/dag)
+    en: ~
+  dataset: ffq_gpd
+- id: gdes01009
+  name: gdes01009
+  type: numeric
+  label:
+    da: Vingummi (g/dag)
+    en: ~
+  dataset: ffq_gpd
+- id: gdes01010
+  name: gdes01010
+  type: numeric
+  label:
+    da: Marcipan og marcipanbrød (g/dag)
+    en: ~
+  dataset: ffq_gpd
+- id: gdes01011
+  name: gdes01011
+  type: numeric
+  label:
+    da: Skumslik (g/dag)
+    en: ~
+  dataset: ffq_gpd
+- id: gdes01012
+  name: gdes01012
+  type: numeric
+  label:
+    da: Flødeboller (g/dag)
+    en: ~
+  dataset: ffq_gpd
+- id: gdes01013
+  name: gdes01013
+  type: numeric
+  label:
+    da: Tyggegummi etc. u. sukker (g/dag)
+    en: ~
+  dataset: ffq_gpd
+- id: gdes01014
+  name: gdes01014
+  type: numeric
+  label:
+    da: Tyggegummi etc. m. sukker (g/dag)
+    en: ~
+  dataset: ffq_gpd
+- id: gdes02002
+  name: gdes02002
+  type: numeric
+  label:
+    da: Chips (g/dag)
+    en: ~
+  dataset: ffq_gpd
+- id: gdes02003
+  name: gdes02003
+  type: numeric
+  label:
+    da: Flæskesvær (g/dag)
+    en: ~
+  dataset: ffq_gpd
+- id: gdes02004
+  name: gdes02004
+  type: numeric
+  label:
+    da: Popcorn (g/dag)
+    en: ~
+  dataset: ffq_gpd
+- id: gdes02005
+  name: gdes02005
+  type: numeric
+  label:
+    da: Snackstænger (g/dag)
+    en: ~
+  dataset: ffq_gpd
+- id: gdes03002
+  name: gdes03002
+  type: numeric
+  label:
+    da: Müslibarer (g/dag)
+    en: ~
+  dataset: ffq_gpd
+- id: gdes03003
+  name: gdes03003
+  type: numeric
+  label:
+    da: Småkager og kiks (g/dag)
+    en: ~
+  dataset: ffq_gpd
+- id: gdes03004
+  name: gdes03004
+  type: numeric
+  label:
+    da: Trøfler/romkugler (g/dag)
+    en: ~
+  dataset: ffq_gpd
+- id: gdes03005
+  name: gdes03005
+  type: numeric
+  label:
+    da: Skærekage, tørkage ol. (g/dag)
+    en: ~
+  dataset: ffq_gpd
+- id: gdes03006
+  name: gdes03006
+  type: numeric
+  label:
+    da: Kransekage (g/dag)
+    en: ~
+  dataset: ffq_gpd
+- id: gdes03007
+  name: gdes03007
+  type: numeric
+  label:
+    da: Frugttærte (g/dag)
+    en: ~
+  dataset: ffq_gpd
+- id: gdes03008
+  name: gdes03008
+  type: numeric
+  label:
+    da: Wienerbrød (g/dag)
+    en: ~
+  dataset: ffq_gpd
+- id: gdes03009
+  name: gdes03009
+  type: numeric
+  label:
+    da: Flødeskumskage og lagkage (g/dag)
+    en: ~
+  dataset: ffq_gpd
+- id: gdes04002
+  name: gdes04002
+  type: numeric
+  label:
+    da: Ispinde (g/dag)
+    en: ~
+  dataset: ffq_gpd
+- id: gdes04003
+  name: gdes04003
+  type: numeric
+  label:
+    da: Vaffelis (g/dag)
+    en: ~
+  dataset: ffq_gpd
+- id: gdes04004
+  name: gdes04004
+  type: numeric
+  label:
+    da: Fløde- og mælkeis (g/dag)
+    en: ~
+  dataset: ffq_gpd
+- id: gdes04005
+  name: gdes04005
+  type: numeric
+  label:
+    da: Sorbet (g/dag)
+    en: ~
+  dataset: ffq_gpd
+- id: gdes05002
+  name: gdes05002
+  type: numeric
+  label:
+    da: Frugtgrød (g/dag)
+    en: ~
+  dataset: ffq_gpd
+- id: gdes05003
+  name: gdes05003
+  type: numeric
+  label:
+    da: Pandekager og æbleskiver (g/dag)
+    en: ~
+  dataset: ffq_gpd
+- id: gdes05004
+  name: gdes05004
+  type: numeric
+  label:
+    da: Kærnemælkskoldskål (g/dag)
+    en: ~
+  dataset: ffq_gpd
+- id: gdes05005
+  name: gdes05005
+  type: numeric
+  label:
+    da: Fromage eller mousse (g/dag)
+    en: ~
+  dataset: ffq_gpd
+- id: gttd01001
+  name: gttd01001
+  type: numeric
+  label:
+    da: Flødeskum (g/dag)
+    en: ~
+  dataset: ffq_gpd
+- id: gttd01002
+  name: gttd01002
+  type: numeric
+  label:
+    da: Råcreme (g/dag)
+    en: ~
+  dataset: ffq_gpd
+- id: gttd01003
+  name: gttd01003
+  type: numeric
+  label:
+    da: Creme fraiche (g/dag)
+    en: ~
+  dataset: ffq_gpd
+- id: gttd01004
+  name: gttd01004
+  type: numeric
+  label:
+    da: Græsk yoghurt (g/dag)
+    en: ~
+  dataset: ffq_gpd
+- id: gttd01005
+  name: gttd01005
+  type: numeric
+  label:
+    da: Skyr, fromage frais eller kvark (g/dag)
+    en: ~
+  dataset: ffq_gpd
+- id: gdri01001
+  name: gdri01001
+  type: numeric
+  label:
+    da: Skummetmælk (g/dag)
+    en: ~
+  dataset: ffq_gpd
+- id: gdri01002
+  name: gdri01002
+  type: numeric
+  label:
+    da: Minimælk og Jersey skummetmælk (0,5% fedt) (g/dag)
+    en: ~
+  dataset: ffq_gpd
+- id: gdri01003
+  name: gdri01003
+  type: numeric
+  label:
+    da: Letmælk (g/dag)
+    en: ~
+  dataset: ffq_gpd
+- id: gdri01004
+  name: gdri01004
+  type: numeric
+  label:
+    da: Sødmælk (g/dag)
+    en: ~
+  dataset: ffq_gpd
+- id: gdri01005
+  name: gdri01005
+  type: numeric
+  label:
+    da: Kærnemælk (g/dag)
+    en: ~
+  dataset: ffq_gpd
+- id: gdri01006
+  name: gdri01006
+  type: numeric
+  label:
+    da: Laktosefri mælk (g/dag)
+    en: ~
+  dataset: ffq_gpd
+- id: gdri01007
+  name: gdri01007
+  type: numeric
+  label:
+    da: Kakaomælk (g/dag)
+    en: ~
+  dataset: ffq_gpd
+- id: gdri01008
+  name: gdri01008
+  type: numeric
+  label:
+    da: Drikkeyoghurt (g/dag)
+    en: ~
+  dataset: ffq_gpd
+- id: gdri01009
+  name: gdri01009
+  type: numeric
+  label:
+    da: Drikkeyoghurt light (g/dag)
+    en: ~
+  dataset: ffq_gpd
+- id: gdri01010
+  name: gdri01010
+  type: numeric
+  label:
+    da: Sojadrik (g/dag)
+    en: ~
+  dataset: ffq_gpd
+- id: gdri01011
+  name: gdri01011
+  type: numeric
+  label:
+    da: Sojadrik tilsat calcium (g/dag)
+    en: ~
+  dataset: ffq_gpd
+- id: gdri01012
+  name: gdri01012
+  type: numeric
+  label:
+    da: Havredrik (g/dag)
+    en: ~
+  dataset: ffq_gpd
+- id: gdri01013
+  name: gdri01013
+  type: numeric
+  label:
+    da: Risdrik (g/dag)
+    en: ~
+  dataset: ffq_gpd
+- id: gdri01014
+  name: gdri01014
+  type: numeric
+  label:
+    da: Mandeldrik (g/dag)
+    en: ~
+  dataset: ffq_gpd
+- id: gdri01015
+  name: gdri01015
+  type: numeric
+  label:
+    da: Appelsin- og grapejuice (g/dag)
+    en: ~
+  dataset: ffq_gpd
+- id: gdri01016
+  name: gdri01016
+  type: numeric
+  label:
+    da: Multifrugtjuice (g/dag)
+    en: ~
+  dataset: ffq_gpd
+- id: gdri01017
+  name: gdri01017
+  type: numeric
+  label:
+    da: Æblejuice eller æblemost (g/dag)
+    en: ~
+  dataset: ffq_gpd
+- id: gdri01018
+  name: gdri01018
+  type: numeric
+  label:
+    da: Tomat- og grøntsagsjuice (g/dag)
+    en: ~
+  dataset: ffq_gpd
+- id: gdri01019
+  name: gdri01019
+  type: numeric
+  label:
+    da: Gulerodssaft (g/dag)
+    en: ~
+  dataset: ffq_gpd
+- id: gdri01020
+  name: gdri01020
+  type: numeric
+  label:
+    da: Saftevand og iste med sukker (g/dag)
+    en: ~
+  dataset: ffq_gpd
+- id: gdri01021
+  name: gdri01021
+  type: numeric
+  label:
+    da: Saftevand og iste, light uden sukker (g/dag)
+    en: ~
+  dataset: ffq_gpd
+- id: gdri01022
+  name: gdri01022
+  type: numeric
+  label:
+    da: Vand – ren postevand eller fra flaske (g/dag)
+    en: ~
+  dataset: ffq_gpd
+- id: gdri01023
+  name: gdri01023
+  type: numeric
+  label:
+    da: Mineralvand og danskvand med brus (g/dag)
+    en: ~
+  dataset: ffq_gpd
+- id: gdri01024
+  name: gdri01024
+  type: numeric
+  label:
+    da: Sodavand, light uden sukker (g/dag)
+    en: ~
+  dataset: ffq_gpd
+- id: gdri01025
+  name: gdri01025
+  type: numeric
+  label:
+    da: Sodavand med sukker (g/dag)
+    en: ~
+  dataset: ffq_gpd
+- id: gdri01026
+  name: gdri01026
+  type: numeric
+  label:
+    da: Lys øl (g/dag)
+    en: ~
+  dataset: ffq_gpd
+- id: gdri01027
+  name: gdri01027
+  type: numeric
+  label:
+    da: Almindelig øl (g/dag)
+    en: ~
+  dataset: ffq_gpd
+- id: gdri01028
+  name: gdri01028
+  type: numeric
+  label:
+    da: Stærk øl (g/dag)
+    en: ~
+  dataset: ffq_gpd
+- id: gdri01029
+  name: gdri01029
+  type: numeric
+  label:
+    da: Rødvin (g/dag)
+    en: ~
+  dataset: ffq_gpd
+- id: gdri01030
+  name: gdri01030
+  type: numeric
+  label:
+    da: Hvidvin og rosévin (g/dag)
+    en: ~
+  dataset: ffq_gpd
+- id: gdri01031
+  name: gdri01031
+  type: numeric
+  label:
+    da: Hedvin (f.eks. portvin) (g/dag)
+    en: ~
+  dataset: ffq_gpd
+- id: gdri01032
+  name: gdri01032
+  type: numeric
+  label:
+    da: Spiritus (f.eks. snaps og vodka) (g/dag)
+    en: ~
+  dataset: ffq_gpd
+- id: gdri01033
+  name: gdri01033
+  type: numeric
+  label:
+    da: Alcopops (f.eks. Bacardi Breezer og Sommersby) (g/dag)
+    en: ~
+  dataset: ffq_gpd
+- id: gdri01034
+  name: gdri01034
+  type: numeric
+  label:
+    da: Filterkaffe (g/dag)
+    en: ~
+  dataset: ffq_gpd
+- id: gdri01035
+  name: gdri01035
+  type: numeric
+  label:
+    da: Pulver/instant kaffe (g/dag)
+    en: ~
+  dataset: ffq_gpd
+- id: gdri01036
+  name: gdri01036
+  type: numeric
+  label:
+    da: Stempelkaffe (g/dag)
+    en: ~
+  dataset: ffq_gpd
+- id: gdri01037
+  name: gdri01037
+  type: numeric
+  label:
+    da: Koffeinfri kaffe eller kornkaffe (g/dag)
+    en: ~
+  dataset: ffq_gpd
+- id: gdri01038
+  name: gdri01038
+  type: numeric
+  label:
+    da: Espresso eller kaffekapsler (f.eks. Nespresso) (g/dag)
+    en: ~
+  dataset: ffq_gpd
+- id: gkaffemaelk
+  name: gkaffemaelk
+  type: numeric
+  label:
+    da: Mælk i kaffe (g/dag)
+    en: ~
+  dataset: ffq_gpd
+- id: gkaffeflode
+  name: gkaffeflode
+  type: numeric
+  label:
+    da: Fløde i kaffe (g/dag)
+    en: ~
+  dataset: ffq_gpd
+- id: gkaffesukker
+  name: gkaffesukker
+  type: numeric
+  label:
+    da: Sukker, sirup eller honning i kaffe (g/dag)
+    en: ~
+  dataset: ffq_gpd
+- id: gkaffesodest
+  name: gkaffesodest
+  type: numeric
+  label:
+    da: Kunstigt sødestof i kaffe (g/dag)
+    en: ~
+  dataset: ffq_gpd
+- id: gdri01043
+  name: gdri01043
+  type: numeric
+  label:
+    da: Cafe latte og cappuccino (g/dag)
+    en: ~
+  dataset: ffq_gpd
+- id: glattesukker
+  name: glattesukker
+  type: numeric
+  label:
+    da: Sukker, sirup eller honning i latte/cappuccino (g/dag)
+    en: ~
+  dataset: ffq_gpd
+- id: glattesodest
+  name: glattesodest
+  type: numeric
+  label:
+    da: Kunstigt sødestof i latte/cappuccino (g/dag)
+    en: ~
+  dataset: ffq_gpd
+- id: gdri01047
+  name: gdri01047
+  type: numeric
+  label:
+    da: Grøn te (g/dag)
+    en: ~
+  dataset: ffq_gpd
+- id: gdri01048
+  name: gdri01048
+  type: numeric
+  label:
+    da: Hvid te (g/dag)
+    en: ~
+  dataset: ffq_gpd
+- id: gdri01049
+  name: gdri01049
+  type: numeric
+  label:
+    da: Sort te (g/dag)
+    en: ~
+  dataset: ffq_gpd
+- id: gdri01050
+  name: gdri01050
+  type: numeric
+  label:
+    da: Rooiboste (g/dag)
+    en: ~
+  dataset: ffq_gpd
+- id: gdri01051
+  name: gdri01051
+  type: numeric
+  label:
+    da: Kamillete og urtete (g/dag)
+    en: ~
+  dataset: ffq_gpd
+- id: gtemaelk
+  name: gtemaelk
+  type: numeric
+  label:
+    da: Mælk i te (g/dag)
+    en: ~
+  dataset: ffq_gpd
+- id: gtesukker
+  name: gtesukker
+  type: numeric
+  label:
+    da: Sukker, sirup eller honning i te (g/dag)
+    en: ~
+  dataset: ffq_gpd
+- id: gtesodest
+  name: gtesodest
+  type: numeric
+  label:
+    da: Kunstigt sødestof i te (g/dag)
+    en: ~
+  dataset: ffq_gpd
+- id: gdri01055
+  name: gdri01055
+  type: numeric
+  label:
+    da: Chai latte (g/dag)
+    en: ~
+  dataset: ffq_gpd
+- id: gchaisukker
+  name: gchaisukker
+  type: numeric
+  label:
+    da: Sukker, sirup eller honning i chai latte (g/dag)
+    en: ~
+  dataset: ffq_gpd
+- id: gchaisodest
+  name: gchaisodest
+  type: numeric
+  label:
+    da: Kunstigt sødestof i chai latte (g/dag)
+    en: ~
+  dataset: ffq_gpd
+- id: gdri01059
+  name: gdri01059
+  type: numeric
+  label:
+    da: Proteindrik (g/dag)
+    en: ~
+  dataset: ffq_gpd
+- id: gdri01060
+  name: gdri01060
+  type: numeric
+  label:
+    da: Energidrik (f.eks. Red Bull) (g/dag)
+    en: ~
+  dataset: ffq_gpd
+- id: gdri01061
+  name: gdri01061
+  type: numeric
+  label:
+    da: Smoothies (ikke hjemmelavet) (g/dag)
+    en: ~
+  dataset: ffq_gpd
+- id: gdri01062
+  name: gdri01062
+  type: numeric
+  label:
+    da: Milkshake eller Iceblend (g/dag)
+    en: ~
+  dataset: ffq_gpd
+- id: fsq00_01
+  name: fsq00_01
+  type: numeric
+  label:
+    da: ~
+    en: Date for fecal sample collection
+  dataset: fsq_recode_other
+- id: fsq00_02
+  name: fsq00_02
+  type: numeric
+  label:
+    da: ~
+    en: Time for fecal sample collection
+  dataset: fsq_recode_other
+- id: fsq01
+  name: fsq01
+  type: numeric
+  label:
+    da: ~
+    en: Bristol stool form scale type
+  dataset: fsq_recode_other
+- id: fsq02
+  name: fsq02
+  type: numeric
+  label:
+    da: ~
+    en: Use of antibiotics since visit to study center
+  dataset: fsq_recode_other
+- id: fsq03
+  name: fsq03
+  type: numeric
+  label:
+    da: ~
+    en: Time since last use of antibiotics
+  dataset: fsq_recode_other
+- id: fsq04
+  name: fsq04
+  type: numeric
+  label:
+    da: ~
+    en: Cause of antibiotic use
+  dataset: fsq_recode_other
+- id: fuldkorn
+  name: fuldkorn
+  type: numeric
+  label:
+    da: Fuldkorn (g/dag)
+    en: ~
+  dataset: fuldkorn
+- id: aff01
+  name: aff01
+  type: numeric
+  label:
+    da: ~
+    en: 'Stool: bowel movement frequency'
+  dataset: lsq_affoering_final
+- id: aff02
+  name: aff02
+  type: numeric
+  label:
+    da: ~
+    en: 'Stool: complete bowel movement'
+  dataset: lsq_affoering_final
+- id: aff03
+  name: aff03
+  type: numeric
+  label:
+    da: ~
+    en: 'Stool: abdominal bloating'
+  dataset: lsq_affoering_final
+- id: aff04
+  name: aff04
+  type: numeric
+  label:
+    da: ~
+    en: 'Stool: abdominal pain'
+  dataset: lsq_affoering_final
+- id: aff05
+  name: aff05
+  type: numeric
+  label:
+    da: ~
+    en: 'Stool: constipation'
+  dataset: lsq_affoering_final
+- id: aff06
+  name: aff06
+  type: numeric
+  label:
+    da: ~
+    en: 'Stool: type'
+  dataset: lsq_affoering_final
+- id: aff07
+  name: aff07
+  type: numeric
+  label:
+    da: ~
+    en: 'Stool: diseases'
+  dataset: lsq_affoering_final
+- id: ryg01_bin
+  name: ryg01_bin
+  type: numeric
+  label:
+    da: ~
+    en: Baseline binary tobacco (cigarettes, cigars, pipe or cheroots) smoking status
+      (ever, never)
+  dataset: lsq_afledte
+- id: nic01_bin
+  name: nic01_bin
+  type: numeric
+  label:
+    da: ~
+    en: Baseline binary other nicotine (e-cigarettes, swedish snus or nicotine pouches)
+      use status (ever, never)
+  dataset: lsq_afledte
+- id: ryg01_cat
+  name: ryg01_cat
+  type: numeric
+  label:
+    da: ~
+    en: Baseline tobacco (cigarettes, cigars, pipe or cheroots) smoking status (former,
+      current, never)
+  dataset: lsq_afledte
+- id: nic01_cat
+  name: nic01_cat
+  type: numeric
+  label:
+    da: ~
+    en: Baseline other nicotine (e-cigarettes, swedish snus or nicotine pouches) use
+      status (former, current, never)
+  dataset: lsq_afledte
+- id: nic02_bin
+  name: nic02_bin
+  type: numeric
+  label:
+    da: ~
+    en: Baseline binary all nicotine products (cigarettes, cigars, pipe or cheroots,
+      e-cigarettes, swedish snus or nicotine pouches) use status (ever, never)
+  dataset: lsq_afledte
+- id: nic02_cat
+  name: nic02_cat
+  type: numeric
+  label:
+    da: ~
+    en: Baseline all nicotine products (cigarettes, cigars, pipe or cheroots, e-cigarettes,
+      swedish snus or nicotine pouches) use status (former, current, never)
+  dataset: lsq_afledte
+- id: hae01
+  name: hae01
+  type: numeric
+  label:
+    da: ~
+    en: HAE01 - Highest Attained Education 1 (3 levels, Based on correspondance to
+      DISCED-15 classification and KBF recommendations)
+  dataset: lsq_afledte
+- id: hae02
+  name: hae02
+  type: numeric
+  label:
+    da: ~
+    en: |-
+      HAE02 - Highest Attained Education 2 (5 levels, Based on correspondance to DISCED-15 classification and KBF recommendations,
+      with 3 levels for higher education)
+  dataset: lsq_afledte
+- id: fa14_01
+  name: fa14_01
+  type: numeric
+  label:
+    da: ~
+    en: Sport participation more than 0.5 hours per week (0 = No, 1 = Yes), all 22
+      LSQ categories of sport
+  dataset: lsq_afledte
+- id: fa14_02
+  name: fa14_02
+  type: numeric
+  label:
+    da: ~
+    en: Avg. total duration of sport participation per week (hours), all 22 LSQ categories
+      of sport
+  dataset: lsq_afledte
+- id: arbfa04_02_g
+  name: arbfa04_02_g
+  type: numeric
+  label:
+    da: ~
+    en: Bicycling to/from work (0 = No, 1 = Yes)
+  dataset: lsq_afledte
+- id: arbfa04_02_h
+  name: arbfa04_02_h
+  type: numeric
+  label:
+    da: ~
+    en: Avg. total duration of bicycling to/from work per week (hours)
+  dataset: lsq_afledte
+- id: fa20_01_c
+  name: fa20_01_c
+  type: numeric
+  label:
+    da: ~
+    en: Fitness (aerobics, cardio fitness class, cross-training or similar) avg. hours
+      per week
+  dataset: lsq_afledte
+- id: fa20_02_c
+  name: fa20_02_c
+  type: numeric
+  label:
+    da: ~
+    en: Weight lifting avg. hours per week
+  dataset: lsq_afledte
+- id: fa20_03_c
+  name: fa20_03_c
+  type: numeric
+  label:
+    da: ~
+    en: Jogging, running or orienteering avg. hours per week
+  dataset: lsq_afledte
+- id: fa20_04_c
+  name: fa20_04_c
+  type: numeric
+  label:
+    da: ~
+    en: Gymnastics avg. hours per week
+  dataset: lsq_afledte
+- id: fa20_05_c
+  name: fa20_05_c
+  type: numeric
+  label:
+    da: ~
+    en: Athletics (e.g. high jump, long jump or three-step) avg. hours per week
+  dataset: lsq_afledte
+- id: fa20_06_c
+  name: fa20_06_c
+  type: numeric
+  label:
+    da: ~
+    en: Spinning or cycling as exercise avg. hours per week
+  dataset: lsq_afledte
+- id: fa20_07_c
+  name: fa20_07_c
+  type: numeric
+  label:
+    da: ~
+    en: Swimming avg. hours per week
+  dataset: lsq_afledte
+- id: fa20_08_c
+  name: fa20_08_c
+  type: numeric
+  label:
+    da: ~
+    en: Ball sports (e.g. soccer, basketball, volley ball, handball) avg. hours per
+      week
+  dataset: lsq_afledte
+- id: fa20_09_c
+  name: fa20_09_c
+  type: numeric
+  label:
+    da: ~
+    en: Golf avg. hours per week
+  dataset: lsq_afledte
+- id: fa20_10_c
+  name: fa20_10_c
+  type: numeric
+  label:
+    da: ~
+    en: Dance class or competitive dancing (e.g. ballroom, ballet, jazz or street)
+      avg. hours per week
+  dataset: lsq_afledte
+- id: fa20_11_c
+  name: fa20_11_c
+  type: numeric
+  label:
+    da: ~
+    en: Horse riding avg. hours per week
+  dataset: lsq_afledte
+- id: fa20_12_c
+  name: fa20_12_c
+  type: numeric
+  label:
+    da: ~
+    en: Ice skating, ice hockey avg. hours per week
+  dataset: lsq_afledte
+- id: fa20_13_c
+  name: fa20_13_c
+  type: numeric
+  label:
+    da: ~
+    en: Martial arts (e.g. judo or karate) avg. hours per week
+  dataset: lsq_afledte
+- id: fa20_14_c
+  name: fa20_14_c
+  type: numeric
+  label:
+    da: ~
+    en: Boxing or wrestling avg. hours per week
+  dataset: lsq_afledte
+- id: fa20_15_c
+  name: fa20_15_c
+  type: numeric
+  label:
+    da: ~
+    en: Tennis, badminton or table tennis avg. hours per week
+  dataset: lsq_afledte
+- id: fa20_16_c
+  name: fa20_16_c
+  type: numeric
+  label:
+    da: ~
+    en: Squash avg. hours per week
+  dataset: lsq_afledte
+- id: fa20_17_c
+  name: fa20_17_c
+  type: numeric
+  label:
+    da: ~
+    en: Sailing, surfing, canoeing or rowing avg. hours per week
+  dataset: lsq_afledte
+- id: fa20_18_c
+  name: fa20_18_c
+  type: numeric
+  label:
+    da: ~
+    en: Motor sports (e.g. motocross) avg. hours per week
+  dataset: lsq_afledte
+- id: fa20_19_c
+  name: fa20_19_c
+  type: numeric
+  label:
+    da: ~
+    en: Rock or sports climbing avg. hours per week
+  dataset: lsq_afledte
+- id: fa20_20_c
+  name: fa20_20_c
+  type: numeric
+  label:
+    da: ~
+    en: Yoga, pilates or tai chi avg. hours per week
+  dataset: lsq_afledte
+- id: fa20_21_c
+  name: fa20_21_c
+  type: numeric
+  label:
+    da: ~
+    en: Skiing (cross-country, slalom, snowboard, roller skis) avg. hours per week
+  dataset: lsq_afledte
+- id: fa20_22_c
+  name: fa20_22_c
+  type: numeric
+  label:
+    da: ~
+    en: Other organized physical activity (ex. Bowling, petanque, sport shooting,
+      cue sports) avg. hours per week
+  dataset: lsq_afledte
+- id: fa01
+  name: fa01
+  type: numeric
+  label:
+    da: ~
+    en: How is your normal daily activity level at work, study or equivalent?
+  dataset: lsq_fysakt_final
+- id: fa02
+  name: fa02
+  type: numeric
+  label:
+    da: ~
+    en: How many hours per week do you usually spend on your main occupation (work,
+      study or equivalent)?
+  dataset: lsq_fysakt_final
+- id: arbfa01
+  name: arbfa01
+  type: numeric
+  label:
+    da: ~
+    en: How many km do you have to work or educational institution?
+  dataset: lsq_fysakt_final
+- id: sid01
+  name: sid01
+  type: numeric
+  label:
+    da: ~
+    en: |-
+      On a regular weekday/working day over the past year: How many hours do you typically sit or lie down (not sleeping) during the
+      day from you wake up until you go to bed?
+  dataset: lsq_fysakt_final
+- id: sid02
+  name: sid02
+  type: numeric
+  label:
+    da: ~
+    en: |-
+      On a regular day off over the past year: How many hours do you typically sit or lie down (not sleeping) during the day from you
+      wake up until you go to bed?
+  dataset: lsq_fysakt_final
+- id: fa12
+  name: fa12
+  type: numeric
+  label:
+    da: ~
+    en: 'Compared to others at your age and sex: How would you evaluate your physical
+      fitness?'
+  dataset: lsq_fysakt_final
+- id: fa13
+  name: fa13
+  type: numeric
+  label:
+    da: ~
+    en: Do you compete regularly in a sport?
+  dataset: lsq_fysakt_final
+- id: koen
+  name: koen
+  type: character
+  label:
+    da: ~
+    en: Gender (Character variable, F = Female, M = Male)
+  dataset: lsq_general_final
+- id: sex
+  name: sex
+  type: numeric
+  label:
+    da: ~
+    en: Sex (1=Male, 2=Female)
+  dataset: lsq_general_final
+- id: alder
+  name: alder
+  type: numeric
+  label:
+    da: ~
+    en: Age at LSQ completion (Years)
+  dataset: lsq_general_final
+- id: syg01_a
+  name: syg01_a
+  type: numeric
+  label:
+    da: ~
+    en: 'Have you ever been diagnosed with: Myocardial infarction'
+  dataset: lsq_helbred_final
+- id: syg02_a
+  name: syg02_a
+  type: numeric
+  label:
+    da: ~
+    en: 'Has your mental health deteriorated because of the diagnosis: Myocardial
+      infarction'
+  dataset: lsq_helbred_final
+- id: syg03_a
+  name: syg03_a
+  type: numeric
+  label:
+    da: ~
+    en: 'Have you, due to the diagnosis, changed your habits: Myocardial infarction'
+  dataset: lsq_helbred_final
+- id: syg04_a_kost
+  name: syg04_a_kost
+  type: numeric
+  label:
+    da: ~
+    en: 'Changed my dietary habits because of: Myocardial infarction'
+  dataset: lsq_helbred_final
+- id: syg04_a_ryg
+  name: syg04_a_ryg
+  type: numeric
+  label:
+    da: ~
+    en: 'Changed my smoking habits because of: Myocardial infarction'
+  dataset: lsq_helbred_final
+- id: syg04_a_alk
+  name: syg04_a_alk
+  type: numeric
+  label:
+    da: ~
+    en: 'Changed my alcohol habits because of: Myocardial infarction'
+  dataset: lsq_helbred_final
+- id: syg04_a_fa
+  name: syg04_a_fa
+  type: numeric
+  label:
+    da: ~
+    en: 'Changed my physical activity level: Myocardial infarction'
+  dataset: lsq_helbred_final
+- id: syg04_a_arb
+  name: syg04_a_arb
+  type: numeric
+  label:
+    da: ~
+    en: 'Work performance (number of hours or tasks): Myocardial infarction'
+  dataset: lsq_helbred_final
+- id: syg04_a_andet
+  name: syg04_a_andet
+  type: numeric
+  label:
+    da: ~
+    en: 'Changed other habits because of: Myocardial infarction'
+  dataset: lsq_helbred_final
+- id: syg04_a_andettekst
+  name: syg04_a_andettekst
+  type: character
+  label:
+    da: ~
+    en: 'Changed other habits because of: Myocardial infarction (text)'
+  dataset: lsq_helbred_final
+- id: syg01_b
+  name: syg01_b
+  type: numeric
+  label:
+    da: ~
+    en: 'Have you ever been diagnosed with: Stroke'
+  dataset: lsq_helbred_final
+- id: syg02_b
+  name: syg02_b
+  type: numeric
+  label:
+    da: ~
+    en: 'Has your mental health deteriorated because of the diagnosis: Stroke'
+  dataset: lsq_helbred_final
+- id: syg03_b
+  name: syg03_b
+  type: numeric
+  label:
+    da: ~
+    en: 'Have you, due to the diagnosis, changed your habits: Stroke'
+  dataset: lsq_helbred_final
+- id: syg04_b_kost
+  name: syg04_b_kost
+  type: numeric
+  label:
+    da: ~
+    en: 'Changed my dietary habits because of: Stroke'
+  dataset: lsq_helbred_final
+- id: syg04_b_ryg
+  name: syg04_b_ryg
+  type: numeric
+  label:
+    da: ~
+    en: 'Changed my smoking habits because of: Stroke'
+  dataset: lsq_helbred_final
+- id: syg04_b_alk
+  name: syg04_b_alk
+  type: numeric
+  label:
+    da: ~
+    en: 'Changed my alcohol habits because of: Stroke'
+  dataset: lsq_helbred_final
+- id: syg04_b_fa
+  name: syg04_b_fa
+  type: numeric
+  label:
+    da: ~
+    en: 'Changed my physical activity level: Stroke'
+  dataset: lsq_helbred_final
+- id: syg04_b_arb
+  name: syg04_b_arb
+  type: numeric
+  label:
+    da: ~
+    en: 'Work performance (number of hours or tasks): Stroke'
+  dataset: lsq_helbred_final
+- id: syg04_b_andet
+  name: syg04_b_andet
+  type: numeric
+  label:
+    da: ~
+    en: 'Changed other habits because of: Stroke'
+  dataset: lsq_helbred_final
+- id: syg04_b_andettekst
+  name: syg04_b_andettekst
+  type: character
+  label:
+    da: ~
+    en: 'Changed other habits because of: Stroke (text)'
+  dataset: lsq_helbred_final
+- id: syg01_c
+  name: syg01_c
+  type: numeric
+  label:
+    da: ~
+    en: 'Have you ever been diagnosed with: Cancer (other than normal skin Cancer)'
+  dataset: lsq_helbred_final
+- id: syg02_c
+  name: syg02_c
+  type: numeric
+  label:
+    da: ~
+    en: 'Has your mental health deteriorated because of the diagnosis: Cancer'
+  dataset: lsq_helbred_final
+- id: syg03_c
+  name: syg03_c
+  type: numeric
+  label:
+    da: ~
+    en: 'Have you, due to the diagnosis, changed your habits: Cancer'
+  dataset: lsq_helbred_final
+- id: syg04_c_kost
+  name: syg04_c_kost
+  type: numeric
+  label:
+    da: ~
+    en: 'Changed my dietary habits because of: Cancer'
+  dataset: lsq_helbred_final
+- id: syg04_c_ryg
+  name: syg04_c_ryg
+  type: numeric
+  label:
+    da: ~
+    en: 'Changed my smoking habits because of: Cancer'
+  dataset: lsq_helbred_final
+- id: syg04_c_alk
+  name: syg04_c_alk
+  type: numeric
+  label:
+    da: ~
+    en: 'Changed my alcohol habits because of: Cancer'
+  dataset: lsq_helbred_final
+- id: syg04_c_fa
+  name: syg04_c_fa
+  type: numeric
+  label:
+    da: ~
+    en: 'Changed my physical activity level: Cancer'
+  dataset: lsq_helbred_final
+- id: syg04_c_arb
+  name: syg04_c_arb
+  type: numeric
+  label:
+    da: ~
+    en: 'Work performance (number of hours or tasks): Cancer'
+  dataset: lsq_helbred_final
+- id: syg04_c_sol
+  name: syg04_c_sol
+  type: numeric
+  label:
+    da: ~
+    en: 'Sun habits because of: Cancer'
+  dataset: lsq_helbred_final
+- id: syg04_c_andet
+  name: syg04_c_andet
+  type: numeric
+  label:
+    da: ~
+    en: 'Changed other habits because of: Cancer'
+  dataset: lsq_helbred_final
+- id: syg04_c_andettekst
+  name: syg04_c_andettekst
+  type: character
+  label:
+    da: ~
+    en: 'Changed other habits because of: Cancer (text)'
+  dataset: lsq_helbred_final
+- id: syg01_f
+  name: syg01_f
+  type: numeric
+  label:
+    da: ~
+    en: 'Have you ever been diagnosed with: Normal skin Cancer'
+  dataset: lsq_helbred_final
+- id: syg02_f
+  name: syg02_f
+  type: numeric
+  label:
+    da: ~
+    en: 'Has your mental health deteriorated because of the diagnosis: Normal skin
+      Cancer'
+  dataset: lsq_helbred_final
+- id: syg03_f
+  name: syg03_f
+  type: numeric
+  label:
+    da: ~
+    en: 'Have you, due to the diagnosis, changed your habits: Normal skin Cancer'
+  dataset: lsq_helbred_final
+- id: syg04_f_kost
+  name: syg04_f_kost
+  type: numeric
+  label:
+    da: ~
+    en: 'Changed my dietary habits because of: Normal skin Cancer'
+  dataset: lsq_helbred_final
+- id: syg04_f_ryg
+  name: syg04_f_ryg
+  type: numeric
+  label:
+    da: ~
+    en: 'Changed my smoking habits because of: Normal skin Cancer'
+  dataset: lsq_helbred_final
+- id: syg04_f_alk
+  name: syg04_f_alk
+  type: numeric
+  label:
+    da: ~
+    en: 'Changed my alcohol habits because of: Normal skin Cancer'
+  dataset: lsq_helbred_final
+- id: syg04_f_fa
+  name: syg04_f_fa
+  type: numeric
+  label:
+    da: ~
+    en: 'Changed my physical activity level: Normal skin Cancer'
+  dataset: lsq_helbred_final
+- id: syg04_f_arb
+  name: syg04_f_arb
+  type: numeric
+  label:
+    da: ~
+    en: 'Work performance (number of hours or tasks): Normal skin Cancer'
+  dataset: lsq_helbred_final
+- id: syg04_f_sol
+  name: syg04_f_sol
+  type: numeric
+  label:
+    da: ~
+    en: 'Sun habits because of: Normal skin Cancer'
+  dataset: lsq_helbred_final
+- id: syg04_f_andet
+  name: syg04_f_andet
+  type: numeric
+  label:
+    da: ~
+    en: 'Changed other habits because of: Normal skin Cancer'
+  dataset: lsq_helbred_final
+- id: syg04_f_andettekst
+  name: syg04_f_andettekst
+  type: character
+  label:
+    da: ~
+    en: 'Changed other habits because of: Normal skin Cancer (text)'
+  dataset: lsq_helbred_final
+- id: syg01_d
+  name: syg01_d
+  type: numeric
+  label:
+    da: ~
+    en: 'Have you ever been diagnosed with: Colon polyps'
+  dataset: lsq_helbred_final
+- id: syg02_d
+  name: syg02_d
+  type: numeric
+  label:
+    da: ~
+    en: 'Has your mental health deteriorated because of the diagnosis: Colon polyps'
+  dataset: lsq_helbred_final
+- id: syg03_d
+  name: syg03_d
+  type: numeric
+  label:
+    da: ~
+    en: 'Have you, due to the diagnosis, changed your habits: Colon polyps'
+  dataset: lsq_helbred_final
+- id: syg04_d_kost
+  name: syg04_d_kost
+  type: numeric
+  label:
+    da: ~
+    en: 'Changed my dietary habits because of: Colon polyps'
+  dataset: lsq_helbred_final
+- id: syg04_d_ryg
+  name: syg04_d_ryg
+  type: numeric
+  label:
+    da: ~
+    en: 'Changed my smoking habits because of: Colon polyps'
+  dataset: lsq_helbred_final
+- id: syg04_d_alk
+  name: syg04_d_alk
+  type: numeric
+  label:
+    da: ~
+    en: 'Changed my alcohol habits because of: Colon polyps'
+  dataset: lsq_helbred_final
+- id: syg04_d_fa
+  name: syg04_d_fa
+  type: numeric
+  label:
+    da: ~
+    en: 'Changed my physical activity level: Colon polyps'
+  dataset: lsq_helbred_final
+- id: syg04_d_arb
+  name: syg04_d_arb
+  type: numeric
+  label:
+    da: ~
+    en: 'Work performance (number of hours or tasks): Colon polyps'
+  dataset: lsq_helbred_final
+- id: syg04_d_andet
+  name: syg04_d_andet
+  type: numeric
+  label:
+    da: ~
+    en: 'Changed other habits because of: Colon polyps'
+  dataset: lsq_helbred_final
+- id: syg04_d_andettekst
+  name: syg04_d_andettekst
+  type: character
+  label:
+    da: ~
+    en: 'Changed other habits because of: Colon polyps (text)'
+  dataset: lsq_helbred_final
+- id: syg01_e
+  name: syg01_e
+  type: numeric
+  label:
+    da: ~
+    en: 'Have you ever been diagnosed with: Benign breast lump'
+  dataset: lsq_helbred_final
+- id: syg02_e
+  name: syg02_e
+  type: numeric
+  label:
+    da: ~
+    en: 'Has your mental health deteriorated because of the diagnosis: Benign breast
+      lump'
+  dataset: lsq_helbred_final
+- id: syg03_e
+  name: syg03_e
+  type: numeric
+  label:
+    da: ~
+    en: 'Have you, due to the diagnosis, changed your habits: Benign breast lump'
+  dataset: lsq_helbred_final
+- id: syg04_e_kost
+  name: syg04_e_kost
+  type: numeric
+  label:
+    da: ~
+    en: 'Changed my dietary habits because of: Benign breast lump'
+  dataset: lsq_helbred_final
+- id: syg04_e_ryg
+  name: syg04_e_ryg
+  type: numeric
+  label:
+    da: ~
+    en: 'Changed my smoking habits because of: Benign breast lump'
+  dataset: lsq_helbred_final
+- id: syg04_e_alk
+  name: syg04_e_alk
+  type: numeric
+  label:
+    da: ~
+    en: 'Changed my alcohol habits because of: Benign breast lump'
+  dataset: lsq_helbred_final
+- id: syg04_e_fa
+  name: syg04_e_fa
+  type: numeric
+  label:
+    da: ~
+    en: 'Changed my physical activity level: Benign breast lump'
+  dataset: lsq_helbred_final
+- id: syg04_e_arb
+  name: syg04_e_arb
+  type: numeric
+  label:
+    da: ~
+    en: 'Work performance (number of hours or tasks): Benign breast lump'
+  dataset: lsq_helbred_final
+- id: syg04_e_andet
+  name: syg04_e_andet
+  type: numeric
+  label:
+    da: ~
+    en: 'Changed other habits because of: Benign breast lump'
+  dataset: lsq_helbred_final
+- id: syg04_e_andettekst
+  name: syg04_e_andettekst
+  type: character
+  label:
+    da: ~
+    en: 'Changed other habits because of: Benign breast lump (text)'
+  dataset: lsq_helbred_final
+- id: syg01_g
+  name: syg01_g
+  type: numeric
+  label:
+    da: ~
+    en: 'Have you ever been diagnosed with: Diabetes or reduced insulin sensitivity'
+  dataset: lsq_helbred_final
+- id: syg02_g
+  name: syg02_g
+  type: numeric
+  label:
+    da: ~
+    en: 'Has your mental health deteriorated because of the diagnosis: Diabetes or
+      reduced insulin sensitivity'
+  dataset: lsq_helbred_final
+- id: syg03_g
+  name: syg03_g
+  type: numeric
+  label:
+    da: ~
+    en: 'Have you, due to the diagnosis, changed your habits: Diabetes or reduced
+      insulin sensitivity'
+  dataset: lsq_helbred_final
+- id: syg04_g_kost
+  name: syg04_g_kost
+  type: numeric
+  label:
+    da: ~
+    en: 'Changed my dietary habits because of: Diabetes or reduced insulin sensitivity'
+  dataset: lsq_helbred_final
+- id: syg04_g_ryg
+  name: syg04_g_ryg
+  type: numeric
+  label:
+    da: ~
+    en: 'Changed my smoking habits because of: Diabetes or reduced insulin sensitivity'
+  dataset: lsq_helbred_final
+- id: syg04_g_alk
+  name: syg04_g_alk
+  type: numeric
+  label:
+    da: ~
+    en: 'Changed my alcohol habits because of: Diabetes or reduced insulin sensitivity'
+  dataset: lsq_helbred_final
+- id: syg04_g_fa
+  name: syg04_g_fa
+  type: numeric
+  label:
+    da: ~
+    en: 'Changed my physical activity level: Diabetes or reduced insulin sensitivity'
+  dataset: lsq_helbred_final
+- id: syg04_g_arb
+  name: syg04_g_arb
+  type: numeric
+  label:
+    da: ~
+    en: 'Work performance (number of hours or tasks): Diabetes or reduced insulin
+      sensitivity'
+  dataset: lsq_helbred_final
+- id: syg04_g_andet
+  name: syg04_g_andet
+  type: numeric
+  label:
+    da: ~
+    en: 'Changed other habits because of: Diabetes or reduced insulin sensitivity'
+  dataset: lsq_helbred_final
+- id: syg04_g_andettekst
+  name: syg04_g_andettekst
+  type: character
+  label:
+    da: ~
+    en: 'Changed other habits because of: Diabetes or reduced insulin sensitivity
+      (text)'
+  dataset: lsq_helbred_final
+- id: syg01_h
+  name: syg01_h
+  type: numeric
+  label:
+    da: ~
+    en: 'Have you ever been diagnosed with: Increased blood pressure or cholesterol
+      levels'
+  dataset: lsq_helbred_final
+- id: syg02_h
+  name: syg02_h
+  type: numeric
+  label:
+    da: ~
+    en: 'Has your mental health deteriorated because of the diagnosis: Increased blood
+      pressure or cholesterol levels'
+  dataset: lsq_helbred_final
+- id: syg03_h
+  name: syg03_h
+  type: numeric
+  label:
+    da: ~
+    en: 'Have you, due to the diagnosis, changed your habits: Increased blood pressure
+      or cholesterol levels'
+  dataset: lsq_helbred_final
+- id: syg04_h_kost
+  name: syg04_h_kost
+  type: numeric
+  label:
+    da: ~
+    en: 'Changed my dietary habits because of: Increased blood pressure or cholesterol
+      levels'
+  dataset: lsq_helbred_final
+- id: syg04_h_ryg
+  name: syg04_h_ryg
+  type: numeric
+  label:
+    da: ~
+    en: 'Changed my smoking habits because of: Increased blood pressure or cholesterol
+      levels'
+  dataset: lsq_helbred_final
+- id: syg04_h_alk
+  name: syg04_h_alk
+  type: numeric
+  label:
+    da: ~
+    en: 'Changed my alcohol habits because of: Increased blood pressure or cholesterol
+      levels'
+  dataset: lsq_helbred_final
+- id: syg04_h_fa
+  name: syg04_h_fa
+  type: numeric
+  label:
+    da: ~
+    en: 'Changed my physical activity level: Increased blood pressure or cholesterol
+      levels'
+  dataset: lsq_helbred_final
+- id: syg04_h_arb
+  name: syg04_h_arb
+  type: numeric
+  label:
+    da: ~
+    en: 'Work performance (number of hours or tasks): Increased blood pressure or
+      cholesterol levels'
+  dataset: lsq_helbred_final
+- id: syg04_h_andet
+  name: syg04_h_andet
+  type: numeric
+  label:
+    da: ~
+    en: 'Changed other habits because of: Increased blood pressure or cholesterol
+      levels'
+  dataset: lsq_helbred_final
+- id: syg04_h_andettekst
+  name: syg04_h_andettekst
+  type: character
+  label:
+    da: ~
+    en: 'Changed other habits because of: Increased blood pressure or cholesterol
+      levels (text)'
+  dataset: lsq_helbred_final
+- id: syg01_i
+  name: syg01_i
+  type: numeric
+  label:
+    da: ~
+    en: 'Have you ever been diagnosed with: Respiratory diseases (asthma, COPD, pulmonary
+      emphysema)'
+  dataset: lsq_helbred_final
+- id: syg02_i
+  name: syg02_i
+  type: numeric
+  label:
+    da: ~
+    en: 'Has your mental health deteriorated because of the diagnosis: Respiratory
+      diseases'
+  dataset: lsq_helbred_final
+- id: syg03_i
+  name: syg03_i
+  type: numeric
+  label:
+    da: ~
+    en: 'Have you, due to the diagnosis, changed your habits: Respiratory diseases'
+  dataset: lsq_helbred_final
+- id: syg04_i_kost
+  name: syg04_i_kost
+  type: numeric
+  label:
+    da: ~
+    en: 'Changed my dietary habits because of: Respiratory diseases'
+  dataset: lsq_helbred_final
+- id: syg04_i_ryg
+  name: syg04_i_ryg
+  type: numeric
+  label:
+    da: ~
+    en: 'Changed my smoking habits because of: Respiratory diseases'
+  dataset: lsq_helbred_final
+- id: syg04_i_alk
+  name: syg04_i_alk
+  type: numeric
+  label:
+    da: ~
+    en: 'Changed my alcohol habits because of: Respiratory diseases'
+  dataset: lsq_helbred_final
+- id: syg04_i_fa
+  name: syg04_i_fa
+  type: numeric
+  label:
+    da: ~
+    en: 'Changed my physical activity level: Respiratory diseases'
+  dataset: lsq_helbred_final
+- id: syg04_i_arb
+  name: syg04_i_arb
+  type: numeric
+  label:
+    da: ~
+    en: 'Work performance (number of hours or tasks): Respiratory diseases'
+  dataset: lsq_helbred_final
+- id: syg04_i_andet
+  name: syg04_i_andet
+  type: numeric
+  label:
+    da: ~
+    en: 'Changed other habits because of: Respiratory diseases'
+  dataset: lsq_helbred_final
+- id: syg04_i_andettekst
+  name: syg04_i_andettekst
+  type: character
+  label:
+    da: ~
+    en: 'Changed other habits because of: Respiratory diseases (text)'
+  dataset: lsq_helbred_final
+- id: syg01_j
+  name: syg01_j
+  type: numeric
+  label:
+    da: ~
+    en: 'Have you ever been diagnosed with: Allergy or intolerance'
+  dataset: lsq_helbred_final
+- id: syg02_j
+  name: syg02_j
+  type: numeric
+  label:
+    da: ~
+    en: 'Has your mental health deteriorated because of the diagnosis: Allergy or
+      intolerance'
+  dataset: lsq_helbred_final
+- id: syg03_j
+  name: syg03_j
+  type: numeric
+  label:
+    da: ~
+    en: 'Have you, due to the diagnosis, changed your habits: Allergy or intolerance'
+  dataset: lsq_helbred_final
+- id: syg04_j_kost
+  name: syg04_j_kost
+  type: numeric
+  label:
+    da: ~
+    en: 'Changed my dietary habits because of: Allergy or intolerance'
+  dataset: lsq_helbred_final
+- id: syg04_j_ryg
+  name: syg04_j_ryg
+  type: numeric
+  label:
+    da: ~
+    en: 'Changed my smoking habits because of: Allergy or intolerance'
+  dataset: lsq_helbred_final
+- id: syg04_j_alk
+  name: syg04_j_alk
+  type: numeric
+  label:
+    da: ~
+    en: 'Changed my alcohol habits because of: Allergy or intolerance'
+  dataset: lsq_helbred_final
+- id: syg04_j_fa
+  name: syg04_j_fa
+  type: numeric
+  label:
+    da: ~
+    en: 'Changed my physical activity level: Allergy or intolerance'
+  dataset: lsq_helbred_final
+- id: syg04_j_arb
+  name: syg04_j_arb
+  type: numeric
+  label:
+    da: ~
+    en: 'Work performance (number of hours or tasks): Allergy or intolerance'
+  dataset: lsq_helbred_final
+- id: syg04_j_andet
+  name: syg04_j_andet
+  type: numeric
+  label:
+    da: ~
+    en: 'Changed other habits because of: Allergy or intolerance'
+  dataset: lsq_helbred_final
+- id: syg04_j_andettekst
+  name: syg04_j_andettekst
+  type: character
+  label:
+    da: ~
+    en: 'Changed other habits because of: Allergy or intolerance (text)'
+  dataset: lsq_helbred_final
+- id: syg01_k
+  name: syg01_k
+  type: numeric
+  label:
+    da: ~
+    en: 'Have you ever been diagnosed with: Migraine'
+  dataset: lsq_helbred_final
+- id: syg02_k
+  name: syg02_k
+  type: numeric
+  label:
+    da: ~
+    en: 'Has your mental health deteriorated because of the diagnosis: Migraine'
+  dataset: lsq_helbred_final
+- id: syg03_k
+  name: syg03_k
+  type: numeric
+  label:
+    da: ~
+    en: 'Have you, due to the diagnosis, changed your habits: Migraine'
+  dataset: lsq_helbred_final
+- id: syg04_k_kost
+  name: syg04_k_kost
+  type: numeric
+  label:
+    da: ~
+    en: 'Changed my dietary habits because of: Migraine'
+  dataset: lsq_helbred_final
+- id: syg04_k_ryg
+  name: syg04_k_ryg
+  type: numeric
+  label:
+    da: ~
+    en: 'Changed my smoking habits because of: Migraine'
+  dataset: lsq_helbred_final
+- id: syg04_k_alk
+  name: syg04_k_alk
+  type: numeric
+  label:
+    da: ~
+    en: 'Changed my alcohol habits because of: Migraine'
+  dataset: lsq_helbred_final
+- id: syg04_k_fa
+  name: syg04_k_fa
+  type: numeric
+  label:
+    da: ~
+    en: 'Changed my physical activity level: Migraine'
+  dataset: lsq_helbred_final
+- id: syg04_k_arb
+  name: syg04_k_arb
+  type: numeric
+  label:
+    da: ~
+    en: 'Work performance (number of hours or tasks): Migraine'
+  dataset: lsq_helbred_final
+- id: syg04_k_andet
+  name: syg04_k_andet
+  type: numeric
+  label:
+    da: ~
+    en: 'Changed other habits because of: Migraine'
+  dataset: lsq_helbred_final
+- id: syg04_k_andettekst
+  name: syg04_k_andettekst
+  type: character
+  label:
+    da: ~
+    en: 'Changed other habits because of: Migraine (text)'
+  dataset: lsq_helbred_final
+- id: syg01_l
+  name: syg01_l
+  type: numeric
+  label:
+    da: ~
+    en: 'Have you ever been diagnosed with: Epilepsy'
+  dataset: lsq_helbred_final
+- id: syg02_l
+  name: syg02_l
+  type: numeric
+  label:
+    da: ~
+    en: 'Has your mental health deteriorated because of the diagnosis: Epilepsy'
+  dataset: lsq_helbred_final
+- id: syg03_l
+  name: syg03_l
+  type: numeric
+  label:
+    da: ~
+    en: 'Have you, due to the diagnosis, changed your habits: Epilepsy'
+  dataset: lsq_helbred_final
+- id: syg04_l_kost
+  name: syg04_l_kost
+  type: numeric
+  label:
+    da: ~
+    en: 'Changed my dietary habits because of: Epilepsy'
+  dataset: lsq_helbred_final
+- id: syg04_l_ryg
+  name: syg04_l_ryg
+  type: numeric
+  label:
+    da: ~
+    en: 'Changed my smoking habits because of: Epilepsy'
+  dataset: lsq_helbred_final
+- id: syg04_l_alk
+  name: syg04_l_alk
+  type: numeric
+  label:
+    da: ~
+    en: 'Changed my alcohol habits because of: Epilepsy'
+  dataset: lsq_helbred_final
+- id: syg04_l_fa
+  name: syg04_l_fa
+  type: numeric
+  label:
+    da: ~
+    en: 'Changed my physical activity level: Epilepsy'
+  dataset: lsq_helbred_final
+- id: syg04_l_arb
+  name: syg04_l_arb
+  type: numeric
+  label:
+    da: ~
+    en: 'Work performance (number of hours or tasks): Epilepsy'
+  dataset: lsq_helbred_final
+- id: syg04_l_andet
+  name: syg04_l_andet
+  type: numeric
+  label:
+    da: ~
+    en: 'Changed other habits because of: Epilepsy'
+  dataset: lsq_helbred_final
+- id: syg04_l_andettekst
+  name: syg04_l_andettekst
+  type: character
+  label:
+    da: ~
+    en: 'Changed other habits because of: Epilepsy (text)'
+  dataset: lsq_helbred_final
+- id: syg01_m
+  name: syg01_m
+  type: numeric
+  label:
+    da: ~
+    en: 'Have you ever been diagnosed with: ADHD/ADD'
+  dataset: lsq_helbred_final
+- id: syg02_m
+  name: syg02_m
+  type: numeric
+  label:
+    da: ~
+    en: 'Has your mental health deteriorated because of the diagnosis: ADHD/ADD'
+  dataset: lsq_helbred_final
+- id: syg03_m
+  name: syg03_m
+  type: numeric
+  label:
+    da: ~
+    en: 'Have you, due to the diagnosis, changed your habits: ADHD/ADD'
+  dataset: lsq_helbred_final
+- id: syg04_m_kost
+  name: syg04_m_kost
+  type: numeric
+  label:
+    da: ~
+    en: 'Changed my dietary habits because of: ADHD/ADD'
+  dataset: lsq_helbred_final
+- id: syg04_m_ryg
+  name: syg04_m_ryg
+  type: numeric
+  label:
+    da: ~
+    en: 'Changed my smoking habits because of: ADHD/ADD'
+  dataset: lsq_helbred_final
+- id: syg04_m_alk
+  name: syg04_m_alk
+  type: numeric
+  label:
+    da: ~
+    en: 'Changed my alcohol habits because of: ADHD/ADD'
+  dataset: lsq_helbred_final
+- id: syg04_m_fa
+  name: syg04_m_fa
+  type: numeric
+  label:
+    da: ~
+    en: 'Changed my physical activity level: ADHD/ADD'
+  dataset: lsq_helbred_final
+- id: syg04_m_arb
+  name: syg04_m_arb
+  type: numeric
+  label:
+    da: ~
+    en: 'Work performance (number of hours or tasks): ADHD/ADD'
+  dataset: lsq_helbred_final
+- id: syg04_m_andet
+  name: syg04_m_andet
+  type: numeric
+  label:
+    da: ~
+    en: 'Changed other habits because of: ADHD/ADD'
+  dataset: lsq_helbred_final
+- id: syg04_m_andettekst
+  name: syg04_m_andettekst
+  type: character
+  label:
+    da: ~
+    en: 'Changed other habits because of: ADHD/ADD (text)'
+  dataset: lsq_helbred_final
+- id: syg01_n
+  name: syg01_n
+  type: numeric
+  label:
+    da: ~
+    en: 'Have you ever been diagnosed with: Polycystic ovary syndrome (PCO)'
+  dataset: lsq_helbred_final
+- id: syg02_n
+  name: syg02_n
+  type: numeric
+  label:
+    da: ~
+    en: 'Has your mental health deteriorated because of the diagnosis: Polycystic
+      ovary syndrome (PCO)'
+  dataset: lsq_helbred_final
+- id: syg03_n
+  name: syg03_n
+  type: numeric
+  label:
+    da: ~
+    en: 'Have you, due to the diagnosis, changed your habits: Polycystic ovary syndrome
+      (PCO)'
+  dataset: lsq_helbred_final
+- id: syg04_n_kost
+  name: syg04_n_kost
+  type: numeric
+  label:
+    da: ~
+    en: 'Changed my dietary habits because of: Polycystic ovary syndrome (PCO)'
+  dataset: lsq_helbred_final
+- id: syg04_n_ryg
+  name: syg04_n_ryg
+  type: numeric
+  label:
+    da: ~
+    en: 'Changed my smoking habits because of: Polycystic ovary syndrome (PCO)'
+  dataset: lsq_helbred_final
+- id: syg04_n_alk
+  name: syg04_n_alk
+  type: numeric
+  label:
+    da: ~
+    en: 'Changed my alcohol habits because of: Polycystic ovary syndrome (PCO)'
+  dataset: lsq_helbred_final
+- id: syg04_n_fa
+  name: syg04_n_fa
+  type: numeric
+  label:
+    da: ~
+    en: 'Changed my physical activity level: Polycystic ovary syndrome (PCO)'
+  dataset: lsq_helbred_final
+- id: syg04_n_arb
+  name: syg04_n_arb
+  type: numeric
+  label:
+    da: ~
+    en: 'Work performance (number of hours or tasks): Polycystic ovary syndrome (PCO)'
+  dataset: lsq_helbred_final
+- id: syg04_n_andet
+  name: syg04_n_andet
+  type: numeric
+  label:
+    da: ~
+    en: 'Changed other habits because of: Polycystic ovary syndrome (PCO)'
+  dataset: lsq_helbred_final
+- id: syg04_n_andettekst
+  name: syg04_n_andettekst
+  type: character
+  label:
+    da: ~
+    en: 'Changed other habits because of: Polycystic ovary syndrome (PCO) (text)'
+  dataset: lsq_helbred_final
+- id: pas01
+  name: pas01
+  type: numeric
+  label:
+    da: ~
+    en: 'Have you been exposed to passive smoking in your childhood home when you
+      were in the age group:  0-9 years of age'
+  dataset: lsq_rygning_final
+- id: pas02
+  name: pas02
+  type: numeric
+  label:
+    da: ~
+    en: 'Have you been exposed to passive smoking in your childhood home when you
+      were in the age group: 10-19 years of age'
+  dataset: lsq_rygning_final
+- id: pas03
+  name: pas03
+  type: numeric
+  label:
+    da: ~
+    en: 'Did anyone in your household smoke in the following periods of your life:
+      20-29 years of age'
+  dataset: lsq_rygning_final
+- id: pas04
+  name: pas04
+  type: numeric
+  label:
+    da: ~
+    en: 'Did anyone in your household smoke in the following periods of your life:
+      30-39 years of age'
+  dataset: lsq_rygning_final
+- id: pas05
+  name: pas05
+  type: numeric
+  label:
+    da: ~
+    en: 'Did anyone in your household smoke in the following periods of your life:
+      40-49 years of age'
+  dataset: lsq_rygning_final
+- id: pas06
+  name: pas06
+  type: numeric
+  label:
+    da: ~
+    en: 'Did anyone in your household smoke in the following periods of your life:
+      50-59 years of age'
+  dataset: lsq_rygning_final
+- id: pas07
+  name: pas07
+  type: numeric
+  label:
+    da: ~
+    en: 'Did anyone in your household smoke in the following periods of your life:
+      60-69 years of age'
+  dataset: lsq_rygning_final
+- id: pas08
+  name: pas08
+  type: numeric
+  label:
+    da: ~
+    en: 'Did anyone in your household smoke in the following periods of your life:
+      70 years of age till now'
+  dataset: lsq_rygning_final
+- id: pas09
+  name: pas09
+  type: numeric
+  label:
+    da: ~
+    en: 'Average work hours per day exposed to passive smoking during the following
+      periods of your life: under 20 years of age'
+  dataset: lsq_rygning_final
+- id: pas10
+  name: pas10
+  type: numeric
+  label:
+    da: ~
+    en: 'Average work hours per day exposed to passive smoking during the following
+      periods of your life: 20-29 years of age'
+  dataset: lsq_rygning_final
+- id: pas11
+  name: pas11
+  type: numeric
+  label:
+    da: ~
+    en: 'Average work hours per day exposed to passive smoking during the following
+      periods of your life: 30-39 years of age'
+  dataset: lsq_rygning_final
+- id: pas12
+  name: pas12
+  type: numeric
+  label:
+    da: ~
+    en: 'Average work hours per day exposed to passive smoking during the following
+      periods of your life: 40-49 years of age'
+  dataset: lsq_rygning_final
+- id: pas13
+  name: pas13
+  type: numeric
+  label:
+    da: ~
+    en: 'Average work hours per day exposed to passive smoking during the following
+      periods of your life: 50-59 years of age'
+  dataset: lsq_rygning_final
+- id: pas14
+  name: pas14
+  type: numeric
+  label:
+    da: ~
+    en: 'Average work hours per day exposed to passive smoking during the following
+      periods of your life: 60-69 years of age'
+  dataset: lsq_rygning_final
+- id: pas15
+  name: pas15
+  type: numeric
+  label:
+    da: ~
+    en: 'Average work hours per day exposed to passive smoking during the following
+      periods of your life: 70 years of age till now'
+  dataset: lsq_rygning_final
+- id: sovn03
+  name: sovn03
+  type: numeric
+  label:
+    da: ~
+    en: On a typical weekday (working day), how long does it take until you fall asleep
+      from when you turn off the light?
+  dataset: lsq_sovn_final
+- id: sovn06
+  name: sovn06
+  type: numeric
+  label:
+    da: ~
+    en: When you have a day off, how long does it take until you fall asleep from
+      when you turn off the light?
+  dataset: lsq_sovn_final
+- id: sovn07_01
+  name: sovn07_01
+  type: numeric
+  label:
+    da: ~
+    en: 'If you think about your weekdays over the past year, how often: Do you feel
+      rested when you wake?'
+  dataset: lsq_sovn_final
+- id: sovn07_02
+  name: sovn07_02
+  type: numeric
+  label:
+    da: ~
+    en: 'If you think about your weekdays over the past year, how often: Are you satisfied
+      with the quality of your sleep?'
+  dataset: lsq_sovn_final
+- id: sovn07_03
+  name: sovn07_03
+  type: numeric
+  label:
+    da: ~
+    en: 'If you think about your weekdays over the past year, how often: Do you feel
+      tired and need a nap during the day?'
+  dataset: lsq_sovn_final
+- id: sovn07_04
+  name: sovn07_04
+  type: numeric
+  label:
+    da: ~
+    en: 'If you think about your weekdays over the past year, how often: Do you take
+      sleep-inducing medication to fall asleep?'
+  dataset: lsq_sovn_final
+- id: sovn07_05
+  name: sovn07_05
+  type: numeric
+  label:
+    da: ~
+    en: |-
+      If you think about your weekdays over the past year, how often: Do you use other remedies (e.g. alternative medicine or
+      alcohol) to fall asleep?
+  dataset: lsq_sovn_final
+- id: sovn07_06
+  name: sovn07_06
+  type: numeric
+  label:
+    da: ~
+    en: |-
+      If you think about your weekdays over the past year, how often: Is your sleep disturbed by medical problems (e.g. pain,
+      breathing problems or sleep apnea)?
+  dataset: lsq_sovn_final
+- id: sovn07_07
+  name: sovn07_07
+  type: numeric
+  label:
+    da: ~
+    en: |-
+      If you think about your weekdays over the past year, how often: Do stress, worries or negative thoughts prevent you from
+      sleeping/falling asleep?
+  dataset: lsq_sovn_final
+- id: sovn07_08
+  name: sovn07_08
+  type: numeric
+  label:
+    da: ~
+    en: 'If you think about your weekdays over the past year, how often: Is your sleep
+      interrupted by traffic or industrial noise?'
+  dataset: lsq_sovn_final
+- id: sovn07_09
+  name: sovn07_09
+  type: numeric
+  label:
+    da: ~
+    en: |-
+      If you think about your weekdays over the past year, how often: Is your sleep disturbed by the noise of children, a partner or
+      neighbors?
+  dataset: lsq_sovn_final
+- id: sovn07_10
+  name: sovn07_10
+  type: numeric
+  label:
+    da: ~
+    en: 'If you think about your weekdays over the past year, how often: Is your sleep
+      disturbed by other noise?'
+  dataset: lsq_sovn_final
+- id: sovn07_11
+  name: sovn07_11
+  type: numeric
+  label:
+    da: ~
+    en: 'If you think about your weekdays over the past year, how often: Is your sleep
+      disturbed by toilet visits?'
+  dataset: lsq_sovn_final
+- id: sovn08
+  name: sovn08
+  type: numeric
+  label:
+    da: ~
+    en: Would you describe yourself as a morning person, an evening person, or somewhere
+      in between?
+  dataset: lsq_sovn_final
+- id: sovn20
+  name: sovn20
+  type: numeric
+  label:
+    da: ~
+    en: Duration of sleep on workday(s) (hours)
+  dataset: lsq_sovn_final
+- id: sovn21
+  name: sovn21
+  type: numeric
+  label:
+    da: ~
+    en: Duration of sleep on non-workday(s) (hours)
+  dataset: lsq_sovn_final
+- id: arb02_a
+  name: arb02_a
+  type: numeric
+  label:
+    da: ~
+    en: 'Have you at some point been employed at one of the following positions for
+      at least one year: Firefighter'
+  dataset: lsq_uddarb_final
+- id: arb03_a
+  name: arb03_a
+  type: numeric
+  label:
+    da: ~
+    en: 'For how many years in total have you worked as a: Firefighter'
+  dataset: lsq_uddarb_final
+- id: arb02_b
+  name: arb02_b
+  type: numeric
+  label:
+    da: ~
+    en: 'Have you at some point been employed at one of the following positions for
+      at least one year: Hairdresser'
+  dataset: lsq_uddarb_final
+- id: arb03_b
+  name: arb03_b
+  type: numeric
+  label:
+    da: ~
+    en: 'For how many years in total have you worked as a: Hairdresser'
+  dataset: lsq_uddarb_final
+- id: arb02_c
+  name: arb02_c
+  type: numeric
+  label:
+    da: ~
+    en: 'Have you at some point been employed at one of the following positions for
+      at least one year: Glass industry worker'
+  dataset: lsq_uddarb_final
+- id: arb03_c
+  name: arb03_c
+  type: numeric
+  label:
+    da: ~
+    en: 'For how many years in total have you worked as a: Glass industry worker'
+  dataset: lsq_uddarb_final
+- id: arb02_d
+  name: arb02_d
+  type: numeric
+  label:
+    da: ~
+    en: 'Have you at some point been employed at one of the following positions for
+      at least one year: Rubber industry worker'
+  dataset: lsq_uddarb_final
+- id: arb03_d
+  name: arb03_d
+  type: numeric
+  label:
+    da: ~
+    en: 'For how many years in total have you worked as a: Rubber industry worker'
+  dataset: lsq_uddarb_final
+- id: arb02_e
+  name: arb02_e
+  type: numeric
+  label:
+    da: ~
+    en: 'Have you at some point been employed at one of the following positions for
+      at least one year: Chemical dry cleaning worker'
+  dataset: lsq_uddarb_final
+- id: arb03_e
+  name: arb03_e
+  type: numeric
+  label:
+    da: ~
+    en: 'For how many years in total have you worked as a: Chemical dry cleaning worker'
+  dataset: lsq_uddarb_final
+- id: arb02_f
+  name: arb02_f
+  type: numeric
+  label:
+    da: ~
+    en: 'Have you at some point been employed at one of the following positions for
+      at least one year: Painter'
+  dataset: lsq_uddarb_final
+- id: arb03_f
+  name: arb03_f
+  type: numeric
+  label:
+    da: ~
+    en: 'For how many years in total have you worked as a: Painter'
+  dataset: lsq_uddarb_final
+- id: arb02_g
+  name: arb02_g
+  type: numeric
+  label:
+    da: ~
+    en: 'Have you at some point been employed at one of the following positions for
+      at least one year: Textile industry worker'
+  dataset: lsq_uddarb_final
+- id: arb03_g
+  name: arb03_g
+  type: numeric
+  label:
+    da: ~
+    en: 'For how many years in total have you worked as a: Textile industry worker'
+  dataset: lsq_uddarb_final
+- id: arb02_h
+  name: arb02_h
+  type: numeric
+  label:
+    da: ~
+    en: 'Have you at some point been employed at one of the following positions for
+      at least one year: Printing industry worker'
+  dataset: lsq_uddarb_final
+- id: arb03_h
+  name: arb03_h
+  type: numeric
+  label:
+    da: ~
+    en: 'For how many years in total have you worked as a: Printing industry worker'
+  dataset: lsq_uddarb_final
+- id: arb02_k
+  name: arb02_k
+  type: numeric
+  label:
+    da: ~
+    en: 'Have you at some point been employed at one of the following positions for
+      at least one year: Farmer with livestock'
+  dataset: lsq_uddarb_final
+- id: arb04_k_01
+  name: arb04_k_01
+  type: numeric
+  label:
+    da: ~
+    en: 'Farmer with livestock, which livestock: Pigs'
+  dataset: lsq_uddarb_final
+- id: arb03_k_01
+  name: arb03_k_01
+  type: numeric
+  label:
+    da: ~
+    en: 'For how many years in total have you worked as a: Farmer with livestock:
+      Pigs'
+  dataset: lsq_uddarb_final
+- id: arb04_k_02
+  name: arb04_k_02
+  type: numeric
+  label:
+    da: ~
+    en: 'Farmer with livestock, which livestock: Cattle'
+  dataset: lsq_uddarb_final
+- id: arb03_k_02
+  name: arb03_k_02
+  type: numeric
+  label:
+    da: ~
+    en: 'For how many years in total have you worked as a: Farmer with livestock:
+      Cattle'
+  dataset: lsq_uddarb_final
+- id: arb04_k_03
+  name: arb04_k_03
+  type: numeric
+  label:
+    da: ~
+    en: 'Farmer with livestock, which livestock: Poultry'
+  dataset: lsq_uddarb_final
+- id: arb03_k_03
+  name: arb03_k_03
+  type: numeric
+  label:
+    da: ~
+    en: 'For how many years in total have you worked as a: Farmer with livestock:
+      Poultry'
+  dataset: lsq_uddarb_final
+- id: arb04_k_04
+  name: arb04_k_04
+  type: numeric
+  label:
+    da: ~
+    en: 'Farmer with livestock, which livestock: Fur-bearing-animals'
+  dataset: lsq_uddarb_final
+- id: arb03_k_04
+  name: arb03_k_04
+  type: numeric
+  label:
+    da: ~
+    en: 'For how many years in total have you worked as a: Farmer with livestock:
+      Fur-bearing-animals'
+  dataset: lsq_uddarb_final
+- id: arb04_k_05
+  name: arb04_k_05
+  type: numeric
+  label:
+    da: ~
+    en: 'Farmer with livestock, which livestock: Sheep and goats'
+  dataset: lsq_uddarb_final
+- id: arb03_k_05
+  name: arb03_k_05
+  type: numeric
+  label:
+    da: ~
+    en: 'For how many years in total have you worked as a: Farmer with livestock:
+      Sheep and goats'
+  dataset: lsq_uddarb_final
+- id: arb04_k_andet
+  name: arb04_k_andet
+  type: numeric
+  label:
+    da: ~
+    en: 'Farmer with livestock, which livestock: Other livestock'
+  dataset: lsq_uddarb_final
+- id: arb04_k_andet_txt
+  name: arb04_k_andet_txt
+  type: character
+  label:
+    da: ~
+    en: 'Farmer with livestock, which livestock: Which other? (Free text)'
+  dataset: lsq_uddarb_final
+- id: arb03_k_andet
+  name: arb03_k_andet
+  type: numeric
+  label:
+    da: ~
+    en: 'For how many years in total have you worked as a: Farmer with livestock:
+      Other livestock'
+  dataset: lsq_uddarb_final
+- id: arb02_i
+  name: arb02_i
+  type: numeric
+  label:
+    da: ~
+    en: 'Have you at some point been employed at one of the following positions for
+      at least one year: Butcher'
+  dataset: lsq_uddarb_final
+- id: arb03_i
+  name: arb03_i
+  type: numeric
+  label:
+    da: ~
+    en: 'For how many years in total have you worked as a: Butcher'
+  dataset: lsq_uddarb_final
+- id: arb02_j
+  name: arb02_j
+  type: numeric
+  label:
+    da: ~
+    en: 'Have you at some point been employed at one of the following positions for
+      at least one year: Veterinarian with large animals'
+  dataset: lsq_uddarb_final
+- id: arb03_j
+  name: arb03_j
+  type: numeric
+  label:
+    da: ~
+    en: 'For how many years in total have you worked as a: Veterinarian with large
+      animals'
+  dataset: lsq_uddarb_final
+- id: ismax
+  name: ismax
+  type: numeric
+  label:
+    da: Status variabel der indikerer om forsøgsperson er i MAX subpopulation
+    en: ~
+  dataset: max_deltagere
+- id: prot
+  name: prot
+  type: numeric
+  label:
+    da: Protein (g/dag)
+    en: ~
+  dataset: nutri
+- id: prote
+  name: prote
+  type: numeric
+  label:
+    da: Energi fra protein (kJ/dag)
+    en: ~
+  dataset: nutri
+- id: fedt
+  name: fedt
+  type: numeric
+  label:
+    da: Fedt (g/dag)
+    en: ~
+  dataset: nutri
+- id: fedte
+  name: fedte
+  type: numeric
+  label:
+    da: Energi fra fedt (kJ/dag)
+    en: ~
+  dataset: nutri
+- id: kulhtil
+  name: kulhtil
+  type: numeric
+  label:
+    da: Kulhydrat, tilgængelig (g/dag)
+    en: ~
+  dataset: nutri
+- id: kulhtile
+  name: kulhtile
+  type: numeric
+  label:
+    da: Energi fra kulhydrat, tilgængelig (kJ/dag)
+    en: ~
+  dataset: nutri
+- id: alko
+  name: alko
+  type: numeric
+  label:
+    da: Alkohol (g/dag)
+    en: ~
+  dataset: nutri
+- id: alkoe
+  name: alkoe
+  type: numeric
+  label:
+    da: Energi fra alkohol (kJ/dag)
+    en: ~
+  dataset: nutri
+- id: kulhy
+  name: kulhy
+  type: numeric
+  label:
+    da: Kulhydrat, difference (g/dag)
+    en: ~
+  dataset: nutri
+- id: suktil
+  name: suktil
+  type: numeric
+  label:
+    da: Tilsat sukker (g/dag)
+    en: ~
+  dataset: nutri
+- id: kfibre
+  name: kfibre
+  type: numeric
+  label:
+    da: Kostfibre (g/dag)
+    en: ~
+  dataset: nutri
+- id: kfibree
+  name: kfibree
+  type: numeric
+  label:
+    da: Energi fra kostfibre (kJ/dag)
+    en: ~
+  dataset: nutri
+- id: orgsyrertot
+  name: orgsyrertot
+  type: numeric
+  label:
+    da: Organiske syrer, total (g/dag)
+    en: ~
+  dataset: nutri
+- id: orgsyrere
+  name: orgsyrere
+  type: numeric
+  label:
+    da: Energi fra organiske syrer, total (kJ/dag)
+    en: ~
+  dataset: nutri
+- id: sukkeralko
+  name: sukkeralko
+  type: numeric
+  label:
+    da: Sukkeralkoholer, total (g/dag)
+    en: ~
+  dataset: nutri
+- id: sukkeralkoe
+  name: sukkeralkoe
+  type: numeric
+  label:
+    da: Energi fra sukkeralkoholer, total (kJ/dag)
+    en: ~
+  dataset: nutri
+- id: kulhtilx
+  name: kulhtilx
+  type: numeric
+  label:
+    da: Kulhydrat, tilgængelig uden organiske syrer og sukkeralkoholer (g/dag)
+    en: ~
+  dataset: nutri
+- id: kulhtilxe
+  name: kulhtilxe
+  type: numeric
+  label:
+    da: Energi fra kulhydrat, tilgængelig uden organiske syrer og sukkeralkoholer
+      (kJ/dag)
+    en: ~
+  dataset: nutri
+- id: kulhtote
+  name: kulhtote
+  type: numeric
+  label:
+    da: Energi fra kulhydrat, tilgængelig inkl. kostfibre (kJ/dag)
+    en: ~
+  dataset: nutri
+- id: energitotxalko
+  name: energitotxalko
+  type: numeric
+  label:
+    da: Energi total uden alkohol (kJ/dag)
+    en: ~
+  dataset: nutri
+- id: protep
+  name: protep
+  type: numeric
+  label:
+    da: Protein energiprocent
+    en: ~
+  dataset: nutri
+- id: fedtep
+  name: fedtep
+  type: numeric
+  label:
+    da: Fedt energiprocent
+    en: ~
+  dataset: nutri
+- id: kulhtilxep
+  name: kulhtilxep
+  type: numeric
+  label:
+    da: Kulhydrat, tilgængelig uden organiske syrer og sukkeralkoholer energiprocent
+    en: ~
+  dataset: nutri
+- id: kulhtotep
+  name: kulhtotep
+  type: numeric
+  label:
+    da: Energi fra kulhydrat, tilgængelig inkl. kostfibre energiprocent
+    en: ~
+  dataset: nutri
+- id: kfibreep
+  name: kfibreep
+  type: numeric
+  label:
+    da: Kostfibre energiprocent
+    en: ~
+  dataset: nutri
+- id: alkoep
+  name: alkoep
+  type: numeric
+  label:
+    da: Alkohol energiprocent
+    en: ~
+  dataset: nutri
+- id: orgsyrerep
+  name: orgsyrerep
+  type: numeric
+  label:
+    da: Organiske syrer, tot. energiprocent
+    en: ~
+  dataset: nutri
+- id: sukkeralkoep
+  name: sukkeralkoep
+  type: numeric
+  label:
+    da: Sukkeralkoholer, total energiprocent
+    en: ~
+  dataset: nutri
+- id: andresukker
+  name: andresukker
+  type: numeric
+  label:
+    da: Andre sukkerarter (g/dag)
+    en: ~
+  dataset: nutri
+- id: totsukker
+  name: totsukker
+  type: numeric
+  label:
+    da: Sukkerarter, ialt (g/dag)
+    en: ~
+  dataset: nutri
+- id: fructo
+  name: fructo
+  type: numeric
+  label:
+    da: Fruktose (g/dag)
+    en: ~
+  dataset: nutri
+- id: galacto
+  name: galacto
+  type: numeric
+  label:
+    da: Galaktose (g/dag)
+    en: ~
+  dataset: nutri
+- id: glucos
+  name: glucos
+  type: numeric
+  label:
+    da: Glukose (g/dag)
+    en: ~
+  dataset: nutri
+- id: monosaccha
+  name: monosaccha
+  type: numeric
+  label:
+    da: Monosaccharider, total (g/dag)
+    en: ~
+  dataset: nutri
+- id: lactos
+  name: lactos
+  type: numeric
+  label:
+    da: Laktose (g/dag)
+    en: ~
+  dataset: nutri
+- id: maltos
+  name: maltos
+  type: numeric
+  label:
+    da: Maltose (g/dag)
+    en: ~
+  dataset: nutri
+- id: sacchros
+  name: sacchros
+  type: numeric
+  label:
+    da: Sakkarose (g/dag)
+    en: ~
+  dataset: nutri
+- id: disacchar
+  name: disacchar
+  type: numeric
+  label:
+    da: Disaccharider, total (g/dag)
+    en: ~
+  dataset: nutri
+- id: raffinose
+  name: raffinose
+  type: numeric
+  label:
+    da: Raffinose (g/dag)
+    en: ~
+  dataset: nutri
+- id: stivelse
+  name: stivelse
+  type: numeric
+  label:
+    da: Stivelse (g/dag)
+    en: ~
+  dataset: nutri
+- id: aske
+  name: aske
+  type: numeric
+  label:
+    da: Aske (g/dag)
+    en: ~
+  dataset: nutri
+- id: vand
+  name: vand
+  type: numeric
+  label:
+    da: Vand (g/dag)
+    en: ~
+  dataset: nutri
+- id: avit
+  name: avit
+  type: numeric
+  label:
+    da: A-vitamin (RE)
+    en: ~
+  dataset: nutri
+- id: retinol
+  name: retinol
+  type: numeric
+  label:
+    da: Retinol (µg/dag)
+    en: ~
+  dataset: nutri
+- id: betaca
+  name: betaca
+  type: numeric
+  label:
+    da: Betacaroten (µg/dag)
+    en: ~
+  dataset: nutri
+- id: dvit
+  name: dvit
+  type: numeric
+  label:
+    da: D-vitamin (µg/dag)
+    en: ~
+  dataset: nutri
+- id: evit
+  name: evit
+  type: numeric
+  label:
+    da: E-vitamin (mg/dag)
+    en: ~
+  dataset: nutri
+- id: alfato
+  name: alfato
+  type: numeric
+  label:
+    da: Alfa-tokoferol (mg/dag)
+    en: ~
+  dataset: nutri
+- id: kvit
+  name: kvit
+  type: numeric
+  label:
+    da: K-vitamin (µg/dag)
+    en: ~
+  dataset: nutri
+- id: b1vit
+  name: b1vit
+  type: numeric
+  label:
+    da: B1-vitamin (mg/dag)
+    en: ~
+  dataset: nutri
+- id: thiamin
+  name: thiamin
+  type: numeric
+  label:
+    da: Thiamin (mg/dag)
+    en: ~
+  dataset: nutri
+- id: b2vit
+  name: b2vit
+  type: numeric
+  label:
+    da: B2-vitamin (mg/dag)
+    en: ~
+  dataset: nutri
+- id: niacin
+  name: niacin
+  type: numeric
+  label:
+    da: Niacin ækvivlent(NE)
+    en: ~
+  dataset: nutri
+- id: niacin2
+  name: niacin2
+  type: numeric
+  label:
+    da: Niacin (mg/dag)
+    en: ~
+  dataset: nutri
+- id: b6vit
+  name: b6vit
+  type: numeric
+  label:
+    da: B6-vitamin (mg/dag)
+    en: ~
+  dataset: nutri
+- id: pantothen
+  name: pantothen
+  type: numeric
+  label:
+    da: Pantothensyre (mg/dag)
+    en: ~
+  dataset: nutri
+- id: biotin
+  name: biotin
+  type: numeric
+  label:
+    da: Biotin (µg/dag)
+    en: ~
+  dataset: nutri
+- id: folat
+  name: folat
+  type: numeric
+  label:
+    da: Folat (µg/dag)
+    en: ~
+  dataset: nutri
+- id: frifolat
+  name: frifolat
+  type: numeric
+  label:
+    da: Frifolat (µg/dag)
+    en: ~
+  dataset: nutri
+- id: b12vit
+  name: b12vit
+  type: numeric
+  label:
+    da: B12-vitamin (µg/dag)
+    en: ~
+  dataset: nutri
+- id: cvit
+  name: cvit
+  type: numeric
+  label:
+    da: C-vitamin (mg/dag)
+    en: ~
+  dataset: nutri
+- id: na
+  name: na
+  type: numeric
+  label:
+    da: Natrium (mg/dag)
+    en: ~
+  dataset: nutri
+- id: ka
+  name: ka
+  type: numeric
+  label:
+    da: Kalium (mg/dag)
+    en: ~
+  dataset: nutri
+- id: ca
+  name: ca
+  type: numeric
+  label:
+    da: Calcium (mg/dag)
+    en: ~
+  dataset: nutri
+- id: mg
+  name: mg
+  type: numeric
+  label:
+    da: Magnesium (mg/dag)
+    en: ~
+  dataset: nutri
+- id: p
+  name: p
+  type: numeric
+  label:
+    da: Phosphor (mg/dag)
+    en: ~
+  dataset: nutri
+- id: fe
+  name: fe
+  type: numeric
+  label:
+    da: Jern (mg/dag)
+    en: ~
+  dataset: nutri
+- id: cu
+  name: cu
+  type: numeric
+  label:
+    da: Kobber (mg/dag)
+    en: ~
+  dataset: nutri
+- id: zn
+  name: zn
+  type: numeric
+  label:
+    da: Zink (mg/dag)
+    en: ~
+  dataset: nutri
+- id: i
+  name: i
+  type: numeric
+  label:
+    da: Jod (µg/dag)
+    en: ~
+  dataset: nutri
+- id: mn
+  name: mn
+  type: numeric
+  label:
+    da: Mangan (mg/dag)
+    en: ~
+  dataset: nutri
+- id: cr
+  name: cr
+  type: numeric
+  label:
+    da: Chrom (µg/dag)
+    en: ~
+  dataset: nutri
+- id: se
+  name: se
+  type: numeric
+  label:
+    da: Selen (µg/dag)
+    en: ~
+  dataset: nutri
+- id: ni
+  name: ni
+  type: numeric
+  label:
+    da: Nikkel (µg/dag)
+    en: ~
+  dataset: nutri
+- id: c4x0
+  name: c4x0
+  type: numeric
+  label:
+    da: C4:0 (g/dag)
+    en: ~
+  dataset: nutri
+- id: c6x0
+  name: c6x0
+  type: numeric
+  label:
+    da: C6:0 (g/dag)
+    en: ~
+  dataset: nutri
+- id: c8x0
+  name: c8x0
+  type: numeric
+  label:
+    da: C8:0 (g/dag)
+    en: ~
+  dataset: nutri
+- id: c10x0
+  name: c10x0
+  type: numeric
+  label:
+    da: C10:0 (g/dag)
+    en: ~
+  dataset: nutri
+- id: c12x0
+  name: c12x0
+  type: numeric
+  label:
+    da: C12:0 (g/dag)
+    en: ~
+  dataset: nutri
+- id: c13x0
+  name: c13x0
+  type: numeric
+  label:
+    da: C13:0 (g/dag)
+    en: ~
+  dataset: nutri
+- id: c14x0
+  name: c14x0
+  type: numeric
+  label:
+    da: C14:0 (g/dag)
+    en: ~
+  dataset: nutri
+- id: c15x0
+  name: c15x0
+  type: numeric
+  label:
+    da: C15:0 (g/dag)
+    en: ~
+  dataset: nutri
+- id: c16x0
+  name: c16x0
+  type: numeric
+  label:
+    da: C16:0 (g/dag)
+    en: ~
+  dataset: nutri
+- id: c17x0
+  name: c17x0
+  type: numeric
+  label:
+    da: C17:0 (g/dag)
+    en: ~
+  dataset: nutri
+- id: c18x0
+  name: c18x0
+  type: numeric
+  label:
+    da: C18:0 (g/dag)
+    en: ~
+  dataset: nutri
+- id: c20x0
+  name: c20x0
+  type: numeric
+  label:
+    da: C20:0 (g/dag)
+    en: ~
+  dataset: nutri
+- id: c21x0
+  name: c21x0
+  type: numeric
+  label:
+    da: C21:0 (g/dag)
+    en: ~
+  dataset: nutri
+- id: c22x0
+  name: c22x0
+  type: numeric
+  label:
+    da: C22:0 (g/dag)
+    en: ~
+  dataset: nutri
+- id: c23x0
+  name: c23x0
+  type: numeric
+  label:
+    da: C23:0 (g/dag)
+    en: ~
+  dataset: nutri
+- id: c24x0
+  name: c24x0
+  type: numeric
+  label:
+    da: C24:0 (g/dag)
+    en: ~
+  dataset: nutri
+- id: andre_sfa
+  name: andre_sfa
+  type: numeric
+  label:
+    da: Andre mættede festsyrer (g/dag)
+    en: ~
+  dataset: nutri
+- id: c12x1n1
+  name: c12x1n1
+  type: numeric
+  label:
+    da: C12:1,n-1 (g/dag)
+    en: ~
+  dataset: nutri
+- id: c14x1n5
+  name: c14x1n5
+  type: numeric
+  label:
+    da: C14:1,n-5 (g/dag)
+    en: ~
+  dataset: nutri
+- id: c15x1
+  name: c15x1
+  type: numeric
+  label:
+    da: C15:1 (g/dag)
+    en: ~
+  dataset: nutri
+- id: c16x1n7
+  name: c16x1n7
+  type: numeric
+  label:
+    da: C16:1,n-7 (g/dag)
+    en: ~
+  dataset: nutri
+- id: c17x1n7
+  name: c17x1n7
+  type: numeric
+  label:
+    da: C17:1,n-7 (g/dag)
+    en: ~
+  dataset: nutri
+- id: c18x1n9
+  name: c18x1n9
+  type: numeric
+  label:
+    da: C18:1,n-9 (g/dag)
+    en: ~
+  dataset: nutri
+- id: c18x1n7
+  name: c18x1n7
+  type: numeric
+  label:
+    da: C18:1,n-7 (g/dag)
+    en: ~
+  dataset: nutri
+- id: c20x1n9
+  name: c20x1n9
+  type: numeric
+  label:
+    da: C20:1,n-9 (g/dag)
+    en: ~
+  dataset: nutri
+- id: c20x1n11
+  name: c20x1n11
+  type: numeric
+  label:
+    da: C20:1,n-11 (g/dag)
+    en: ~
+  dataset: nutri
+- id: c22x1n9
+  name: c22x1n9
+  type: numeric
+  label:
+    da: C22:1,n-9 (g/dag)
+    en: ~
+  dataset: nutri
+- id: c22x1n11
+  name: c22x1n11
+  type: numeric
+  label:
+    da: C22:1,n-11 (g/dag)
+    en: ~
+  dataset: nutri
+- id: c24x1n9
+  name: c24x1n9
+  type: numeric
+  label:
+    da: C24:1,n-9 (g/dag)
+    en: ~
+  dataset: nutri
+- id: andre_mufa
+  name: andre_mufa
+  type: numeric
+  label:
+    da: Andre monoumættede fedtsyrer (g/dag)
+    en: ~
+  dataset: nutri
+- id: c18x2n6
+  name: c18x2n6
+  type: numeric
+  label:
+    da: C18:2,n-6 (g/dag)
+    en: ~
+  dataset: nutri
+- id: c18x2_conj
+  name: c18x2_conj
+  type: numeric
+  label:
+    da: C18:2,conjugerede (g/dag)
+    en: ~
+  dataset: nutri
+- id: c18x3n3
+  name: c18x3n3
+  type: numeric
+  label:
+    da: C18:3,n-3 (ALA) (g/dag)
+    en: ~
+  dataset: nutri
+- id: c18x3n6
+  name: c18x3n6
+  type: numeric
+  label:
+    da: C18:3,n-6 (g/dag)
+    en: ~
+  dataset: nutri
+- id: c18x4n3
+  name: c18x4n3
+  type: numeric
+  label:
+    da: C18:4,n-3 (g/dag)
+    en: ~
+  dataset: nutri
+- id: c20x2n6
+  name: c20x2n6
+  type: numeric
+  label:
+    da: C20:2,n-6 (g/dag)
+    en: ~
+  dataset: nutri
+- id: c22x2n6
+  name: c22x2n6
+  type: numeric
+  label:
+    da: C22:2,n-6 (g/dag)
+    en: ~
+  dataset: nutri
+- id: c22x4n6
+  name: c22x4n6
+  type: numeric
+  label:
+    da: C22:4,n-6 (g/dag)
+    en: ~
+  dataset: nutri
+- id: c22x5n6
+  name: c22x5n6
+  type: numeric
+  label:
+    da: C22:5,n-6 (g/dag)
+    en: ~
+  dataset: nutri
+- id: c20x3n3
+  name: c20x3n3
+  type: numeric
+  label:
+    da: C20:3,n-3 (g/dag)
+    en: ~
+  dataset: nutri
+- id: c20x4n3
+  name: c20x4n3
+  type: numeric
+  label:
+    da: C20:4,n-3 (g/dag)
+    en: ~
+  dataset: nutri
+- id: c20x3n6
+  name: c20x3n6
+  type: numeric
+  label:
+    da: C20:3,n-6 (g/dag)
+    en: ~
+  dataset: nutri
+- id: c20x4n6
+  name: c20x4n6
+  type: numeric
+  label:
+    da: C20:4,n-3 (g/dag)
+    en: ~
+  dataset: nutri
+- id: c20x5n3
+  name: c20x5n3
+  type: numeric
+  label:
+    da: C20:5,n-3 (EPA) (g/dag)
+    en: ~
+  dataset: nutri
+- id: c22x5n3
+  name: c22x5n3
+  type: numeric
+  label:
+    da: C22:5,n-3 (g/dag)
+    en: ~
+  dataset: nutri
+- id: c22x6n3
+  name: c22x6n3
+  type: numeric
+  label:
+    da: C22:6,n-3 (DHA) (g/dag)
+    en: ~
+  dataset: nutri
+- id: andr_pufa
+  name: andr_pufa
+  type: numeric
+  label:
+    da: Andre polyumættede fedtsyrer (g/dag)
+    en: ~
+  dataset: nutri
+- id: c14x1_tran
+  name: c14x1_tran
+  type: numeric
+  label:
+    da: C14:1,trans (g/dag)
+    en: ~
+  dataset: nutri
+- id: c16x1_tran
+  name: c16x1_tran
+  type: numeric
+  label:
+    da: C16:1,trans (g/dag)
+    en: ~
+  dataset: nutri
+- id: c18x1_tran
+  name: c18x1_tran
+  type: numeric
+  label:
+    da: C18:1,trans (g/dag)
+    en: ~
+  dataset: nutri
+- id: c20x1_tran
+  name: c20x1_tran
+  type: numeric
+  label:
+    da: C20:1,trans (g/dag)
+    en: ~
+  dataset: nutri
+- id: c22x1_tran
+  name: c22x1_tran
+  type: numeric
+  label:
+    da: C22:1,trans (g/dag)
+    en: ~
+  dataset: nutri
+- id: c18x2_tran
+  name: c18x2_tran
+  type: numeric
+  label:
+    da: C18:2,trans (g/dag)
+    en: ~
+  dataset: nutri
+- id: andre_fa
+  name: andre_fa
+  type: numeric
+  label:
+    da: Andre fedtsyrer (g/dag)
+    en: ~
+  dataset: nutri
+- id: sum_sfa
+  name: sum_sfa
+  type: numeric
+  label:
+    da: Sum mættede (g/dag)
+    en: ~
+  dataset: nutri
+- id: sum_mufa
+  name: sum_mufa
+  type: numeric
+  label:
+    da: Sum monoumættede (g/dag)
+    en: ~
+  dataset: nutri
+- id: sum_pufa
+  name: sum_pufa
+  type: numeric
+  label:
+    da: Sum polyumættede (g/dag)
+    en: ~
+  dataset: nutri
+- id: total_transfa
+  name: total_transfa
+  type: numeric
+  label:
+    da: Transfedtsyrer, total (g/dag)
+    en: ~
+  dataset: nutri
+- id: total_fa
+  name: total_fa
+  type: numeric
+  label:
+    da: Fedtsyrer (g/dag)
+    en: ~
+  dataset: nutri
+- id: sum_n3fa
+  name: sum_n3fa
+  type: numeric
+  label:
+    da: Sum n-3 fedtsyrer (g/dag)
+    en: ~
+  dataset: nutri
+- id: sum_n6fa
+  name: sum_n6fa
+  type: numeric
+  label:
+    da: Sum n-6 fedtsyrer (g/dag)
+    en: ~
+  dataset: nutri
+- id: choles
+  name: choles
+  type: numeric
+  label:
+    da: Cholesterol (mg/dag)
+    en: ~
+  dataset: nutri
+- id: isoleu
+  name: isoleu
+  type: numeric
+  label:
+    da: Isoleucin (mg/dag)
+    en: ~
+  dataset: nutri
+- id: leucin
+  name: leucin
+  type: numeric
+  label:
+    da: Leucin (mg/dag)
+    en: ~
+  dataset: nutri
+- id: lysin
+  name: lysin
+  type: numeric
+  label:
+    da: Lysin (mg/dag)
+    en: ~
+  dataset: nutri
+- id: methio
+  name: methio
+  type: numeric
+  label:
+    da: Methionin (mg/dag)
+    en: ~
+  dataset: nutri
+- id: cystin
+  name: cystin
+  type: numeric
+  label:
+    da: Cystin (mg/dag)
+    en: ~
+  dataset: nutri
+- id: phenyl
+  name: phenyl
+  type: numeric
+  label:
+    da: Phenylalanin (mg/dag)
+    en: ~
+  dataset: nutri
+- id: thyros
+  name: thyros
+  type: numeric
+  label:
+    da: Tyrosin (mg/dag)
+    en: ~
+  dataset: nutri
+- id: threon
+  name: threon
+  type: numeric
+  label:
+    da: Threonin (mg/dag)
+    en: ~
+  dataset: nutri
+- id: trypto
+  name: trypto
+  type: numeric
+  label:
+    da: Tryptofan (mg/dag)
+    en: ~
+  dataset: nutri
+- id: valin
+  name: valin
+  type: numeric
+  label:
+    da: Valin (mg/dag)
+    en: ~
+  dataset: nutri
+- id: argini
+  name: argini
+  type: numeric
+  label:
+    da: Arginin (mg/dag)
+    en: ~
+  dataset: nutri
+- id: histid
+  name: histid
+  type: numeric
+  label:
+    da: Histidin (mg/dag)
+    en: ~
+  dataset: nutri
+- id: alanin
+  name: alanin
+  type: numeric
+  label:
+    da: Alanin (mg/dag)
+    en: ~
+  dataset: nutri
+- id: aspara
+  name: aspara
+  type: numeric
+  label:
+    da: Asparaginsyre (mg/dag)
+    en: ~
+  dataset: nutri
+- id: glutam
+  name: glutam
+  type: numeric
+  label:
+    da: Glutaminsyre (mg/dag)
+    en: ~
+  dataset: nutri
+- id: glycin
+  name: glycin
+  type: numeric
+  label:
+    da: Glycin (mg/dag)
+    en: ~
+  dataset: nutri
+- id: prolin
+  name: prolin
+  type: numeric
+  label:
+    da: Prolin (mg/dag)
+    en: ~
+  dataset: nutri
+- id: hydprolin
+  name: hydprolin
+  type: numeric
+  label:
+    da: Hydroxyprolin (g/dag)
+    en: ~
+  dataset: nutri
+- id: serin
+  name: serin
+  type: numeric
+  label:
+    da: Serin (mg/dag)
+    en: ~
+  dataset: nutri
+- id: energitot01
+  name: energitot01
+  type: numeric
+  label:
+    da: ~
+    en: Energy from leafy vegs (kJ/day)
+  dataset: nutritot
+- id: energitot02
+  name: energitot02
+  type: numeric
+  label:
+    da: ~
+    en: Energy from fruiting vegs (kJ/day)
+  dataset: nutritot
+- id: energitot03
+  name: energitot03
+  type: numeric
+  label:
+    da: ~
+    en: Energy from potatoes (kJ/day)
+  dataset: nutritot
+- id: energitot04
+  name: energitot04
+  type: numeric
+  label:
+    da: ~
+    en: Energy from other root vegs (kJ/day)
+  dataset: nutritot
+- id: energitot05
+  name: energitot05
+  type: numeric
+  label:
+    da: ~
+    en: Energy from cabbages (kJ/day)
+  dataset: nutritot
+- id: energitot06
+  name: energitot06
+  type: numeric
+  label:
+    da: ~
+    en: Energy from mushrooms (kJ/day)
+  dataset: nutritot
+- id: energitot07
+  name: energitot07
+  type: numeric
+  label:
+    da: ~
+    en: Energy from onion, garlic (kJ/day)
+  dataset: nutritot
+- id: energitot08
+  name: energitot08
+  type: numeric
+  label:
+    da: ~
+    en: Energy from stalk vegs, sprouts (kJ/day)
+  dataset: nutritot
+- id: energitot09
+  name: energitot09
+  type: numeric
+  label:
+    da: ~
+    en: Energy from legumes (kJ/day)
+  dataset: nutritot
+- id: energitot10
+  name: energitot10
+  type: numeric
+  label:
+    da: ~
+    en: Energy from citrus fruits (kJ/day)
+  dataset: nutritot
+- id: energitot11
+  name: energitot11
+  type: numeric
+  label:
+    da: ~
+    en: Energy from other fruits (kJ/day)
+  dataset: nutritot
+- id: energitot12
+  name: energitot12
+  type: numeric
+  label:
+    da: ~
+    en: Energy from fruits dried (kJ/day)
+  dataset: nutritot
+- id: energitot13
+  name: energitot13
+  type: numeric
+  label:
+    da: ~
+    en: Energy from cereals, wholegrain (kJ/day)
+  dataset: nutritot
+- id: energitot14
+  name: energitot14
+  type: numeric
+  label:
+    da: ~
+    en: Energy from cereals, refined (kJ/day)
+  dataset: nutritot
+- id: energitot15
+  name: energitot15
+  type: numeric
+  label:
+    da: ~
+    en: Energy from red meat (kJ/day)
+  dataset: nutritot
+- id: energitot17
+  name: energitot17
+  type: numeric
+  label:
+    da: ~
+    en: Energy from poultry (kJ/day)
+  dataset: nutritot
+- id: energitot18
+  name: energitot18
+  type: numeric
+  label:
+    da: ~
+    en: Energy from processed meat (kJ/day)
+  dataset: nutritot
+- id: energitot19
+  name: energitot19
+  type: numeric
+  label:
+    da: ~
+    en: Energy from eggs (kJ/day)
+  dataset: nutritot
+- id: energitot20
+  name: energitot20
+  type: numeric
+  label:
+    da: ~
+    en: Energy from dairy products, lean (kJ/day)
+  dataset: nutritot
+- id: energitot21
+  name: energitot21
+  type: numeric
+  label:
+    da: ~
+    en: Energy from dairy products, fatty (kJ/day)
+  dataset: nutritot
+- id: energitot22
+  name: energitot22
+  type: numeric
+  label:
+    da: ~
+    en: Energy from milk substitutes (kJ/day)
+  dataset: nutritot
+- id: energitot23
+  name: energitot23
+  type: numeric
+  label:
+    da: ~
+    en: Energy from fruit juices (kJ/day)
+  dataset: nutritot
+- id: energitot24
+  name: energitot24
+  type: numeric
+  label:
+    da: ~
+    en: Energy from vegetable juices (kJ/day)
+  dataset: nutritot
+- id: energitot25
+  name: energitot25
+  type: numeric
+  label:
+    da: ~
+    en: Energy from potatoes, fatty (kJ/day)
+  dataset: nutritot
+- id: energitot26
+  name: energitot26
+  type: numeric
+  label:
+    da: ~
+    en: Energy from nuts and seeds (kJ/day)
+  dataset: nutritot
+- id: energitot27
+  name: energitot27
+  type: numeric
+  label:
+    da: ~
+    en: Energy from vegetable oils (kJ/day)
+  dataset: nutritot
+- id: energitot28
+  name: energitot28
+  type: numeric
+  label:
+    da: ~
+    en: Energy from butter (kJ/day)
+  dataset: nutritot
+- id: energitot29
+  name: energitot29
+  type: numeric
+  label:
+    da: ~
+    en: Energy from margarines (kJ/day)
+  dataset: nutritot
+- id: energitot30
+  name: energitot30
+  type: numeric
+  label:
+    da: ~
+    en: Energy from other animal fat (kJ/day)
+  dataset: nutritot
+- id: energitot31
+  name: energitot31
+  type: numeric
+  label:
+    da: ~
+    en: Energy from sugar, jam, syrups (kJ/day)
+  dataset: nutritot
+- id: energitot32
+  name: energitot32
+  type: numeric
+  label:
+    da: ~
+    en: Energy from chocolate, candy bars (kJ/day)
+  dataset: nutritot
+- id: energitot33
+  name: energitot33
+  type: numeric
+  label:
+    da: ~
+    en: Energy from confectionery non chocolate (kJ/day)
+  dataset: nutritot
+- id: energitot34
+  name: energitot34
+  type: numeric
+  label:
+    da: ~
+    en: Energy from soft drinks (kJ/day)
+  dataset: nutritot
+- id: energitot35
+  name: energitot35
+  type: numeric
+  label:
+    da: ~
+    en: Energy from waters (kJ/day)
+  dataset: nutritot
+- id: energitot36
+  name: energitot36
+  type: numeric
+  label:
+    da: ~
+    en: Energy from coffee (kJ/day)
+  dataset: nutritot
+- id: energitot37
+  name: energitot37
+  type: numeric
+  label:
+    da: ~
+    en: Energy from tea (kJ/day)
+  dataset: nutritot
+- id: energitot38
+  name: energitot38
+  type: numeric
+  label:
+    da: ~
+    en: Energy from wine (kJ/day)
+  dataset: nutritot
+- id: energitot39
+  name: energitot39
+  type: numeric
+  label:
+    da: ~
+    en: Energy from beer (kJ/day)
+  dataset: nutritot
+- id: energitot40
+  name: energitot40
+  type: numeric
+  label:
+    da: ~
+    en: Energy from spirits and brandy (kJ/day)
+  dataset: nutritot
+- id: energitot41
+  name: energitot41
+  type: numeric
+  label:
+    da: ~
+    en: Energy from mayonnaises and dressings (kJ/day)
+  dataset: nutritot
+- id: energitot42
+  name: energitot42
+  type: numeric
+  label:
+    da: ~
+    en: Energy from soya (kJ/day)
+  dataset: nutritot
+- id: energitot43
+  name: energitot43
+  type: numeric
+  label:
+    da: ~
+    en: Energy from snacks (kJ/day)
+  dataset: nutritot
+- id: energitot44
+  name: energitot44
+  type: numeric
+  label:
+    da: ~
+    en: Energy from fish, lean, fresh (kJ/day)
+  dataset: nutritot
+- id: energitot45
+  name: energitot45
+  type: numeric
+  label:
+    da: ~
+    en: Energy from fish, lean, processed (kJ/day)
+  dataset: nutritot
+- id: energitot46
+  name: energitot46
+  type: numeric
+  label:
+    da: ~
+    en: Energy from fish, middle fatty, fresh (kJ/day)
+  dataset: nutritot
+- id: energitot47
+  name: energitot47
+  type: numeric
+  label:
+    da: ~
+    en: Energy from fish, middle fatty, processed (kJ/day)
+  dataset: nutritot
+- id: energitot48
+  name: energitot48
+  type: numeric
+  label:
+    da: ~
+    en: Energy from fish, fatty, fresh (kJ/day)
+  dataset: nutritot
+- id: energitot49
+  name: energitot49
+  type: numeric
+  label:
+    da: ~
+    en: Energy from fish, fatty, processed (kJ/day)
+  dataset: nutritot
+- id: energitot60
+  name: energitot60
+  type: numeric
+  label:
+    da: ~
+    en: Energy from non classified (kJ/day)
+  dataset: nutritot
+- id: scq01
+  name: scq01
+  type: numeric
+  label:
+    da: ~
+    en: Study Center Questionnaire - Fasting status food
+  dataset: sca
+- id: scq02
+  name: scq02
+  type: numeric
+  label:
+    da: ~
+    en: Study Center Questionnaire - Fasting status drink
+  dataset: sca
+- id: scq03
+  name: scq03
+  type: numeric
+  label:
+    da: ~
+    en: Study Center Questionnaire - Alcohol consumption the last 48 hours
+  dataset: sca
+- id: scq04
+  name: scq04
+  type: numeric
+  label:
+    da: ~
+    en: Study Center Questionnaire - Hours since last alcohol consumption (the last
+      48 hours)
+  dataset: sca
+- id: scq05
+  name: scq05
+  type: numeric
+  label:
+    da: ~
+    en: Study Center Questionnaire - Smoking the last 72 hours
+  dataset: sca
+- id: scq06
+  name: scq06
+  type: numeric
+  label:
+    da: ~
+    en: Study Center Questionnaire - Hours since last smoke (the last 72 hours)
+  dataset: sca
+- id: scq07
+  name: scq07
+  type: numeric
+  label:
+    da: ~
+    en: Study Center Questionnaire - Use of antibiotics the last 12 months
+  dataset: sca
+- id: scq08
+  name: scq08
+  type: numeric
+  label:
+    da: ~
+    en: Study Center Questionnaire - Time since last use of antibiotics (last 12 months)
+  dataset: sca
+- id: scq09
+  name: scq09
+  type: numeric
+  label:
+    da: ~
+    en: Study Center Questionnaire - Cause of antibiotic use ('other' category only
+      cleaned for MAX participants)
+  dataset: sca
+- id: scq09_01
+  name: scq09_01
+  type: character
+  label:
+    da: ~
+    en: Study Center Questionnaire - Other reason for antibiotic (used to clean SCQ09
+      for MAX participants)
+  dataset: sca
+- id: scq10
+  name: scq10
+  type: numeric
+  label:
+    da: ~
+    en: Study Center Questionnaire - Use of blood pressure lowering medication
+  dataset: sca
+- id: scq11
+  name: scq11
+  type: numeric
+  label:
+    da: ~
+    en: Study Center Questionnaire - Use of cholesterol lowering medication
+  dataset: sca
+- id: scq12
+  name: scq12
+  type: numeric
+  label:
+    da: ~
+    en: Study Center Questionnaire - No menstruation(s) within the last 12 months
+  dataset: sca
+- id: scq13
+  name: scq13
+  type: numeric
+  label:
+    da: ~
+    en: Study Center Questionnaire - Last menstruation date
+  dataset: sca
+- id: scq14
+  name: scq14
+  type: numeric
+  label:
+    da: ~
+    en: Study Center Questionnaire - Time since last tooth brushing and/or use of
+      mouth wash
+  dataset: sca
+- id: scq15
+  name: scq15
+  type: numeric
+  label:
+    da: ~
+    en: Study Center Questionnaire - Time since last use of chewing gum
+  dataset: sca
+- id: schrm01
+  name: schrm01
+  type: numeric
+  label:
+    da: Systolisk blodtryk (mmHg), gns. af to sidste non-missing målinger udført i
+      studiecenter
+    en: ~
+  dataset: sca
+- id: schrm02
+  name: schrm02
+  type: numeric
+  label:
+    da: Diastolisk blodtryk (mmHg), gns. af to sidste non-missing målinger udført
+      i studiecenter
+    en: ~
+  dataset: sca
+- id: schrm03
+  name: schrm03
+  type: numeric
+  label:
+    da: Puls (bpm), laveste non-missing måling udført i studiecenter
+    en: ~
+  dataset: sca
+- id: schrm06
+  name: schrm06
+  type: numeric
+  label:
+    da: Målings status, antal målinger udført og målings nr. brugt i udregning af
+      systolisk og diastolisk blodtryk
+    en: ~
+  dataset: sca
+- id: schrm07
+  name: schrm07
+  type: numeric
+  label:
+    da: Uregelmæssigt hjerteslag status, måling(er) med uregelmæssigt hjerteslag indgår
+      i udregning af systolisk og diastolisk blodtryk
+    en: ~
+  dataset: sca
+- id: schrm08
+  name: schrm08
+  type: numeric
+  label:
+    da: Målings status, måling nr. brugt til puls
+    en: ~
+  dataset: sca
+- id: schrm09
+  name: schrm09
+  type: numeric
+  label:
+    da: Uregelmæssigt hjerteslag status, laveste puls måling(er) havde uregelmæssigt
+      hjerteslag
+    en: ~
+  dataset: sca
+- id: scant01
+  name: scant01
+  type: numeric
+  label:
+    da: ~
+    en: Mean of the two waist circumference measurements closest to each other (unit=cm)
+  dataset: sca
+- id: scant02
+  name: scant02
+  type: numeric
+  label:
+    da: ~
+    en: Mean of the two hip circumference measurements closest to each other (unit=cm)
+  dataset: sca
+- id: scbia01
+  name: scbia01
+  type: numeric
+  label:
+    da: ~
+    en: BMI from SECA (unit=kg/m2)
+  dataset: sca
+- id: scbia02
+  name: scbia02
+  type: numeric
+  label:
+    da: ~
+    en: Weight from SECA (unit=kg)
+  dataset: sca
+- id: scbia03
+  name: scbia03
+  type: numeric
+  label:
+    da: ~
+    en: Height from SECA (unit=cm)
+  dataset: sca
+- id: scbia04
+  name: scbia04
+  type: numeric
+  label:
+    da: ~
+    en: Relative Fat Mass from SECA (unit=percentage). Corrected according to manufacturers
+      correction algorithm for BMI>30.
+  dataset: sca
+- id: scbia04_89
+  name: scbia04_89
+  type: numeric
+  label:
+    da: ~
+    en: |-
+      Status variable, participants with SCBIA04 below reliable machine tolerance. If 1, consider excluding all results from
+      SCBIA04--SCBIA08.
+  dataset: sca
+- id: scbia05
+  name: scbia05
+  type: numeric
+  label:
+    da: ~
+    en: Absolut Fat Mass from SECA (unit=kg). Corrected according to manufacturers
+      correction algorithm for BMI>30.
+  dataset: sca
+- id: scbia06
+  name: scbia06
+  type: numeric
+  label:
+    da: ~
+    en: Visceral Fat Mass from SECA (unit=litre). Corrected according to manufacturers
+      correction algorithm for BMI>30.
+  dataset: sca
+- id: scbia06_88
+  name: scbia06_88
+  type: numeric
+  label:
+    da: ~
+    en: Status variable, participants with SCBIA06 below SECA reliable machine tolerance
+      (<0.2)
+  dataset: sca
+- id: scbia06_89
+  name: scbia06_89
+  type: numeric
+  label:
+    da: ~
+    en: Status variable, 1 if either; SCBIA15_89 = 1,  SCBIA06 < 0 or SCBIA06 > 1000.  SCBIA06
+      set to missing if SCBIA06_89 = 1
+  dataset: sca
+- id: scbia07
+  name: scbia07
+  type: numeric
+  label:
+    da: ~
+    en: Fat free Mass from SECA (unit=kg). Corrected according to manufacturers correction
+      algorithm for BMI>30.
+  dataset: sca
+- id: scbia08
+  name: scbia08
+  type: numeric
+  label:
+    da: ~
+    en: Skeletal Muscle Mass SECA (unit=kg). Corrected according to manufacturers
+      correction algorithm for BMI>30.
+  dataset: sca
+- id: scbia08_01
+  name: scbia08_01
+  type: numeric
+  label:
+    da: ~
+    en: Skeletal Muscle Mass, Left Arm - SECA
+  dataset: sca
+- id: scbia08_02
+  name: scbia08_02
+  type: numeric
+  label:
+    da: ~
+    en: Skeletal Muscle Mass, Left Leg - SECA. Corrected according to manufacturers
+      correction algorithm for BMI>30.
+  dataset: sca
+- id: scbia08_03
+  name: scbia08_03
+  type: numeric
+  label:
+    da: ~
+    en: Skeletal Muscle Mass, Right Arm - SECA
+  dataset: sca
+- id: scbia08_04
+  name: scbia08_04
+  type: numeric
+  label:
+    da: ~
+    en: Skeletal Muscle Mass, Right Leg - SECA. Corrected according to manufacturers
+      correction algorithm for BMI>30.
+  dataset: sca
+- id: scbia08_05
+  name: scbia08_05
+  type: numeric
+  label:
+    da: ~
+    en: Skeletal Muscle Mass, Torso - SECA. Corrected according to manufacturers correction
+      algorithm for BMI>30.
+  dataset: sca
+- id: scbia20
+  name: scbia20
+  type: numeric
+  label:
+    da: ~
+    en: HYDRATION - SECA
+  dataset: sca
+- id: scbia21
+  name: scbia21
+  type: numeric
+  label:
+    da: ~
+    en: ExtracellularWaterValue - SECA
+  dataset: sca
+- id: scbia22
+  name: scbia22
+  type: numeric
+  label:
+    da: ~
+    en: Intracellularwater - SECA
+  dataset: sca
+- id: scbia23
+  name: scbia23
+  type: numeric
+  label:
+    da: ~
+    en: |-
+      Total Body Water (TBW), Calculated from Extra- (SCBIA21) + Intracellular water (SCBIA22) and manufacturers correction
+      algorithm for BMI>30
+  dataset: sca
+- id: crea
+  name: crea
+  type: numeric
+  label:
+    da: ~
+    en: Creatinine value - upfront blood sample analysis (unit=µmol/L)
+  dataset: sca
+- id: crea_abnormalflag
+  name: crea_abnormalflag
+  type: character
+  label:
+    da: ~
+    en: Creatinine abnormal flag
+  dataset: sca
+- id: crea_status
+  name: crea_status
+  type: character
+  label:
+    da: ~
+    en: Creatinine status
+  dataset: sca
+- id: cho
+  name: cho
+  type: numeric
+  label:
+    da: ~
+    en: Cholesterol value - upfront blood sample analysis (unit=mmol/L)
+  dataset: sca
+- id: cho_abnormalflag
+  name: cho_abnormalflag
+  type: character
+  label:
+    da: ~
+    en: Cholesterol abnormal flag
+  dataset: sca
+- id: cho_status
+  name: cho_status
+  type: character
+  label:
+    da: ~
+    en: Cholesterol status
+  dataset: sca
+- id: ldl
+  name: ldl
+  type: numeric
+  label:
+    da: ~
+    en: LDL value - upfront blood sample analysis (unit=mmol/L)
+  dataset: sca
+- id: ldl_abnormalflag
+  name: ldl_abnormalflag
+  type: character
+  label:
+    da: ~
+    en: LDL abnormal flag
+  dataset: sca
+- id: ldl_status
+  name: ldl_status
+  type: character
+  label:
+    da: ~
+    en: LDL status
+  dataset: sca
+- id: ldl_reagens
+  name: ldl_reagens
+  type: numeric
+  label:
+    da: ~
+    en: LDL reagens type
+  dataset: sca
+- id: hdl
+  name: hdl
+  type: numeric
+  label:
+    da: ~
+    en: HDL value - upfront blood sample analysis (unit=mmol/L)
+  dataset: sca
+- id: hdl_abnormalflag
+  name: hdl_abnormalflag
+  type: character
+  label:
+    da: ~
+    en: HDL abnormal flag
+  dataset: sca
+- id: hdl_status
+  name: hdl_status
+  type: character
+  label:
+    da: ~
+    en: HDL status
+  dataset: sca
+- id: hdl_reagens
+  name: hdl_reagens
+  type: numeric
+  label:
+    da: ~
+    en: HDL reagens type
+  dataset: sca
+- id: hscrp
+  name: hscrp
+  type: numeric
+  label:
+    da: ~
+    en: High-sensitivity C-reactive Protein value - upfront blood sample analysis
+      (unit=mg/L)
+  dataset: sca
+- id: hscrp_abnormalflag
+  name: hscrp_abnormalflag
+  type: character
+  label:
+    da: ~
+    en: High-sensitivity C-reactive Protein abnormal flag
+  dataset: sca
+- id: hscrp_status
+  name: hscrp_status
+  type: character
+  label:
+    da: ~
+    en: High-sensitivity C-reactive Protein status
+  dataset: sca
+- id: tg
+  name: tg
+  type: numeric
+  label:
+    da: ~
+    en: Triglyceride value - upfront blood sample analysis (unit=mmol/L)
+  dataset: sca
+- id: tg_abnormalflag
+  name: tg_abnormalflag
+  type: character
+  label:
+    da: ~
+    en: Triglyceride abnormal flag
+  dataset: sca
+- id: tg_status
+  name: tg_status
+  type: character
+  label:
+    da: ~
+    en: Triglyceride status
+  dataset: sca
+- id: hba1cpc
+  name: hba1cpc
+  type: numeric
+  label:
+    da: ~
+    en: HbA1c value - upfront blood sample analysis (unit=percentage)
+  dataset: sca
+- id: hba1cpc_abnormalflag
+  name: hba1cpc_abnormalflag
+  type: character
+  label:
+    da: ~
+    en: HbA1c abnormal flag
+  dataset: sca
+- id: hba1cpc_status
+  name: hba1cpc_status
+  type: character
+  label:
+    da: ~
+    en: HbA1c status
+  dataset: sca
+- id: hba1cmm
+  name: hba1cmm
+  type: numeric
+  label:
+    da: ~
+    en: HbA1c value - upfront blood sample analysis (unit=mmol/mol)
+  dataset: sca
+- id: hba1cmm_abnormalflag
+  name: hba1cmm_abnormalflag
+  type: character
+  label:
+    da: ~
+    en: HbA1c abnormal flag
+  dataset: sca
+- id: hba1cmm_status
+  name: hba1cmm_status
+  type: character
+  label:
+    da: ~
+    en: HbA1c status
+  dataset: sca
+- id: vaegtc
+  name: vaegtc
+  type: numeric
+  label:
+    da: ~
+    en: Sum of all food items (g/day)
+  dataset: vaegtc
+- id: vaegtc01
+  name: vaegtc01
+  type: numeric
+  label:
+    da: ~
+    en: Leafy vegs (g/day)
+  dataset: vaegtc
+- id: vaegtc02
+  name: vaegtc02
+  type: numeric
+  label:
+    da: ~
+    en: Fruiting vegs (g/day)
+  dataset: vaegtc
+- id: vaegtc03
+  name: vaegtc03
+  type: numeric
+  label:
+    da: ~
+    en: Potatoes (g/day)
+  dataset: vaegtc
+- id: vaegtc04
+  name: vaegtc04
+  type: numeric
+  label:
+    da: ~
+    en: Other root vegs (g/day)
+  dataset: vaegtc
+- id: vaegtc05
+  name: vaegtc05
+  type: numeric
+  label:
+    da: ~
+    en: Cabbages (g/day)
+  dataset: vaegtc
+- id: vaegtc06
+  name: vaegtc06
+  type: numeric
+  label:
+    da: ~
+    en: Mushrooms (g/day)
+  dataset: vaegtc
+- id: vaegtc07
+  name: vaegtc07
+  type: numeric
+  label:
+    da: ~
+    en: Onion, garlic (g/day)
+  dataset: vaegtc
+- id: vaegtc08
+  name: vaegtc08
+  type: numeric
+  label:
+    da: ~
+    en: Stalk vegs, sprouts (g/day)
+  dataset: vaegtc
+- id: vaegtc09
+  name: vaegtc09
+  type: numeric
+  label:
+    da: ~
+    en: Legumes (g/day)
+  dataset: vaegtc
+- id: vaegtc10
+  name: vaegtc10
+  type: numeric
+  label:
+    da: ~
+    en: Citrus fruits (g/day)
+  dataset: vaegtc
+- id: vaegtc11
+  name: vaegtc11
+  type: numeric
+  label:
+    da: ~
+    en: Other fruits (g/day)
+  dataset: vaegtc
+- id: vaegtc12
+  name: vaegtc12
+  type: numeric
+  label:
+    da: ~
+    en: Fruits dried (g/day)
+  dataset: vaegtc
+- id: vaegtc13
+  name: vaegtc13
+  type: numeric
+  label:
+    da: ~
+    en: Cereals, wholegrain (g/day)
+  dataset: vaegtc
+- id: vaegtc14
+  name: vaegtc14
+  type: numeric
+  label:
+    da: ~
+    en: Cereals, refined (g/day)
+  dataset: vaegtc
+- id: vaegtc15
+  name: vaegtc15
+  type: numeric
+  label:
+    da: ~
+    en: Red meat (g/day)
+  dataset: vaegtc
+- id: vaegtc17
+  name: vaegtc17
+  type: numeric
+  label:
+    da: ~
+    en: Poultry (g/day)
+  dataset: vaegtc
+- id: vaegtc18
+  name: vaegtc18
+  type: numeric
+  label:
+    da: ~
+    en: Processed meat (g/day)
+  dataset: vaegtc
+- id: vaegtc19
+  name: vaegtc19
+  type: numeric
+  label:
+    da: ~
+    en: Eggs (g/day)
+  dataset: vaegtc
+- id: vaegtc20
+  name: vaegtc20
+  type: numeric
+  label:
+    da: ~
+    en: Dairy products, lean (g/day)
+  dataset: vaegtc
+- id: vaegtc21
+  name: vaegtc21
+  type: numeric
+  label:
+    da: ~
+    en: Dairy products, fatty (g/day)
+  dataset: vaegtc
+- id: vaegtc22
+  name: vaegtc22
+  type: numeric
+  label:
+    da: ~
+    en: Milk substitutes (g/day)
+  dataset: vaegtc
+- id: vaegtc23
+  name: vaegtc23
+  type: numeric
+  label:
+    da: ~
+    en: Fruit juices (g/day)
+  dataset: vaegtc
+- id: vaegtc24
+  name: vaegtc24
+  type: numeric
+  label:
+    da: ~
+    en: Vegetable juices (g/day)
+  dataset: vaegtc
+- id: vaegtc25
+  name: vaegtc25
+  type: numeric
+  label:
+    da: ~
+    en: Potatoes, fatty (g/day)
+  dataset: vaegtc
+- id: vaegtc26
+  name: vaegtc26
+  type: numeric
+  label:
+    da: ~
+    en: Nuts and seeds (g/day)
+  dataset: vaegtc
+- id: vaegtc27
+  name: vaegtc27
+  type: numeric
+  label:
+    da: ~
+    en: Vegetable oils (g/day)
+  dataset: vaegtc
+- id: vaegtc28
+  name: vaegtc28
+  type: numeric
+  label:
+    da: ~
+    en: Butter (g/day)
+  dataset: vaegtc
+- id: vaegtc29
+  name: vaegtc29
+  type: numeric
+  label:
+    da: ~
+    en: Margarines (g/day)
+  dataset: vaegtc
+- id: vaegtc30
+  name: vaegtc30
+  type: numeric
+  label:
+    da: ~
+    en: Other animal fat (g/day)
+  dataset: vaegtc
+- id: vaegtc31
+  name: vaegtc31
+  type: numeric
+  label:
+    da: ~
+    en: Sugar, jam, syrups (g/day)
+  dataset: vaegtc
+- id: vaegtc32
+  name: vaegtc32
+  type: numeric
+  label:
+    da: ~
+    en: Chocolate, candy bars (g/day)
+  dataset: vaegtc
+- id: vaegtc33
+  name: vaegtc33
+  type: numeric
+  label:
+    da: ~
+    en: Confectionery non chocolate (g/day)
+  dataset: vaegtc
+- id: vaegtc34
+  name: vaegtc34
+  type: numeric
+  label:
+    da: ~
+    en: Soft drinks (g/day)
+  dataset: vaegtc
+- id: vaegtc35
+  name: vaegtc35
+  type: numeric
+  label:
+    da: ~
+    en: Waters (g/day)
+  dataset: vaegtc
+- id: vaegtc36
+  name: vaegtc36
+  type: numeric
+  label:
+    da: ~
+    en: Coffee (g/day)
+  dataset: vaegtc
+- id: vaegtc37
+  name: vaegtc37
+  type: numeric
+  label:
+    da: ~
+    en: Tea (g/day)
+  dataset: vaegtc
+- id: vaegtc38
+  name: vaegtc38
+  type: numeric
+  label:
+    da: ~
+    en: Wine (g/day)
+  dataset: vaegtc
+- id: vaegtc39
+  name: vaegtc39
+  type: numeric
+  label:
+    da: ~
+    en: Beer (g/day)
+  dataset: vaegtc
+- id: vaegtc40
+  name: vaegtc40
+  type: numeric
+  label:
+    da: ~
+    en: Spirits and brandy (g/day)
+  dataset: vaegtc
+- id: vaegtc41
+  name: vaegtc41
+  type: numeric
+  label:
+    da: ~
+    en: Mayonnaises and dressings (g/day)
+  dataset: vaegtc
+- id: vaegtc42
+  name: vaegtc42
+  type: numeric
+  label:
+    da: ~
+    en: Soya (g/day)
+  dataset: vaegtc
+- id: vaegtc43
+  name: vaegtc43
+  type: numeric
+  label:
+    da: ~
+    en: Snacks (g/day)
+  dataset: vaegtc
+- id: vaegtc44
+  name: vaegtc44
+  type: numeric
+  label:
+    da: ~
+    en: Fish, lean, fresh (g/day)
+  dataset: vaegtc
+- id: vaegtc45
+  name: vaegtc45
+  type: numeric
+  label:
+    da: ~
+    en: Fish, lean, processed (g/day)
+  dataset: vaegtc
+- id: vaegtc46
+  name: vaegtc46
+  type: numeric
+  label:
+    da: ~
+    en: Fish, middle fatty, fresh (g/day)
+  dataset: vaegtc
+- id: vaegtc47
+  name: vaegtc47
+  type: numeric
+  label:
+    da: ~
+    en: Fish, middle fatty, processed (g/day)
+  dataset: vaegtc
+- id: vaegtc48
+  name: vaegtc48
+  type: numeric
+  label:
+    da: ~
+    en: Fish, fatty, fresh (g/day)
+  dataset: vaegtc
+- id: vaegtc49
+  name: vaegtc49
+  type: numeric
+  label:
+    da: ~
+    en: Fish, fatty, processed (g/day)
+  dataset: vaegtc
+- id: vaegtc60
+  name: vaegtc60
+  type: numeric
+  label:
+    da: ~
+    en: Non classified (g/day)
+  dataset: vaegtc

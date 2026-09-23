@@ -11,12 +11,12 @@ test_that("label_columns() attaches label attributes without renaming columns", 
 test_that("label_columns() falls back to the other language when one is missing", {
   schema <- fixture_schema()
   pop <- tiny_pop(schema, n = 20L, seed = 2)
-  kj <- generate_register("kkh_journal", pop, schema, as.Date("1993-12-01"), as.Date("1997-05-31"), seed = 2)
-  out_en <- label_columns(kj, schema, "kkh_journal", lang = "en")
-  out_da <- label_columns(kj, schema, "kkh_journal", lang = "da")
+  kj <- generate_register("dch", pop, schema, as.Date("1993-12-01"), as.Date("1997-05-31"), seed = 2)
+  out_en <- label_columns(kj, schema, "dch", lang = "en")
+  out_da <- label_columns(kj, schema, "dch", lang = "da")
   expect_equal(attr(out_en$center, "label"), "Study center")
   expect_equal(attr(out_da$center, "label"), "Center")
-  # pnr has no label in either language on kkh_journal -- must stay unlabeled,
+  # pnr has no label in either language on dch -- must stay unlabeled,
   # not error and not silently invent one.
   expect_null(attr(out_en$pnr, "label"))
 })

@@ -19,10 +19,12 @@
 #'
 #' @return A tibble, one row per column: `name`, `label_da`, `label_en`
 #'   (`NA` if the schema doesn't document one), `type`, `code_system` (`NA`
-#'   if the column isn't coded), and `values` (a single `"code: label"`
+#'   if the column isn't coded), `values` (a single `"code: label"`
 #'   string per coded value it has a label for, `NA` for uncoded columns or
-#'   ones with no lookup labels). A `register` column is added when
-#'   `register` has more than one id.
+#'   ones with no lookup labels), and `dataset` (which real underlying SAS
+#'   dataset a column came from, for `dch`/`dchng` only -- `NA` for a DST
+#'   register, which was never split across multiple real files this way).
+#'   A `register` column is added when `register` has more than one id.
 #' @export
 codebook <- function(schema, register) {
   if (is.null(schema) || is.null(schema$registers)) {
@@ -55,7 +57,7 @@ codebook_one_register <- function(spec, schema, rid) {
     return(tibble::tibble(
       register = character(), name = character(), label_da = character(),
       label_en = character(), type = character(), code_system = character(),
-      values = character()
+      values = character(), dataset = character()
     ))
   }
   chr1 <- function(x) {
@@ -69,7 +71,8 @@ codebook_one_register <- function(spec, schema, rid) {
     label_en = vapply(cols, function(c) chr1(c$label$en %||% NA_character_), character(1)),
     type = vapply(cols, function(c) chr1(c$type %||% NA_character_), character(1)),
     code_system = vapply(cols, function(c) chr1(c$code_system %||% NA_character_), character(1)),
-    values = vapply(cols, function(c) code_system_value_labels(c$code_system, schema), character(1))
+    values = vapply(cols, function(c) code_system_value_labels(c$code_system, schema), character(1)),
+    dataset = vapply(cols, function(c) chr1(c$dataset %||% NA_character_), character(1))
   )
 }
 

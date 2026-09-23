@@ -217,28 +217,35 @@ a project that documents the real DST register structures. That means:
   clear error rather than guessing. See below.
 
 `load_registers_schema()` also always merges in fiktive's own bundled
-metadata for **KKH** (Danish Diet, Cancer and Health) and **KKHNG** (...and
-Next Generations) — variable name, type, and Danish/English label only, per
+metadata for **DCH** (Diet, Cancer and Health) and **DCH-NG** (...and Next
+Generations) — variable name, type, and Danish/English label only, per
 KKH/DCH's data-sharing approval. This is fiktive's own data, separate from
 registers-guide (never fetched from or sent to that project), and is
-included automatically — not a second call to remember. Register ids are
-prefixed `kkh_`/`kkhng_` (e.g. `kkh_journal`, `kkhng_ffq_gpd`) and generate
-exactly like any DST register: `generate_register("kkh_journal", ...)`,
-or mixed into a batch `generate_registers()` call. See the
-[vignette](vignettes/fiktive.Rmd) for the full KKH/KKHNG register list.
+included automatically — not a second call to remember.
+
+A real DCH/DCH-NG delivery arrives as ~27 separate SAS datasets (visit and
+anthropometry, self-report questionnaires, food-frequency items, nutrient
+calculations, ...), not one file. fiktive collapses them into two register
+ids, `dch` and `dchng`, one row per person each — call `generate_register()`
+once per cohort, mixed into a batch `generate_registers()` call exactly
+like any DST register: `generate_register("dch", ...)`. The real
+per-dataset structure isn't lost: every column carries a `dataset` field
+recording which of the ~27 real underlying tables it came from, surfaced by
+`codebook(schema, "dch")`. See the [vignette](vignettes/fiktive.Rmd) for a
+worked example.
 
 Numeric columns (anthropometry, blood pressure, nutrients, food groups,
 biomarkers, ...) draw from plausible per-column ranges rather than generic
 noise; the headline anthropometric/energy/biomarker ones are anchored on
 the two cohort papers below, the rest (including all nutrient, food-group,
 amino-acid and fatty-acid columns) are reasonable adult ranges not
-individually cited the same way -- see `R/generate-kkh-values.R` and
-`R/generate-kkh-nutrients.R`. Categorical columns (smoking status, yes/no
+individually cited the same way -- see `R/generate-dch-values.R` and
+`R/generate-dch-nutrients.R`. Categorical columns (smoking status, yes/no
 items, menopause, ...) draw from a small plausible set rather than
 meaningless noise, but neither catalogue documents a real code list for
 these, so the specific levels (e.g. whether `1` is "never" or "current"
 smoker) are **documented guesses, not confirmed codings** -- see the
-comments at the top of `R/generate-kkh-values.R`.
+comments at the top of `R/generate-dch-values.R`.
 
 Cohort references:
 
@@ -363,14 +370,16 @@ Existing Data Sources in Clinical Epidemiology: Laboratory Information
 System Databases in Denmark. *Clinical Epidemiology.* 2020;12:469-475.
 [doi:10.2147/CLEP.S245060](https://doi.org/10.2147/CLEP.S245060)
 
-Bundled separately: **27 KKH/KKHNG registers** (`kkh_*` / `kkhng_*` ids,
-e.g. `kkh_journal`, `kkhng_ffq_gpd`), all `one_row_per = person`, generated
-and joined the exact same way as the DST registers above -- no separate
-function. These are fiktive's own data, not registers-guide's; see [Where
-the data model comes from](#where-the-data-model-comes-from) for scope and
-cohort references, and the [vignette](vignettes/fiktive.Rmd) for the full
-list. Run `grep("^kkh", names(load_registers_schema()$registers), value =
-TRUE)` for the current, definitive set.
+Bundled separately: **`dch` and `dchng`** (Diet, Cancer and Health / ...and
+Next Generations), `one_row_per = person`, generated and joined the exact
+same way as the DST registers above -- no separate function. That's the
+complete list; each register merges the ~8 (`dch`) or ~19 (`dchng`) real
+underlying SAS datasets a real delivery arrives as into one table, keeping
+which real dataset each column came from as a `dataset` field --
+`codebook(schema, "dch")` shows it. These are fiktive's own data, not
+registers-guide's; see [Where the data model comes
+from](#where-the-data-model-comes-from) for scope and cohort references,
+and the [vignette](vignettes/fiktive.Rmd) for a worked example.
 
 **No RKKP (clinical quality database) registers are bundled here yet.**
 If you need one, you can add it yourself as an external register with

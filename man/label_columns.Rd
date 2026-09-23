@@ -13,7 +13,7 @@ or \code{\link[=generate_custom_register]{generate_custom_register()}}.}
 \item{schema}{Schema from \code{\link[=load_registers_schema]{load_registers_schema()}}.}
 
 \item{register}{The schema register id \code{data} came from, e.g. \code{"bef"}
-or \code{"kkh_journal"}.}
+or \code{"dch"}.}
 
 \item{lang}{\code{"en"} (default) or \code{"da"} -- which label to prefer. Falls
 back to the other language for a column that only has one.}
@@ -23,7 +23,7 @@ back to the other language for a column that only has one.}
 column the schema documents a label for.
 }
 \description{
-Danish register columns have real names like \code{civst}, \code{hfaudd}, or KKH's
+Danish register columns have real names like \code{civst}, \code{hfaudd}, or DCH's
 \code{g03011} — the second kind meaningless without a codebook. \code{\link[=codebook]{codebook()}}
 already surfaces registers-guide's/fiktive's own label metadata as a
 lookup table; \code{label_columns()} attaches that same text as a \code{"label"}

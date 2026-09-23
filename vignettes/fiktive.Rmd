@@ -92,7 +92,7 @@ everywhere else in fiktive.
 `label_columns()` attaches that same label directly onto an already-generated
 table's columns (the same `"label"` attribute convention `haven`/`labelled`
 use, which RStudio's Data Viewer and `str()` pick up automatically) — useful
-in its own right, but especially for KKH/KKHNG, where a name like `g03011`
+in its own right, but especially for DCH/DCH-NG, where a name like `g03011`
 means nothing without one (see below):
 
 ```{r label-columns}
@@ -107,51 +107,61 @@ on both fake and real data, if you do it at all; `label_columns()` adds
 readability without that trade-off. Pass `lang = "da"` for the Danish label
 instead of the English default.
 
-## KKH and KKHNG
+## DCH and DCH-NG
 
 Alongside the DST registers, `schema` always also includes fiktive's own
-bundled metadata for **KKH** (Danish Diet, Cancer and Health) and **KKHNG**
+bundled metadata for **DCH** (Diet, Cancer and Health) and **DCH-NG**
 (...and Next Generations) — variable name, type, and Danish/English label
 only, per KKH/DCH's data-sharing approval. This is fiktive's own data, kept
 separate from registers-guide (never fetched from or sent to that
 project), and it's included automatically the moment you call
 `load_registers_schema()` — not a second call to remember.
 
-```{r kkh-list}
-kkh_ids <- grep("^kkh", names(schema$registers), value = TRUE)
-length(kkh_ids)   # 27 registers: 8 from KKH, 19 from KKHNG
-head(kkh_ids)
+A real DCH/DCH-NG delivery arrives as ~27 separate SAS datasets (visit and
+anthropometry, self-report questionnaires, food-frequency items, nutrient
+calculations, ...), not one file. fiktive collapses them into two
+registers, `dch` and `dchng`, one row per person each — so you call
+`generate_register()` once per cohort instead of once per real dataset —
+but keeps the real per-dataset structure as a `dataset` field on every
+column, surfaced by [codebook()]:
+
+```{r dch-list}
+dch_ids <- c("dch", "dchng")
+cb <- codebook(schema, dch_ids)
+length(unique(cb$dataset[cb$register == "dch"]))    # 8 real datasets merged into "dch"
+length(unique(cb$dataset[cb$register == "dchng"]))   # 19 real datasets merged into "dchng"
+subset(cb, register == "dch" & name %in% c("mdato", "vaegt", "g03001"))[, c("name", "dataset", "label_en")]
 ```
 
 They generate exactly like any DST register — no separate function:
 
-```{r kkh-generate}
-kkh <- generate_register(
-  "kkh_journal", pop, schema,
+```{r dch-generate}
+dch <- generate_register(
+  "dch", pop, schema,
   from = as.Date("1993-12-01"), to = as.Date("1997-05-31"),
   seed = 1
 )
-nrow(kkh) == length(unique(kkh$pnr))   # TRUE: one row per person, like any baseline cohort
+nrow(dch) == length(unique(dch$pnr))   # TRUE: one row per person, like any baseline cohort
 
-# Mix a KKH id into a batch call with a real DST register, and join them --
+# Mix a DCH id into a batch call with a real DST register, and join them --
 # both share the same population, so both join on pnr like any two fiktive tables
 out <- generate_registers(
-  c("kkh_journal", "bef"),
+  c("dch", "bef"),
   population = pop, schema = schema,
   from = as.Date("2008-01-01"), to = as.Date("2009-12-31"),
   seed = 1
 )
-joined <- dplyr::inner_join(out$kkh_journal, out$bef, by = "pnr", relationship = "many-to-many")
+joined <- dplyr::inner_join(out$dch, out$bef, by = "pnr", relationship = "many-to-many")
 ```
 
-`codebook(schema, "kkh_journal")` works too, with no extra code — it reads
-the same `label`/`type` fields on any register, DST or KKH. So does
-`label_columns()` -- worth doing for KKH/KKHNG especially, since a name
-like `g03011` means nothing without one:
+`codebook(schema, "dch")` works too, with no extra code — it reads the same
+`label`/`type` fields on any register, DST or DCH. So does `label_columns()`
+-- worth doing for DCH/DCH-NG especially, since a name like `g03011` means
+nothing without one:
 
-```{r kkh-label-columns}
-kkh_labelled <- label_columns(kkh, schema, "kkh_journal")
-attr(kkh_labelled$mdato, "label")
+```{r dch-label-columns}
+dch_labelled <- label_columns(dch, schema, "dch")
+attr(dch_labelled$mdato, "label")
 ```
 
 ## Describing your own register (e.g. a study cohort)
@@ -229,7 +239,7 @@ ones fiktive reads:
 
 ```csv
 name,type,min,max,values,dataset,label,status,source
-id,integer,1,60000,,journal,KKH ID number,available,catalogue
+id,integer,1,60000,,journal,Participant ID number,available,catalogue
 mdato,date,1993-12-01,1997-05-31,,journal,Date of participation,requested,catalogue
 center,character,,,KBH|AAR,journal,Study center,requested,catalogue
 kqn,character,,,M|K,journal,Gender,requested,catalogue
@@ -239,9 +249,9 @@ fedtbiop,integer,,,0|1,journal,Fat biopsy taken (yes/no),available,catalogue
 
 ```{r custom-register-csv, eval = FALSE}
 ext <- generate_custom_register(
-  id = "kkh",
+  id = "mystudy",
   one_row_per = "person_reference_date",
-  columns = "kkh_columns.csv",   # path to the CSV above
+  columns = "mystudy_columns.csv",   # path to the CSV above
   population = pop,
   schema = schema,
   from = as.Date("1993-12-01"),

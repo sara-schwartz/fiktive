@@ -42,11 +42,11 @@ dispatch_generate_register <- function(register, spec, population, schema, from,
   }
 
   # Prefer one_row_per when present; else fall back to register-id lists (thin fixtures).
-  # Bundled KKH/KKHNG registers (all one_row_per: person) extend this
+  # Bundled DCH/DCH-NG registers (all one_row_per: person) extend this
   # whitelist dynamically, read from the installed package -- see
-  # kkh_register_ids() in R/schema.R. A DST register in the schema but not
+  # dch_register_ids() in R/schema.R. A DST register in the schema but not
   # in either list still correctly errors below, unchanged.
-  implemented_snapshot <- c(.IMPLEMENTED_SNAPSHOT, kkh_register_ids())
+  implemented_snapshot <- c(.IMPLEMENTED_SNAPSHOT, dch_register_ids())
   if (identical(grain, "person_reference_date") || identical(grain, "person") ||
       (!nzchar(grain) && register %in% implemented_snapshot)) {
     if (!register %in% implemented_snapshot) {
@@ -150,7 +150,7 @@ generate_person_snapshot <- function(population, schema, spec, from, to, seed) {
     span <- as.integer(to - lo)
     # One independent date per person within their own eligible window --
     # not a shared as-of date like person_reference_date's snapshot dates.
-    # Faithful to staggered recruitment (e.g. KKH/KKHNG's baseline cohort
+    # Faithful to staggered recruitment (e.g. DCH/DCH-NG's baseline cohort
     # enrolled over several years): referencetid means "this person's own
     # date", a different meaning from the snapshot grain's.
     rows$referencetid <- lo + floor(stats::runif(nrow(rows)) * (span + 1L))

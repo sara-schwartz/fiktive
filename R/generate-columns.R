@@ -267,13 +267,14 @@ derived_column <- function(id, rows, schema = NULL) {
     # row's value instead of triggering a second, inconsistent draw.
     lprindberetningssystem = if ("lprindberetningssystem" %in% names(rows)) rows$lprindberetningssystem else NULL,
     koen = rows$koen,
-    # kkhng_lsq_general_final's own `sex` column: its label states the exact
-    # code values ("Sex (1=Male, 2=Female)"), which is DST's own koen.yaml
-    # coding -- map to pop$koen rather than draw independently, so it can't
-    # disagree with `koen`/bef for the same person (map carefully, like koen
-    # above; don't add a case like this for a column whose real coding isn't
-    # documented -- kqn/fsdato/fsdato_c are dropped from the bundled KKH
-    # schema entirely for exactly that reason, see R/schema.R).
+    # dchng's own `sex` column (from its "lsq_general_final" dataset): its
+    # label states the exact code values ("Sex (1=Male, 2=Female)"), which
+    # is DST's own koen.yaml coding -- map to pop$koen rather than draw
+    # independently, so it can't disagree with `koen`/bef for the same
+    # person (map carefully, like koen above; don't add a case like this
+    # for a column whose real coding isn't documented -- kqn/fsdato/
+    # fsdato_c are dropped from the bundled DCH schema entirely for
+    # exactly that reason, see R/schema.R).
     sex = as.integer(rows$koen),
     foed_dag = rows$foed_dag,
     referencetid = rows$referencetid,
