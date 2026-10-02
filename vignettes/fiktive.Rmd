@@ -80,10 +80,10 @@ Register columns often have short, cryptic names (`civst`, `hfaudd`,
 same schema that generated your data — in Danish and English:
 
 ```{r codebook}
-codebook(schema, "bef")
+codebook("bef", schema)
 ```
 
-Pass more than one id (`codebook(schema, c("bef", "lmdb"))`) to get several
+Pass more than one id (`codebook(c("bef", "lmdb"), schema)`) to get several
 registers' columns at once, with a `register` column added so you can tell
 them apart. `NA` in `label_da`/`label_en`/`values` just means the schema
 doesn't document one for that column — same "don't invent it" rule as
@@ -96,7 +96,7 @@ in its own right, but especially for DCH/DCH-NG, where a name like `g03011`
 means nothing without one (see below):
 
 ```{r label-columns}
-bef_labelled <- label_columns(tables$bef, schema, "bef")
+bef_labelled <- label_columns(tables$bef, "bef", schema)
 attr(bef_labelled$koen, "label")
 ```
 
@@ -106,6 +106,51 @@ names later, so renaming stays something you'd do yourself, consistently,
 on both fake and real data, if you do it at all; `label_columns()` adds
 readability without that trade-off. Pass `lang = "da"` for the Danish label
 instead of the English default.
+
+## Codes fiktive won't fabricate
+
+A few columns are coded against a real, published classification that
+fiktive doesn't bundle — a lab test's NPU code (`lab_dm_forsker`/`labka`'s
+`analysiscode`), or `akm`'s occupation/industry codes (`disco08_alle_indk_13`,
+DST's DISCO-08; `nace_db07_13`, DST's NACE). Rather than invent codes that
+merely *look* plausible, generating one of these columns without a real
+catalogue configured errors with a `SCHEMA GAP`, naming exactly what's
+missing and how to supply it — the same principle as everywhere else in
+fiktive (see "Structural noise vs. realistic-looking data" above), just
+applied to whole code lists instead of a value range.
+
+fiktive never downloads anything on its own — every catalogue below is
+opt-in, so tests and offline use stay deterministic.
+
+**Lab analyte codes** (`lab_dm_forsker`, `labka`): the free, no-registration
+public IFCC C-NPU list covers common analytes and needs no setup beyond one
+option:
+
+```{r labterm-opt-in, eval = FALSE}
+options(fiktive.labterm_fetch_ifcc = TRUE)  # downloads + caches on first use
+generate_register("lab_dm_forsker", pop, schema, from, to, seed = 1)
+```
+
+The complete Danish LabTerm catalogue (more codes, Danish DNK terminology)
+requires registration with Sundhedsdatastyrelsen (<https://www.labterm.dk/>);
+point `FIKTIVE_LABTERM` (or option `fiktive.labterm`) at a downloaded copy if
+you have one — fiktive prefers it over the public list when both are
+configured.
+
+**Occupation/industry codes** (`akm`): DST publishes DISCO-08 and NACE as
+plain public CSVs, no registration needed either — same opt-in shape:
+
+```{r disco08-opt-in, eval = FALSE}
+options(fiktive.fetch_disco08 = TRUE, fiktive.fetch_nace_db07 = TRUE)
+generate_register("akm", pop, schema, from, to, seed = 1)
+```
+
+Either way, the download happens once and is cached under
+`tools::R_user_dir("fiktive", "cache")`, so subsequent calls (including in
+a fresh R session) reuse it without needing the option set again. See
+`?load_labterm_catalogue` and `?load_csv_code_system` for pointing fiktive
+at an already-downloaded file instead of fetching, and for overriding the
+source URL.
 
 ## DCH and DCH-NG
 
@@ -127,9 +172,10 @@ column, surfaced by [codebook()]:
 
 ```{r dch-list}
 dch_ids <- c("dch", "dchng")
-cb <- codebook(schema, dch_ids)
-length(unique(cb$dataset[cb$register == "dch"]))    # 8 real datasets merged into "dch"
-length(unique(cb$dataset[cb$register == "dchng"]))   # 19 real datasets merged into "dchng"
+cb <- codebook(dch_ids, schema)
+length(unique(na.omit(cb$dataset[cb$register == "dch"])))   # 8 real datasets merged into "dch"
+length(unique(na.omit(cb$dataset[cb$register == "dchng"]))) # 19 real datasets merged into "dchng"
+# (na.omit() drops pnr's own NA dataset -- it's fiktive's added join key, not from any real dataset)
 subset(cb, register == "dch" & name %in% c("mdato", "vaegt", "g03001"))[, c("name", "dataset", "label_en")]
 ```
 
@@ -144,23 +190,25 @@ dch <- generate_register(
 nrow(dch) == length(unique(dch$pnr))   # TRUE: one row per person, like any baseline cohort
 
 # Mix a DCH id into a batch call with a real DST register, and join them --
-# both share the same population, so both join on pnr like any two fiktive tables
+# both share the same population, so both join on pnr like any two fiktive tables.
+# dch's own coverage is its real 1993-12/1997-05 recruitment window, so a
+# window outside that would correctly return zero dch rows -- use one that overlaps it.
 out <- generate_registers(
   c("dch", "bef"),
   population = pop, schema = schema,
-  from = as.Date("2008-01-01"), to = as.Date("2009-12-31"),
+  from = as.Date("1993-12-01"), to = as.Date("1997-05-31"),
   seed = 1
 )
 joined <- dplyr::inner_join(out$dch, out$bef, by = "pnr", relationship = "many-to-many")
 ```
 
-`codebook(schema, "dch")` works too, with no extra code — it reads the same
+`codebook("dch", schema)` works too, with no extra code — it reads the same
 `label`/`type` fields on any register, DST or DCH. So does `label_columns()`
 -- worth doing for DCH/DCH-NG especially, since a name like `g03011` means
 nothing without one:
 
 ```{r dch-label-columns}
-dch_labelled <- label_columns(dch, schema, "dch")
+dch_labelled <- label_columns(dch, "dch", schema)
 attr(dch_labelled$mdato, "label")
 ```
 
@@ -172,12 +220,25 @@ noise; the headline anthropometric/energy/biomarker ones are anchored on
 the cohort papers below, the rest (including all nutrient, food-group,
 amino-acid and fatty-acid columns) are reasonable adult ranges not
 individually cited the same way -- see `R/generate-dch-values.R` and
-`R/generate-dch-nutrients.R`. Categorical columns (smoking status, yes/no
+`R/generate-dch-nutrients.R`. `dch_range_source(register_id, name)` (or
+`codebook()`'s own `value_source` column) tells you which tier a specific
+column is in, rather than reading through those files by hand. Categorical columns (smoking status, yes/no
 items, menopause, ...) draw from a small plausible set rather than
 meaningless noise, but neither catalogue documents a real code list for
 these, so the specific levels (e.g. whether `1` is "never" or "current"
 smoker) are **documented guesses, not confirmed codings** -- see the
 comments at the top of `R/generate-dch-values.R`.
+
+`dch`'s `vaegt` (weight) is derived from `bmi` and `stahqjde` (height) --
+real weight = BMI × height², so those three columns can never disagree
+with each other on the same row, the same reconciliation age columns
+already get from birth/event dates. That's the only cross-column
+reconciliation fiktive does for DCH/DCH-NG, though: `vaegtc` (total food
+weight) vs. its own `vaegtc01`-`vaegtc60` per-food-group breakdown,
+`energitot` vs. `energitot01`-`energitot49`, and each nutrient's
+`_tot`/`_ffq`/`_ktsk` trio are all independently drawn and **will not
+sum or agree with each other** -- don't rely on fiktive's DCH/DCH-NG
+output to test a check like `vaegtc == sum(vaegtc01:vaegtc60)`.
 
 Cohort references:
 

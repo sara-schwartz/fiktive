@@ -115,7 +115,7 @@ You ask for a register by putting its id in `registers = c(...)`: that's
 the whole interface, no matter which register it is.
 
 Column and code names are often short and cryptic (`civst`, `hfaudd`,
-`koen = 1`). `codebook(schema, "bef")` looks up the real description for
+`koen = 1`). `codebook("bef", schema)` looks up the real description for
 each, in Danish and English. See the [vignette](vignettes/fiktive.Rmd) for details.
 
 ## Saving your data to files
@@ -259,6 +259,15 @@ vignette("fiktive", package = "fiktive")
 
 - Package code: MIT
 - Generated (fake) datasets: [CC-BY-4.0](https://creativecommons.org/licenses/by/4.0/)
+- Bundled DCH/DCH-NG metadata (variable name, type, and Danish/English
+  label -- see [Where the data model comes
+  from](#where-the-data-model-comes-from)): **no license granted for
+  reuse.** Shared with fiktive under a specific, scoped, email-based
+  approval from KKH/DCH, not something registers-guide or DST publishes
+  openly -- neither the MIT nor the CC-BY-4.0 term above covers it. It's
+  included here only as far as that approval allows (to drive fiktive's
+  own fake-data generation); redistributing or reusing it outside fiktive
+  needs your own permission from KKH/DCH, not a license from this repo.
 
 fiktive **creates** fictitious tables. It never extracts rows from a real
 Danish register.
@@ -280,7 +289,7 @@ definitive, up-to-date list of what actually works.
 
 | id | Register | Grain | Notes |
 |---|---|---|---|
-| `akm` | Arbejdsklassifikationsmodulet (labour classification) | person_reference_date | Socioeconomic status per person per year (employed, unemployed, pensioner, …) |
+| `akm` | Arbejdsklassifikationsmodulet (labour classification) | person_reference_date | Socioeconomic status per person per year (employed, unemployed, pensioner, …). Occupation/industry (`disco08_alle_indk_13`/`nace_db07_13`) need DST's public DISCO-08/NACE code lists; errors with a `SCHEMA GAP` otherwise rather than inventing codes. No registration required, but fiktive never downloads them on its own -- set `options(fiktive.fetch_disco08 = TRUE, fiktive.fetch_nace_db07 = TRUE)` first (see `?load_csv_code_system`) |
 | `bef` | Befolkningen (population register) | person_reference_date | Quarterly population snapshot: demographics, municipality, marital status. `kom` (municipality) is uniform by default; pass `constraints = "weighted_municipality"` to weight it by real 2026 municipality population instead (Copenhagen far more often than Læsø) |
 | `cancer` | Cancerregisteret | event_from_person | One row per incident cancer diagnosis. Under `constraints = "valid_diagnosis_sex_age"`, never assigns a diagnosis chapter impossible for the patient's sex/age (same rule as `lpr_diag`) |
 | `dod` | Døde i Danmark (deaths) | event_from_person | One row per death; date of death |
@@ -288,7 +297,7 @@ definitive, up-to-date list of what actually works.
 | `dodsaasg` | Dødsårsagsregister | event_from_person | Cause of death 2002–2022. Closed |
 | `dodsaarsager` | Dødsårsagsregister | event_from_person | Cause of death 2022–. Current |
 | `faik` | Familieindkomster (family income) | household_year | Household-level income, keyed on household not person. `familie_id` comes from the population (`generate_background_population()`), the same as `bef`'s -- join `bef`/`faik` on `familie_id` + year, the standard household-income pattern, and it actually matches |
-| `lab_dm_forsker` | Laboratoriedatabasens Forskertabel | event_from_person | Lab test results per request. `analysiscode` needs a LabTerm/IFCC NPU catalogue (`FIKTIVE_LABTERM`); errors with a `SCHEMA GAP` otherwise rather than inventing codes. `value`/`unit`/reference interval are realistic for 30 common analytes; 25 of those (electrolytes, renal, liver enzymes, lipids, glucose, ...) use the actual reference interval from Rustad et al., *The Nordic Reference Interval Project 2000*, Scand J Clin Lab Invest 2004;64(4):271-284, [doi:10.1080/00365510410006324](https://doi.org/10.1080/00365510410006324) -- see `R/catalogue-labterm-analytes.R` for the full table and which 5 aren't NORIP-sourced. Any other NPU code still falls back to a bare placeholder value |
+| `lab_dm_forsker` | Laboratoriedatabasens Forskertabel | event_from_person | Lab test results per request. `analysiscode` needs an NPU code catalogue; errors with a `SCHEMA GAP` otherwise rather than inventing codes. Fastest fix: `options(fiktive.labterm_fetch_ifcc = TRUE)` before generating -- downloads and caches the free, no-registration public IFCC C-NPU list. The complete Danish LabTerm catalogue instead requires SDS registration; point `FIKTIVE_LABTERM` (or option `fiktive.labterm`) at it if you have one. `value`/`unit`/reference interval are realistic for 30 common analytes; 25 of those (electrolytes, renal, liver enzymes, lipids, glucose, ...) use the actual reference interval from Rustad et al., *The Nordic Reference Interval Project 2000*, Scand J Clin Lab Invest 2004;64(4):271-284, [doi:10.1080/00365510410006324](https://doi.org/10.1080/00365510410006324) -- see `R/catalogue-labterm-analytes.R` for the full table and which 5 aren't NORIP-sourced. Any other NPU code still falls back to a bare placeholder value |
 | `labka` | LABKA-forskningsdatabasen | event_from_person | Regional lab register (Central/North Denmark regions only), held by Aarhus University Hospital, not DST/SDS. Same shape, `analysiscode` catalogue requirement, and per-analyte `value`/`unit`/reference interval as `lab_dm_forsker`; its own join key is `cpr`, mapped to `pnr` like `lab_dm_forsker`'s `patient_cpr` |
 | `lmdb` | Lægemiddeldatabasen (prescription register) | event_from_person | One row per dispensed prescription |
 | `lpr_adm` | Landspatientregistret (LPR2): admin/contact | event_from_person | Parent for `lpr_diag` / `lpr_sksopr` / `lpr_sksube` |
