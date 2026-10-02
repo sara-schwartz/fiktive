@@ -3,3 +3,6 @@
 ^\.git$
 ^\.gitignore$
 ^notes$
+^_ignore$
+^data-raw$
+^CLAUDE\.md$
