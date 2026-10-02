@@ -63,6 +63,16 @@
   # age range.
   borger_alder_doedsstatus = list(min = 0, max = 105, integer = TRUE),
 
+  # lpr_foedsler (birth record attached to the mother's LPR admission --
+  # same real-world facts as mfr's vaegt_barn/paritet above, under this
+  # register's own column names).
+  v_langde = list(min = 35, max = 58, digits = 1),             # newborn length, cm
+  v_vagt   = list(min = 400, max = 5500, integer = TRUE),      # newborn weight, grams
+  v_paritet = list(min = 0, max = 8, integer = TRUE),
+  v_jmbes  = list(min = 0, max = 15, integer = TRUE),          # midwife visits during pregnancy
+  v_lbes   = list(min = 0, max = 15, integer = TRUE),          # doctor visits during pregnancy
+  v_spbes  = list(min = 0, max = 10, integer = TRUE),          # specialist visits during pregnancy
+
   # lpr_adm/t_psyk_adm (and lpr_afl/t_psyk_afl/*_sksopr/*_sksube, which
   # share the v_ominut/v_otime timing columns for the same concept)
   v_sengdage = list(min = 0, max = 60, integer = TRUE),   # bed-days

@@ -1,0 +1,28 @@
+# TEST DOUBLE only
+id: lpr_opr
+name: "LPR2 operations (test double)"
+family: lpr2_somatic
+one_row_per: expand_from_parent
+coverage: {from: 1977, to: 2019}
+join_keys: [recnum]
+columns:
+  - id: recnum
+    name: recnum
+    type: character
+    role: join_key
+  - id: c_komb
+    name: c_komb
+    type: character
+    role: code
+  - id: c_oafd
+    name: c_oafd
+    type: character
+    role: code
+  - id: c_opr
+    name: c_opr
+    type: character
+    role: code
+  - id: c_osgh
+    name: c_osgh
+    type: character
+    role: code

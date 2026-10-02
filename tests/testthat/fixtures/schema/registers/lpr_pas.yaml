@@ -1,0 +1,36 @@
+# TEST DOUBLE only
+id: lpr_pas
+name: "LPR2 passive waiting time (test double)"
+family: lpr2_somatic
+one_row_per: expand_from_parent
+coverage: {from: 1999, to: 2019}
+join_keys: [recnum]
+columns:
+  - id: recnum
+    name: recnum
+    type: character
+    role: join_key
+  - id: c_passarsag
+    name: c_passarsag
+    type: character
+    role: code
+  - id: d_passldto
+    name: d_passldto
+    type: date
+    role: date
+  - id: d_passtdto
+    name: d_passtdto
+    type: date
+    role: date
+  - id: c_tilbafd
+    name: c_tilbafd
+    type: character
+    role: code
+  - id: c_tilbsgh
+    name: c_tilbsgh
+    type: character
+    role: code
+  - id: d_tilbdto
+    name: d_tilbdto
+    type: date
+    role: date

@@ -1,0 +1,16 @@
+# TEST DOUBLE only
+id: lpr_bes
+name: "LPR2 outpatient visits (test double)"
+family: lpr2_somatic
+one_row_per: expand_from_parent
+coverage: {from: 1994, to: 2019}
+join_keys: [recnum]
+columns:
+  - id: recnum
+    name: recnum
+    type: character
+    role: join_key
+  - id: d_ambdto
+    name: d_ambdto
+    type: date
+    role: date

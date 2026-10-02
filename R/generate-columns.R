@@ -346,8 +346,26 @@ derived_column <- function(id, rows, schema = NULL) {
     # sssy: date of treatment/contact (its own column name, not shared with sysi).
     behandlingsdato = when,
     d_uddto = if (is.null(discharge)) NULL else pmax(as.Date(discharge), as.Date(when)),
-    recnum = if ("recnum" %in% names(rows)) rows$recnum else rows$contact_id,
-    dw_ek_kontakt = if ("dw_ek_kontakt" %in% names(rows)) rows$dw_ek_kontakt else rows$contact_id,
+    # contact_id (lpr_a_kontakt's own generation pipeline, generate-pipeline.R)
+    # only exists for that register -- plain `rows$contact_id` on a tibble
+    # warns ("unknown or uninitialised column") when it's absent, which it
+    # legitimately is for any event_from_person register that mints its own
+    # recnum as a fresh primary key (t_psyk_psykio, lpr_foedsler, ...) rather
+    # than inheriting one as a parent-table foreign key.
+    recnum = if ("recnum" %in% names(rows)) {
+      rows$recnum
+    } else if ("contact_id" %in% names(rows)) {
+      rows$contact_id
+    } else {
+      NULL
+    },
+    dw_ek_kontakt = if ("dw_ek_kontakt" %in% names(rows)) {
+      rows$dw_ek_kontakt
+    } else if ("contact_id" %in% names(rows)) {
+      rows$contact_id
+    } else {
+      NULL
+    },
     kont_starttidspunkt = event_dt,
     kont_sluttidspunkt = if (is.null(discharge_dt)) event_dt else pmax(discharge_dt, event_dt),
     borger_foedselsdato = rows$foed_dag,

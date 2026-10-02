@@ -18,6 +18,14 @@ rather than a commit-by-commit history.
   schema at all (a study cohort, a questionnaire, a set of scores) and
   generates structural noise for it the same way, joinable via `pnr` or a
   custom household key.
+* LPR2's and LPR psykiatri's other real child tables -- operations
+  (`lpr_sksopr`/`lpr_afl`/`lpr_opr` and their `t_psyk_*` psychiatric
+  equivalents), outpatient visits (`lpr_bes`), waiting-period tracking
+  (`lpr_pas`/`lpr_vente`), accident codes (`lpr_ulyk`), birth records
+  (`lpr_foedsler`, with curated newborn length/weight/parity and visit
+  counts), and discharge destination (`lpr_udtilsgh`/`t_psyk_udtilsgh`) --
+  generate the same way as `lpr_diag`/`lpr_sksopr` already did, joined to
+  their parent admission on `recnum`.
 * Structural noise by default (every code valid, drawn uniformly, no
   attempt to look like real Denmark); opt into `constraints=` for
   real-world-shaped defaults (`weighted_municipality`,

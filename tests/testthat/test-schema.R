@@ -30,10 +30,18 @@ test_that("unknown register id is a SCHEMA GAP", {
 })
 
 test_that("expand-from-parent register is not implemented yet", {
+  # lpr_afl (this test's original example) is implemented now -- every
+  # expand_from_parent register in the live schema is. Clone one into a
+  # fake, deliberately-unwhitelisted id instead of deleting the test's own
+  # point: an expand_from_parent register not in .IMPLEMENTED_EXPAND must
+  # still fail "not implemented yet", not a SCHEMA GAP (same idiom as the
+  # fake_household_register whitelist-gate test in test-generate-faik.R).
   schema <- fixture_schema()
+  schema$registers[["fake_expand_register"]] <- schema$registers[["lpr_afl"]]
+  schema$registers[["fake_expand_register"]]$id <- "fake_expand_register"
   pop <- tiny_pop(schema)
   err <- tryCatch(
-    generate_register("lpr_afl", pop, schema, "2008-01-01", "2008-12-31", seed = 1),
+    generate_register("fake_expand_register", pop, schema, "2008-01-01", "2008-12-31", seed = 1),
     error = function(e) e
   )
   expect_s3_class(err, "error")

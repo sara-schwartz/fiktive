@@ -1,0 +1,24 @@
+# TEST DOUBLE only
+id: t_psyk_psykio
+name: "LPR psykiatri admission/discharge codes (test double)"
+family: lpr2_psychiatric
+one_row_per: event_from_person
+coverage: {from: 1995, to: 2019}
+join_keys: [recnum]
+columns:
+  - id: recnum
+    name: recnum
+    type: character
+    role: join_key
+  - id: c_indfra
+    name: c_indfra
+    type: character
+    role: code
+  - id: c_indvilk
+    name: c_indvilk
+    type: character
+    role: code
+  - id: c_udtil
+    name: c_udtil
+    type: character
+    role: code

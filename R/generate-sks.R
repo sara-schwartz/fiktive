@@ -81,10 +81,10 @@ sks_kind_for <- function(cs_id, register_id, name) {
     return("adm")
   }
   register_id <- as.character(register_id %||% "")
-  if (identical(register_id, "lpr_sksopr")) {
+  if (register_id %in% c("lpr_sksopr", "t_psyk_sksopr")) {
     return("opr")
   }
-  if (identical(register_id, "lpr_sksube")) {
+  if (register_id %in% c("lpr_sksube", "t_psyk_sksube")) {
     return("pro_und")
   }
   if (identical(register_id, "lpr_a_procregistrering")) {
@@ -92,7 +92,7 @@ sks_kind_for <- function(cs_id, register_id, name) {
   }
   schema_gap(
     sprintf("SKS kind for column '%s' on '%s'", name, register_id %||% "register"),
-    "a documented procedure grain (lpr_sksopr / lpr_sksube / lpr_a_procregistrering)"
+    "a documented procedure grain (lpr_sksopr / lpr_sksube / lpr_a_procregistrering / t_psyk_sksopr / t_psyk_sksube)"
   )
 }
 

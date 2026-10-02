@@ -167,12 +167,18 @@ Hospital registers work a little differently: one table holds the
 have several diagnoses. So the diagnosis table has no `pnr` of its own. It
 only points back to its visit.
 
+The same pattern applies to every other LPR2/LPR psykiatri child table, not
+just diagnoses -- operations (`lpr_sksopr`/`lpr_afl`/`lpr_opr`), outpatient
+visits (`lpr_bes`), waiting-period tracking (`lpr_pas`/`lpr_vente`),
+accident codes (`lpr_ulyk`), and their `t_psyk_*` psychiatric-register
+equivalents all point back to a contact the same way.
+
 The join key depends on which version of the register you're using:
-**LPR2** (`lpr_adm` / `lpr_diag` / `lpr_sksopr` / `lpr_sksube`) joins on
-`recnum`; **LPR3** (`lpr_a_kontakt` / `lpr_a_diagnose` /
-`lpr_a_procregistrering`) joins on `dw_ek_kontakt` instead. They're
-separate register families. Don't mix an LPR2 contact table with an LPR3
-diagnosis table or vice versa.
+**LPR2** (`lpr_adm` and its children above) and **LPR psykiatri**
+(`t_psyk_adm` and its children) join on `recnum`; **LPR3** (`lpr_a_kontakt` /
+`lpr_a_diagnose` / `lpr_a_procregistrering`) joins on `dw_ek_kontakt`
+instead. They're separate register families. Don't mix an LPR2/LPR
+psykiatri contact table with an LPR3 diagnosis table or vice versa.
 
 Ask for both in the same call, and join them on `recnum` instead of `pnr`
 (LPR2 shown here; swap in the LPR3 ids and `dw_ek_kontakt` for LPR3):
@@ -300,15 +306,33 @@ definitive, up-to-date list of what actually works.
 | `lab_dm_forsker` | Laboratoriedatabasens Forskertabel | event_from_person | Lab test results per request. `analysiscode` needs an NPU code catalogue; errors with a `SCHEMA GAP` otherwise rather than inventing codes. Fastest fix: `options(fiktive.labterm_fetch_ifcc = TRUE)` before generating -- downloads and caches the free, no-registration public IFCC C-NPU list. The complete Danish LabTerm catalogue instead requires SDS registration; point `FIKTIVE_LABTERM` (or option `fiktive.labterm`) at it if you have one. `value`/`unit`/reference interval are realistic for 30 common analytes; 25 of those (electrolytes, renal, liver enzymes, lipids, glucose, ...) use the actual reference interval from Rustad et al., *The Nordic Reference Interval Project 2000*, Scand J Clin Lab Invest 2004;64(4):271-284, [doi:10.1080/00365510410006324](https://doi.org/10.1080/00365510410006324) -- see `R/catalogue-labterm-analytes.R` for the full table and which 5 aren't NORIP-sourced. Any other NPU code still falls back to a bare placeholder value |
 | `labka` | LABKA-forskningsdatabasen | event_from_person | Regional lab register (Central/North Denmark regions only), held by Aarhus University Hospital, not DST/SDS. Same shape, `analysiscode` catalogue requirement, and per-analyte `value`/`unit`/reference interval as `lab_dm_forsker`; its own join key is `cpr`, mapped to `pnr` like `lab_dm_forsker`'s `patient_cpr` |
 | `lmdb` | Lægemiddeldatabasen (prescription register) | event_from_person | One row per dispensed prescription |
-| `lpr_adm` | Landspatientregistret (LPR2): admin/contact | event_from_person | Parent for `lpr_diag` / `lpr_sksopr` / `lpr_sksube` |
+| `lpr_adm` | Landspatientregistret (LPR2): admin/contact | event_from_person | Parent for `lpr_diag` / `lpr_sksopr` / `lpr_sksube` / `lpr_afl` / `lpr_bes` / `lpr_opr` / `lpr_pas` / `lpr_ulyk` / `lpr_vente` |
 | `lpr_diag` | LPR2: diagnoser | expand_from_parent | Child of `lpr_adm` (join on `recnum`). Under `constraints = "valid_diagnosis_sex_age"`, diagnosis codes never assign a chapter that's impossible for the patient's sex or age (e.g. a pregnancy code to a man, a perinatal code to someone past infancy) |
 | `lpr_sksopr` | LPR2: operationer | expand_from_parent | Child of `lpr_adm` (join on `recnum`) |
 | `lpr_sksube` | LPR2: undersøgelser og behandlinger | expand_from_parent | Child of `lpr_adm` (join on `recnum`) |
+| `lpr_afl` | LPR2: aflyste operationer (cancelled operations) | expand_from_parent | Child of `lpr_adm` (join on `recnum`) |
+| `lpr_bes` | LPR2: ambulante besøgsdatoer (outpatient visit dates) | expand_from_parent | Child of `lpr_adm` (join on `recnum`) |
+| `lpr_opr` | LPR2: operationer efter ICD8 klassifikationen | expand_from_parent | Child of `lpr_adm` (join on `recnum`). The pre-SKS historical operation coding, alongside `lpr_sksopr`'s modern SKS coding |
+| `lpr_pas` | LPR2: passiv ventetid (passive waiting time) | expand_from_parent | Child of `lpr_adm` (join on `recnum`) |
+| `lpr_ulyk` | LPR2: ulykkeskoder (accident codes) | expand_from_parent | Child of `lpr_adm` (join on `recnum`) |
+| `lpr_vente` | LPR2: ventetid (waiting period tracking) | expand_from_parent | Child of `lpr_adm` (join on `recnum`) |
+| `lpr_foedsler` | LPR2: fødsler (birth record attached to the mother's admission) | event_from_person | Newborn length/weight/parity and midwife/doctor/specialist visit counts are curated (realistic, not generic noise) |
+| `lpr_udtilsgh` | LPR2: oplysninger om sygehus og afdeling (discharge destination) | event_from_person | |
 | `lpr_a_kontakt` | LPR3: kontaktoplysninger | event_from_person | Parent for `lpr_a_diagnose` / `lpr_a_procregistrering` |
 | `lpr_a_diagnose` | LPR3: diagnoseoplysning | expand_from_parent | Child of `lpr_a_kontakt` (join on `dw_ek_kontakt`). Under `constraints = "valid_diagnosis_sex_age"`, never assigns a diagnosis chapter impossible for the patient's sex/age (same rule as `lpr_diag`) |
 | `lpr_a_procregistrering` | LPR3: procedureregistreringer | expand_from_parent | Child of `lpr_a_kontakt` (join on `dw_ek_kontakt`) |
-| `t_psyk_adm` | LPR psykiatri: administrative oplysninger | event_from_person | Parent for `t_psyk_diag`; separate from `lpr_adm` |
+| `t_psyk_adm` | LPR psykiatri: administrative oplysninger | event_from_person | Parent for `t_psyk_diag` / `t_psyk_afl` / `t_psyk_opr` / `t_psyk_pas` / `t_psyk_pers` / `t_psyk_sksopr` / `t_psyk_sksube` / `t_psyk_ulyk` / `t_psyk_vente`; separate from `lpr_adm` |
 | `t_psyk_diag` | LPR psykiatri: diagnoser | expand_from_parent | Child of `t_psyk_adm`. Under `constraints = "valid_diagnosis_sex_age"`, never assigns a diagnosis chapter impossible for the patient's sex/age (same rule as `lpr_diag`) |
+| `t_psyk_sksopr` | LPR psykiatri: operationer | expand_from_parent | Child of `t_psyk_adm` (join on `recnum`). Psychiatric parallel to `lpr_sksopr` -- same SKS surgical-code kind |
+| `t_psyk_sksube` | LPR psykiatri: undersøgelser | expand_from_parent | Child of `t_psyk_adm` (join on `recnum`). Psychiatric parallel to `lpr_sksube` |
+| `t_psyk_afl` | LPR psykiatri: aflyste procedurer (cancelled procedures) | expand_from_parent | Child of `t_psyk_adm` (join on `recnum`) |
+| `t_psyk_opr` | LPR psykiatri: operationer efter ICD8 klassifikationen | expand_from_parent | Child of `t_psyk_adm` (join on `recnum`) |
+| `t_psyk_pas` | LPR psykiatri: passiv ventetid | expand_from_parent | Child of `t_psyk_adm` (join on `recnum`) |
+| `t_psyk_pers` | LPR psykiatri: ambulante besøg (outpatient visit/staff info) | expand_from_parent | Child of `t_psyk_adm` (join on `recnum`) |
+| `t_psyk_ulyk` | LPR psykiatri: ulykkeskoder | expand_from_parent | Child of `t_psyk_adm` (join on `recnum`) |
+| `t_psyk_vente` | LPR psykiatri: ventetid | expand_from_parent | Child of `t_psyk_adm` (join on `recnum`) |
+| `t_psyk_psykio` | LPR psykiatri: særlige psykiatriske oplysninger (admission/discharge legal basis) | event_from_person | |
+| `t_psyk_udtilsgh` | LPR psykiatri: oplysninger om sygehus og afdeling (discharge destination) | event_from_person | |
 | `mfr` | MFR: levendefødte | event_from_person | One row per live birth (mother + child) |
 | `sysi` | Sygesikring (6-cifret) | event_from_person | Primary-care fee settlements |
 | `sssy` | Sygesikring (6-cifret) | event_from_person | Continuation of `sysi`; same shape |

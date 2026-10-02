@@ -1,0 +1,20 @@
+# TEST DOUBLE only
+id: t_psyk_udtilsgh
+name: "LPR psykiatri discharge destination (test double)"
+family: lpr2_psychiatric
+one_row_per: event_from_person
+coverage: {from: 1995, to: 2019}
+join_keys: [recnum]
+columns:
+  - id: recnum
+    name: recnum
+    type: character
+    role: join_key
+  - id: c_udtilafd
+    name: c_udtilafd
+    type: character
+    role: code
+  - id: c_udtilsgh
+    name: c_udtilsgh
+    type: character
+    role: code

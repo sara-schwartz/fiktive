@@ -1,0 +1,44 @@
+# TEST DOUBLE only
+id: lpr_foedsler
+name: "LPR2 birth record (test double)"
+family: lpr2_somatic
+one_row_per: event_from_person
+coverage: {from: 1995, to: 2019}
+join_keys: [recnum]
+columns:
+  - id: recnum
+    name: recnum
+    type: character
+    role: join_key
+  - id: d_smendto
+    name: d_smendto
+    type: date
+    role: date
+  - id: v_flernr
+    name: v_flernr
+    type: character
+    role: value
+  - id: v_jmbes
+    name: v_jmbes
+    type: numeric
+    role: value
+  - id: v_langde
+    name: v_langde
+    type: numeric
+    role: value
+  - id: v_lbes
+    name: v_lbes
+    type: numeric
+    role: value
+  - id: v_paritet
+    name: v_paritet
+    type: numeric
+    role: value
+  - id: v_spbes
+    name: v_spbes
+    type: numeric
+    role: value
+  - id: v_vagt
+    name: v_vagt
+    type: numeric
+    role: value

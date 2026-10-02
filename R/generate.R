@@ -14,13 +14,25 @@
   "dod", "lmdb", "vnds", "cancer", "mfr", "lab_dm_forsker", "labka",
   "dodsaars", "dodsaasg", "dodsaarsager",
   "sysi", "sssy",
-  "vnds_hist", "vnds_ind", "vnds_ud"
+  "vnds_hist", "vnds_ind", "vnds_ud",
+  # Simple person-level events reusing "recnum" as their own primary key,
+  # not a foreign key into lpr_adm/t_psyk_adm (unlike the expand_from_parent
+  # children below) -- same generic event-draw path as dod/cancer/mfr.
+  "t_psyk_psykio", "t_psyk_udtilsgh", "lpr_foedsler", "lpr_udtilsgh"
 )
 .IMPLEMENTED_PARENTS <- c("lpr_adm", "lpr_a_kontakt", "t_psyk_adm")
 .IMPLEMENTED_EXPAND <- c(
   "lpr_diag", "lpr_sksopr", "lpr_sksube",
   "lpr_a_diagnose", "lpr_a_procregistrering",
-  "t_psyk_diag"
+  "t_psyk_diag",
+  # lpr_adm's other real child tables (operations, outpatient visits,
+  # waiting-period tracking, accident codes) -- same expand-from-parent
+  # shape as lpr_diag/lpr_sksopr/lpr_sksube, just without a code_system on
+  # most of their own columns.
+  "lpr_afl", "lpr_bes", "lpr_opr", "lpr_pas", "lpr_ulyk", "lpr_vente",
+  # t_psyk_adm's equivalent child tables.
+  "t_psyk_afl", "t_psyk_opr", "t_psyk_pas", "t_psyk_pers",
+  "t_psyk_sksopr", "t_psyk_sksube", "t_psyk_ulyk", "t_psyk_vente"
 )
 .IMPLEMENTED_HOUSEHOLD_YEAR <- c("faik")
 
@@ -353,9 +365,23 @@ lpr_parent_id <- function(register_id) {
     lpr_diag = "lpr_adm",
     lpr_sksopr = "lpr_adm",
     lpr_sksube = "lpr_adm",
+    lpr_afl = "lpr_adm",
+    lpr_bes = "lpr_adm",
+    lpr_opr = "lpr_adm",
+    lpr_pas = "lpr_adm",
+    lpr_ulyk = "lpr_adm",
+    lpr_vente = "lpr_adm",
     lpr_a_diagnose = "lpr_a_kontakt",
     lpr_a_procregistrering = "lpr_a_kontakt",
     t_psyk_diag = "t_psyk_adm",
+    t_psyk_afl = "t_psyk_adm",
+    t_psyk_opr = "t_psyk_adm",
+    t_psyk_pas = "t_psyk_adm",
+    t_psyk_pers = "t_psyk_adm",
+    t_psyk_sksopr = "t_psyk_adm",
+    t_psyk_sksube = "t_psyk_adm",
+    t_psyk_ulyk = "t_psyk_adm",
+    t_psyk_vente = "t_psyk_adm",
     NULL
   )
 }

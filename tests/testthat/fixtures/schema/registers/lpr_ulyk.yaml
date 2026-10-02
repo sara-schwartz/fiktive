@@ -1,0 +1,24 @@
+# TEST DOUBLE only
+id: lpr_ulyk
+name: "LPR2 accident codes (test double)"
+family: lpr2_somatic
+one_row_per: expand_from_parent
+coverage: {from: 2000, to: 2019}
+join_keys: [recnum]
+columns:
+  - id: recnum
+    name: recnum
+    type: character
+    role: join_key
+  - id: c_art
+    name: c_art
+    type: character
+    role: code
+  - id: c_tilulyk
+    name: c_tilulyk
+    type: character
+    role: code
+  - id: c_ulyk
+    name: c_ulyk
+    type: character
+    role: code

@@ -1,9 +1,9 @@
 # TEST DOUBLE only
-id: lpr_afl
-name: "LPR2 planned operations (test double)"
-family: lpr2_somatic
+id: t_psyk_afl
+name: "LPR psykiatri planned operations (test double)"
+family: lpr2_psychiatric
 one_row_per: expand_from_parent
-coverage: {from: 1999, to: 2019}
+coverage: {from: 1996, to: 2019}
 join_keys: [recnum]
 columns:
   - id: recnum

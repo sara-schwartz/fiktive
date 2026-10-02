@@ -1,0 +1,36 @@
+# TEST DOUBLE only
+id: t_psyk_pers
+name: "LPR psykiatri staff/visit info (test double)"
+family: lpr2_psychiatric
+one_row_per: expand_from_parent
+coverage: {from: 1995, to: 2019}
+join_keys: [recnum]
+columns:
+  - id: recnum
+    name: recnum
+    type: character
+    role: join_key
+  - id: c_perskat1
+    name: c_perskat1
+    type: character
+    role: code
+  - id: c_perskat2
+    name: c_perskat2
+    type: character
+    role: code
+  - id: c_perskat3
+    name: c_perskat3
+    type: character
+    role: code
+  - id: c_psykyd
+    name: c_psykyd
+    type: character
+    role: code
+  - id: c_ydsted
+    name: c_ydsted
+    type: character
+    role: code
+  - id: d_ambdto
+    name: d_ambdto
+    type: date
+    role: date
