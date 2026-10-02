@@ -13,26 +13,29 @@
 #' schema YAML yourself. It describes the schema, not a specific generated
 #' table — it works the same whether or not you've generated anything yet.
 #'
-#' @param schema Schema from [load_registers_schema()].
 #' @param register One or more schema register ids, e.g. `"bef"` or
 #'   `c("bef", "lmdb")`.
+#' @param schema Schema from [load_registers_schema()].
 #'
 #' @return A tibble, one row per column: `name`, `label_da`, `label_en`
 #'   (`NA` if the schema doesn't document one), `type`, `code_system` (`NA`
 #'   if the column isn't coded), `values` (a single `"code: label"`
 #'   string per coded value it has a label for, `NA` for uncoded columns or
-#'   ones with no lookup labels), and `dataset` (which real underlying SAS
+#'   ones with no lookup labels), `dataset` (which real underlying SAS
 #'   dataset a column came from, for `dch`/`dchng` only -- `NA` for a DST
-#'   register, which was never split across multiple real files this way).
+#'   register, which was never split across multiple real files this way),
+#'   and `value_source` (for `dch`/`dchng` only, `NA` for a DST register:
+#'   the citation for one of the 11 columns [dch_range_source()] recognizes
+#'   as a cited anchor, else `"clinical"` -- see that function).
 #'   A `register` column is added when `register` has more than one id.
 #' @export
-codebook <- function(schema, register) {
-  if (is.null(schema) || is.null(schema$registers)) {
-    stop("`schema` from load_registers_schema() is required.", call. = FALSE)
-  }
+codebook <- function(register, schema) {
   register <- tolower(as.character(register))
   if (!length(register) || anyNA(register) || any(!nzchar(register))) {
     stop("`register` must be one or more non-empty schema register ids.", call. = FALSE)
+  }
+  if (is.null(schema) || is.null(schema$registers)) {
+    stop("`schema` from load_registers_schema() is required.", call. = FALSE)
   }
   rows <- lapply(register, function(rid) {
     spec <- schema$registers[[rid]]
@@ -57,13 +60,14 @@ codebook_one_register <- function(spec, schema, rid) {
     return(tibble::tibble(
       register = character(), name = character(), label_da = character(),
       label_en = character(), type = character(), code_system = character(),
-      values = character(), dataset = character()
+      values = character(), dataset = character(), value_source = character()
     ))
   }
   chr1 <- function(x) {
     x <- x[[1]]
     if (is.null(x)) NA_character_ else as.character(x)
   }
+  is_dch <- rid %in% dch_register_ids()
   tibble::tibble(
     register = rid,
     name = vapply(cols, function(c) chr1(c$name %||% c$id %||% NA_character_), character(1)),
@@ -72,7 +76,12 @@ codebook_one_register <- function(spec, schema, rid) {
     type = vapply(cols, function(c) chr1(c$type %||% NA_character_), character(1)),
     code_system = vapply(cols, function(c) chr1(c$code_system %||% NA_character_), character(1)),
     values = vapply(cols, function(c) code_system_value_labels(c$code_system, schema), character(1)),
-    dataset = vapply(cols, function(c) chr1(c$dataset %||% NA_character_), character(1))
+    dataset = vapply(cols, function(c) chr1(c$dataset %||% NA_character_), character(1)),
+    value_source = if (is_dch) {
+      vapply(cols, function(c) dch_range_source(rid, c$id %||% c$name), character(1))
+    } else {
+      NA_character_
+    }
   )
 }
 

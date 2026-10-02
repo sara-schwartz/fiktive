@@ -4,16 +4,16 @@
 \alias{label_columns}
 \title{Attach human-readable labels to a generated table's columns}
 \usage{
-label_columns(data, schema, register, lang = c("en", "da"))
+label_columns(data, register, schema, lang = c("en", "da"))
 }
 \arguments{
 \item{data}{A table from \code{\link[=generate_register]{generate_register()}}, \code{\link[=generate_registers]{generate_registers()}},
 or \code{\link[=generate_custom_register]{generate_custom_register()}}.}
 
-\item{schema}{Schema from \code{\link[=load_registers_schema]{load_registers_schema()}}.}
-
 \item{register}{The schema register id \code{data} came from, e.g. \code{"bef"}
 or \code{"dch"}.}
+
+\item{schema}{Schema from \code{\link[=load_registers_schema]{load_registers_schema()}}.}
 
 \item{lang}{\code{"en"} (default) or \code{"da"} -- which label to prefer. Falls
 back to the other language for a column that only has one.}

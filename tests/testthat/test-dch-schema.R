@@ -72,10 +72,13 @@ test_that("generate_register() generates dch exactly like a DST register", {
 test_that("generate_registers() handles a dch id mixed with a DST id in one call", {
   schema <- fixture_schema()
   pop <- tiny_pop(schema, n = 30L, seed = 4)
+  # dch's own coverage is its real 1993-12/1997-05 recruitment window (see
+  # R/generate.R's generate_person_snapshot()) -- a window outside that
+  # now correctly returns zero dch rows, so use one that overlaps it.
   out <- generate_registers(
     c("dch", "bef"),
     population = pop, schema = schema,
-    from = as.Date("2008-01-01"), to = as.Date("2009-12-31"), seed = 4
+    from = as.Date("1993-12-01"), to = as.Date("1997-05-31"), seed = 4
   )
   expect_setequal(names(out), c("dch", "bef"))
   expect_true(nrow(out$bef) > 0L)
@@ -85,7 +88,7 @@ test_that("generate_registers() handles a dch id mixed with a DST id in one call
 
 test_that("codebook() works on dch with no extra code, including the dataset field", {
   schema <- fixture_schema()
-  cb <- codebook(schema, "dch")
+  cb <- codebook("dch", schema)
   expect_true(all(c("name", "label_da", "label_en", "type", "dataset") %in% names(cb)))
   row <- cb[cb$name == "mdato", ]
   expect_equal(row$label_en, "Date of participation")
@@ -94,7 +97,7 @@ test_that("codebook() works on dch with no extra code, including the dataset fie
   # pnr is fiktive's own added join key, not from a real dataset.
   expect_true(is.na(cb$dataset[cb$name == "pnr"]))
   # A DST register was never split across multiple real SAS datasets this way.
-  cb_bef <- codebook(schema, "bef")
+  cb_bef <- codebook("bef", schema)
   expect_true(all(is.na(cb_bef$dataset)))
 })
 

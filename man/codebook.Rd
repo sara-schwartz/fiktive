@@ -4,22 +4,25 @@
 \alias{codebook}
 \title{Column and value labels for a schema register}
 \usage{
-codebook(schema, register)
+codebook(register, schema)
 }
 \arguments{
-\item{schema}{Schema from \code{\link[=load_registers_schema]{load_registers_schema()}}.}
-
 \item{register}{One or more schema register ids, e.g. \code{"bef"} or
 \code{c("bef", "lmdb")}.}
+
+\item{schema}{Schema from \code{\link[=load_registers_schema]{load_registers_schema()}}.}
 }
 \value{
 A tibble, one row per column: \code{name}, \code{label_da}, \code{label_en}
 (\code{NA} if the schema doesn't document one), \code{type}, \code{code_system} (\code{NA}
 if the column isn't coded), \code{values} (a single \code{"code: label"}
 string per coded value it has a label for, \code{NA} for uncoded columns or
-ones with no lookup labels), and \code{dataset} (which real underlying SAS
+ones with no lookup labels), \code{dataset} (which real underlying SAS
 dataset a column came from, for \code{dch}/\code{dchng} only -- \code{NA} for a DST
-register, which was never split across multiple real files this way).
+register, which was never split across multiple real files this way),
+and \code{value_source} (for \code{dch}/\code{dchng} only, \code{NA} for a DST register:
+the citation for one of the 11 columns \code{\link[=dch_range_source]{dch_range_source()}} recognizes
+as a cited anchor, else \code{"clinical"} -- see that function).
 A \code{register} column is added when \code{register} has more than one id.
 }
 \description{

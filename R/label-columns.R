@@ -26,18 +26,18 @@
 #'
 #' @param data A table from [generate_register()], [generate_registers()],
 #'   or [generate_custom_register()].
-#' @param schema Schema from [load_registers_schema()].
 #' @param register The schema register id `data` came from, e.g. `"bef"`
 #'   or `"dch"`.
+#' @param schema Schema from [load_registers_schema()].
 #' @param lang `"en"` (default) or `"da"` -- which label to prefer. Falls
 #'   back to the other language for a column that only has one.
 #'
 #' @return `data`, unchanged apart from a `"label"` attribute set on each
 #'   column the schema documents a label for.
 #' @export
-label_columns <- function(data, schema, register, lang = c("en", "da")) {
+label_columns <- function(data, register, schema, lang = c("en", "da")) {
   lang <- match.arg(lang)
-  cb <- codebook(schema, register)
+  cb <- codebook(register, schema)
   primary <- if (identical(lang, "en")) cb$label_en else cb$label_da
   fallback <- if (identical(lang, "en")) cb$label_da else cb$label_en
   label <- ifelse(!is.na(primary), primary, fallback)
