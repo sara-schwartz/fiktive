@@ -23,3 +23,7 @@ columns:
     name: flag_valideret
     type: character
     role: code
+  - id: borger_alder_doedsstatus
+    name: borger_alder_doedsstatus
+    type: numeric
+    role: value

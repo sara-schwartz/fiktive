@@ -1,6 +1,9 @@
 id: dch
 name: Diet, Cancer and Health (DCH)
 one_row_per: person
+coverage:
+  from: '1993-12'
+  to: '1997-05'
 join_keys:
 - pnr
 columns:

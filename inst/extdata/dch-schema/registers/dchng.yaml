@@ -1,6 +1,9 @@
 id: dchng
 name: Diet, Cancer and Health - Next Generations (DCH-NG)
 one_row_per: person
+coverage:
+  from: '2015-03'
+  to: '2019-12'
 join_keys:
 - pnr
 columns:

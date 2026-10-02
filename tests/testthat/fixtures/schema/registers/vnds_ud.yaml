@@ -21,7 +21,7 @@ columns:
     code_system: kom
   - id: koen
     name: koen
-    type: character
+    type: integer
     role: code
     code_system: koen
   - id: civst

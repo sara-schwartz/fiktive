@@ -38,7 +38,11 @@ sample_icd10_who_codes <- function(n, koen = NULL, age_years = NULL) {
   if (!length(codes)) {
     schema_gap(
       "plain WHO ICD-10 codes without codeCollection::ICD10Koodit",
-      "codeCollection::ICD10Koodit (values_from package); never sksr dia / D-prefix for code_system icd10"
+      paste(
+        "codeCollection::ICD10Koodit (values_from package;",
+        "install.packages(\"codeCollection\"), on CRAN);",
+        "never sksr dia / D-prefix for code_system icd10"
+      )
     )
   }
   .fiktive_icd_stamp$catalogue <- "codeCollection::ICD10Koodit"

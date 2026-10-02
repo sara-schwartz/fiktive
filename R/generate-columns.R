@@ -276,9 +276,27 @@ derived_column <- function(id, rows, schema = NULL) {
     # fsdato_c are dropped from the bundled DCH schema entirely for
     # exactly that reason, see R/schema.R).
     sex = as.integer(rows$koen),
+    # dch's own vaegt (weight, kg): real weight = bmi * height(m)^2. `bmi`
+    # is one of Lacoppidan et al. 2015's cited anchors (see
+    # R/generate-dch-values.R's header) and comes earlier in dch's own
+    # column order than vaegt/stahqjde, so by the time this loop reaches
+    # vaegt, bmi and stahqjde (weight/height) are already drawn -- derive
+    # vaegt from them instead of drawing it independently, so it can't
+    # silently disagree with this person's own bmi and height. Deriving in
+    # this direction (not bmi from vaegt/stahqjde) keeps bmi's own cited,
+    # realistic distribution intact -- vaegt and stahqjde are both
+    # uncited/plausible-tier, so combining two of those independently
+    # would otherwise let clinically-absurd bmi values slip through
+    # (a random low height paired with a random high weight).
+    vaegt = round(rows$bmi * (rows$stahqjde / 100)^2, 1),
     foed_dag = rows$foed_dag,
     referencetid = rows$referencetid,
     year = as.integer(lubridate::year(when)),
+    # dodsaasg/ftnaevn's own name for the same partition-year concept as
+    # `year` above (dodsaasg's reader_note explains it's a real DST
+    # variable, not the parquet-conversion column) -- must derive from the
+    # same date, not the generic integer fallback (which produced 0-10).
+    aar = as.integer(lubridate::year(when)),
     alder = age_years(rows$foed_dag, rows$referencetid),
     alder_ult_ink = age_years(rows$foed_dag, rows$referencetid),
     alder_haend = age_years(rows$foed_dag, when),
@@ -312,6 +330,18 @@ derived_column <- function(id, rows, schema = NULL) {
     doedsdato = when,
     eksd = when,
     haend_dato = when,
+    # dch/dchng's own baseline-visit/questionnaire dates: each person's
+    # `referencetid` (see generate_person_snapshot()) already IS their own
+    # recruitment-window date -- these must reuse it rather than draw
+    # independently from the generic 1990-2017ish date fallback, which
+    # ignores the register's real recruitment window entirely.
+    mdato = when,
+    inv_date = when,
+    til_date = when,
+    sc_date = when,
+    ffq_date = when,
+    lsq_date = when,
+    menstr_dato = when,
     d_inddto = when,
     # sssy: date of treatment/contact (its own column name, not shared with sysi).
     behandlingsdato = when,

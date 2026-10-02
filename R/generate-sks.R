@@ -189,13 +189,20 @@ typed_noise <- function(type, n, role = NULL, name = NULL, code_system = NULL, c
   if (identical(as.character(code_system), "atc") || identical(name, "atc")) {
     schema_gap(
       "ATC codes without a WHO-form catalogue",
-      "codeCollection::ATCKoodit or FIKTIVE_WHOCC_ATC; never sprintf; never decoder::atc"
+      paste(
+        "codeCollection::ATCKoodit (install.packages(\"codeCollection\"), on",
+        "CRAN) or FIKTIVE_WHOCC_ATC; never sprintf; never decoder::atc"
+      )
     )
   }
   if (identical(name, "analysiscode")) {
     schema_gap(
       "analysiscode (lab_dm_forsker / labka) without LabTerm / published NPU catalogue",
-      "FIKTIVE_LABTERM or IFCC C-NPU CSV; never sprintf NPU/DNK noise"
+      paste(
+        "option fiktive.labterm_fetch_ifcc = TRUE for the free, no-registration",
+        "public IFCC C-NPU list, or FIKTIVE_LABTERM pointing at a LabTerm/IFCC",
+        "CSV you already have; never sprintf NPU/DNK noise"
+      )
     )
   }
   if (name %in% c("value", "unit", "referenceinterval_lowerlimit", "referenceinterval_upperlimit")) {

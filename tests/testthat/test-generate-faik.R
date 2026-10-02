@@ -102,15 +102,23 @@ test_that("faik CS-wired cols sample published lookups (not typed noise)", {
   expect_type(faik$famsociogrup_13, "double")
 })
 
-test_that("faik cols without code_system stay typed noise from schema types", {
+test_that("faik's real-classification columns with no code_system are NA with a warning, not guessed noise", {
   schema <- fixture_schema()
   pop <- tiny_pop(schema, n = 10L, seed = 43)
-  faik <- generate_register("faik", pop, schema, faik_from, faik_to, seed = 43)
+  faik <- suppressWarnings(generate_register("faik", pop, schema, faik_from, faik_to, seed = 43))
+  # famboligtype/famsociogrup/version are real DST classifications with no
+  # code_system wired up in the schema (see
+  # .UNPUBLISHED_CLASSIFICATION_COLUMNS, R/generate-draw.R) -- NA rather
+  # than a guessed cardinality/range, same treatment as borger_koen.
   for (nm in c("famboligtype", "famsociogrup", "version")) {
     expect_true(nm %in% names(faik), info = nm)
     expect_type(faik[[nm]], "double")
-    expect_false(all(is.na(faik[[nm]])), info = nm)
+    expect_true(all(is.na(faik[[nm]])), info = nm)
   }
+  expect_warning(
+    generate_register("faik", pop, schema, faik_from, faik_to, seed = 43),
+    "famboligtype"
+  )
   expect_type(faik$famhoejstudda, "character")
   expect_false(all(is.na(faik$famhoejstudda)))
   expect_type(faik$famaekvivadisp_13, "double")
@@ -132,4 +140,18 @@ test_that("faik respects register coverage ~1987-2024", {
   )
   expect_true(nrow(late) > 0L)
   expect_true(all(late$year >= 2020L & late$year <= 2024L))
+})
+
+test_that("a household_year register not in .IMPLEMENTED_HOUSEHOLD_YEAR errors instead of silently generating", {
+  # household_year dispatch used to skip the whitelist check every other
+  # grain gets -- any register declaring this grain generated
+  # unconditionally. Guard against that regressing.
+  schema <- fixture_schema()
+  schema$registers[["fake_household_register"]] <- schema$registers[["faik"]]
+  schema$registers[["fake_household_register"]]$id <- "fake_household_register"
+  pop <- tiny_pop(schema, n = 8L, seed = 44)
+  expect_error(
+    generate_register("fake_household_register", pop, schema, faik_from, faik_to, seed = 44),
+    "not implemented yet"
+  )
 })

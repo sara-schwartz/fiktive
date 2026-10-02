@@ -31,6 +31,10 @@ columns:
     name: apk
     type: numeric
     role: value
+  - id: etid
+    name: etid
+    type: numeric
+    role: date
   - id: aldr
     name: aldr
     type: integer

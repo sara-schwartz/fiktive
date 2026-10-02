@@ -83,6 +83,13 @@ test_that("values_from.kind=csv without lookup SCHEMA GAPs (no invent)", {
   expect_identical(as.character(schema$code_systems$disco08$values_from$kind), "csv")
   schema$code_systems$disco08$lookup <- NULL
   pop <- tiny_pop(schema, n = 10L, seed = 1)
+  # load_csv_code_system()'s opt-in runtime fetch (R/catalogue-dst-csv.R)
+  # falls back to a previously-cached download from ANY prior run/user on
+  # this machine -- force it off so this test stays a true "nothing
+  # configured" SCHEMA GAP regardless of local cache state, same pattern
+  # as the ATC catalogue tests' fiktive.whocc_atc_disable.
+  old <- options(fiktive.disco08_disable = TRUE, fiktive.nace_db07_disable = TRUE)
+  on.exit(options(old), add = TRUE)
   err <- tryCatch(
     generate_register("akm", pop, schema, as.Date("2010-01-01"), as.Date("2011-12-31"), seed = 1),
     error = function(e) e
@@ -90,4 +97,24 @@ test_that("values_from.kind=csv without lookup SCHEMA GAPs (no invent)", {
   expect_s3_class(err, "error")
   expect_match(err$message, "^SCHEMA GAP:")
   expect_match(err$message, "csv|disco08|loadable", ignore.case = TRUE)
+})
+
+test_that("disco08's opt-in fetch downloads and caches the published DST catalogue", {
+  schema <- fixture_schema()
+  cache_dir <- withr::local_tempdir()
+  vf <- schema$code_systems$disco08$values_from
+  lookup <- tryCatch(
+    load_csv_code_system("disco08", vf, cache_dir = cache_dir, fetch = TRUE),
+    error = function(e) NULL
+  )
+  skip_if(is.null(lookup), "network unavailable or DST endpoint unreachable")
+  expect_true(length(lookup) > 0L)
+  expect_true(all(nzchar(names(lookup))))
+  expect_true(file.exists(file.path(cache_dir, "catalogue.csv")))
+
+  pop <- tiny_pop(schema, n = 10L, seed = 2)
+  schema$code_systems$disco08$lookup <- lookup
+  akm <- generate_register("akm", pop, schema, as.Date("2015-01-01"), as.Date("2016-12-31"), seed = 2)
+  skip_if(!nrow(akm), "no rows generated at this seed")
+  expect_true(all(akm$disco08_alle_indk_13 %in% names(lookup) | is.na(akm$disco08_alle_indk_13)))
 })

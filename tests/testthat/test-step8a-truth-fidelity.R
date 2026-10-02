@@ -126,7 +126,11 @@ test_that("na_rate / outlier_rate overrides win and are stamped", {
   expect_equal(st$outlier_rate, 0.05)
   expect_false(anyNA(bef$pnr))
   expect_false(anyNA(bef$alder))
-  expect_true(sum(is.na(bef$antboernf)) > 0L || sum(is.na(bef$opr_land)) > 0L)
+  # opr_land is unconditionally NA regardless of na_rate now (a real DST
+  # classification with no code_system wired up, see
+  # .UNPUBLISHED_CLASSIFICATION_COLUMNS in R/generate-draw.R) -- no longer
+  # a useful fallback check for na_rate injection specifically.
+  expect_true(sum(is.na(bef$antboernf)) > 0L)
 })
 
 test_that("fidelity eligibility helpers protect keys derived presence", {

@@ -71,16 +71,19 @@ labterm_missing <- function(required) {
   schema_gap(
     paste(
       "LabTerm / NPU catalogue for analysiscode (lab_dm_forsker / labka).",
-      "SDS LabTerm publication files require registration",
+      "No catalogue configured, and fiktive never downloads one on its own.",
+      "Fastest fix -- a public, no-registration C-NPU code list from IFCC",
+      paste0("(", .IFCC_NPU_CSV_URL, ") -- fiktive can fetch and cache it for you."),
+      "The complete Danish LabTerm catalogue instead requires SDS registration",
       "(https://www.labterm.dk/; labterm@sundhedsdata.dk).",
-      "A public IFCC C-NPU CSV is also accepted",
-      paste0("(", .IFCC_NPU_CSV_URL, ")."),
       "Do not invent NPU/DNK lists."
     ),
     paste(
-      "FIKTIVE_LABTERM (or option fiktive.labterm) pointing at a LabTerm/IFCC",
-      "CSV, FIKTIVE_LABTERM_URL, or option fiktive.labterm_fetch_ifcc = TRUE",
-      "for the published IFCC dump. Never sprintf NPU noise."
+      "option fiktive.labterm_fetch_ifcc = TRUE to download and cache the",
+      "public IFCC dump (no registration); or FIKTIVE_LABTERM (or option",
+      "fiktive.labterm) pointing at a LabTerm/IFCC CSV you already have;",
+      "or FIKTIVE_LABTERM_URL for a different published dump.",
+      "Never sprintf NPU noise."
     )
   )
 }

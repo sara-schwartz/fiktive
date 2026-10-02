@@ -1,5 +1,55 @@
 # Column draw / code-system resolve (loaded with generate-columns.R).
 
+# bef/faik columns confirmed (2026-09 documentation pass: DST's TIMES
+# variable pages, dst.dk classification nomenclature, and web search --
+# not the full multi-source registers-guide checked for borger_koen) to be
+# real multi-category DST classifications, but not wired up as a
+# code_system in the schema fiktive consumes. A wrong cardinality/range
+# guess for one of these is more misleading than honest noise (unlike a
+# binary flag) -- see R/generate-draw.R's use of this list.
+.UNPUBLISHED_CLASSIFICATION_COLUMNS <- list(
+  opr_land = paste(
+    "opr_land (country of origin) has no code_system wired up in the schema.",
+    "DST does publish a real classification for this concept -- 'Lande i",
+    "Personstatistik' (v1:2021), a CPR-based country/citizenship code list",
+    "with a public downloadable CSV -- but it hasn't been confirmed to be",
+    "the exact classification this column follows, or wired up here.",
+    "Filled with NA rather than guessed."
+  ),
+  statsb = paste(
+    "statsb (citizenship) has no code_system wired up in the schema. Same",
+    "likely source as opr_land -- DST's 'Lande i Personstatistik' CPR-based",
+    "country/citizenship classification -- not confirmed or wired up.",
+    "Filled with NA rather than guessed."
+  ),
+  foedreg_kode = paste(
+    "foedreg_kode (birth registration place) has no code_system wired up.",
+    "DST's own TIMES documentation describes real code ranges (Danish parish",
+    "codes 7001-9348, Greenland 9501-9599, plus country codes for people",
+    "born abroad) but not a single downloadable list fiktive can sample",
+    "from without guessing which parish/country. Filled with NA rather",
+    "than guessed."
+  ),
+  famboligtype = paste(
+    "famboligtype (dwelling type) has no code_system wired up in the",
+    "schema, and no specific DST code list for this exact variable (as",
+    "opposed to the related famboligform, a simpler owner/tenant flag) was",
+    "identified. Filled with NA rather than guessed."
+  ),
+  famsociogrup = paste(
+    "famsociogrup (socioeconomic group) has no code_system wired up. DST",
+    "does publish a real classification family for this concept (SOCIO /",
+    "SOCIO02 / SOCIO13, its own dedicated publication), but the exact code",
+    "list wasn't downloaded/verified here. Filled with NA rather than",
+    "guessed."
+  ),
+  version = paste(
+    "version (module data version) has no code_system wired up, and no",
+    "documented value list for this administrative versioning field was",
+    "identified. Filled with NA rather than guessed."
+  )
+)
+
 draw_independent_column <- function(col, n, schema, register_id = NULL, when = NULL,
                                      koen = NULL, age_years = NULL,
                                      lprindberetningssystem = NULL,
@@ -39,6 +89,21 @@ draw_independent_column <- function(col, n, schema, register_id = NULL, when = N
       "BEF koen (a different field, not verified equivalent).",
       call. = FALSE
     )
+    return(na_of_type(type, n))
+  }
+  # Real DST multi-category classifications with no code_system wired up in
+  # the schema -- unlike borger_koen above (confirmed nowhere published), a
+  # real classification is known/likely to exist for each of these; it just
+  # isn't wired up as this column's code_system yet, so fiktive can't
+  # sample from it without guessing cardinality/values it has no source
+  # for. NA + a specific warning (naming what's actually known about each,
+  # from a documentation pass, not a downloaded/verified code list the way
+  # koen/kom/disco08 are) is more honest than either a silent generic-noise
+  # fallback (looks like real data, isn't) or asserting a classification
+  # fiktive hasn't actually verified applies to this exact column.
+  unpublished_msg <- .UNPUBLISHED_CLASSIFICATION_COLUMNS[[name]]
+  if (is.null(col$code_system) && !is.null(unpublished_msg)) {
+    warning(unpublished_msg, call. = FALSE)
     return(na_of_type(type, n))
   }
   if (is.null(col$code_system) && is.null(col$previous_code_system)) {
@@ -266,6 +331,22 @@ draw_from_code_system <- function(cs_id, col, n, schema, register_id, type, role
       "a matching file in code-systems/"
     )
   }
+  # values_from.kind = "csv" (disco08, nace_db07, ...): the schema ships no
+  # `lookup`, but does record a real, publicly downloadable DST file as the
+  # source of truth. Never fetched on its own -- see load_csv_code_system()
+  # -- so this is a no-op unless the user opted in (option/env), in which
+  # case it fills `cs$lookup` before honour_values_from_or_gap()'s own
+  # check below, so a configured catalogue no longer SCHEMA GAPs.
+  if (identical(as.character(cs$values_from$kind %||% ""), "csv") &&
+        !length(lookup_keys(cs))) {
+    fetched <- tryCatch(
+      load_csv_code_system(cs_id, cs$values_from),
+      error = function(e) NULL
+    )
+    if (!is.null(fetched)) {
+      cs$lookup <- fetched
+    }
+  }
   honour_values_from_or_gap(cs, cs_id, name)
 
   # kind:none must not use invented fixture lookups as SoT (hfaudd soft-warn).
@@ -433,11 +514,25 @@ honour_values_from_or_gap <- function(cs, cs_id, name) {
       }
       schema_gap(
         sprintf(
-          "code system '%s' for column '%s' has values_from.kind=csv with no loadable codes",
+          paste(
+            "code system '%s' for column '%s' has values_from.kind=csv with no",
+            "loadable codes. The schema records a real, public DST file",
+            "(%s) as the source -- no registration needed, but fiktive never",
+            "downloads it on its own."
+          ),
           cs_id,
-          name
+          name,
+          as.character(vf$url %||% "(no url in schema)")
         ),
-        "a fixture/runtime CSV lookup (values_from.url); do not invent occupation/industry lists"
+        sprintf(
+          paste(
+            "option fiktive.fetch_%s = TRUE (or env FIKTIVE_FETCH_%s = \"true\")",
+            "to download and cache the published file; or option fiktive.%s /",
+            "env FIKTIVE_%s pointing at an already-downloaded copy.",
+            "See load_csv_code_system(). Do not invent occupation/industry lists."
+          ),
+          cs_id, toupper(cs_id), cs_id, toupper(cs_id)
+        )
       )
     }
   }

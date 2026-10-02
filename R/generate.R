@@ -22,6 +22,7 @@
   "lpr_a_diagnose", "lpr_a_procregistrering",
   "t_psyk_diag"
 )
+.IMPLEMENTED_HOUSEHOLD_YEAR <- c("faik")
 
 dispatch_generate_register <- function(register, spec, population, schema, from, to, seed) {
   grain <- as.character(spec$one_row_per %||% "")
@@ -38,6 +39,19 @@ dispatch_generate_register <- function(register, spec, population, schema, from,
     )
   }
   if (identical(grain, "household_year")) {
+    # Unlike the other four grains below, this branch used to dispatch
+    # unconditionally -- no whitelist check at all. Harmless while `faik`
+    # is the only household_year register in the schema, but it meant any
+    # future one registers-guide adds would start silently generating,
+    # un-reviewed, the moment fiktive picked up the new schema (see
+    # .IMPLEMENTED_SNAPSHOT/.IMPLEMENTED_EVENTS/etc. below, which all
+    # gate their grains this way already).
+    if (!register %in% .IMPLEMENTED_HOUSEHOLD_YEAR) {
+      stop(
+        sprintf("Register '%s' is in the schema but is not implemented yet.", register),
+        call. = FALSE
+      )
+    }
     return(generate_household_year(population, schema, spec, from, to, seed))
   }
 
@@ -140,6 +154,23 @@ generate_person_snapshot <- function(population, schema, spec, from, to, seed) {
   to <- as_date1(to)
   if (is.na(from) || is.na(to) || to < from) {
     stop("`from` must be a Date on or before `to`.", call. = FALSE)
+  }
+  # DCH/DCH-NG's own coverage is their real one-time recruitment window
+  # (1993-12 to 1997-05 / 2015-03 to 2019-12), not a repeatable annual
+  # register -- clip the requested window down to it the same way
+  # generate_events() clips by spec$coverage, so referencetid (and any
+  # column that derives from it, e.g. mdato/ffq_date) can't land outside
+  # when the cohort was actually recruited.
+  if (!is.null(spec$coverage)) {
+    if (!is.null(spec$coverage$from)) {
+      from <- max(from, ym_start(spec$coverage$from))
+    }
+    if (!is.null(spec$coverage$to)) {
+      to <- min(to, ym_end(spec$coverage$to))
+    }
+    if (to < from) {
+      return(empty_from_spec(spec))
+    }
   }
   with_rng_seed(seed, {
     rows <- pop[pop$foed_dag <= to, , drop = FALSE]

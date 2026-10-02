@@ -54,6 +54,15 @@
   bruhon  = list(min = 50, max = 2000, integer = TRUE),   # DKK, primary-care fee
   kontakt = list(min = 1, max = 10, integer = TRUE),
 
+  # lmdb: dispensing time-of-day, DST format "Numerisk, Laengde 4" (HHMM,
+  # e.g. 1430 = 14:30) -- was landing in the generic 0.5-20 float fallback.
+  etid = list(min = 0, max = 2359, integer = TRUE),
+
+  # dodsaarsager: age at death in years -- was landing in the generic
+  # 0.5-20 float fallback (a fraction of a year) instead of a real human
+  # age range.
+  borger_alder_doedsstatus = list(min = 0, max = 105, integer = TRUE),
+
   # lpr_adm/t_psyk_adm (and lpr_afl/t_psyk_afl/*_sksopr/*_sksube, which
   # share the v_ominut/v_otime timing columns for the same concept)
   v_sengdage = list(min = 0, max = 60, integer = TRUE),   # bed-days

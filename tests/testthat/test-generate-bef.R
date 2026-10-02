@@ -140,9 +140,21 @@ test_that("kom is NA before the 2007 municipal reform, present from 2007 on, wit
 test_that("kom raises no warning when the whole window is post-reform", {
   schema <- fixture_schema()
   pop <- tiny_pop(schema, n = 10L, seed = 9)
-  expect_no_warning(
-    generate_register("bef", pop, schema, from, to, seed = 9)
+  # bef also warns for opr_land/statsb/foedreg_kode/version (real DST
+  # classifications with no code_system wired up, see
+  # .UNPUBLISHED_CLASSIFICATION_COLUMNS in R/generate-draw.R) -- unrelated
+  # to this test's actual point (kom must not ALSO warn once every row is
+  # safely post-2007-reform), so only that specific warning is asserted
+  # absent, not "no warnings at all".
+  warnings_seen <- character()
+  withCallingHandlers(
+    generate_register("bef", pop, schema, from, to, seed = 9),
+    warning = function(w) {
+      warnings_seen <<- c(warnings_seen, conditionMessage(w))
+      invokeRestart("muffleWarning")
+    }
   )
+  expect_false(any(grepl("municipal reform", warnings_seen)))
 })
 
 test_that("kom is drawn by real municipality population under weighted_municipality", {

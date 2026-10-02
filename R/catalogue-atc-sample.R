@@ -44,7 +44,10 @@ sample_atc_codes <- function(n) {
   if (!length(codes)) {
     schema_gap(
       "ATC codes without a WHO-form catalogue",
-      "codeCollection::ATCKoodit or FIKTIVE_WHOCC_ATC; never sprintf; never decoder::atc"
+      paste(
+        "codeCollection::ATCKoodit (install.packages(\"codeCollection\"), on",
+        "CRAN) or FIKTIVE_WHOCC_ATC; never sprintf; never decoder::atc"
+      )
     )
   }
   sample(codes, n, replace = TRUE)

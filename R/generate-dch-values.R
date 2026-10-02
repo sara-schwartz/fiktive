@@ -54,10 +54,82 @@
 # name-keyed lookup is safe: no id repeats across the ~8 (dch) or ~19
 # (dchng) real underlying datasets each is merged from.
 
+# Structured version of the "two provenance tiers" comment above, so
+# "which DCH/DCH-NG ranges are actually cited" is queryable
+# (dch_range_source()) instead of only readable in a comment block --
+# same distinction R/catalogue-labterm-analytes.R makes per-entry via its
+# own `source` field. A deliberately small, explicit list rather than a
+# `source` field retrofitted onto every entry in .DCH_NUMERIC_OVERRIDES/
+# the nutrient tables (R/generate-dch-nutrients.R): those hold ~150
+# entries across several lists, built and tested this session on the
+# working assumption that a bare c(min, max) vector is what every reader
+# gets back; restructuring all of them into `source`-tagged lists to tag
+# the 11 that are actually cited would be a much bigger, riskier change
+# for the same information this lookup already gives you.
+#
+# Verified against the schema directly (id, register, label), not just
+# matched by name -- e.g. dch's cited "energy intake" is `energi`/`energx`
+# (not dchng's own, differently-scoped `energitot`), and dch-ng's cited
+# BMI/systolic/diastolic are `scbia01`/`schrm01`/`schrm02` (SECA/study-
+# centre measurements), not a plain `bmi`/`blodtsys`/`blodtdia` column --
+# dch-ng has no column by those names at all. Keyed per-register, not one
+# flat name-keyed list: `cho` means "available carbohydrate (g/d)" on dch
+# (nutri6ny dataset) but "total cholesterol (mmol/L)" on dchng (a real
+# collision caught by checking the schema directly instead of assuming a
+# name means the same thing on both cohorts).
+.DCH_CITED_COLUMNS <- list(
+  # --- dch: Lacoppidan et al. 2015, Nutrients, Table 1 ---
+  dch = list(
+    age      = "Lacoppidan et al. 2015 (Nutrients, Table 1): median age",
+    bmi      = "Lacoppidan et al. 2015 (Nutrients, Table 1): BMI",
+    livvidde = "Lacoppidan et al. 2015 (Nutrients, Table 1): waist circumference",
+    energi   = "Lacoppidan et al. 2015 (Nutrients, Table 1): energy intake incl. alcohol",
+    energx   = "Lacoppidan et al. 2015 (Nutrients, Table 1): energy intake excl. alcohol"
+  ),
+  # --- dchng: Zhang et al. 2025, Int J Obes, Table 1 ---
+  dchng = list(
+    alder    = "Zhang et al. 2025 (Int J Obes, Table 1): mean age",
+    scbia01  = "Zhang et al. 2025 (Int J Obes, Table 1): BMI",
+    schrm01  = "Zhang et al. 2025 (Int J Obes, Table 1): systolic blood pressure",
+    schrm02  = "Zhang et al. 2025 (Int J Obes, Table 1): diastolic blood pressure",
+    cho      = "Zhang et al. 2025 (Int J Obes, Table 1): total cholesterol",
+    ldl      = "Zhang et al. 2025 (Int J Obes, Table 1): LDL cholesterol",
+    hdl      = "Zhang et al. 2025 (Int J Obes, Table 1): HDL cholesterol"
+  )
+)
+
+#' Whether a DCH/DCH-NG curated column traces to a cited source
+#'
+#' Every other DCH/DCH-NG numeric/categorical column (including all
+#' nutrient, food-group, amino-acid and fatty-acid ranges) is the
+#' "plausible clinical/domain-knowledge" tier instead -- reasonable,
+#' widened adult bands, not read off a specific published table.
+#'
+#' @param register_id `"dch"` or `"dchng"` -- required, not optional,
+#'   because a handful of column ids mean different things on each cohort
+#'   (e.g. `cho` is carbohydrate on `dch`, cholesterol on `dchng`).
+#' @param name Column id, e.g. `"bmi"`, `"scbia01"`.
+#' @return The citation string if `name` is one of the 12 cited anchors
+#'   (5 from dch, 7 from dchng), else `"clinical"`.
+#' @export
+dch_range_source <- function(register_id, name) {
+  tier <- .DCH_CITED_COLUMNS[[as.character(register_id)[[1]]]]
+  if (is.null(tier)) {
+    return("clinical")
+  }
+  tier[[as.character(name)[[1]]]] %||% "clinical"
+}
+
 .DCH_NUMERIC_OVERRIDES <- list(
   # --- journal: identifiers, visit, anthropometry, clinical ---
+  # vaegt is NOT here -- it's derived from bmi/stahqjde in derived_column()
+  # (R/generate-columns.R) so it can't disagree with this row's own bmi
+  # and height, the same reconciliation `v_alddg` already gets from
+  # foed_dag/referencetid. Deriving weight (uncited tier) from bmi (a
+  # Lacoppidan et al. 2015 cited anchor) rather than the other way around
+  # keeps bmi's own realistic, cited distribution intact.
   id = c(1, 60000), age = c(50, 65), alderind = c(18250, 23750),
-  stahqjde = c(148, 200), sidhqjde = c(75, 105), vaegt = c(42, 145),
+  stahqjde = c(148, 200), sidhqjde = c(75, 105),
   livvidde = c(62, 135), hofvidde = c(78, 145), blodtsys = c(90, 200),
   blodtdia = c(50, 120), blodpklo = c(700, 1800), blodprqv = c(2.8, 9.5),
   # --- afledte: body composition, smoking, alcohol, activity ---
@@ -140,6 +212,25 @@ YESNO_01 <- c(0L, 1L)
   ldl_reagens = 1:2, hdl_reagens = 1:2
 )
 
+# Known, documented limitation, not a bug: unlike bmi/vaegt/stahqjde
+# (reconciled via derived_column(), R/generate-columns.R -- vaegt is
+# literally computed from bmi and stahqjde), the food-group/nutrient
+# structures below are NOT cross-reconciled. `vaegtc` (the grand total)
+# and `vaegtc01`-`vaegtc60` (per-group amounts) are each drawn
+# independently -- the 60 groups will not sum to the total. Same for
+# `energitot` vs. `energitot01`-`energitot49`, and for each nutrient's
+# `_tot`/`_ffq`/`_ktsk` trio (R/generate-dch-nutrients.R) -- diet vs.
+# supplement vs. combined total can disagree. Reconciling 50-60
+# independently-curated columns against a grand total properly (without
+# distorting either the total's own plausible range or each group's) is a
+# real redesign -- drawing shares that sum to a total, or deriving the
+# total from the parts -- not a small fix like the two-variable bmi/vaegt
+# case was, so it's flagged here rather than attempted. If your analysis
+# depends on these actually summing (e.g. testing a data-cleaning script
+# that checks `vaegtc == sum(vaegtc01:vaegtc60)`), don't rely on fiktive's
+# DCH/DCH-NG output for that -- same "structural noise, not correlated"
+# caveat as everywhere fiktive doesn't plant a relationship on purpose.
+#
 # 50 harmonised food groups shared by dch's own "foods6ny" dataset and
 # dchng's own "vaegtc" dataset (see each column's `dataset` field), g/day.
 .DCH_VAEGTC <- list(

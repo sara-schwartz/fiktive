@@ -69,11 +69,11 @@ columns:
     role: value
   - id: familie_type
     name: familie_type
-    type: character
+    type: numeric
     role: code
   - id: opr_land
     name: opr_land
-    type: character
+    type: numeric
     role: code
   - id: van_vtil
     name: van_vtil

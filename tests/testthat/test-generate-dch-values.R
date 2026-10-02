@@ -10,7 +10,12 @@ test_that("DCH anthropometric/clinical columns are within plausible ranges", {
   dch <- generate_register("dch", pop, schema, as.Date("1993-12-01"), as.Date("1997-05-31"), seed = 51)
   skip_if(!nrow(dch), "no rows generated at this seed")
   expect_true(all(dch$stahqjde >= 148 & dch$stahqjde <= 200))
-  expect_true(all(dch$vaegt >= 42 & dch$vaegt <= 145))
+  # vaegt (weight) is derived from bmi * (stahqjde/100)^2 (see
+  # derived_column(), R/generate-columns.R) rather than independently
+  # curated, so its range is bmi's 17-45 times height's 1.48-2.00 m
+  # squared, not a hand-picked band.
+  expect_true(all(dch$vaegt >= 17 * 1.48^2 - 0.1 & dch$vaegt <= 45 * 2.00^2 + 0.1))
+  expect_equal(round(dch$vaegt, 1), round(dch$bmi * (dch$stahqjde / 100)^2, 1))
   expect_true(all(dch$id >= 1 & dch$id <= 60000))
   expect_true(all(dch$center %in% c("KBH", "AAR")))
   expect_true(all(dch$ualbumin %in% 0:3))
@@ -63,7 +68,42 @@ test_that("FFQ item columns are ranged by id-shape family, not one shared draw",
 })
 
 test_that("dch_value_noise() is scoped to dch/dchng registers only", {
-  expect_null(fiktive:::dch_value_noise(NULL, "vaegt", "numeric", 5L))
-  expect_null(fiktive:::dch_value_noise("bef", "vaegt", "numeric", 5L))
-  expect_false(is.null(fiktive:::dch_value_noise("dch", "vaegt", "numeric", 5L)))
+  # stahqjde (height), not vaegt -- vaegt is derived from bmi/stahqjde in
+  # derived_column() now, so it never reaches dch_value_noise() at all.
+  expect_null(fiktive:::dch_value_noise(NULL, "stahqjde", "numeric", 5L))
+  expect_null(fiktive:::dch_value_noise("bef", "stahqjde", "numeric", 5L))
+  expect_false(is.null(fiktive:::dch_value_noise("dch", "stahqjde", "numeric", 5L)))
+})
+
+test_that("dch_range_source() is register-aware, not a flat name lookup", {
+  # `cho` means something different on each cohort: carbohydrate (dch,
+  # nutri6ny) vs. cholesterol (dchng, a Zhang et al. 2025 cited anchor) --
+  # a flat name-keyed lookup would wrongly tag one as the other.
+  expect_equal(dch_range_source("dch", "cho"), "clinical")
+  expect_match(dch_range_source("dchng", "cho"), "^Zhang et al\\. 2025.*cholesterol")
+
+  # One from each cohort's real cited set.
+  expect_match(dch_range_source("dch", "bmi"), "^Lacoppidan et al\\. 2015.*BMI")
+  expect_match(dch_range_source("dchng", "scbia01"), "^Zhang et al\\. 2025.*BMI")
+
+  # Everything else -- including a column that exists on neither cohort,
+  # and an unknown register_id -- is "clinical", not an error.
+  expect_equal(dch_range_source("dch", "livvidde_not_a_real_column"), "clinical")
+  expect_equal(dch_range_source("bef", "koen"), "clinical")
+})
+
+test_that("codebook()'s value_source column matches dch_range_source(), NA for DST registers", {
+  schema <- fixture_schema()
+  cb <- codebook(c("dch", "dchng", "bef"), schema)
+  expect_true(all(is.na(cb$value_source[cb$register == "bef"])))
+
+  dch_bmi <- cb[cb$register == "dch" & cb$name == "bmi", "value_source"][[1]]
+  expect_equal(dch_bmi, dch_range_source("dch", "bmi"))
+
+  # The register-collision case, exercised through the public codebook()
+  # interface too, not just the internal function directly.
+  dch_cho <- cb[cb$register == "dch" & cb$name == "cho", "value_source"][[1]]
+  dchng_cho <- cb[cb$register == "dchng" & cb$name == "cho", "value_source"][[1]]
+  expect_equal(dch_cho, "clinical")
+  expect_match(dchng_cho, "cholesterol")
 })

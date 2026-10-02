@@ -15,6 +15,10 @@ columns:
     name: d_dodsdato
     type: date
     role: date
+  - id: aar
+    name: aar
+    type: integer
+    role: date
   - id: c_dodtilgrundl_acme
     name: c_dodtilgrundl_acme
     type: character

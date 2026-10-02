@@ -63,6 +63,34 @@ test_that("label-flagged binary columns draw 0/1, not an unlimited range", {
   expect_true(all(dd$flag_valideret %in% c("0", "1")))
 })
 
+test_that("dodsaasg's aar is a real calendar year, not the generic 0-10 integer fallback", {
+  schema <- fixture_schema()
+  pop <- tiny_pop(schema, n = 60L, seed = 46)
+  dodsaasg <- suppressWarnings(
+    generate_register("dodsaasg", pop, schema, as.Date("2005-01-01"), as.Date("2015-12-31"), seed = 46)
+  )
+  skip_if(!nrow(dodsaasg), "no rows generated at this seed")
+  expect_true(all(dodsaasg$aar >= 2005 & dodsaasg$aar <= 2015))
+})
+
+test_that("lmdb's etid is a plausible HHMM time-of-day, not the generic 0.5-20 float fallback", {
+  schema <- fixture_schema()
+  pop <- tiny_pop(schema, n = 60L, seed = 47)
+  lmdb <- generate_register("lmdb", pop, schema, as.Date("2008-01-01"), as.Date("2009-12-31"), seed = 47)
+  skip_if(!nrow(lmdb), "no rows generated at this seed")
+  expect_true(all(lmdb$etid >= 0 & lmdb$etid <= 2359))
+})
+
+test_that("dodsaarsager's borger_alder_doedsstatus is a real human age, not the generic 0.5-20 float fallback", {
+  schema <- fixture_schema()
+  pop <- tiny_pop(schema, n = 60L, seed = 48)
+  dd <- suppressWarnings(
+    generate_register("dodsaarsager", pop, schema, as.Date("2022-01-01"), as.Date("2023-12-31"), seed = 48)
+  )
+  skip_if(!nrow(dd), "no rows generated at this seed")
+  expect_true(all(dd$borger_alder_doedsstatus >= 0 & dd$borger_alder_doedsstatus <= 105))
+})
+
 test_that("sssy's alderimp and vnds_ind/vnds_ud's alder_ult are the row's real age, not independent noise", {
   schema <- fixture_schema()
   pop <- tiny_pop(schema, n = 60L, seed = 44)
